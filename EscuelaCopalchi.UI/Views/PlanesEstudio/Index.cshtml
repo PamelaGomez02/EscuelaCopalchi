@@ -1,36 +1,41 @@
 ﻿@{
-    ViewBag.Title = "Usuarios";
+    ViewBag.Title = "Planes de estudio";
 }
 
-<main class="users-page">
+<main class="planes-page">
 
     <!-- ENCABEZADO -->
-    <section class="users-header">
+    <section class="planes-header">
         <div class="container">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
                 <div>
-                    <div class="users-breadcrumb">
+
+                    <div class="planes-breadcrumb">
                         <a href="@Url.Action("Index", "Home")">Inicio</a>
                         <i class="bi bi-chevron-right"></i>
-                        <span>Usuarios</span>
+                        <span>Planes de estudio</span>
                     </div>
 
-                    <h1 class="users-title">
-                        <i class="bi bi-person-badge me-2"></i>
-                        Usuarios
+                    <h1 class="planes-title">
+                        <i class="bi bi-journal-text me-2"></i>
+                        Planes de estudio
                     </h1>
 
-                    <p class="users-subtitle">
-                        Docentes y personal administrativo registrados en el sistema.
+                    <p class="planes-subtitle">
+                        Administra la planificación académica mensual,
+                        revisa su estado y consulta las observaciones realizadas.
                     </p>
+
                 </div>
 
                 <div>
-                    <a href="@Url.Action("Create", "Usuarios")"
+                    <a href="@Url.Action("Crear", "PlanesEstudio")"
                        class="btn btn-cop-primary">
-                        <i class="bi bi-person-plus me-1"></i>
-                        Nuevo usuario
+
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Nuevo plan
+
                     </a>
                 </div>
 
@@ -39,53 +44,57 @@
     </section>
 
 
+    <!-- CONTENIDO -->
     <section class="container pb-5">
 
         <!-- RESUMEN -->
         <div class="row g-3 mb-4">
 
+            <!-- PENDIENTES -->
             <div class="col-md-4">
                 <div class="summary-card">
 
-                    <div class="summary-icon total">
-                        <i class="bi bi-people"></i>
+                    <div class="summary-icon pending">
+                        <i class="bi bi-clock-history"></i>
                     </div>
 
                     <div>
-                        <span class="summary-label">Usuarios registrados</span>
-                        <h2 class="summary-number">30</h2>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="summary-card">
-
-                    <div class="summary-icon active">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-
-                    <div>
-                        <span class="summary-label">Usuarios activos</span>
-                        <h2 class="summary-number">27</h2>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="col-md-4">
-                <div class="summary-card">
-
-                    <div class="summary-icon inactive">
-                        <i class="bi bi-person-x"></i>
-                    </div>
-
-                    <div>
-                        <span class="summary-label">Usuarios inactivos</span>
+                        <span class="summary-label">Pendientes</span>
                         <h2 class="summary-number">3</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- APROBADOS -->
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon approved">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Aprobados</span>
+                        <h2 class="summary-number">8</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- RECHAZADOS -->
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon rejected">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Rechazados</span>
+                        <h2 class="summary-number">1</h2>
                     </div>
 
                 </div>
@@ -95,29 +104,32 @@
 
 
         <!-- CONTENEDOR PRINCIPAL -->
-        <div class="users-container">
+        <div class="plans-container">
 
             <!-- CABECERA -->
-            <div class="users-toolbar">
+            <div class="plans-toolbar">
 
                 <div>
-                    <h2 class="users-section-title">
-                        Usuarios registrados
+
+                    <h2 class="plans-section-title">
+                        Mis planes
                     </h2>
 
-                    <p class="users-section-subtitle">
-                        Consulta y administra los usuarios del sistema.
+                    <p class="plans-section-subtitle">
+                        Consulta las planificaciones registradas en el sistema.
                     </p>
+
                 </div>
 
 
-                <div class="users-search">
+                <!-- BUSCADOR -->
+                <div class="plans-search">
 
                     <i class="bi bi-search"></i>
 
                     <input type="text"
                            class="form-control"
-                           placeholder="Buscar usuario..." />
+                           placeholder="Buscar plan..." />
 
                 </div>
 
@@ -125,22 +137,40 @@
 
 
             <!-- FILTROS -->
-            <div class="users-filters">
+            <div class="plans-filters">
 
                 <select class="form-select">
-                    <option selected>Todos los roles</option>
-                    <option>Docente</option>
-                    <option>Director</option>
-                    <option>Administrador</option>
-                    <option>Administrativo</option>
-                    <option>Comité de apoyo</option>
+
+                    <option value="">
+                        Todos los estados
+                    </option>
+
+                    <option>Pendiente</option>
+                    <option>Aprobado</option>
+                    <option>Rechazado</option>
+
                 </select>
 
 
                 <select class="form-select">
-                    <option selected>Todos los estados</option>
-                    <option>Activo</option>
-                    <option>Inactivo</option>
+
+                    <option value="">
+                        Todos los meses
+                    </option>
+
+                    <option>Enero</option>
+                    <option>Febrero</option>
+                    <option>Marzo</option>
+                    <option>Abril</option>
+                    <option>Mayo</option>
+                    <option>Junio</option>
+                    <option>Julio</option>
+                    <option>Agosto</option>
+                    <option>Septiembre</option>
+                    <option>Octubre</option>
+                    <option>Noviembre</option>
+                    <option>Diciembre</option>
+
                 </select>
 
             </div>
@@ -149,212 +179,267 @@
             <!-- TABLA -->
             <div class="table-responsive">
 
-                <table class="table users-table align-middle">
+                <table class="table plans-table align-middle">
 
                     <thead>
+
                         <tr>
-                            <th>Usuario</th>
-                            <th>Correo</th>
-                            <th>Rol</th>
+                            <th>Plan</th>
+                            <th>Periodo</th>
+                            <th>Fecha de registro</th>
                             <th>Estado</th>
+                            <th>Teams</th>
                             <th class="text-end">Acciones</th>
                         </tr>
+
                     </thead>
+
 
                     <tbody>
 
-                        <!-- MARÍA -->
+                        <!-- PLAN PENDIENTE -->
                         <tr>
 
                             <td>
-                                <div class="user-name">
 
-                                    <div class="user-avatar">
-                                        MR
+                                <div class="plan-name">
+
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-text"></i>
                                     </div>
 
                                     <div>
-                                        <strong>María Rodríguez</strong>
-                                        <small>Docente</small>
+
+                                        <strong>
+                                            Plan mensual de Matemáticas
+                                        </strong>
+
+                                        <small>
+                                            Primer grado
+                                        </small>
+
                                     </div>
 
                                 </div>
+
                             </td>
 
-                            <td>
-                                maria.rodriguez@copalchi.edu
-                            </td>
 
                             <td>
-                                <span class="role-badge">
-                                    Docente
+                                Agosto 2026
+                            </td>
+
+
+                            <td>
+                                05/08/2026
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-pending">
+
+                                    <i class="bi bi-clock"></i>
+                                    Pendiente
+
                                 </span>
+
                             </td>
 
+
                             <td>
-                                <span class="status status-active">
-                                    <i class="bi bi-check-circle"></i>
-                                    Activo
+
+                                <span class="teams-status">
+
+                                    <i class="bi bi-microsoft-teams"></i>
+                                    No sincronizado
+
                                 </span>
+
                             </td>
+
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 1 })"
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 1 })"
                                    class="btn btn-action"
-                                   title="Editar">
-                                    <i class="bi bi-pencil"></i>
+                                   title="Ver plan">
+
+                                    <i class="bi bi-eye"></i>
+
                                 </a>
 
-                                <button type="button"
-                                        class="btn btn-action"
-                                        title="Restablecer contraseña"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalResetPass">
 
-                                    <i class="bi bi-key"></i>
+                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
 
-                                </button>
+                                    <i class="bi bi-pencil"></i>
 
-                                <button type="button"
-                                        class="btn btn-action btn-action-danger"
-                                        title="Desactivar">
-
-                                    <i class="bi bi-slash-circle"></i>
-
-                                </button>
+                                </a>
 
                             </td>
 
                         </tr>
 
 
-                        <!-- JUAN -->
+                        <!-- PLAN APROBADO -->
                         <tr>
 
                             <td>
-                                <div class="user-name">
 
-                                    <div class="user-avatar">
-                                        JP
+                                <div class="plan-name">
+
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-excel"></i>
                                     </div>
 
                                     <div>
-                                        <strong>Juan Pérez</strong>
-                                        <small>Director</small>
+
+                                        <strong>
+                                            Plan mensual de Ciencias
+                                        </strong>
+
+                                        <small>
+                                            Segundo grado
+                                        </small>
+
                                     </div>
 
                                 </div>
+
                             </td>
 
-                            <td>
-                                juan.perez@copalchi.edu
-                            </td>
 
                             <td>
-                                <span class="role-badge role-director">
-                                    Director
-                                </span>
+                                Julio 2026
                             </td>
 
+
                             <td>
-                                <span class="status status-active">
+                                02/07/2026
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-approved">
+
                                     <i class="bi bi-check-circle"></i>
-                                    Activo
+                                    Aprobado
+
                                 </span>
+
                             </td>
+
+
+                            <td>
+
+                                <span class="teams-status teams-ok">
+
+                                    <i class="bi bi-check-circle"></i>
+                                    Sincronizado
+
+                                </span>
+
+                            </td>
+
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 2 })"
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 2 })"
                                    class="btn btn-action"
-                                   title="Editar">
-                                    <i class="bi bi-pencil"></i>
+                                   title="Ver plan">
+
+                                    <i class="bi bi-eye"></i>
+
                                 </a>
-
-                                <button type="button"
-                                        class="btn btn-action"
-                                        title="Restablecer contraseña"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalResetPass">
-
-                                    <i class="bi bi-key"></i>
-
-                                </button>
-
-                                <button type="button"
-                                        class="btn btn-action btn-action-danger"
-                                        title="Desactivar">
-
-                                    <i class="bi bi-slash-circle"></i>
-
-                                </button>
 
                             </td>
 
                         </tr>
 
 
-                        <!-- LAURA -->
+                        <!-- PLAN RECHAZADO -->
                         <tr>
 
                             <td>
-                                <div class="user-name">
 
-                                    <div class="user-avatar">
-                                        LG
+                                <div class="plan-name">
+
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-text"></i>
                                     </div>
 
                                     <div>
-                                        <strong>Laura Gómez</strong>
-                                        <small>Docente</small>
+
+                                        <strong>
+                                            Plan mensual de Español
+                                        </strong>
+
+                                        <small>
+                                            Tercer grado
+                                        </small>
+
                                     </div>
 
                                 </div>
+
                             </td>
 
-                            <td>
-                                laura.gomez@copalchi.edu
-                            </td>
 
                             <td>
-                                <span class="role-badge">
-                                    Docente
-                                </span>
+                                Junio 2026
                             </td>
 
+
                             <td>
-                                <span class="status status-inactive">
+                                03/06/2026
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-rejected">
+
                                     <i class="bi bi-x-circle"></i>
-                                    Inactivo
+                                    Rechazado
+
                                 </span>
+
                             </td>
+
+
+                            <td>
+
+                                <span class="teams-status">
+
+                                    <i class="bi bi-microsoft-teams"></i>
+                                    No sincronizado
+
+                                </span>
+
+                            </td>
+
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 3 })"
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 3 })"
                                    class="btn btn-action"
-                                   title="Editar">
-                                    <i class="bi bi-pencil"></i>
+                                   title="Ver plan">
+
+                                    <i class="bi bi-eye"></i>
+
                                 </a>
 
-                                <button type="button"
-                                        class="btn btn-action"
-                                        title="Restablecer contraseña"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalResetPass">
 
-                                    <i class="bi bi-key"></i>
+                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Corregir plan">
 
-                                </button>
+                                    <i class="bi bi-pencil"></i>
 
-                                <button type="button"
-                                        class="btn btn-action btn-action-success"
-                                        title="Activar">
-
-                                    <i class="bi bi-check-circle"></i>
-
-                                </button>
+                                </a>
 
                             </td>
 
@@ -369,67 +454,6 @@
         </div>
 
     </section>
-
-
-    <!-- MODAL -->
-    <div class="modal fade"
-         id="modalResetPass"
-         tabindex="-1"
-         aria-hidden="true">
-
-        <div class="modal-dialog modal-dialog-centered">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-                        <i class="bi bi-key me-2"></i>
-                        Restablecer contraseña
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-
-                <div class="modal-body">
-
-                    <p class="mb-0">
-                        Se generará una contraseña temporal y se enviará al correo institucional del usuario.
-                        ¿Deseas continuar?
-                    </p>
-
-                </div>
-
-
-                <div class="modal-footer">
-
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-
-                        Cancelar
-
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-cop-primary">
-
-                        Restablecer
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
 
 </main>
 
@@ -455,9 +479,11 @@
         }
 
 
-        /* HEADER */
+        /* ==============================
+           HEADER
+        ============================== */
 
-        .users-header {
+        .planes-header {
             background-color: #ffffff;
             border-bottom: 1px solid #e3e8ee;
             padding: 32px 0;
@@ -465,7 +491,7 @@
         }
 
 
-        .users-breadcrumb {
+        .planes-breadcrumb {
             display: flex;
             align-items: center;
             gap: 7px;
@@ -475,18 +501,18 @@
         }
 
 
-            .users-breadcrumb a {
+            .planes-breadcrumb a {
                 color: var(--cop-secondary);
                 text-decoration: none;
             }
 
 
-                .users-breadcrumb a:hover {
+                .planes-breadcrumb a:hover {
                     text-decoration: underline;
                 }
 
 
-        .users-title {
+        .planes-title {
             color: var(--cop-primary);
             font-size: 1.8rem;
             font-weight: 700;
@@ -494,13 +520,15 @@
         }
 
 
-        .users-subtitle {
+        .planes-subtitle {
             color: var(--cop-muted);
             margin-bottom: 0;
         }
 
 
-        /* BOTÓN PRINCIPAL */
+        /* ==============================
+           BOTÓN PRINCIPAL
+        ============================== */
 
         .btn-cop-primary {
             background-color: var(--cop-primary);
@@ -519,7 +547,9 @@
             }
 
 
-        /* CARDS RESUMEN */
+        /* ==============================
+           CARDS RESUMEN
+        ============================== */
 
         .summary-card {
             background: #ffffff;
@@ -545,21 +575,21 @@
         }
 
 
-            .summary-icon.total {
-                background-color: #e6f1fb;
-                color: var(--cop-secondary);
+            .summary-icon.pending {
+                background-color: #fff3cd;
+                color: #856404;
             }
 
 
-            .summary-icon.active {
+            .summary-icon.approved {
                 background-color: #d1e7dd;
                 color: #0f5132;
             }
 
 
-            .summary-icon.inactive {
-                background-color: #f1f2f3;
-                color: #6c757d;
+            .summary-icon.rejected {
+                background-color: #f8d7da;
+                color: #842029;
             }
 
 
@@ -578,19 +608,24 @@
         }
 
 
-        /* CONTENEDOR */
+        /* ==============================
+           CONTENEDOR
+        ============================== */
 
-        .users-container {
+        .plans-container {
             background: #ffffff;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
             overflow: hidden;
+            margin-bottom: 40px;
         }
 
 
-        /* TOOLBAR */
+        /* ==============================
+           TOOLBAR
+        ============================== */
 
-        .users-toolbar {
+        .plans-toolbar {
             padding: 22px;
             display: flex;
             justify-content: space-between;
@@ -599,7 +634,7 @@
         }
 
 
-        .users-section-title {
+        .plans-section-title {
             margin: 0 0 4px;
             font-size: 1.2rem;
             color: var(--cop-primary);
@@ -607,38 +642,43 @@
         }
 
 
-        .users-section-subtitle {
+        .plans-section-subtitle {
             margin: 0;
             color: var(--cop-muted);
             font-size: .88rem;
         }
 
 
-        /* BUSCADOR */
+        /* ==============================
+           BUSCADOR
+        ============================== */
 
-        .users-search {
+        .plans-search {
             position: relative;
             width: 260px;
         }
 
 
-            .users-search i {
+            .plans-search i {
                 position: absolute;
                 left: 11px;
                 top: 50%;
                 transform: translateY(-50%);
                 color: var(--cop-muted);
+                pointer-events: none;
             }
 
 
-            .users-search input {
+            .plans-search input {
                 padding-left: 34px;
             }
 
 
-        /* FILTROS */
+        /* ==============================
+           FILTROS
+        ============================== */
 
-        .users-filters {
+        .plans-filters {
             display: flex;
             gap: 12px;
             padding: 15px 22px;
@@ -648,20 +688,41 @@
         }
 
 
-            .users-filters .form-select {
+            .plans-filters .form-select {
                 width: 190px;
                 font-size: .9rem;
             }
 
 
-        /* TABLA */
+        /* ==============================
+           FORMULARIOS
+        ============================== */
 
-        .users-table {
+        .form-control,
+        .form-select {
+            border: 1px solid #dce2e7;
+            border-radius: 7px;
+            font-size: .9rem;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* ==============================
+           TABLA
+        ============================== */
+
+        .plans-table {
             margin-bottom: 0;
         }
 
 
-            .users-table thead th {
+            .plans-table thead th {
                 background-color: #f8fafc;
                 color: #53616d;
                 font-size: .8rem;
@@ -669,80 +730,65 @@
                 text-transform: uppercase;
                 padding: 13px 17px;
                 border-bottom: 1px solid #e3e8ee;
+                white-space: nowrap;
             }
 
 
-            .users-table tbody td {
+            .plans-table tbody td {
                 padding: 16px 17px;
                 border-color: #edf0f3;
                 font-size: .9rem;
+                vertical-align: middle;
             }
 
 
-            .users-table tbody tr:hover {
+            .plans-table tbody tr:hover {
                 background-color: #fafcfd;
             }
 
 
-        /* USUARIO */
+        /* ==============================
+           PLAN
+        ============================== */
 
-        .user-name {
+        .plan-name {
             display: flex;
             align-items: center;
             gap: 11px;
         }
 
 
-            .user-name strong {
+            .plan-name strong {
                 display: block;
                 color: var(--cop-text);
                 font-weight: 600;
             }
 
 
-            .user-name small {
+            .plan-name small {
                 display: block;
                 color: var(--cop-muted);
                 margin-top: 2px;
             }
 
 
-        .user-avatar {
+        .plan-file-icon {
             width: 38px;
             height: 38px;
             flex-shrink: 0;
             background-color: #e6f1fb;
             color: var(--cop-secondary);
-            border-radius: 50%;
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: .78rem;
-            font-weight: 700;
+            font-size: 1.1rem;
         }
 
 
-        /* ROLES */
-
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 9px;
-            border-radius: 20px;
-            background-color: #e6f1fb;
-            color: var(--cop-secondary);
-            font-size: .78rem;
-            font-weight: 600;
-        }
-
-
-        .role-director {
-            background-color: var(--cop-primary);
-            color: #ffffff;
-        }
-
-
-        /* ESTADOS */
+        /* ==============================
+           ESTADOS
+        ============================== */
 
         .status {
             display: inline-flex;
@@ -752,22 +798,47 @@
             border-radius: 20px;
             font-size: .78rem;
             font-weight: 600;
+            white-space: nowrap;
         }
 
 
-        .status-active {
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+
+        .status-approved {
             background-color: #d1e7dd;
             color: #0f5132;
         }
 
 
-        .status-inactive {
-            background-color: #f1f2f3;
-            color: #6c757d;
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #842029;
         }
 
 
-        /* ACCIONES */
+        /* ==============================
+           TEAMS
+        ============================== */
+
+        .teams-status {
+            color: var(--cop-muted);
+            font-size: .83rem;
+            white-space: nowrap;
+        }
+
+
+        .teams-ok {
+            color: #198754;
+        }
+
+
+        /* ==============================
+           ACCIONES
+        ============================== */
 
         .btn-action {
             border: 1px solid #dce2e7;
@@ -785,71 +856,39 @@
             }
 
 
-        .btn-action-danger:hover {
-            background-color: #f8d7da;
-            border-color: #f1b8bd;
-            color: #842029;
-        }
-
-
-        .btn-action-success:hover {
-            background-color: #d1e7dd;
-            border-color: #badbcc;
-            color: #0f5132;
-        }
-
-
-        /* FORMULARIOS */
-
-        .form-control,
-        .form-select {
-            border: 1px solid #dce2e7;
-            border-radius: 7px;
-        }
-
-
-            .form-control:focus,
-            .form-select:focus {
-                border-color: var(--cop-accent);
-                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
-            }
-
-
-        /* MODAL */
-
-        .modal-content {
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-        }
-
-
-        .modal-title {
-            color: var(--cop-primary);
-            font-weight: 600;
-        }
-
-
-        /* RESPONSIVE */
+        /* ==============================
+           RESPONSIVE
+        ============================== */
 
         @@media (max-width: 768px) {
 
-            .users-toolbar {
+            .planes-header {
+                padding: 24px 0;
+            }
+
+
+            .planes-title {
+                font-size: 1.5rem;
+            }
+
+
+            .planes-toolbar {
                 flex-direction: column;
                 align-items: stretch;
             }
 
 
-            .users-search {
+            .plans-search {
                 width: 100%;
             }
 
 
-            .users-filters {
+            .plans-filters {
                 flex-direction: column;
             }
 
 
-                .users-filters .form-select {
+                .plans-filters .form-select {
                     width: 100%;
                 }
         }
