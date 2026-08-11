@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "Importar calificaciones";
+}
+
+<main>
+
+    <section class="grades-header">
+
+        <div class="container">
+
+            <div class="grades-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "GestionNotas")">
+                    Gestión de notas
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Importar Excel</span>
+            </div>
+
+            <h1 class="grades-title">
+                <i class="bi bi-file-earmark-excel me-2"></i>
+                Importar calificaciones
+            </h1>
+
+            <p class="grades-subtitle">
+                Importa las calificaciones de un grupo mediante un archivo Excel.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="import-card">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Grupo
+                    </label>
+
+                    <select class="form-select">
+                        <option selected>Primer grado A</option>
+                        <option>Segundo grado A</option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Asignatura
+                    </label>
+
+                    <select class="form-select">
+                        <option selected>Matemáticas</option>
+                        <option>Español</option>
+                        <option>Ciencias</option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Periodo
+                    </label>
+
+                    <select class="form-select">
+                        <option selected>I Trimestre</option>
+                        <option>II Trimestre</option>
+                        <option>III Trimestre</option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Archivo Excel
+                    </label>
+
+                    <div class="upload-box">
+
+                        <i class="bi bi-file-earmark-excel"></i>
+
+                        <h3>Selecciona el archivo</h3>
+
+                        <p>
+                            El archivo debe contener las calificaciones del grupo seleccionado.
+                        </p>
+
+                        <input type="file"
+                               class="form-control"
+                               accept=".xls,.xlsx" />
+
+                        <small>
+                            Formatos permitidos: .xls y .xlsx
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "GestionNotas")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+
+                    <i class="bi bi-upload me-1"></i>
+                    Importar calificaciones
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .grades-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .grades-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .grades-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .grades-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .grades-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .import-card {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .form-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .upload-box {
+            border: 2px dashed #cad5df;
+            background: #fafcfd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+        }
+
+            .upload-box > i {
+                font-size: 2.2rem;
+                color: #198754;
+            }
+
+            .upload-box h3 {
+                color: var(--cop-primary);
+                font-size: 1rem;
+                margin-top: 10px;
+            }
+
+            .upload-box p,
+            .upload-box small {
+                color: var(--cop-muted);
+                font-size: .83rem;
+            }
+
+        .form-actions {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f3;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+    </style>
+
+}

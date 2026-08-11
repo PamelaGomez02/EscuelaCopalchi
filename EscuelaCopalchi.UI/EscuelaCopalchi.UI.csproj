@@ -139,6 +139,7 @@
     <Compile Include="Controllers\NotificacionesController.cs" />
     <Compile Include="Controllers\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController.cs" />
+    <Compile Include="Controllers\GestionNotasController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -217,6 +218,11 @@
     <Content Include="Views\Asistencia\Editar.cshtml" />
     <Content Include="Views\Asistencia\Registrar.cshtml" />
     <Content Include="Views\Asistencia\Index.cshtml" />
+    <Content Include="Views\GestionNotas\ImportarExcel.cshtml" />
+    <Content Include="Views\GestionNotas\Historial.cshtml" />
+    <Content Include="Views\GestionNotas\Index.cshtml" />
+    <Content Include="Views\GestionNotas\Registrar.cshtml" />
+    <Content Include="Views\GestionNotas\Editar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

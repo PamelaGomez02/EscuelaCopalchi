@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "Editar calificación";
+}
+
+<main>
+
+    <section class="grades-header">
+
+        <div class="container">
+
+            <div class="grades-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "GestionNotas")">
+                    Gestión de notas
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Editar</span>
+
+            </div>
+
+            <h1 class="grades-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar calificación
+            </h1>
+
+            <p class="grades-subtitle">
+                Modifica las calificaciones registradas para el estudiante.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="edit-card">
+
+            <div class="student-card">
+
+                <div class="student-avatar">
+                    MG
+                </div>
+
+                <div>
+                    <span>Estudiante</span>
+                    <h2>María González</h2>
+                    <p>Primer grado A · Matemáticas</p>
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Tarea 1
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           min="0"
+                           max="100"
+                           value="90" />
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Trabajo
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           min="0"
+                           max="100"
+                           value="85" />
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Examen
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           min="0"
+                           max="100"
+                           value="92" />
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Nota final
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           value="89"
+                           readonly />
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="4"
+                              placeholder="Ingrese una observación...">Buen rendimiento académico.</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "GestionNotas")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+
+                    <i class="bi bi-save me-1"></i>
+                    Guardar cambios
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .grades-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .grades-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .grades-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .grades-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .grades-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .edit-card {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .student-card {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #edf0f3;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .student-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .student-card span {
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+        .student-card h2 {
+            color: var(--cop-primary);
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .student-card p {
+            color: var(--cop-muted);
+            margin: 0;
+            font-size: .85rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #344054;
+            font-size: .9rem;
+        }
+
+        .form-actions {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f3;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+    </style>
+
+}
