@@ -1,0 +1,507 @@
+﻿@{
+    ViewBag.Title = "Auditoría del sistema";
+}
+
+<main>
+
+    <!-- VOLVER AL INICIO -->
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Volver al inicio
+    </a>
+
+    <!-- ENCABEZADO -->
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">
+                Auditoría del sistema
+            </h2>
+
+            <p class="cop-page-subtitle">
+                Bitácora de acciones críticas realizadas en el sistema.
+            </p>
+        </div>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="cop-filters">
+
+        <div class="row g-2 align-items-center">
+
+            <!-- MÓDULO -->
+            <div class="col-md-4">
+
+                <label class="cop-filter-label">
+                    Módulo
+                </label>
+
+                <select class="form-select">
+                    <option selected>Todos los módulos</option>
+                    <option>Roles</option>
+                    <option>Usuarios</option>
+                    <option>Estudiantes</option>
+                    <option>Gestión académica</option>
+                    <option>Planes de estudio</option>
+                    <option>Material didáctico</option>
+                    <option>Asistencia</option>
+                    <option>Gestión de notas</option>
+                    <option>Monitoreo académico</option>
+                    <option>Inventario de limpieza</option>
+                    <option>Inventario de cocina</option>
+                </select>
+
+            </div>
+
+            <!-- USUARIO -->
+            <div class="col-md-4">
+
+                <label class="cop-filter-label">
+                    Usuario
+                </label>
+
+                <select class="form-select">
+                    <option selected>Todos los usuarios</option>
+                    <option>Administrador</option>
+                    <option>Director</option>
+                    <option>Docente</option>
+                    <option>Comité de apoyo</option>
+                </select>
+
+            </div>
+
+            <!-- FECHA -->
+            <div class="col-md-4">
+
+                <label class="cop-filter-label">
+                    Fecha
+                </label>
+
+                <input type="date"
+                       class="form-control" />
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive cop-table-wrapper">
+
+        <table class="table align-middle cop-table">
+
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Módulo</th>
+                    <th>Fecha</th>
+                    <th class="text-end">Detalle</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <!-- REGISTRO 1 -->
+                <tr>
+
+                    <td>
+                        <div class="cop-user">
+                            <div class="cop-user-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <div>
+                                <strong>ana.admin</strong>
+                                <small>Administrador</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        Creó un rol
+                    </td>
+
+                    <td>
+                        <span class="cop-module-badge">
+                            Roles
+                        </span>
+                    </td>
+
+                    <td>
+                        Hoy, 9:12 a.m.
+                    </td>
+
+                    <td class="text-end">
+
+                        <a href="@Url.Action("Detalle", "AuditoriaSistema")"
+                           class="cop-link-detail">
+
+                            <i class="bi bi-eye"></i>
+                            Ver detalle
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- REGISTRO 2 -->
+                <tr>
+
+                    <td>
+                        <div class="cop-user">
+
+                            <div class="cop-user-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <div>
+                                <strong>director.copalchi</strong>
+                                <small>Director</small>
+                            </div>
+
+                        </div>
+                    </td>
+
+                    <td>
+                        Aprobó un plan de estudio
+                    </td>
+
+                    <td>
+                        <span class="cop-module-badge">
+                            Planes de estudio
+                        </span>
+                    </td>
+
+                    <td>
+                        Ayer, 3:40 p.m.
+                    </td>
+
+                    <td class="text-end">
+
+                        <a href="@Url.Action("Detalle", "AuditoriaSistema")"
+                           class="cop-link-detail">
+
+                            <i class="bi bi-eye"></i>
+                            Ver detalle
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- REGISTRO 3 -->
+                <tr>
+
+                    <td>
+                        <div class="cop-user">
+
+                            <div class="cop-user-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <div>
+                                <strong>ana.admin</strong>
+                                <small>Administrador</small>
+                            </div>
+
+                        </div>
+                    </td>
+
+                    <td>
+                        Restableció contraseña
+                    </td>
+
+                    <td>
+                        <span class="cop-module-badge">
+                            Usuarios
+                        </span>
+                    </td>
+
+                    <td>
+                        Lun 4 ago, 11:05 a.m.
+                    </td>
+
+                    <td class="text-end">
+
+                        <a href="@Url.Action("Detalle", "AuditoriaSistema")"
+                           class="cop-link-detail">
+
+                            <i class="bi bi-eye"></i>
+                            Ver detalle
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- REGISTRO 4 -->
+                <tr>
+
+                    <td>
+                        <div class="cop-user">
+
+                            <div class="cop-user-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <div>
+                                <strong>docente.maria</strong>
+                                <small>Docente</small>
+                            </div>
+
+                        </div>
+                    </td>
+
+                    <td>
+                        Modificó una asistencia
+                    </td>
+
+                    <td>
+                        <span class="cop-module-badge">
+                            Asistencia
+                        </span>
+                    </td>
+
+                    <td>
+                        Lun 4 ago, 8:30 a.m.
+                    </td>
+
+                    <td class="text-end">
+
+                        <a href="@Url.Action("Detalle", "AuditoriaSistema")"
+                           class="cop-link-detail">
+
+                            <i class="bi bi-eye"></i>
+                            Ver detalle
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+@@section styles {
+
+<style>
+
+    /* =========================
+           BOTÓN VOLVER
+        ========================= */
+
+    .cop-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 24px;
+        color: #386FA4;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+        .cop-back-link:hover {
+            color: #133C55;
+            text-decoration: none;
+        }
+
+
+    /* =========================
+           ENCABEZADO
+        ========================= */
+
+    .cop-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 28px 0 20px;
+    }
+
+    .cop-page-title {
+        font-weight: 700;
+        color: #133C55;
+        margin-bottom: 4px;
+    }
+
+    .cop-page-subtitle {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+
+    /* =========================
+           FILTROS
+        ========================= */
+
+    .cop-filters {
+        background-color: #ffffff;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .cop-filter-label {
+        display: block;
+        color: #495057;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .form-select,
+    .form-control {
+        border-color: #dfe4e8;
+    }
+
+        .form-select:focus,
+        .form-control:focus {
+            border-color: #59A5D8;
+            box-shadow: 0 0 0 0.2rem rgba(89, 165, 216, 0.15);
+        }
+
+
+    /* =========================
+           TABLA
+        ========================= */
+
+    .cop-table-wrapper {
+        background-color: #ffffff;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 4px 8px;
+        margin-bottom: 40px;
+        overflow: hidden;
+    }
+
+    .cop-table {
+        margin-bottom: 0;
+    }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+            padding: 14px 12px;
+            background-color: #f8fafc;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+            padding: 14px 12px;
+            font-size: 0.9rem;
+        }
+
+        .cop-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cop-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+
+    /* =========================
+           USUARIO
+        ========================= */
+
+    .cop-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .cop-user-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #e6f4fb;
+        color: #133C55;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cop-user strong {
+        display: block;
+        color: #212529;
+        font-size: 0.88rem;
+    }
+
+    .cop-user small {
+        display: block;
+        color: #6c757d;
+        font-size: 0.75rem;
+    }
+
+
+    /* =========================
+           MÓDULO
+        ========================= */
+
+    .cop-module-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background-color: #e6f4fb;
+        color: #386FA4;
+        font-size: 0.77rem;
+        font-weight: 600;
+    }
+
+
+    /* =========================
+           VER DETALLE
+        ========================= */
+
+    .cop-link-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: #133C55;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+
+        .cop-link-detail:hover {
+            color: #386FA4;
+            text-decoration: underline;
+        }
+
+
+    /* =========================
+           RESPONSIVE
+        ========================= */
+
+    @@media (max-width: 768px) {
+
+        .cop-page-header {
+            margin-top: 20px;
+        }
+
+        .cop-table-wrapper {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+}

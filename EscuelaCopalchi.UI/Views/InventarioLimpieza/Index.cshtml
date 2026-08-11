@@ -3,184 +3,753 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Inventario de limpieza e higiene</h2>
-            <p class="cop-page-subtitle">Control de productos y existencias.</p>
-        </div>
-        <a href="@Url.Action("Create", "InventarioLimpieza")" class="btn cop-btn-primary"><i class="bi bi-plus-lg me-1"></i> Nuevo movimiento</a>
-    </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Productos registrados</span>
-                <span class="cop-stat-value">34</span>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Movimientos este mes</span>
-                <span class="cop-stat-value">18</span>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Stock bajo</span>
-                <span class="cop-stat-value cop-stat-alert">4</span>
-            </div>
-        </div>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="inventory-header">
 
-    <div class="table-responsive cop-table-wrapper">
-        <table class="table align-middle cop-table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Existencias</th>
-                    <th>Estado</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Jabón líquido 1L</td>
-                    <td>Higiene</td>
-                    <td>6 unidades</td>
-                    <td><span class="badge cop-badge-alta">Stock bajo</span></td>
-                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
-                </tr>
-                <tr>
-                    <td>Cloro 3.8L</td>
-                    <td>Limpieza</td>
-                    <td>22 unidades</td>
-                    <td><span class="badge cop-badge-ok">Suficiente</span></td>
-                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
-                </tr>
-                <tr>
-                    <td>Papel higiénico</td>
-                    <td>Higiene</td>
-                    <td>10 paquetes</td>
-                    <td><span class="badge cop-badge-media">Moderado</span></td>
-                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="container">
+
+            <div class="inventory-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Inventario de limpieza</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="inventory-title">
+                        <i class="bi bi-bucket me-2"></i>
+                        Inventario de limpieza e higiene
+                    </h1>
+
+                    <p class="inventory-subtitle">
+                        Control de productos, existencias, movimientos y niveles de stock.
+                    </p>
+
+                </div>
+
+
+                <a href="@Url.Action("Create", "InventarioLimpieza")"
+                   class="btn btn-cop-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Nuevo producto
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+
+                    <div>
+                        <span>Productos registrados</span>
+                        <h2>34</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+
+                    <div>
+                        <span>Movimientos este mes</span>
+                        <h2>18</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <span>Stock bajo</span>
+                        <h2 class="text-danger">4</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTENEDOR -->
+        <div class="inventory-card">
+
+            <!-- TOOLBAR -->
+            <div class="inventory-toolbar">
+
+                <div>
+
+                    <h2>Productos registrados</h2>
+
+                    <p>
+                        Consulta y administra los productos de limpieza e higiene.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar producto..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="inventory-filters">
+
+                <select class="form-select">
+
+                    <option selected>
+                        Todas las categorías
+                    </option>
+
+                    <option>
+                        Limpieza
+                    </option>
+
+                    <option>
+                        Higiene
+                    </option>
+
+                    <option>
+                        Desinfección
+                    </option>
+
+                    <option>
+                        Otros
+                    </option>
+
+                </select>
+
+
+                <select class="form-select">
+
+                    <option selected>
+                        Todos los estados
+                    </option>
+
+                    <option>
+                        Suficiente
+                    </option>
+
+                    <option>
+                        Moderado
+                    </option>
+
+                    <option>
+                        Stock bajo
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table inventory-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Existencias</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <!-- JABÓN -->
+                        <tr>
+
+                            <td>
+
+                                <div class="product-info">
+
+                                    <div class="product-icon">
+                                        <i class="bi bi-droplet"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Jabón líquido 1L
+                                        </strong>
+
+                                        <small>
+                                            Producto de higiene
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Higiene
+                            </td>
+
+                            <td>
+                                6 unidades
+                            </td>
+
+                            <td>
+
+                                <span class="status status-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    Stock bajo
+                                </span>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Create", "InventarioLimpieza", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- CLORO -->
+                        <tr>
+
+                            <td>
+
+                                <div class="product-info">
+
+                                    <div class="product-icon">
+                                        <i class="bi bi-droplet-half"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Cloro 3.8L
+                                        </strong>
+
+                                        <small>
+                                            Producto de limpieza
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Limpieza
+                            </td>
+
+                            <td>
+                                22 unidades
+                            </td>
+
+                            <td>
+
+                                <span class="status status-ok">
+                                    <i class="bi bi-check-circle"></i>
+                                    Suficiente
+                                </span>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Create", "InventarioLimpieza", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PAPEL HIGIÉNICO -->
+                        <tr>
+
+                            <td>
+
+                                <div class="product-info">
+
+                                    <div class="product-icon">
+                                        <i class="bi bi-box2"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Papel higiénico
+                                        </strong>
+
+                                        <small>
+                                            Producto de higiene
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Higiene
+                            </td>
+
+                            <td>
+                                10 paquetes
+                            </td>
+
+                            <td>
+
+                                <span class="status status-warning">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    Moderado
+                                </span>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Create", "InventarioLimpieza", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .inventory-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .inventory-breadcrumb {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
         }
 
-        .cop-page-title {
-            font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
-        }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
-        }
-
-        .cop-btn-primary {
-            background-color: #133C55;
-            border-color: #133C55;
-            color: #fff;
-            font-weight: 600;
-        }
-
-            .cop-btn-primary:hover {
-                background-color: #386FA4;
-                border-color: #386FA4;
-                color: #fff;
+            .inventory-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
             }
 
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .cop-stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+                .inventory-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .inventory-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
             margin-bottom: 6px;
         }
 
-        .cop-stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #133C55;
+
+        .inventory-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-stat-alert {
-            color: #dc3545;
+
+        /* BOTÓN PRINCIPAL */
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+            font-weight: 500;
         }
 
-        .cop-table-wrapper {
-            background-color: #fff;
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+
+        /* RESUMEN */
+
+        .summary-card {
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 4px 8px;
-            margin-bottom: 40px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            height: 100%;
         }
 
-        .cop-table thead th {
-            color: #6c757d;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 1px solid #e3e8ee;
-            font-weight: 600;
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
 
-        .cop-table td {
-            border-bottom: 1px solid #f0f2f5;
-        }
 
-        .cop-badge-alta {
-            background-color: #fdeceb;
+        .summary-icon-danger {
+            background: #fdeceb;
             color: #dc3545;
-            font-weight: 600;
         }
 
-        .cop-badge-media {
-            background-color: #fff6e5;
-            color: #b8860b;
-            font-weight: 600;
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
         }
 
-        .cop-badge-ok {
-            background-color: #E6F7EC;
-            color: #198754;
-            font-weight: 600;
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
-        .cop-link-detail {
-            color: #133C55;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-decoration: none;
+
+        /* CONTENEDOR */
+
+        .inventory-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-            .cop-link-detail:hover {
-                text-decoration: underline;
+
+        /* TOOLBAR */
+
+        .inventory-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+
+            .inventory-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+                font-weight: 600;
             }
+
+
+            .inventory-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* BUSCADOR */
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+
+        /* FILTROS */
+
+        .inventory-filters {
+            display: flex;
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+            .inventory-filters .form-select {
+                max-width: 210px;
+                font-size: .9rem;
+            }
+
+
+        /* TABLA */
+
+        .inventory-table {
+            margin: 0;
+        }
+
+
+            .inventory-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+                font-weight: 600;
+            }
+
+
+            .inventory-table td {
+                padding: 15px 17px;
+                font-size: .9rem;
+                border-color: #edf0f3;
+            }
+
+
+            .inventory-table tbody tr:hover {
+                background: #fafcfd;
+            }
+
+
+        /* PRODUCTO */
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+
+        .product-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+
+        .product-info strong {
+            display: block;
+            color: #212529;
+        }
+
+
+        .product-info small {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .78rem;
+        }
+
+
+        /* ESTADOS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .status-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        /* ACCIONES */
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+
+            .btn-action:hover {
+                background: #e6f1fb;
+                border-color: var(--cop-accent);
+                color: var(--cop-primary);
+            }
+
+
+        /* INPUTS */
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--cop-accent);
+            box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+        }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .inventory-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .search-box {
+                width: 100%;
+            }
+
+
+            .inventory-filters {
+                flex-direction: column;
+            }
+
+
+                .inventory-filters .form-select {
+                    width: 100%;
+                    max-width: none;
+                }
+        }
     </style>
+
 }

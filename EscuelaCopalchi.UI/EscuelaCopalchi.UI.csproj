@@ -235,8 +235,8 @@
     <Content Include="Views\Estudiantes\Expediente.cshtml" />
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Detalle.cshtml" />
-    <Content Include="Views\AudoriaSistema\Detalle.cshtml" />
-    <Content Include="Views\AudoriaSistema\Index.cshtml" />
+    <Content Include="Views\AuditoriaSistema\Detalle.cshtml" />
+    <Content Include="Views\AuditoriaSistema\Index.cshtml" />
     <Content Include="Views\InventarioCocina\Create.cshtml" />
     <Content Include="Views\InventarioCocina\Index.cshtml" />
     <Content Include="Views\InventarioLimpieza\Create.cshtml" />
