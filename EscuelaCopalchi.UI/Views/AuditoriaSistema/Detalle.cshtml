@@ -3,131 +3,652 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver a auditoría
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Detalle del evento</h2>
-            <p class="cop-page-subtitle">Información completa del registro de auditoría.</p>
-        </div>
-    </div>
 
-    <div class="cop-detail-wrapper">
+    <!-- ENCABEZADO -->
+    <section class="audit-header">
+
+        <div class="container">
+
+            <div class="audit-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">
+                    Inicio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "AuditoriaSistema")">
+                    Auditoría
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>
+                    Detalle del evento
+                </span>
+
+            </div>
+
+
+            <h1 class="audit-title">
+
+                <i class="bi bi-journal-check me-2"></i>
+                Detalle del evento
+
+            </h1>
+
+
+            <p class="audit-subtitle">
+                Información completa del registro de auditoría seleccionado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
         <div class="row g-4">
-            <div class="col-md-6">
-                <span class="cop-detail-label">Usuario</span>
-                <p class="cop-detail-value">ana.admin</p>
+
+            <!-- INFORMACIÓN PRINCIPAL -->
+            <div class="col-lg-8">
+
+                <div class="detail-card">
+
+                    <div class="detail-card-header">
+
+                        <div class="detail-icon">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Información del evento
+                            </h2>
+
+                            <p>
+                                Datos generales asociados al registro de auditoría.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <span class="detail-label">
+                                Usuario
+                            </span>
+
+                            <div class="user-info">
+
+                                <div class="user-avatar">
+                                    <i class="bi bi-person"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ana.admin
+                                    </strong>
+
+                                    <small>
+                                        Administrador
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <span class="detail-label">
+                                Fecha y hora
+                            </span>
+
+                            <strong class="detail-value">
+                                Hoy, 9:12 a.m.
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <span class="detail-label">
+                                Módulo
+                            </span>
+
+                            <span class="module-badge">
+                                Roles
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <span class="detail-label">
+                                Acción
+                            </span>
+
+                            <strong class="detail-value">
+                                Creó un rol
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <span class="detail-label">
+                                Descripción
+                            </span>
+
+                            <p class="description-box">
+                                Se creó el rol "Comité de evaluación" con permisos de
+                                generación de reportes y consulta de estudiantes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CAMBIOS -->
+                <div class="detail-card mt-4">
+
+                    <div class="detail-card-header">
+
+                        <div class="detail-icon">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Cambios registrados
+                            </h2>
+
+                            <p>
+                                Comparación de la información antes y después de la acción.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <div class="diff-card diff-before">
+
+                                <div class="diff-header">
+
+                                    <i class="bi bi-dash-circle"></i>
+
+                                    <span>
+                                        Antes
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    No existía
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="diff-card diff-after">
+
+                                <div class="diff-header">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    <span>
+                                        Después
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    <strong>Rol:</strong> Comité de evaluación
+                                    <br />
+                                    <strong>Permisos:</strong> Reportes, Consulta de estudiantes
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
-            <div class="col-md-6">
-                <span class="cop-detail-label">Fecha y hora</span>
-                <p class="cop-detail-value">Hoy, 9:12 a.m.</p>
+
+
+            <!-- PANEL LATERAL -->
+            <div class="col-lg-4">
+
+                <div class="side-card">
+
+                    <h2>
+                        Registro de auditoría
+                    </h2>
+
+                    <p>
+                        Este evento forma parte de la bitácora de acciones críticas
+                        realizadas en el sistema.
+                    </p>
+
+
+                    <div class="side-data">
+
+                        <span>
+                            ID del evento
+                        </span>
+
+                        <strong>
+                            AUD-2026-00125
+                        </strong>
+
+                    </div>
+
+
+                    <div class="side-data">
+
+                        <span>
+                            Tipo
+                        </span>
+
+                        <strong>
+                            Creación
+                        </strong>
+
+                    </div>
+
+
+                    <div class="side-data">
+
+                        <span>
+                            Estado
+                        </span>
+
+                        <span class="status status-ok">
+                            <i class="bi bi-check-circle"></i>
+                            Registrado
+                        </span>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <a href="@Url.Action("Index", "AuditoriaSistema")"
+                       class="btn btn-outline-cop w-100">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Volver a auditoría
+
+                    </a>
+
+                </div>
+
             </div>
-            <div class="col-md-6">
-                <span class="cop-detail-label">Módulo</span>
-                <p class="cop-detail-value">Roles</p>
-            </div>
-            <div class="col-md-6">
-                <span class="cop-detail-label">Acción</span>
-                <p class="cop-detail-value">Creó un rol</p>
-            </div>
-            <div class="col-12">
-                <span class="cop-detail-label">Descripción</span>
-                <p class="cop-detail-value">Se creó el rol "Comité de evaluación" con permisos de generación de reportes y consulta de estudiantes.</p>
-            </div>
+
         </div>
 
-        <hr class="cop-detail-divider">
+    </section>
 
-        <p class="cop-detail-label mb-2">Cambios registrados</p>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="cop-diff-card cop-diff-before">
-                    <span class="cop-diff-title">Antes</span>
-                    <p class="cop-diff-text">No existía</p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="cop-diff-card cop-diff-after">
-                    <span class="cop-diff-title">Después</span>
-                    <p class="cop-diff-text">Rol: Comité de evaluación<br>Permisos: Reportes, Consulta de estudiantes</p>
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .audit-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .audit-breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+
+            .audit-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .audit-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .audit-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
+
+        .audit-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-detail-wrapper {
-            background: #fff;
+
+        /* CARDS */
+
+        .detail-card,
+        .side-card {
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 40px;
-            max-width: 720px;
+            padding: 22px;
         }
 
-        .cop-detail-label {
-            font-size: 0.78rem;
-            color: #6c757d;
+
+        .detail-card-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding-bottom: 18px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+        .detail-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+
+        .detail-card-header h2 {
+            color: var(--cop-primary);
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin: 0 0 3px;
+        }
+
+
+        .detail-card-header p {
+            color: var(--cop-muted);
+            font-size: .83rem;
+            margin: 0;
+        }
+
+
+        /* DATOS */
+
+        .detail-label {
+            display: block;
+            color: var(--cop-muted);
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: .03em;
+            font-size: .75rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        .detail-value {
+            color: #212529;
+            font-size: .92rem;
+        }
+
+
+        /* USUARIO */
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .user-info strong {
+            display: block;
+            color: #212529;
+            font-size: .9rem;
+        }
+
+
+        .user-info small {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+
+        /* MÓDULO */
+
+        .module-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            font-size: .78rem;
             font-weight: 600;
         }
 
-        .cop-detail-value {
-            font-size: 0.95rem;
-            color: #212529;
-            margin: 4px 0 0;
+
+        /* DESCRIPCIÓN */
+
+        .description-box {
+            background: #f8fafc;
+            border: 1px solid #edf0f3;
+            border-radius: 8px;
+            padding: 13px 15px;
+            color: #495057;
+            font-size: .9rem;
+            margin: 0;
+            line-height: 1.5;
         }
 
-        .cop-detail-divider {
-            border-color: #f0f2f5;
-            margin: 24px 0 20px;
-        }
 
-        .cop-diff-card {
-            border-radius: 10px;
-            padding: 14px 16px;
+        /* CAMBIOS */
+
+        .diff-card {
+            border-radius: 9px;
+            padding: 16px;
             height: 100%;
+            border: 1px solid transparent;
         }
 
-        .cop-diff-before {
-            background-color: #f4f7fa;
+
+        .diff-before {
+            background: #f8fafc;
+            border-color: #e3e8ee;
         }
 
-        .cop-diff-after {
-            background-color: #E6F7EC;
+
+        .diff-after {
+            background: #eaf7ef;
+            border-color: #cde7d7;
         }
 
-        .cop-diff-title {
-            font-size: 0.75rem;
+
+        .diff-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 9px;
+            font-size: .8rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
-            color: #6c757d;
+            letter-spacing: .03em;
         }
 
-        .cop-diff-text {
-            font-size: 0.88rem;
-            color: #212529;
-            margin: 6px 0 0;
+
+        .diff-before .diff-header {
+            color: var(--cop-muted);
+        }
+
+
+        .diff-after .diff-header {
+            color: #198754;
+        }
+
+
+        .diff-card p {
+            margin: 0;
+            color: #343a40;
+            font-size: .88rem;
+            line-height: 1.55;
+        }
+
+
+        /* PANEL LATERAL */
+
+        .side-card h2 {
+            color: var(--cop-primary);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+
+        .side-card > p {
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 20px;
+        }
+
+
+        .side-data {
+            margin-bottom: 15px;
+        }
+
+
+            .side-data > span:first-child {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .75rem;
+                margin-bottom: 3px;
+            }
+
+
+            .side-data strong {
+                color: #212529;
+                font-size: .9rem;
+            }
+
+
+        /* ESTADO */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        /* BOTÓN */
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+            background: white;
+            font-weight: 500;
+        }
+
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+                border-color: var(--cop-secondary);
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .detail-card,
+            .side-card {
+                padding: 18px;
+            }
         }
     </style>
+
 }

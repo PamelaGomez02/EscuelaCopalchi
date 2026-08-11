@@ -1,0 +1,540 @@
+﻿@{
+    ViewBag.Title = "Roles";
+}
+
+<main>
+
+    <section class="roles-header">
+
+        <div class="container">
+
+            <div class="roles-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Roles</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="roles-title">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Gestión de roles
+                    </h1>
+
+                    <p class="roles-subtitle">
+                        Administra roles, asignaciones y niveles de acceso del sistema.
+                    </p>
+
+                </div>
+
+                <a href="@Url.Action("Crear", "Roles")"
+                   class="btn btn-cop-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Nuevo rol
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-shield"></i>
+                    </div>
+
+                    <div>
+                        <span>Roles registrados</span>
+                        <h2>5</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <span>Usuarios asignados</span>
+                        <h2>28</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-key"></i>
+                    </div>
+
+                    <div>
+                        <span>Permisos configurados</span>
+                        <h2>42</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="roles-card">
+
+            <div class="roles-toolbar">
+
+                <div>
+                    <h2>Roles del sistema</h2>
+                    <p>Consulta y administra los roles registrados.</p>
+                </div>
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar rol..." />
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table roles-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Rol</th>
+                            <th>Descripción</th>
+                            <th>Usuarios</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="role-info">
+
+                                    <div class="role-icon">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+
+                                    <strong>Administrador</strong>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Control total del sistema.
+                            </td>
+
+                            <td>2</td>
+
+                            <td>
+                                <span class="status status-ok">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Roles", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Asignar usuarios">
+                                    <i class="bi bi-person-plus"></i>
+                                </a>
+
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Permisos">
+                                    <i class="bi bi-key"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+
+                                <div class="role-info">
+
+                                    <div class="role-icon">
+                                        <i class="bi bi-person-badge"></i>
+                                    </div>
+
+                                    <strong>Docente</strong>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Gestión académica y seguimiento de estudiantes.
+                            </td>
+
+                            <td>20</td>
+
+                            <td>
+                                <span class="status status-ok">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-person-plus"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-key"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+
+                                <div class="role-info">
+
+                                    <div class="role-icon">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+
+                                    <strong>Comité de apoyo</strong>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Acceso a adecuaciones y seguimiento estudiantil.
+                            </td>
+
+                            <td>3</td>
+
+                            <td>
+                                <span class="status status-ok">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-person-plus"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-key"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .roles-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .roles-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .roles-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .roles-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .roles-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+        .summary-card {
+            height: 100%;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            margin: 0;
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+        }
+
+        .roles-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .roles-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+            .roles-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+            }
+
+            .roles-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+        .roles-table {
+            margin: 0;
+        }
+
+            .roles-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .roles-table td {
+                padding: 15px 17px;
+                font-size: .9rem;
+                border-color: #edf0f3;
+            }
+
+        .role-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+            .btn-action:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+            }
+
+        @@media (max-width: 768px) {
+
+            .roles-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+
+}

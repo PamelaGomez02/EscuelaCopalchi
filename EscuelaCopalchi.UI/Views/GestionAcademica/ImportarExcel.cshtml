@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Importar asignaciones";
+}
+
+<main>
+
+    <section class="academic-header">
+
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Importar Excel</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-file-earmark-excel me-2"></i>
+                Importar asignaciones
+            </h1>
+
+            <p class="academic-subtitle">
+                Carga grupos, aulas y docentes mediante un archivo Excel.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="import-card">
+
+            <div class="upload-zone">
+
+                <i class="bi bi-file-earmark-excel"></i>
+
+                <h2>Selecciona un archivo Excel</h2>
+
+                <p>
+                    El archivo debe cumplir con el formato institucional.
+                </p>
+
+                <input type="file"
+                       class="form-control"
+                       accept=".xls,.xlsx" />
+
+                <small>
+                    Formatos permitidos: .xls y .xlsx
+                </small>
+
+            </div>
+
+
+            <div class="preview-section">
+
+                <div class="preview-header">
+
+                    <div>
+                        <h3>Vista previa</h3>
+                        <p>Verifica los registros antes de procesar.</p>
+                    </div>
+
+                    <span class="status-ok">
+                        3 registros válidos
+                    </span>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table preview-table">
+
+                        <thead>
+                            <tr>
+                                <th>Grupo</th>
+                                <th>Aula</th>
+                                <th>Docente</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>1-A</td>
+                                <td>Aula 1</td>
+                                <td>María González</td>
+                                <td>
+                                    <span class="valid">
+                                        <i class="bi bi-check-circle"></i>
+                                        Válido
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>2-A</td>
+                                <td>Aula 2</td>
+                                <td>José Pérez</td>
+                                <td>
+                                    <span class="valid">
+                                        <i class="bi bi-check-circle"></i>
+                                        Válido
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "GestionAcademica")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-upload me-1"></i>
+                    Importar asignaciones
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .import-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 24px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #cad5df;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #fafcfd;
+        }
+
+            .upload-zone > i {
+                color: #198754;
+                font-size: 2.2rem;
+            }
+
+            .upload-zone h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+                margin-top: 10px;
+            }
+
+            .upload-zone p,
+            .upload-zone small {
+                color: var(--cop-muted);
+                font-size: .83rem;
+            }
+
+        .preview-section {
+            border-top: 1px solid #edf0f3;
+            margin-top: 25px;
+            padding-top: 22px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+            .preview-header h3 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+            }
+
+            .preview-header p {
+                color: var(--cop-muted);
+                font-size: .83rem;
+            }
+
+        .status-ok,
+        .valid {
+            color: #198754;
+            font-weight: 600;
+            font-size: .8rem;
+        }
+
+        .preview-table th {
+            background: #f8fafc;
+            color: #53616d;
+            font-size: .8rem;
+            text-transform: uppercase;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 20px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+    </style>
+
+}

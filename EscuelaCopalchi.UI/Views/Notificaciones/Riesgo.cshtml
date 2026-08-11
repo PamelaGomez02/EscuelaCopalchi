@@ -3,117 +3,823 @@
 }
 
 <main>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Estudiantes en riesgo académico</h2>
-            <p class="cop-page-subtitle">Listado consolidado por bajo rendimiento o asistencia.</p>
-        </div>
-        <a href="@Url.Action("Index", "Notificaciones")" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Volver
-        </a>
-    </div>
 
-    <div class="table-responsive cop-table-wrapper">
-        <table class="table align-middle cop-table">
-            <thead>
-                <tr>
-                    <th>Estudiante</th>
-                    <th>Grupo</th>
-                    <th>Motivo</th>
-                    <th>Docente a cargo</th>
-                    <th class="text-end">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Andrés Solís</td>
-                    <td>8-B</td>
-                    <td><span class="badge cop-badge-alta">Bajo rendimiento</span></td>
-                    <td>Prof. Juan Pérez</td>
-                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
-                </tr>
-                <tr>
-                    <td>Karla Jiménez</td>
-                    <td>9-C</td>
-                    <td><span class="badge cop-badge-media">Inasistencia</span></td>
-                    <td>Prof. Laura Gómez</td>
-                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
-                </tr>
-                <tr>
-                    <td>Marco Vindas</td>
-                    <td>7-A</td>
-                    <td><span class="badge cop-badge-alta">Bajo rendimiento</span></td>
-                    <td>Prof. María Rodríguez</td>
-                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="risk-header">
+
+        <div class="container">
+
+            <div class="risk-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">
+                    Inicio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Notificaciones")">
+                    Notificaciones
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>
+                    Estudiantes en riesgo
+                </span>
+
+            </div>
+
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="risk-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Estudiantes en riesgo académico
+                    </h1>
+
+                    <p class="risk-subtitle">
+                        Listado consolidado de estudiantes con alertas por bajo rendimiento o asistencia.
+                    </p>
+
+                </div>
+
+
+                <a href="@Url.Action("Index", "Notificaciones")"
+                   class="btn btn-outline-cop">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Volver a notificaciones
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <span>Estudiantes en riesgo</span>
+                        <h2>8</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-graph-down-arrow"></i>
+                    </div>
+
+                    <div>
+                        <span>Bajo rendimiento</span>
+                        <h2 class="text-danger">5</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+
+                    <div>
+                        <span>Problemas de asistencia</span>
+                        <h2 class="warning-value">3</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="risk-card">
+
+            <!-- TOOLBAR -->
+            <div class="risk-toolbar">
+
+                <div>
+
+                    <h2>
+                        Seguimiento de estudiantes
+                    </h2>
+
+                    <p>
+                        Consulta estudiantes que requieren atención o seguimiento académico.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar estudiante..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="risk-filters">
+
+                <div>
+
+                    <label class="filter-label">
+                        Motivo
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los motivos
+                        </option>
+
+                        <option>
+                            Bajo rendimiento
+                        </option>
+
+                        <option>
+                            Inasistencia
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Grupo
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los grupos
+                        </option>
+
+                        <option>7-A</option>
+                        <option>8-B</option>
+                        <option>9-C</option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Docente
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los docentes
+                        </option>
+
+                        <option>
+                            Prof. Juan Pérez
+                        </option>
+
+                        <option>
+                            Prof. Laura Gómez
+                        </option>
+
+                        <option>
+                            Prof. María Rodríguez
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table risk-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Grupo</th>
+                            <th>Motivo</th>
+                            <th>Docente a cargo</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <!-- ANDRÉS -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        AS
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Andrés Solís
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                8-B
+                            </td>
+
+
+                            <td>
+
+                                <span class="risk-status risk-danger">
+                                    <i class="bi bi-graph-down-arrow"></i>
+                                    Bajo rendimiento
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                Prof. Juan Pérez
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver ficha">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- KARLA -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        KJ
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Karla Jiménez
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                9-C
+                            </td>
+
+
+                            <td>
+
+                                <span class="risk-status risk-warning">
+                                    <i class="bi bi-calendar-x"></i>
+                                    Inasistencia
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                Prof. Laura Gómez
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Ver ficha">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- MARCO -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        MV
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Marco Vindas
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                7-A
+                            </td>
+
+
+                            <td>
+
+                                <span class="risk-status risk-danger">
+                                    <i class="bi bi-graph-down-arrow"></i>
+                                    Bajo rendimiento
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                Prof. María Rodríguez
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Ver ficha">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .risk-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .risk-breadcrumb {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
         }
 
-        .cop-page-title {
+
+            .risk-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .risk-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .risk-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
+
+        .risk-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-table-wrapper {
-            background-color: #fff;
+
+        /* BOTÓN */
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+            background: white;
+            font-weight: 500;
+        }
+
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                border-color: var(--cop-secondary);
+                color: var(--cop-primary);
+            }
+
+
+        /* RESUMEN */
+
+        .summary-card {
+            height: 100%;
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 4px 8px;
-            margin-bottom: 40px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
         }
 
-        .cop-table thead th {
-            color: #6c757d;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 1px solid #e3e8ee;
-            font-weight: 600;
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
         }
 
-        .cop-table td {
-            border-bottom: 1px solid #f0f2f5;
+
+        .summary-icon-danger {
+            background: #f8d7da;
+            color: #842029;
         }
 
-        .cop-badge-alta {
-            background-color: #fdeceb;
-            color: #dc3545;
-            font-weight: 600;
+
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
         }
 
-        .cop-badge-media {
-            background-color: #fff6e5;
-            color: #b8860b;
-            font-weight: 600;
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
         }
 
-        .cop-icon-btn {
-            border: none;
-            background: none;
-            color: #386FA4;
-            padding: 4px 6px;
-            font-size: 1rem;
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
-            .cop-icon-btn:hover {
-                color: #133C55;
+
+        .warning-value {
+            color: #b8860b !important;
+        }
+
+
+        /* CONTENEDOR */
+
+        .risk-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        /* TOOLBAR */
+
+        .risk-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+
+            .risk-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                font-weight: 600;
+                margin-bottom: 4px;
             }
+
+
+            .risk-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* BUSCADOR */
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+
+        /* FILTROS */
+
+        .risk-filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+        .filter-label {
+            display: block;
+            color: #53616d;
+            font-size: .78rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        /* TABLA */
+
+        .risk-table {
+            margin: 0;
+        }
+
+
+            .risk-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+                font-weight: 600;
+            }
+
+
+            .risk-table td {
+                padding: 15px 17px;
+                font-size: .9rem;
+                border-color: #edf0f3;
+            }
+
+
+            .risk-table tbody tr:hover {
+                background: #fafcfd;
+            }
+
+
+        /* ESTUDIANTE */
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+
+        .student-info strong {
+            display: block;
+            color: #212529;
+            font-size: .88rem;
+        }
+
+
+        .student-info small {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+
+        /* MOTIVO */
+
+        .risk-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+
+        .risk-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .risk-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        /* ACCIONES */
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+
+            .btn-action:hover {
+                background: #e6f1fb;
+                border-color: var(--cop-accent);
+                color: var(--cop-primary);
+            }
+
+
+        /* INPUTS */
+
+        .form-control,
+        .form-select {
+            border-color: #dfe4e8;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .risk-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .search-box {
+                width: 100%;
+            }
+
+
+            .risk-filters {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
+
 }

@@ -3,106 +3,917 @@
 }
 
 <main>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Estadísticas institucionales</h2>
-            <p class="cop-page-subtitle">Desempeño académico general de Escuela Copalchi.</p>
-        </div>
-    </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes matriculados</span>
-                <span class="cop-stat-value">412</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Promedio institucional</span>
-                <span class="cop-stat-value">85.1</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Asistencia general</span>
-                <span class="cop-stat-value">95%</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes en riesgo</span>
-                <span class="cop-stat-value cop-stat-alert">18</span>
-            </div>
-        </div>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="stats-header">
 
-    <div class="cop-chart-placeholder">
-        <i class="bi bi-bar-chart-line"></i>
-        <p>Gráfico de rendimiento por grupo (pendiente de datos)</p>
-    </div>
+        <div class="container">
+
+            <div class="stats-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">
+                    Inicio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>
+                    Estadísticas institucionales
+                </span>
+
+            </div>
+
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="stats-title">
+                        <i class="bi bi-bar-chart-line me-2"></i>
+                        Estadísticas institucionales
+                    </h1>
+
+                    <p class="stats-subtitle">
+                        Desempeño académico general de la Escuela Copalchi.
+                    </p>
+
+                </div>
+
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i>
+                    Exportar reporte
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+
+                    <div>
+                        <span>Estudiantes matriculados</span>
+                        <h2>412</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+
+                    <div>
+                        <span>Promedio institucional</span>
+                        <h2>85.1</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-success">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Asistencia general</span>
+                        <h2 class="success-value">95%</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <span>Estudiantes en riesgo</span>
+                        <h2 class="text-danger">18</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FILTROS -->
+        <div class="stats-filters mb-4">
+
+            <div>
+
+                <label class="filter-label">
+                    Período
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        I Trimestre
+                    </option>
+
+                    <option>
+                        II Trimestre
+                    </option>
+
+                    <option>
+                        III Trimestre
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="filter-label">
+                    Nivel
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Todos los niveles
+                    </option>
+
+                    <option>
+                        Primer ciclo
+                    </option>
+
+                    <option>
+                        Segundo ciclo
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="filter-label">
+                    Grupo
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Todos los grupos
+                    </option>
+
+                    <option>1-A</option>
+                    <option>2-A</option>
+                    <option>3-A</option>
+                    <option>4-A</option>
+                    <option>5-A</option>
+                    <option>6-A</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- RENDIMIENTO POR GRUPO -->
+            <div class="col-lg-8">
+
+                <div class="stats-card">
+
+                    <div class="stats-card-header">
+
+                        <div>
+
+                            <h2>
+                                Rendimiento por grupo
+                            </h2>
+
+                            <p>
+                                Comparación del promedio académico entre los grupos.
+                            </p>
+
+                        </div>
+
+                        <span class="stats-period">
+                            I Trimestre
+                        </span>
+
+                    </div>
+
+
+                    <!-- GRÁFICO VISUAL -->
+                    <div class="chart-area">
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                1-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar"
+                                     style="width: 88%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                88
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                2-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar"
+                                     style="width: 84%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                84
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                3-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar"
+                                     style="width: 91%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                91
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                4-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar"
+                                     style="width: 82%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                82
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                5-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar chart-bar-warning"
+                                     style="width: 76%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                76
+                            </div>
+
+                        </div>
+
+
+                        <div class="chart-row">
+
+                            <div class="chart-label">
+                                6-A
+                            </div>
+
+                            <div class="chart-bar-container">
+
+                                <div class="chart-bar"
+                                     style="width: 87%;">
+                                </div>
+
+                            </div>
+
+                            <div class="chart-value">
+                                87
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DISTRIBUCIÓN -->
+            <div class="col-lg-4">
+
+                <div class="stats-card h-100">
+
+                    <div class="stats-card-header">
+
+                        <div>
+
+                            <h2>
+                                Estado académico
+                            </h2>
+
+                            <p>
+                                Distribución general de estudiantes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="distribution-item">
+
+                        <div class="distribution-top">
+
+                            <span>
+                                Rendimiento satisfactorio
+                            </span>
+
+                            <strong>
+                                346
+                            </strong>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div class="progress-bar progress-success"
+                                 style="width: 84%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="distribution-item">
+
+                        <div class="distribution-top">
+
+                            <span>
+                                Seguimiento
+                            </span>
+
+                            <strong>
+                                48
+                            </strong>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div class="progress-bar progress-warning"
+                                 style="width: 12%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="distribution-item">
+
+                        <div class="distribution-top">
+
+                            <span>
+                                En riesgo
+                            </span>
+
+                            <strong class="text-danger">
+                                18
+                            </strong>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div class="progress-bar progress-danger"
+                                 style="width: 4%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stats-divider"></div>
+
+
+                    <div class="mini-stat">
+
+                        <div class="mini-stat-icon">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Grupo con mejor promedio
+                            </span>
+
+                            <strong>
+                                3-A · 91
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mini-stat">
+
+                        <div class="mini-stat-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Mejor asistencia
+                            </span>
+
+                            <strong>
+                                2-A · 98%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
-            font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+
+        body {
+            background: var(--cop-page-bg);
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
+
+        /* ENCABEZADO */
+
+        .stats-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
         }
 
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
+
+        .stats-breadcrumb {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
         }
 
-        .cop-stat-label {
-            font-size: 0.78rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+
+            .stats-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .stats-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .stats-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
             margin-bottom: 6px;
         }
 
-        .cop-stat-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #133C55;
+
+        .stats-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-stat-alert {
-            color: #dc3545;
+
+        /* BOTÓN */
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+            font-weight: 500;
         }
 
-        .cop-chart-placeholder {
-            background: #fff;
-            border: 1px dashed #c7d2db;
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+
+        /* RESUMEN */
+
+        .summary-card {
+            height: 100%;
+            background: white;
+            border: 1px solid #e3e8ee;
             border-radius: 10px;
-            height: 260px;
+            padding: 17px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 13px;
+        }
+
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
             align-items: center;
             justify-content: center;
-            color: #8a97a6;
-            margin-bottom: 40px;
+            font-size: 1.2rem;
         }
 
-            .cop-chart-placeholder i {
-                font-size: 2rem;
-                margin-bottom: 8px;
+
+        .summary-icon-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .summary-icon-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+
+        .success-value {
+            color: #198754 !important;
+        }
+
+
+        /* FILTROS */
+
+        .stats-filters {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+
+        .filter-label {
+            display: block;
+            color: #53616d;
+            font-size: .78rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        /* CARDS */
+
+        .stats-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+
+        .stats-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+
+            .stats-card-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 4px;
             }
+
+
+            .stats-card-header p {
+                color: var(--cop-muted);
+                font-size: .84rem;
+                margin: 0;
+            }
+
+
+        .stats-period {
+            display: inline-block;
+            flex-shrink: 0;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+
+        /* GRÁFICO */
+
+        .chart-area {
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 45px 1fr 40px;
+            gap: 12px;
+            align-items: center;
+        }
+
+
+        .chart-label {
+            color: #495057;
+            font-size: .82rem;
+            font-weight: 600;
+        }
+
+
+        .chart-bar-container {
+            height: 12px;
+            border-radius: 20px;
+            background: #edf0f3;
+            overflow: hidden;
+        }
+
+
+        .chart-bar {
+            height: 100%;
+            border-radius: 20px;
+            background: var(--cop-secondary);
+        }
+
+
+        .chart-bar-warning {
+            background: #b8860b;
+        }
+
+
+        .chart-value {
+            color: var(--cop-primary);
+            font-size: .82rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+
+        /* DISTRIBUCIÓN */
+
+        .distribution-item {
+            margin-bottom: 20px;
+        }
+
+
+        .distribution-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 7px;
+        }
+
+
+            .distribution-top span {
+                color: #495057;
+                font-size: .82rem;
+            }
+
+
+            .distribution-top strong {
+                color: var(--cop-primary);
+                font-size: .83rem;
+            }
+
+
+        .progress {
+            height: 7px;
+            background: #edf0f3;
+        }
+
+
+        .progress-success {
+            background: #198754;
+        }
+
+
+        .progress-warning {
+            background: #b8860b;
+        }
+
+
+        .progress-danger {
+            background: #dc3545;
+        }
+
+
+        .stats-divider {
+            height: 1px;
+            background: #edf0f3;
+            margin: 23px 0;
+        }
+
+
+        /* MINI ESTADÍSTICAS */
+
+        .mini-stat {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 16px;
+        }
+
+
+            .mini-stat:last-child {
+                margin-bottom: 0;
+            }
+
+
+        .mini-stat-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .mini-stat span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+
+        .mini-stat strong {
+            display: block;
+            color: var(--cop-primary);
+            font-size: .87rem;
+        }
+
+
+        /* INPUTS */
+
+        .form-control,
+        .form-select {
+            border-color: #dfe4e8;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .stats-filters {
+                grid-template-columns: 1fr;
+            }
+
+
+            .chart-row {
+                grid-template-columns: 35px 1fr 35px;
+            }
+        }
     </style>
+
 }

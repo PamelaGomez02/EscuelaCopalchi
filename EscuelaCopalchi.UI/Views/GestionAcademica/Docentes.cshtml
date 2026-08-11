@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "Asignación de docentes";
+}
+
+<main>
+
+    <section class="academic-header">
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Docentes</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-person-badge me-2"></i>
+                Asignación de docentes
+            </h1>
+
+            <p class="academic-subtitle">
+                Vincula docentes responsables con los grupos académicos.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="academic-card">
+
+            <div class="toolbar">
+
+                <div>
+                    <h2>Grupos y docentes responsables</h2>
+                    <p>Consulta y modifica la asignación docente.</p>
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table academic-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Grupo</th>
+                            <th>Aula</th>
+                            <th>Docente responsable</th>
+                            <th>Carga</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>1-A</td>
+                            <td>Aula 1</td>
+
+                            <td>
+                                <select class="form-select">
+                                    <option>María González</option>
+                                    <option>José Pérez</option>
+                                    <option>Laura Gómez</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                1 grupo
+                            </td>
+
+                            <td class="text-end">
+                                <button class="btn btn-action">
+                                    <i class="bi bi-save"></i>
+                                </button>
+
+                                <button class="btn btn-action-danger">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>2-A</td>
+                            <td>Aula 3</td>
+
+                            <td>
+                                <select class="form-select">
+                                    <option>José Pérez</option>
+                                    <option>María González</option>
+                                </select>
+                            </td>
+
+                            <td>2 grupos</td>
+
+                            <td class="text-end">
+                                <button class="btn btn-action">
+                                    <i class="bi bi-save"></i>
+                                </button>
+
+                                <button class="btn btn-action-danger">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .academic-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            padding: 22px;
+        }
+
+            .toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .toolbar p {
+                color: var(--cop-muted);
+                font-size: .84rem;
+                margin: 0;
+            }
+
+        .academic-table {
+            margin: 0;
+        }
+
+            .academic-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .academic-table td {
+                padding: 15px 17px;
+                border-color: #edf0f3;
+            }
+
+        .btn-action,
+        .btn-action-danger {
+            background: white;
+            border: 1px solid #dce2e7;
+            padding: 5px 9px;
+        }
+
+        .btn-action {
+            color: var(--cop-secondary);
+        }
+
+        .btn-action-danger {
+            color: #dc3545;
+        }
+    </style>
+
+}

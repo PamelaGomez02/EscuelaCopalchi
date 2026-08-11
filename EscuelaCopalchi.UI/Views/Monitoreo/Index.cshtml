@@ -3,167 +3,956 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Monitoreo académico</h2>
-            <p class="cop-page-subtitle">Rendimiento de tus estudiantes durante el período lectivo.</p>
-        </div>
-        <a href="#" class="btn cop-btn-primary"><i class="bi bi-file-earmark-bar-graph me-1"></i> Generar reporte</a>
-    </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Promedio general</span>
-                <span class="cop-stat-value">82.4</span>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Asistencia promedio</span>
-                <span class="cop-stat-value">94%</span>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes en riesgo</span>
-                <span class="cop-stat-value cop-stat-alert">3</span>
-            </div>
-        </div>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="monitor-header">
 
-    <div class="table-responsive cop-table-wrapper">
-        <table class="table align-middle cop-table">
-            <thead>
-                <tr>
-                    <th>Estudiante</th>
-                    <th>Grupo</th>
-                    <th>Promedio</th>
-                    <th>Asistencia</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Andrés Solís</td>
-                    <td>8-B</td>
-                    <td>61</td>
-                    <td>90%</td>
-                    <td><span class="badge cop-badge-alta">En riesgo</span></td>
-                </tr>
-                <tr>
-                    <td>Fabiana Rojas</td>
-                    <td>8-B</td>
-                    <td>88</td>
-                    <td>97%</td>
-                    <td><span class="badge cop-badge-ok">Al día</span></td>
-                </tr>
-                <tr>
-                    <td>Marco Vindas</td>
-                    <td>7-A</td>
-                    <td>61</td>
-                    <td>93%</td>
-                    <td><span class="badge cop-badge-alta">En riesgo</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="container">
+
+            <div class="monitor-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Monitoreo académico</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="monitor-title">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Monitoreo académico
+                    </h1>
+
+                    <p class="monitor-subtitle">
+                        Seguimiento del rendimiento y asistencia de los estudiantes durante el período lectivo.
+                    </p>
+
+                </div>
+
+
+                <a href="#"
+                   class="btn btn-cop-primary">
+
+                    <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                    Generar reporte
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+
+                    <div>
+                        <span>Promedio general</span>
+                        <h2>82.4</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-success">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Asistencia promedio</span>
+                        <h2 class="success-value">94%</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <span>Estudiantes en riesgo</span>
+                        <h2 class="text-danger">3</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="monitor-card">
+
+            <!-- TOOLBAR -->
+            <div class="monitor-toolbar">
+
+                <div>
+
+                    <h2>
+                        Rendimiento estudiantil
+                    </h2>
+
+                    <p>
+                        Consulta el promedio, asistencia y estado académico de los estudiantes.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar estudiante..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="monitor-filters">
+
+                <div>
+
+                    <label class="filter-label">
+                        Grupo
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los grupos
+                        </option>
+
+                        <option>
+                            7-A
+                        </option>
+
+                        <option>
+                            8-B
+                        </option>
+
+                        <option>
+                            9-C
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Estado
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los estados
+                        </option>
+
+                        <option>
+                            Al día
+                        </option>
+
+                        <option>
+                            En riesgo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Período
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            I Trimestre
+                        </option>
+
+                        <option>
+                            II Trimestre
+                        </option>
+
+                        <option>
+                            III Trimestre
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table monitor-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Grupo</th>
+                            <th>Promedio</th>
+                            <th>Asistencia</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <!-- ANDRÉS -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        AS
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Andrés Solís
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                8-B
+                            </td>
+
+
+                            <td>
+
+                                <span class="grade-value grade-danger">
+                                    61
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="attendance-value">
+
+                                    <span>
+                                        90%
+                                    </span>
+
+                                    <div class="progress">
+
+                                        <div class="progress-bar progress-warning"
+                                             role="progressbar"
+                                             style="width: 90%;"
+                                             aria-valuenow="90"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    En riesgo
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver estudiante">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- FABIANA -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        FR
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Fabiana Rojas
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                8-B
+                            </td>
+
+
+                            <td>
+
+                                <span class="grade-value grade-success">
+                                    88
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="attendance-value">
+
+                                    <span>
+                                        97%
+                                    </span>
+
+                                    <div class="progress">
+
+                                        <div class="progress-bar progress-success"
+                                             role="progressbar"
+                                             style="width: 97%;"
+                                             aria-valuenow="97"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-ok">
+                                    <i class="bi bi-check-circle"></i>
+                                    Al día
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Ver estudiante">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- MARCO -->
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        MV
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Marco Vindas
+                                        </strong>
+
+                                        <small>
+                                            Estudiante
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                7-A
+                            </td>
+
+
+                            <td>
+
+                                <span class="grade-value grade-danger">
+                                    61
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="attendance-value">
+
+                                    <span>
+                                        93%
+                                    </span>
+
+                                    <div class="progress">
+
+                                        <div class="progress-bar progress-normal"
+                                             role="progressbar"
+                                             style="width: 93%;"
+                                             aria-valuenow="93"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status status-danger">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    En riesgo
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Ver estudiante">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .monitor-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .monitor-breadcrumb {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
         }
 
-        .cop-page-title {
-            font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
-        }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
-        }
-
-        .cop-btn-primary {
-            background-color: #133C55;
-            border-color: #133C55;
-            color: #fff;
-            font-weight: 600;
-        }
-
-            .cop-btn-primary:hover {
-                background-color: #386FA4;
-                border-color: #386FA4;
-                color: #fff;
+            .monitor-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
             }
 
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .cop-stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+                .monitor-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .monitor-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
             margin-bottom: 6px;
         }
 
-        .cop-stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #133C55;
+
+        .monitor-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-stat-alert {
-            color: #dc3545;
+
+        /* BOTÓN */
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+            font-weight: 500;
         }
 
-        .cop-table-wrapper {
-            background-color: #fff;
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+
+        /* RESUMEN */
+
+        .summary-card {
+            height: 100%;
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 4px 8px;
-            margin-bottom: 40px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
         }
 
-        .cop-table thead th {
-            color: #6c757d;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 1px solid #e3e8ee;
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+
+        .summary-icon-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .summary-icon-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+
+        .success-value {
+            color: #198754 !important;
+        }
+
+
+        /* CONTENEDOR */
+
+        .monitor-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        /* TOOLBAR */
+
+        .monitor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+
+            .monitor-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+
+            .monitor-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* BUSCADOR */
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+
+        /* FILTROS */
+
+        .monitor-filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+        .filter-label {
+            display: block;
+            color: #53616d;
+            font-size: .78rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        /* TABLA */
+
+        .monitor-table {
+            margin: 0;
+        }
+
+
+            .monitor-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+                font-weight: 600;
+            }
+
+
+            .monitor-table td {
+                padding: 15px 17px;
+                font-size: .9rem;
+                border-color: #edf0f3;
+            }
+
+
+            .monitor-table tbody tr:hover {
+                background: #fafcfd;
+            }
+
+
+        /* ESTUDIANTE */
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+
+        .student-info strong {
+            display: block;
+            color: #212529;
+            font-size: .88rem;
+        }
+
+
+        .student-info small {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+
+        /* NOTA */
+
+        .grade-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            padding: 5px 8px;
+            border-radius: 7px;
+            font-size: .88rem;
+            font-weight: 700;
+        }
+
+
+        .grade-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .grade-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        /* ASISTENCIA */
+
+        .attendance-value {
+            min-width: 120px;
+        }
+
+
+            .attendance-value > span {
+                display: block;
+                font-size: .82rem;
+                color: #343a40;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+
+        .progress {
+            height: 6px;
+            background: #edf0f3;
+        }
+
+
+        .progress-success {
+            background: #198754;
+        }
+
+
+        .progress-warning {
+            background: #b8860b;
+        }
+
+
+        .progress-normal {
+            background: var(--cop-secondary);
+        }
+
+
+        /* ESTADOS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
             font-weight: 600;
         }
 
-        .cop-table td {
-            border-bottom: 1px solid #f0f2f5;
+
+        .status-danger {
+            background: #f8d7da;
+            color: #842029;
         }
 
-        .cop-badge-alta {
-            background-color: #fdeceb;
-            color: #dc3545;
-            font-weight: 600;
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
         }
 
-        .cop-badge-ok {
-            background-color: #E6F7EC;
-            color: #198754;
-            font-weight: 600;
+
+        /* ACCIONES */
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+
+            .btn-action:hover {
+                background: #e6f1fb;
+                border-color: var(--cop-accent);
+                color: var(--cop-primary);
+            }
+
+
+        /* INPUTS */
+
+        .form-control,
+        .form-select {
+            border-color: #dfe4e8;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .monitor-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .search-box {
+                width: 100%;
+            }
+
+
+            .monitor-filters {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+
 }

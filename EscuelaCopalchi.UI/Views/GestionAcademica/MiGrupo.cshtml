@@ -1,0 +1,289 @@
+﻿@{
+    ViewBag.Title = "Mi grupo";
+}
+
+<main>
+
+    <section class="academic-header">
+
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Mi grupo</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-people me-2"></i>
+                Mi grupo
+            </h1>
+
+            <p class="academic-subtitle">
+                Consulta estudiantes, aula y horario del grupo asignado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Grupo asignado</span>
+                    <h2>3-A</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Aula</span>
+                    <h2>Aula 3</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Estudiantes</span>
+                    <h2>27</h2>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+
+                <div class="academic-card">
+
+                    <div class="toolbar">
+                        <div>
+                            <h2>Estudiantes del grupo</h2>
+                            <p>Listado de estudiantes matriculados.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table academic-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Identificación</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Ana Rodríguez</td>
+                                    <td>1-1111-1111</td>
+                                    <td>
+                                        <span class="status">Activo</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Marco Vindas</td>
+                                    <td>1-2222-2222</td>
+                                    <td>
+                                        <span class="status">Activo</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="info-card">
+
+                    <h2>
+                        <i class="bi bi-clock me-2"></i>
+                        Horario
+                    </h2>
+
+                    <div class="info-row">
+                        <span>Lunes a viernes</span>
+                        <strong>7:00 a.m. – 12:00 m.d.</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Aula</span>
+                        <strong>Aula 3</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Capacidad</span>
+                        <strong>27 / 30</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Docente</span>
+                        <strong>María González</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .summary-card,
+        .academic-card,
+        .info-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+        }
+
+        .summary-card {
+            padding: 17px;
+        }
+
+            .summary-card span {
+                color: var(--cop-muted);
+                font-size: .78rem;
+            }
+
+            .summary-card h2 {
+                color: var(--cop-primary);
+                font-size: 1.25rem;
+                margin: 3px 0 0;
+            }
+
+        .academic-card {
+            overflow: hidden;
+        }
+
+        .toolbar {
+            padding: 22px;
+        }
+
+            .toolbar h2,
+            .info-card h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+            }
+
+            .toolbar p {
+                color: var(--cop-muted);
+                font-size: .83rem;
+                margin: 0;
+            }
+
+        .academic-table {
+            margin: 0;
+        }
+
+            .academic-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .academic-table td {
+                padding: 15px 17px;
+            }
+
+        .status {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+        }
+
+        .info-card {
+            padding: 22px;
+        }
+
+        .info-row {
+            border-bottom: 1px solid #edf0f3;
+            padding: 13px 0;
+        }
+
+            .info-row:last-child {
+                border-bottom: 0;
+            }
+
+            .info-row span,
+            .info-row strong {
+                display: block;
+            }
+
+            .info-row span {
+                color: var(--cop-muted);
+                font-size: .75rem;
+            }
+    </style>
+
+}

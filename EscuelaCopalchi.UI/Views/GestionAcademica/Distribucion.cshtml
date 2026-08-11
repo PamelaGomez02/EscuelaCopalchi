@@ -1,0 +1,301 @@
+﻿@{
+    ViewBag.Title = "Distribución automática";
+}
+
+<main>
+
+    <section class="academic-header">
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Distribución automática</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-diagram-3 me-2"></i>
+                Distribución automática
+            </h1>
+
+            <p class="academic-subtitle">
+                Genera una propuesta equilibrada según estudiantes y capacidad disponible.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Estudiantes sin asignar</span>
+                    <h2>42</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Aulas disponibles</span>
+                    <h2>3</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <span>Capacidad disponible</span>
+                    <h2>48</h2>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="distribution-card">
+
+            <div class="distribution-header">
+
+                <div>
+                    <h2>Propuesta de distribución</h2>
+                    <p>Distribución sugerida según capacidad de cada aula.</p>
+                </div>
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-magic me-1"></i>
+                    Generar propuesta
+                </button>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <div class="group-card">
+
+                        <span>Grupo 1-A</span>
+                        <h3>28 estudiantes</h3>
+
+                        <p>
+                            Aula 1 · Capacidad 30
+                        </p>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 style="width:93%">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="group-card">
+
+                        <span>Grupo 1-B</span>
+                        <h3>27 estudiantes</h3>
+
+                        <p>
+                            Aula 2 · Capacidad 30
+                        </p>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 style="width:90%">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="group-card">
+
+                        <span>Grupo 1-C</span>
+                        <h3>27 estudiantes</h3>
+
+                        <p>
+                            Aula 3 · Capacidad 30
+                        </p>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 style="width:90%">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Asignaciones", "GestionAcademica")"
+                   class="btn btn-outline-danger">
+                    Rechazar propuesta
+                </a>
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Aprobar distribución
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .summary-card,
+        .distribution-card,
+        .group-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+        }
+
+        .summary-card {
+            padding: 17px;
+        }
+
+            .summary-card span {
+                color: var(--cop-muted);
+                font-size: .8rem;
+            }
+
+            .summary-card h2 {
+                color: var(--cop-primary);
+                font-size: 1.4rem;
+                margin: 2px 0 0;
+            }
+
+        .distribution-card {
+            padding: 22px;
+        }
+
+        .distribution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+            .distribution-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .distribution-header p {
+                color: var(--cop-muted);
+                font-size: .84rem;
+                margin: 0;
+            }
+
+        .group-card {
+            padding: 17px;
+        }
+
+            .group-card span {
+                color: var(--cop-muted);
+                font-size: .78rem;
+            }
+
+            .group-card h3 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                margin: 5px 0;
+            }
+
+            .group-card p {
+                color: var(--cop-muted);
+                font-size: .8rem;
+            }
+
+        .progress {
+            height: 7px;
+        }
+
+        .progress-bar {
+            background: var(--cop-secondary);
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            padding-top: 20px;
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+    </style>
+
+}

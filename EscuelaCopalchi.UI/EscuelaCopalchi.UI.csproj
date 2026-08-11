@@ -134,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
+    <Compile Include="Controllers\GestionAcademicaController.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\PanelPrincipalController.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Controllers\AsistenciaController.cs" />
     <Compile Include="Controllers\GestionNotasController.cs" />
     <Compile Include="Controllers\EstudiantesController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -242,6 +244,19 @@
     <Content Include="Views\InventarioLimpieza\Create.cshtml" />
     <Content Include="Views\InventarioLimpieza\Index.cshtml" />
     <Content Include="Views\PanelPrincipal\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Aula.cshtml" />
+    <Content Include="Views\GestionAcademica\Asignaciones.cshtml" />
+    <Content Include="Views\GestionAcademica\Distribucion.cshtml" />
+    <Content Include="Views\GestionAcademica\Docentes.cshtml" />
+    <Content Include="Views\GestionAcademica\MiGrupo.cshtml" />
+    <Content Include="Views\Roles\Asignar.cshtml" />
+    <Content Include="Views\Roles\Crear.cshtml" />
+    <Content Include="Views\Roles\Editar.cshtml" />
+    <Content Include="Views\Roles\Permisos.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Reportes.cshtml" />
+    <Content Include="Views\GestionAcademica\ImportarExcel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

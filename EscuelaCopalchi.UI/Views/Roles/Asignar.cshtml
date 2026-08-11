@@ -1,0 +1,317 @@
+﻿@{
+    ViewBag.Title = "Asignar rol";
+}
+
+<main>
+
+    <section class="roles-header">
+
+        <div class="container">
+
+            <div class="roles-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Roles")">Roles</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Asignar rol</span>
+
+            </div>
+
+            <h1 class="roles-title">
+                <i class="bi bi-person-plus me-2"></i>
+                Asignar rol
+            </h1>
+
+            <p class="roles-subtitle">
+                Asigna el rol seleccionado a uno o varios usuarios.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="assign-card">
+
+            <div class="selected-role">
+
+                <div class="role-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div>
+                    <span>Rol seleccionado</span>
+                    <h2>Docente</h2>
+                    <p>Gestión académica y seguimiento de estudiantes.</p>
+                </div>
+
+            </div>
+
+
+            <div class="search-box mb-3">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       class="form-control"
+                       placeholder="Buscar usuario..." />
+
+            </div>
+
+
+            <div class="user-list">
+
+                <label class="user-item">
+
+                    <div class="user-info">
+
+                        <div class="user-avatar">MG</div>
+
+                        <div>
+                            <strong>María González</strong>
+                            <small>mgonzalez@copalchi.ed.cr</small>
+                        </div>
+
+                    </div>
+
+                    <input type="checkbox"
+                           class="form-check-input"
+                           checked />
+
+                </label>
+
+
+                <label class="user-item">
+
+                    <div class="user-info">
+
+                        <div class="user-avatar">JP</div>
+
+                        <div>
+                            <strong>José Pérez</strong>
+                            <small>jperez@copalchi.ed.cr</small>
+                        </div>
+
+                    </div>
+
+                    <input type="checkbox"
+                           class="form-check-input" />
+
+                </label>
+
+
+                <label class="user-item">
+
+                    <div class="user-info">
+
+                        <div class="user-avatar">LR</div>
+
+                        <div>
+                            <strong>Laura Rodríguez</strong>
+                            <small>lrodriguez@copalchi.ed.cr</small>
+                        </div>
+
+                    </div>
+
+                    <input type="checkbox"
+                           class="form-check-input" />
+
+                </label>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "Roles")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button class="btn btn-cop-primary">
+
+                    <i class="bi bi-person-check me-1"></i>
+                    Guardar asignación
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .roles-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .roles-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .roles-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .roles-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .roles-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .assign-card {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 24px;
+        }
+
+        .selected-role {
+            display: flex;
+            gap: 13px;
+            align-items: center;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #edf0f3;
+            border-radius: 9px;
+            margin-bottom: 22px;
+        }
+
+        .role-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selected-role span {
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+        .selected-role h2 {
+            color: var(--cop-primary);
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .selected-role p {
+            color: var(--cop-muted);
+            font-size: .82rem;
+            margin: 0;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            border-bottom: 1px solid #edf0f3;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .user-info strong,
+        .user-info small {
+            display: block;
+        }
+
+        .user-info small {
+            color: var(--cop-muted);
+            font-size: .76rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f3;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+    </style>
+
+}

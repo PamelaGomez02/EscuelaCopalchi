@@ -1,0 +1,391 @@
+﻿@{
+    ViewBag.Title = "Gestión académica";
+}
+
+<main>
+
+    <section class="academic-header">
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Gestión académica</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-diagram-3 me-2"></i>
+                Gestión académica
+            </h1>
+
+            <p class="academic-subtitle">
+                Administración de aulas, grupos, estudiantes, docentes y distribución académica.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-door-open"></i>
+                    </div>
+                    <div>
+                        <span>Aulas registradas</span>
+                        <h2>12</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div>
+                        <span>Grupos activos</span>
+                        <h2>14</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+                    <div>
+                        <span>Estudiantes asignados</span>
+                        <h2>412</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div>
+                        <span>Docentes asignados</span>
+                        <h2>28</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="academic-card">
+
+            <div class="academic-card-header">
+                <div>
+                    <h2>Administración académica</h2>
+                    <p>Selecciona la función que deseas administrar.</p>
+                </div>
+            </div>
+
+
+            <div class="academic-grid">
+
+                <a href="@Url.Action("Aulas", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-door-open"></i>
+                    </div>
+
+                    <div>
+                        <strong>Aulas y horarios</strong>
+                        <span>Crear aulas, definir capacidad y administrar horarios.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("Asignaciones", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                    <div>
+                        <strong>Asignación de estudiantes</strong>
+                        <span>Asignar o trasladar estudiantes entre grupos.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("Distribucion", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+
+                    <div>
+                        <strong>Distribución automática</strong>
+                        <span>Generar propuestas según la capacidad de las aulas.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("Docentes", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <div>
+                        <strong>Asignación de docentes</strong>
+                        <span>Vincular docentes responsables con cada grupo.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("MiGrupo", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <strong>Mi grupo</strong>
+                        <span>Consultar estudiantes, aula y horario asignado.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("Reportes", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+                    </div>
+
+                    <div>
+                        <strong>Reportes de distribución</strong>
+                        <span>Reportes por aula, grupo y docente.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+
+                <a href="@Url.Action("ImportarExcel", "GestionAcademica")"
+                   class="academic-option">
+
+                    <div class="option-icon">
+                        <i class="bi bi-file-earmark-excel"></i>
+                    </div>
+
+                    <div>
+                        <strong>Importar asignaciones</strong>
+                        <span>Cargar grupos y docentes desde Excel.</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right option-arrow"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .summary-card {
+            height: 100%;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .academic-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .academic-card-header {
+            padding: 22px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .academic-card-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .academic-card-header p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+        .academic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            padding: 18px;
+            gap: 12px;
+        }
+
+        .academic-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border: 1px solid #e3e8ee;
+            border-radius: 9px;
+            padding: 16px 45px 16px 16px;
+            text-decoration: none;
+            transition: .15s ease;
+        }
+
+            .academic-option:hover {
+                background: #f3f8fd;
+                border-color: var(--cop-accent);
+                transform: translateY(-1px);
+            }
+
+        .option-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .academic-option strong {
+            display: block;
+            color: var(--cop-primary);
+            font-size: .9rem;
+        }
+
+        .academic-option span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .77rem;
+            margin-top: 2px;
+        }
+
+        .option-arrow {
+            position: absolute;
+            right: 16px;
+            color: #9da8b2;
+        }
+
+        @@media(max-width:768px) {
+            .academic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+}
