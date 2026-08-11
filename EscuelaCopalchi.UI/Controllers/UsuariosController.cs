@@ -9,7 +9,7 @@ namespace EscuelaCopalchi.UI.Controllers
     public class UsuariosController : Controller
     {
         public ActionResult Index() => View();
-        public ActionResult Crear() => View();
-        public ActionResult Editar() => View();
+        public ActionResult Create() => View();
+        public ActionResult Edit() => View();
     }
 }
