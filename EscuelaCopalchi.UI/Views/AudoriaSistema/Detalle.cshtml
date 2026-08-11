@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Detalle del evento";
+}
+
+<main>
+    <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver a auditoría
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Detalle del evento</h2>
+            <p class="cop-page-subtitle">Información completa del registro de auditoría.</p>
+        </div>
+    </div>
+
+    <div class="cop-detail-wrapper">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <span class="cop-detail-label">Usuario</span>
+                <p class="cop-detail-value">ana.admin</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Fecha y hora</span>
+                <p class="cop-detail-value">Hoy, 9:12 a.m.</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Módulo</span>
+                <p class="cop-detail-value">Roles</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Acción</span>
+                <p class="cop-detail-value">Creó un rol</p>
+            </div>
+            <div class="col-12">
+                <span class="cop-detail-label">Descripción</span>
+                <p class="cop-detail-value">Se creó el rol "Comité de evaluación" con permisos de generación de reportes y consulta de estudiantes.</p>
+            </div>
+        </div>
+
+        <hr class="cop-detail-divider">
+
+        <p class="cop-detail-label mb-2">Cambios registrados</p>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="cop-diff-card cop-diff-before">
+                    <span class="cop-diff-title">Antes</span>
+                    <p class="cop-diff-text">No existía</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="cop-diff-card cop-diff-after">
+                    <span class="cop-diff-title">Después</span>
+                    <p class="cop-diff-text">Rol: Comité de evaluación<br>Permisos: Reportes, Consulta de estudiantes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-detail-wrapper {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 40px;
+            max-width: 720px;
+        }
+
+        .cop-detail-label {
+            font-size: 0.78rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            font-weight: 600;
+        }
+
+        .cop-detail-value {
+            font-size: 0.95rem;
+            color: #212529;
+            margin: 4px 0 0;
+        }
+
+        .cop-detail-divider {
+            border-color: #f0f2f5;
+            margin: 24px 0 20px;
+        }
+
+        .cop-diff-card {
+            border-radius: 10px;
+            padding: 14px 16px;
+            height: 100%;
+        }
+
+        .cop-diff-before {
+            background-color: #f4f7fa;
+        }
+
+        .cop-diff-after {
+            background-color: #E6F7EC;
+        }
+
+        .cop-diff-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #6c757d;
+        }
+
+        .cop-diff-text {
+            font-size: 0.88rem;
+            color: #212529;
+            margin: 6px 0 0;
+        }
+    </style>
+}
