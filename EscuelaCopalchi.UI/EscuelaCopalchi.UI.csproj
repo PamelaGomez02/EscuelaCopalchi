@@ -133,6 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PlanesEstudioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\NotificacionesController.cs" />
@@ -201,6 +202,11 @@
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
     <Content Include="Views\Monitoreo\Estadisticas.cshtml" />
+    <Content Include="Views\PlanesEstudio\Index.cshtml" />
+    <Content Include="Views\PlanesEstudio\Crear.cshtml" />
+    <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
+    <Content Include="Views\PlanesEstudio\Editar.cshtml" />
+    <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

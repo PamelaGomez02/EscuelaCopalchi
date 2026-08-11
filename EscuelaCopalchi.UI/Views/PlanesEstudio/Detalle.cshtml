@@ -1,0 +1,454 @@
+﻿@{
+    ViewBag.Title = "Detalle del plan";
+}
+
+<main>
+
+    <section class="planes-header">
+        <div class="container">
+
+            <div class="planes-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "PlanesEstudio")">Planes de estudio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Detalle</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+                    <h1 class="planes-title">
+                        Plan mensual de Matemáticas
+                    </h1>
+
+                    <p class="planes-subtitle">
+                        Agosto 2026 · Primer grado
+                    </p>
+                </div>
+
+                <span class="status status-pending">
+                    <i class="bi bi-clock"></i>
+                    Pendiente
+                </span>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-4">
+
+            <!-- INFORMACIÓN PRINCIPAL -->
+            <div class="col-lg-8">
+
+                <div class="detail-card">
+
+                    <h2 class="section-title">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Información del plan
+                    </h2>
+
+                    <div class="row g-4 mt-1">
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Docente</span>
+                            <strong>María González</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Asignatura</span>
+                            <strong>Matemáticas</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Grado</span>
+                            <strong>Primer grado</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Periodo</span>
+                            <strong>Agosto 2026</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Fecha de registro</span>
+                            <strong>05/08/2026</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Tipo de registro</span>
+                            <strong>Archivo Excel</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ARCHIVO -->
+                <div class="detail-card mt-4">
+
+                    <h2 class="section-title">
+                        <i class="bi bi-paperclip me-2"></i>
+                        Archivo del plan
+                    </h2>
+
+                    <div class="file-card">
+
+                        <div class="file-icon">
+                            <i class="bi bi-file-earmark-excel"></i>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <strong>Plan_Matematicas_Agosto.xlsx</strong>
+                            <small>Archivo de planificación mensual</small>
+                        </div>
+
+                        <button class="btn btn-outline-cop">
+                            <i class="bi bi-download me-1"></i>
+                            Descargar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OBSERVACIONES -->
+                <div class="detail-card mt-4">
+
+                    <h2 class="section-title">
+                        <i class="bi bi-chat-left-text me-2"></i>
+                        Observaciones
+                    </h2>
+
+                    <div class="empty-observation">
+                        <i class="bi bi-chat-square"></i>
+                        <p>El director aún no ha registrado observaciones.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PANEL LATERAL -->
+            <div class="col-lg-4">
+
+                <div class="detail-card">
+
+                    <h2 class="section-title">
+                        Estado del plan
+                    </h2>
+
+                    <div class="timeline">
+
+                        <div class="timeline-item completed">
+
+                            <div class="timeline-dot">
+                                <i class="bi bi-check"></i>
+                            </div>
+
+                            <div>
+                                <strong>Plan registrado</strong>
+                                <small>05/08/2026</small>
+                            </div>
+
+                        </div>
+
+
+                        <div class="timeline-item active">
+
+                            <div class="timeline-dot">
+                                <i class="bi bi-clock"></i>
+                            </div>
+
+                            <div>
+                                <strong>En revisión</strong>
+                                <small>Pendiente de resolución</small>
+                            </div>
+
+                        </div>
+
+
+                        <div class="timeline-item">
+
+                            <div class="timeline-dot"></div>
+
+                            <div>
+                                <strong>Resolución</strong>
+                                <small>Aún no disponible</small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TEAMS -->
+                <div class="detail-card mt-4">
+
+                    <h2 class="section-title">
+                        Microsoft Teams
+                    </h2>
+
+                    <div class="teams-box">
+
+                        <i class="bi bi-microsoft-teams"></i>
+
+                        <div>
+                            <strong>No sincronizado</strong>
+                            <p>
+                                Puedes sincronizar las fechas del plan cuando este
+                                sea aprobado.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-cop-primary w-100"
+                            disabled>
+                        <i class="bi bi-arrow-repeat me-1"></i>
+                        Sincronizar con Teams
+                    </button>
+
+                </div>
+
+
+                <div class="mt-3 d-grid gap-2">
+
+                    <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 1 })"
+                       class="btn btn-outline-cop">
+                        <i class="bi bi-pencil me-1"></i>
+                        Editar plan
+                    </a>
+
+                    <a href="@Url.Action("Index", "PlanesEstudio")"
+                       class="btn btn-light">
+                        Volver
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .planes-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .planes-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .planes-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .planes-title {
+            color: var(--cop-primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .planes-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .detail-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        .section-title {
+            color: var(--cop-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            display: block;
+            font-size: .8rem;
+            color: var(--cop-muted);
+            margin-bottom: 3px;
+        }
+
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .file-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: #d1e7dd;
+            color: #146c43;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .file-card small {
+            display: block;
+            color: var(--cop-muted);
+        }
+
+        .empty-observation {
+            text-align: center;
+            padding: 25px;
+            color: var(--cop-muted);
+        }
+
+            .empty-observation i {
+                font-size: 1.7rem;
+            }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 13px;
+            position: relative;
+            padding-bottom: 26px;
+        }
+
+            .timeline-item::after {
+                content: "";
+                position: absolute;
+                left: 14px;
+                top: 30px;
+                bottom: 0;
+                width: 2px;
+                background: #e3e8ee;
+            }
+
+            .timeline-item:last-child::after {
+                display: none;
+            }
+
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #cbd5df;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: #198754;
+            border-color: #198754;
+            color: white;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .timeline-item strong,
+        .timeline-item small {
+            display: block;
+        }
+
+        .timeline-item small {
+            color: var(--cop-muted);
+            margin-top: 2px;
+        }
+
+        .teams-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+            .teams-box > i {
+                color: #6264A7;
+                font-size: 1.5rem;
+            }
+
+            .teams-box p {
+                font-size: .85rem;
+                color: var(--cop-muted);
+                margin: 4px 0 0;
+            }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+        }
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+            }
+    </style>
+
+}
