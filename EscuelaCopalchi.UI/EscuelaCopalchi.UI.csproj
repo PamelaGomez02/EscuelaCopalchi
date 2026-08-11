@@ -140,6 +140,7 @@
     <Compile Include="Controllers\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController.cs" />
     <Compile Include="Controllers\GestionNotasController.cs" />
+    <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -223,6 +224,13 @@
     <Content Include="Views\GestionNotas\Index.cshtml" />
     <Content Include="Views\GestionNotas\Registrar.cshtml" />
     <Content Include="Views\GestionNotas\Editar.cshtml" />
+    <Content Include="Views\Estudiantes\Editar.cshtml" />
+    <Content Include="Views\Estudiantes\HistorialBajas.cshtml" />
+    <Content Include="Views\Estudiantes\Crear.cshtml" />
+    <Content Include="Views\Estudiantes\Index.cshtml" />
+    <Content Include="Views\Estudiantes\Expediente.cshtml" />
+    <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
+    <Content Include="Views\Estudiantes\Detalle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
