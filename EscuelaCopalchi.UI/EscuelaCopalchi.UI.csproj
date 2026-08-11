@@ -245,7 +245,7 @@
     <Content Include="Views\InventarioLimpieza\Index.cshtml" />
     <Content Include="Views\PanelPrincipal\Index.cshtml" />
     <Content Include="Views\GestionAcademica\Index.cshtml" />
-    <Content Include="Views\GestionAcademica\Aula.cshtml" />
+    <Content Include="Views\GestionAcademica\Aulas.cshtml" />
     <Content Include="Views\GestionAcademica\Asignaciones.cshtml" />
     <Content Include="Views\GestionAcademica\Distribucion.cshtml" />
     <Content Include="Views\GestionAcademica\Docentes.cshtml" />
