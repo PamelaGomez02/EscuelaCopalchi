@@ -1,233 +1,858 @@
 ﻿@{
-    ViewBag.Title = "Gestión académica";
+    ViewBag.Title = "Usuarios";
 }
 
-<main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
+<main class="users-page">
 
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Gestión académica</h2>
-            <p class="cop-page-subtitle">
-                Administración de aulas, grupos, estudiantes y docentes.
-            </p>
+    <!-- ENCABEZADO -->
+    <section class="users-header">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <div class="users-breadcrumb">
+                        <a href="@Url.Action("Index", "Home")">Inicio</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Usuarios</span>
+                    </div>
+
+                    <h1 class="users-title">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Usuarios
+                    </h1>
+
+                    <p class="users-subtitle">
+                        Docentes y personal administrativo registrados en el sistema.
+                    </p>
+                </div>
+
+                <div>
+                    <a href="@Url.Action("Create", "Usuarios")"
+                       class="btn btn-cop-primary">
+                        <i class="bi bi-person-plus me-1"></i>
+                        Nuevo usuario
+                    </a>
+                </div>
+
+            </div>
         </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon total">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Usuarios registrados</span>
+                        <h2 class="summary-number">30</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon active">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Usuarios activos</span>
+                        <h2 class="summary-number">27</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon inactive">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Usuarios inactivos</span>
+                        <h2 class="summary-number">3</h2>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="users-container">
+
+            <!-- CABECERA -->
+            <div class="users-toolbar">
+
+                <div>
+                    <h2 class="users-section-title">
+                        Usuarios registrados
+                    </h2>
+
+                    <p class="users-section-subtitle">
+                        Consulta y administra los usuarios del sistema.
+                    </p>
+                </div>
+
+
+                <div class="users-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar usuario..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="users-filters">
+
+                <select class="form-select">
+                    <option selected>Todos los roles</option>
+                    <option>Docente</option>
+                    <option>Director</option>
+                    <option>Administrador</option>
+                    <option>Administrativo</option>
+                    <option>Comité de apoyo</option>
+                </select>
+
+
+                <select class="form-select">
+                    <option selected>Todos los estados</option>
+                    <option>Activo</option>
+                    <option>Inactivo</option>
+                </select>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table users-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- MARÍA -->
+                        <tr>
+
+                            <td>
+                                <div class="user-name">
+
+                                    <div class="user-avatar">
+                                        MR
+                                    </div>
+
+                                    <div>
+                                        <strong>María Rodríguez</strong>
+                                        <small>Docente</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                maria.rodriguez@copalchi.edu
+                            </td>
+
+                            <td>
+                                <span class="role-badge">
+                                    Docente
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-active">
+                                    <i class="bi bi-check-circle"></i>
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-action"
+                                        title="Restablecer contraseña"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalResetPass">
+
+                                    <i class="bi bi-key"></i>
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-action btn-action-danger"
+                                        title="Desactivar">
+
+                                    <i class="bi bi-slash-circle"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- JUAN -->
+                        <tr>
+
+                            <td>
+                                <div class="user-name">
+
+                                    <div class="user-avatar">
+                                        JP
+                                    </div>
+
+                                    <div>
+                                        <strong>Juan Pérez</strong>
+                                        <small>Director</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                juan.perez@copalchi.edu
+                            </td>
+
+                            <td>
+                                <span class="role-badge role-director">
+                                    Director
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-active">
+                                    <i class="bi bi-check-circle"></i>
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-action"
+                                        title="Restablecer contraseña"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalResetPass">
+
+                                    <i class="bi bi-key"></i>
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-action btn-action-danger"
+                                        title="Desactivar">
+
+                                    <i class="bi bi-slash-circle"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- LAURA -->
+                        <tr>
+
+                            <td>
+                                <div class="user-name">
+
+                                    <div class="user-avatar">
+                                        LG
+                                    </div>
+
+                                    <div>
+                                        <strong>Laura Gómez</strong>
+                                        <small>Docente</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                laura.gomez@copalchi.edu
+                            </td>
+
+                            <td>
+                                <span class="role-badge">
+                                    Docente
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-inactive">
+                                    <i class="bi bi-x-circle"></i>
+                                    Inactivo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-action"
+                                        title="Restablecer contraseña"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalResetPass">
+
+                                    <i class="bi bi-key"></i>
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-action btn-action-success"
+                                        title="Activar">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MODAL -->
+    <div class="modal fade"
+         id="modalResetPass"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        <i class="bi bi-key me-2"></i>
+                        Restablecer contraseña
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <p class="mb-0">
+                        Se generará una contraseña temporal y se enviará al correo institucional del usuario.
+                        ¿Deseas continuar?
+                    </p>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-cop-primary">
+
+                        Restablecer
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="row g-3 mb-4">
-
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Aulas registradas</span>
-                <span class="cop-stat-value">12</span>
-            </div>
-        </div>
-
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Grupos activos</span>
-                <span class="cop-stat-value">14</span>
-            </div>
-        </div>
-
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes asignados</span>
-                <span class="cop-stat-value">412</span>
-            </div>
-        </div>
-
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Docentes asignados</span>
-                <span class="cop-stat-value">28</span>
-            </div>
-        </div>
-
-    </div>
-
-    <p class="cop-section-label">Administración académica</p>
-
-    <div class="cop-quick-grid">
-
-        <a href="@Url.Action("Aulas", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-door-open"></i>
-            <div>
-                <span class="cop-quick-title">Aulas y horarios</span>
-                <span class="cop-quick-desc">Capacidad y horarios de las aulas.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("Asignaciones", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-person-plus"></i>
-            <div>
-                <span class="cop-quick-title">Asignar estudiantes</span>
-                <span class="cop-quick-desc">Asignación y traslado entre grupos.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("Distribucion", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-diagram-3"></i>
-            <div>
-                <span class="cop-quick-title">Distribución automática</span>
-                <span class="cop-quick-desc">Distribución según capacidad disponible.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("Docentes", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-person-badge"></i>
-            <div>
-                <span class="cop-quick-title">Asignar docentes</span>
-                <span class="cop-quick-desc">Docentes responsables de cada grupo.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("MiGrupo", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-people"></i>
-            <div>
-                <span class="cop-quick-title">Mi grupo</span>
-                <span class="cop-quick-desc">Estudiantes, aula y horario asignado.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("Reportes", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-file-earmark-bar-graph"></i>
-            <div>
-                <span class="cop-quick-title">Reportes</span>
-                <span class="cop-quick-desc">Distribución por aula, grupo o docente.</span>
-            </div>
-        </a>
-
-        <a href="@Url.Action("ImportarExcel", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-file-earmark-excel"></i>
-            <div>
-                <span class="cop-quick-title">Importar Excel</span>
-                <span class="cop-quick-desc">Carga masiva de asignaciones.</span>
-            </div>
-        </a>
-
-    </div>
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-soft: #84D2F6;
+            --cop-light: #91E5F6;
+            --cop-text: #212529;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background-color: var(--cop-page-bg);
+        }
+
+
+        /* HEADER */
+
+        .users-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 32px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .users-breadcrumb {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            margin-bottom: 12px;
+            color: var(--cop-muted);
         }
 
-        .cop-page-title {
+
+            .users-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .users-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .users-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+            margin-bottom: 7px;
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
+
+        .users-subtitle {
+            color: var(--cop-muted);
             margin-bottom: 0;
         }
 
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+
+        /* BOTÓN PRINCIPAL */
+
+        .btn-cop-primary {
+            background-color: var(--cop-primary);
+            color: #ffffff;
+            border: 1px solid var(--cop-primary);
+            padding: 9px 18px;
+            border-radius: 7px;
+            font-weight: 500;
         }
 
-        .cop-stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            margin-bottom: 6px;
-        }
 
-        .cop-stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #133C55;
-        }
+            .btn-cop-primary:hover {
+                background-color: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: #ffffff;
+            }
 
-        .cop-section-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
 
-        .cop-quick-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 40px;
-        }
+        /* CARDS RESUMEN */
 
-        .cop-quick-link {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: #fff;
+        .summary-card {
+            background: #ffffff;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
             padding: 18px;
-            color: #133C55;
-            text-decoration: none;
-            min-height: 90px;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 100%;
         }
 
-            .cop-quick-link:hover {
-                background-color: #E6F1FB;
-                border-color: #cbddec;
-                color: #133C55;
+
+        .summary-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+
+            .summary-icon.total {
+                background-color: #e6f1fb;
+                color: var(--cop-secondary);
             }
 
-            .cop-quick-link > i {
-                width: 40px;
-                height: 40px;
-                border-radius: 8px;
-                background-color: #E6F1FB;
-                color: #386FA4;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                font-size: 1.2rem;
+
+            .summary-icon.active {
+                background-color: #d1e7dd;
+                color: #0f5132;
             }
 
-        .cop-quick-title {
+
+            .summary-icon.inactive {
+                background-color: #f1f2f3;
+                color: #6c757d;
+            }
+
+
+        .summary-label {
             display: block;
+            color: var(--cop-muted);
+            font-size: .85rem;
+        }
+
+
+        .summary-number {
+            margin: 0;
+            color: var(--cop-primary);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+
+        /* CONTENEDOR */
+
+        .users-container {
+            background: #ffffff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        /* TOOLBAR */
+
+        .users-toolbar {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+
+        .users-section-title {
+            margin: 0 0 4px;
+            font-size: 1.2rem;
+            color: var(--cop-primary);
             font-weight: 600;
-            color: #133C55;
-            margin-bottom: 2px;
         }
 
-        .cop-quick-desc {
-            display: block;
+
+        .users-section-subtitle {
+            margin: 0;
+            color: var(--cop-muted);
+            font-size: .88rem;
+        }
+
+
+        /* BUSCADOR */
+
+        .users-search {
+            position: relative;
+            width: 260px;
+        }
+
+
+            .users-search i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+
+            .users-search input {
+                padding-left: 34px;
+            }
+
+
+        /* FILTROS */
+
+        .users-filters {
+            display: flex;
+            gap: 12px;
+            padding: 15px 22px;
+            background-color: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+            .users-filters .form-select {
+                width: 190px;
+                font-size: .9rem;
+            }
+
+
+        /* TABLA */
+
+        .users-table {
+            margin-bottom: 0;
+        }
+
+
+            .users-table thead th {
+                background-color: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                padding: 13px 17px;
+                border-bottom: 1px solid #e3e8ee;
+            }
+
+
+            .users-table tbody td {
+                padding: 16px 17px;
+                border-color: #edf0f3;
+                font-size: .9rem;
+            }
+
+
+            .users-table tbody tr:hover {
+                background-color: #fafcfd;
+            }
+
+
+        /* USUARIO */
+
+        .user-name {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+
+            .user-name strong {
+                display: block;
+                color: var(--cop-text);
+                font-weight: 600;
+            }
+
+
+            .user-name small {
+                display: block;
+                color: var(--cop-muted);
+                margin-top: 2px;
+            }
+
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            background-color: #e6f1fb;
+            color: var(--cop-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+
+        /* ROLES */
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background-color: #e6f1fb;
+            color: var(--cop-secondary);
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+
+        .role-director {
+            background-color: var(--cop-primary);
+            color: #ffffff;
+        }
+
+
+        /* ESTADOS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+
+        .status-active {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .status-inactive {
+            background-color: #f1f2f3;
             color: #6c757d;
-            font-size: 0.82rem;
-            font-weight: 400;
         }
 
-        @@media (max-width: 992px) {
-            .cop-quick-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+
+        /* ACCIONES */
+
+        .btn-action {
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            background-color: #ffffff;
+            padding: 5px 9px;
+            margin-left: 3px;
         }
 
-        @@media (max-width: 576px) {
-            .cop-quick-grid {
-                grid-template-columns: 1fr;
+
+            .btn-action:hover {
+                background-color: #e6f1fb;
+                color: var(--cop-primary);
+                border-color: var(--cop-accent);
             }
+
+
+        .btn-action-danger:hover {
+            background-color: #f8d7da;
+            border-color: #f1b8bd;
+            color: #842029;
+        }
+
+
+        .btn-action-success:hover {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+
+
+        /* FORMULARIOS */
+
+        .form-control,
+        .form-select {
+            border: 1px solid #dce2e7;
+            border-radius: 7px;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* MODAL */
+
+        .modal-content {
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+        }
+
+
+        .modal-title {
+            color: var(--cop-primary);
+            font-weight: 600;
+        }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .users-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .users-search {
+                width: 100%;
+            }
+
+
+            .users-filters {
+                flex-direction: column;
+            }
+
+
+                .users-filters .form-select {
+                    width: 100%;
+                }
         }
     </style>
+
 }

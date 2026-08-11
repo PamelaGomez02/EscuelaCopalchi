@@ -1,0 +1,521 @@
+﻿@{
+    ViewBag.Title = "Editar usuario";
+}
+
+<main class="users-page">
+
+    <!-- ENCABEZADO -->
+    <section class="users-header">
+        <div class="container">
+
+            <div class="users-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "Usuarios")">Usuarios</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Editar usuario</span>
+            </div>
+
+            <h1 class="users-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar usuario
+            </h1>
+
+            <p class="users-subtitle">
+                Actualiza la información de María Rodríguez.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="form-container">
+
+            <!-- CABECERA -->
+            <div class="form-header">
+
+                <h2>Información del usuario</h2>
+
+                <p>
+                    Modifica los datos personales, académicos y el estado de la cuenta.
+                </p>
+
+            </div>
+
+
+            <form method="post">
+
+                <div class="form-body">
+
+
+                    <!-- ESTADO -->
+                    <div class="account-status">
+
+                        <div class="status-icon">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+
+                        <div class="status-info">
+                            <strong>Estado de la cuenta</strong>
+
+                            <span>
+                                Los usuarios inactivos no pueden iniciar sesión.
+                            </span>
+                        </div>
+
+
+                        <div class="form-check form-switch ms-auto">
+
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   role="switch"
+                                   id="EstadoActivo"
+                                   checked>
+
+                            <label class="form-check-label"
+                                   for="EstadoActivo">
+                                Activo
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMACIÓN PERSONAL -->
+                    <div class="form-section-title">
+                        <i class="bi bi-person"></i>
+                        Información personal
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Nombres <span class="required">*</span>
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="María Fernanda">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Apellidos <span class="required">*</span>
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="Rodríguez Solano">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Identificación <span class="required">*</span>
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="1-1111-1111">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Teléfono
+                            </label>
+
+                            <input type="tel"
+                                   class="form-control"
+                                   value="8888-8888">
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="form-divider">
+
+
+                    <!-- INFORMACIÓN INSTITUCIONAL -->
+                    <div class="form-section-title">
+                        <i class="bi bi-building"></i>
+                        Información institucional
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Correo institucional <span class="required">*</span>
+                            </label>
+
+                            <input type="email"
+                                   class="form-control"
+                                   value="maria.rodriguez@copalchi.edu">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Rol <span class="required">*</span>
+                            </label>
+
+                            <select class="form-select">
+
+                                <option selected>Docente</option>
+                                <option>Director</option>
+                                <option>Administrador</option>
+                                <option>Administrativo</option>
+                                <option>Comité de apoyo</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Área académica / especialidad
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="Matemática">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fecha de ingreso
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   value="2022-02-01">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACCIONES -->
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Index", "Usuarios")"
+                       class="btn btn-outline-secondary">
+
+                        Cancelar
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-check-lg me-1"></i>
+                        Guardar cambios
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-text: #212529;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background-color: var(--cop-page-bg);
+        }
+
+
+        /* HEADER */
+
+        .users-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 32px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .users-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            margin-bottom: 12px;
+            color: var(--cop-muted);
+        }
+
+
+            .users-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .users-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .users-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+
+        .users-subtitle {
+            color: var(--cop-muted);
+            margin-bottom: 0;
+        }
+
+
+        /* CONTENEDOR */
+
+        .form-container {
+            background-color: #ffffff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+
+        .form-header {
+            padding: 22px 24px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+            .form-header h2 {
+                margin: 0 0 4px;
+                color: var(--cop-primary);
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+
+
+            .form-header p {
+                margin: 0;
+                color: var(--cop-muted);
+                font-size: .88rem;
+            }
+
+
+        .form-body {
+            padding: 24px;
+        }
+
+
+        /* ESTADO DE CUENTA */
+
+        .account-status {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            background-color: #f8fafc;
+            border: 1px solid #e3e8ee;
+            border-radius: 9px;
+            padding: 15px 17px;
+            margin-bottom: 28px;
+        }
+
+
+        .status-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background-color: #d1e7dd;
+            color: #0f5132;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+
+        .status-info strong {
+            display: block;
+            color: var(--cop-primary);
+            font-size: .9rem;
+        }
+
+
+        .status-info span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .82rem;
+            margin-top: 2px;
+        }
+
+
+        .form-check-input:checked {
+            background-color: var(--cop-secondary);
+            border-color: var(--cop-secondary);
+        }
+
+
+        /* SECCIONES */
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--cop-primary);
+            font-size: .95rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+
+            .form-section-title i {
+                color: var(--cop-secondary);
+            }
+
+
+        .form-divider {
+            margin: 28px 0;
+            border-color: #edf0f3;
+            opacity: 1;
+        }
+
+
+        /* FORMULARIOS */
+
+        .form-label {
+            color: #53616d;
+            font-size: .85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+
+        .required {
+            color: #dc3545;
+        }
+
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #dfe4ea;
+            font-size: .9rem;
+            min-height: 40px;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* ACCIONES */
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 18px 24px;
+            background-color: #f8fafc;
+            border-top: 1px solid #edf0f3;
+        }
+
+
+        .btn-cop-primary {
+            background-color: var(--cop-primary);
+            color: #ffffff;
+            border: 1px solid var(--cop-primary);
+            padding: 9px 18px;
+            border-radius: 7px;
+            font-weight: 500;
+        }
+
+
+            .btn-cop-primary:hover {
+                background-color: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: #ffffff;
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .form-container {
+                max-width: 100%;
+            }
+
+
+            .account-status {
+                flex-wrap: wrap;
+            }
+
+
+                .account-status .form-check {
+                    width: 100%;
+                    margin-left: 55px !important;
+                }
+
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+
+                .form-actions .btn {
+                    width: 100%;
+                }
+        }
+    </style>
+
+}
