@@ -1,0 +1,159 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Iniciar sesión";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Aula Virtual Copalchi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    @Styles.Render("~/Content/css")
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #133C55;
+            background-image: linear-gradient(180deg, #133C55 0%, #386FA4 100%);
+            font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .cop-login-wrapper {
+            width: 100%;
+            max-width: 380px;
+            padding: 16px;
+        }
+
+        .cop-login-brand {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+            .cop-login-brand i {
+                font-size: 2.25rem;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .cop-login-brand h1 {
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .cop-login-brand p {
+                font-size: 0.85rem;
+                color: #cfe0ee;
+                margin: 4px 0 0;
+            }
+
+        .cop-login-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 32px 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+            .cop-login-card label {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #133C55;
+                margin-bottom: 4px;
+            }
+
+            .cop-login-card .form-control {
+                border-radius: 8px;
+                padding: 10px 12px;
+                border: 1px solid #dfe4ea;
+            }
+
+                .cop-login-card .form-control:focus {
+                    border-color: #59A5D8;
+                    box-shadow: 0 0 0 3px rgba(89, 165, 216, 0.25);
+                }
+
+        .cop-btn-login {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+        }
+
+            .cop-btn-login:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #ffffff;
+            }
+
+        .cop-login-links {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.85rem;
+        }
+
+            .cop-login-links a {
+                color: #386FA4;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .cop-login-links a:hover {
+                    text-decoration: underline;
+                }
+
+        .cop-login-footer {
+            text-align: center;
+            color: #dce8f2;
+            font-size: 0.75rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cop-login-wrapper">
+
+        <div class="cop-login-brand">
+            <i class="bi bi-mortarboard"></i>
+            <h1>Aula Virtual Copalchi</h1>
+            <p>Ingresa con tu cuenta institucional</p>
+        </div>
+
+        <div class="cop-login-card">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="Usuario">Usuario o correo</label>
+                    <input type="text" class="form-control" id="Usuario" name="Usuario" placeholder="nombre@copalchi.edu" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="Contrasena">Contraseña</label>
+                    <input type="password" class="form-control" id="Contrasena" name="Contrasena" placeholder="••••••••" />
+                </div>
+
+                <div class="mb-3 form-check d-flex justify-content-between align-items-center">
+                    <div>
+                        <input type="checkbox" class="form-check-input" id="Recordarme" name="Recordarme" />
+                        <label class="form-check-label" for="Recordarme" style="font-weight:400; color:#495057;">Recordarme</label>
+                    </div>
+                    <a href="#" style="font-size:0.8rem; color:#386FA4;">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn cop-btn-login">Ingresar</button>
+            </form>
+        </div>
+
+        <div class="cop-login-footer">
+            &copy; @DateTime.Now.Year - Escuela Copalchi
+        </div>
+
+    </div>
+</body>
+</html>

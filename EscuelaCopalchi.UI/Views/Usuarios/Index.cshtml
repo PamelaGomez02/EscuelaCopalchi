@@ -1,0 +1,269 @@
+﻿@{
+    ViewBag.Title = "Usuarios";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Usuarios</h2>
+            <p class="cop-page-subtitle">Docentes y personal administrativo registrados en el sistema.</p>
+        </div>
+        <a href="#" class="btn cop-btn-primary">
+            <i class="bi bi-person-plus me-1"></i> Nuevo usuario
+        </a>
+    </div>
+
+    <div class="cop-filters">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar por nombre o correo...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option selected>Todos los roles</option>
+                    <option>Docente</option>
+                    <option>Director</option>
+                    <option>Administrador</option>
+                    <option>Administrativo</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option selected>Todos los estados</option>
+                    <option>Activo</option>
+                    <option>Inactivo</option>
+                </select>
+            </div>
+            <div class="col-md-1 text-end">
+                <button class="btn btn-outline-secondary"><i class="bi bi-funnel"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive cop-table-wrapper">
+        <table class="table align-middle cop-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="cop-user-cell">
+                            <div class="cop-avatar">MR</div>
+                            <span>María Rodríguez</span>
+                        </div>
+                    </td>
+                    <td>maria.rodriguez@copalchi.edu</td>
+                    <td><span class="badge cop-badge-rol">Docente</span></td>
+                    <td><span class="badge cop-badge-activo">Activo</span></td>
+                    <td class="text-end">
+                        <a href="#" class="cop-icon-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <button type="button" class="cop-icon-btn" title="Restablecer contraseña" data-bs-toggle="modal" data-bs-target="#modalResetPass">
+                            <i class="bi bi-key"></i>
+                        </button>
+                        <button type="button" class="cop-icon-btn cop-icon-danger" title="Desactivar">
+                            <i class="bi bi-slash-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="cop-user-cell">
+                            <div class="cop-avatar">JP</div>
+                            <span>Juan Pérez</span>
+                        </div>
+                    </td>
+                    <td>juan.perez@copalchi.edu</td>
+                    <td><span class="badge cop-badge-rol-dir">Director</span></td>
+                    <td><span class="badge cop-badge-activo">Activo</span></td>
+                    <td class="text-end">
+                        <a href="#" class="cop-icon-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <button type="button" class="cop-icon-btn" title="Restablecer contraseña" data-bs-toggle="modal" data-bs-target="#modalResetPass">
+                            <i class="bi bi-key"></i>
+                        </button>
+                        <button type="button" class="cop-icon-btn cop-icon-danger" title="Desactivar">
+                            <i class="bi bi-slash-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="cop-user-cell">
+                            <div class="cop-avatar">LG</div>
+                            <span>Laura Gómez</span>
+                        </div>
+                    </td>
+                    <td>laura.gomez@copalchi.edu</td>
+                    <td><span class="badge cop-badge-rol">Docente</span></td>
+                    <td><span class="badge cop-badge-inactivo">Inactivo</span></td>
+                    <td class="text-end">
+                        <a href="#" class="cop-icon-btn" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <button type="button" class="cop-icon-btn" title="Restablecer contraseña" data-bs-toggle="modal" data-bs-target="#modalResetPass">
+                            <i class="bi bi-key"></i>
+                        </button>
+                        <button type="button" class="cop-icon-btn cop-icon-success" title="Activar">
+                            <i class="bi bi-check-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal: Restablecer contraseña -->
+    <div class="modal fade" id="modalResetPass" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key me-2"></i>Restablecer contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Se generará una contraseña temporal y se enviará al correo institucional del usuario. ¿Deseas continuar?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn cop-btn-primary">Restablecer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+
+        .cop-filters {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .cop-table-wrapper {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 4px 8px;
+        }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .cop-user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cop-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: #E6F1FB;
+            color: #133C55;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cop-badge-rol {
+            background-color: #E6F1FB;
+            color: #386FA4;
+            font-weight: 600;
+        }
+
+        .cop-badge-rol-dir {
+            background-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .cop-badge-activo {
+            background-color: #E6F7EC;
+            color: #198754;
+            font-weight: 600;
+        }
+
+        .cop-badge-inactivo {
+            background-color: #f1f2f3;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .cop-icon-btn {
+            border: none;
+            background: none;
+            color: #386FA4;
+            padding: 4px 6px;
+            font-size: 1rem;
+        }
+
+            .cop-icon-btn:hover {
+                color: #133C55;
+            }
+
+        .cop-icon-danger:hover {
+            color: #dc3545;
+        }
+
+        .cop-icon-success:hover {
+            color: #198754;
+        }
+    </style>
+}

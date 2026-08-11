@@ -1,0 +1,177 @@
+﻿@{
+    ViewBag.Title = "Notificaciones";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Notificaciones</h2>
+            <p class="cop-page-subtitle">Historial de alertas de rendimiento y asistencia.</p>
+        </div>
+        <a href="@Url.Action("Riesgo", "Notificaciones")" class="btn btn-outline-secondary">
+            <i class="bi bi-exclamation-triangle me-1"></i> Ver estudiantes en riesgo
+        </a>
+    </div>
+
+    <div class="cop-filters">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected>Todos los tipos</option>
+                    <option>Bajo rendimiento</option>
+                    <option>Inasistencia</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected>Todos los grupos</option>
+                    <option>7-A</option>
+                    <option>8-B</option>
+                    <option>9-C</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="date" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="cop-notif-list">
+
+        <div class="cop-notif-item">
+            <div class="cop-notif-icon cop-notif-danger"><i class="bi bi-graph-down-arrow"></i></div>
+            <div class="cop-notif-body">
+                <div class="cop-notif-title">Calificación baja — Andrés Solís</div>
+                <p class="cop-notif-text">Obtuvo 58 en el examen de Matemática (grupo 8-B).</p>
+                <span class="cop-notif-date">Hoy, 9:40 a.m.</span>
+            </div>
+            <span class="badge cop-badge-alta">Alta</span>
+        </div>
+
+        <div class="cop-notif-item">
+            <div class="cop-notif-icon cop-notif-warning"><i class="bi bi-calendar-x"></i></div>
+            <div class="cop-notif-body">
+                <div class="cop-notif-title">Ausencias frecuentes — Karla Jiménez</div>
+                <p class="cop-notif-text">Acumula 4 ausencias en el último mes (grupo 9-C).</p>
+                <span class="cop-notif-date">Ayer, 2:15 p.m.</span>
+            </div>
+            <span class="badge cop-badge-media">Media</span>
+        </div>
+
+        <div class="cop-notif-item">
+            <div class="cop-notif-icon cop-notif-danger"><i class="bi bi-graph-down-arrow"></i></div>
+            <div class="cop-notif-body">
+                <div class="cop-notif-title">Calificación baja — Marco Vindas</div>
+                <p class="cop-notif-text">Obtuvo 61 en Ciencias (grupo 7-A).</p>
+                <span class="cop-notif-date">Lun 4 ago, 11:05 a.m.</span>
+            </div>
+            <span class="badge cop-badge-alta">Alta</span>
+        </div>
+
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-filters {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .cop-notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .cop-notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 16px 18px;
+        }
+
+        .cop-notif-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .cop-notif-danger {
+            background-color: #fdeceb;
+            color: #dc3545;
+        }
+
+        .cop-notif-warning {
+            background-color: #fff6e5;
+            color: #b8860b;
+        }
+
+        .cop-notif-body {
+            flex: 1;
+        }
+
+        .cop-notif-title {
+            font-weight: 600;
+            color: #133C55;
+        }
+
+        .cop-notif-text {
+            margin: 2px 0 4px;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .cop-notif-date {
+            font-size: 0.78rem;
+            color: #6c757d;
+        }
+
+        .cop-badge-alta {
+            background-color: #fdeceb;
+            color: #dc3545;
+            font-weight: 600;
+            height: fit-content;
+        }
+
+        .cop-badge-media {
+            background-color: #fff6e5;
+            color: #b8860b;
+            font-weight: 600;
+            height: fit-content;
+        }
+    </style>
+}

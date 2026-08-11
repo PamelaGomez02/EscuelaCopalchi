@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Aula Virtual Copalchi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark cop-navbar">
+        <div class="container">
+            @Html.ActionLink("Escuela Copalchi", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-lg-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="modulosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Módulos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="modulosDropdown">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-shield-lock me-2"></i>Roles</a></li>
+
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-mortarboard me-2"></i>Estudiantes</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-diagram-3 me-2"></i>Gestión académica</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-journal-text me-2"></i>Planes de estudio</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-folder2-open me-2"></i>Material didáctico</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Asistencia</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-clipboard-data me-2"></i>Gestión de notas</a></li>
+         
+                            <li><a class="dropdown-item" href="@Url.Action("Index", "Usuarios")"><i class="bi bi-person-badge me-2"></i>Usuarios</a></li>
+                            ...
+                            <li><a class="dropdown-item" href="@Url.Action("Index", "Notificaciones")"><i class="bi bi-bell me-2"></i>Notificaciones</a></li>
+                            ...
+                            <li><a class="dropdown-item" href="@Url.Action("Index", "Monitoreo")"><i class="bi bi-graph-up me-2"></i>Monitoreo académico</a></li>
+
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reportes</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Panel principal</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-journal-check me-2"></i>Auditoría</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-bucket me-2"></i>Inventario de limpieza</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-basket me-2"></i>Inventario de cocina</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer class="cop-footer">
+            <p>&copy; @DateTime.Now.Year - Aula Virtual Copalchi</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <style>
+        .cop-navbar {
+            background-color: #133C55;
+        }
+
+            .cop-navbar .navbar-brand {
+                font-weight: 700;
+            }
+
+            .cop-navbar .nav-link:hover,
+            .cop-navbar .dropdown-toggle:hover {
+                color: #91E5F6 !important;
+            }
+
+        .dropdown-menu {
+            border: 1px solid #e3e8ee;
+        }
+
+        .dropdown-item:hover {
+            background-color: #E6F1FB;
+            color: #133C55;
+        }
+
+        .cop-footer {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</body>
+</html>

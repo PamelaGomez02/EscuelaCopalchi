@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Monitoreo académico";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Monitoreo académico</h2>
+            <p class="cop-page-subtitle">Rendimiento de tus estudiantes durante el período lectivo.</p>
+        </div>
+        <a href="#" class="btn cop-btn-primary"><i class="bi bi-file-earmark-bar-graph me-1"></i> Generar reporte</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Promedio general</span>
+                <span class="cop-stat-value">82.4</span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Asistencia promedio</span>
+                <span class="cop-stat-value">94%</span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Estudiantes en riesgo</span>
+                <span class="cop-stat-value cop-stat-alert">3</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive cop-table-wrapper">
+        <table class="table align-middle cop-table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Grupo</th>
+                    <th>Promedio</th>
+                    <th>Asistencia</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Andrés Solís</td>
+                    <td>8-B</td>
+                    <td>61</td>
+                    <td>90%</td>
+                    <td><span class="badge cop-badge-alta">En riesgo</span></td>
+                </tr>
+                <tr>
+                    <td>Fabiana Rojas</td>
+                    <td>8-B</td>
+                    <td>88</td>
+                    <td>97%</td>
+                    <td><span class="badge cop-badge-ok">Al día</span></td>
+                </tr>
+                <tr>
+                    <td>Marco Vindas</td>
+                    <td>7-A</td>
+                    <td>61</td>
+                    <td>93%</td>
+                    <td><span class="badge cop-badge-alta">En riesgo</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+
+        .cop-stat-card {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cop-stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+
+        .cop-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #133C55;
+        }
+
+        .cop-stat-alert {
+            color: #dc3545;
+        }
+
+        .cop-table-wrapper {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin-bottom: 40px;
+        }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .cop-badge-alta {
+            background-color: #fdeceb;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .cop-badge-ok {
+            background-color: #E6F7EC;
+            color: #198754;
+            font-weight: 600;
+        }
+    </style>
+}

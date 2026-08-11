@@ -1,0 +1,248 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+}
+
+<main>
+    <!-- HERO -->
+    <section class="cop-hero">
+        <div class="container">
+            <h1 class="cop-hero-title">Aula Virtual Copalchi</h1>
+            <p class="cop-hero-lead">
+                Plataforma institucional para la gestión académica, administrativa y de bienestar
+                de la Escuela Copalchi: matrícula, asistencia, calificaciones, reportes y más,
+                en un solo lugar.
+            </p>
+        </div>
+    </section>
+
+    <!-- MÓDULOS -->
+    <section class="container cop-modules">
+        <h2 class="cop-section-title">Módulos del sistema</h2>
+        <p class="cop-section-subtitle">Selecciona un módulo para comenzar.</p>
+
+        <div class="row g-4 cop-card-grid">
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-shield-lock"></i></div>
+                    <h3 class="cop-card-title">Roles</h3>
+                    <p class="cop-card-desc">Crea y administra roles y niveles de acceso.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "Usuarios")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-person-badge"></i></div>
+                    <h3 class="cop-card-title">Usuarios</h3>
+                    <p class="cop-card-desc">Registro y administración de docentes y personal.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-mortarboard"></i></div>
+                    <h3 class="cop-card-title">Estudiantes</h3>
+                    <p class="cop-card-desc">Matrícula, datos médicos y bajas de estudiantes.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-diagram-3"></i></div>
+                    <h3 class="cop-card-title">Gestión académica</h3>
+                    <p class="cop-card-desc">Aulas, grupos y asignación de docentes.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-journal-text"></i></div>
+                    <h3 class="cop-card-title">Planes de estudio</h3>
+                    <p class="cop-card-desc">Carga, revisión y aprobación de planes mensuales.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-folder2-open"></i></div>
+                    <h3 class="cop-card-title">Material didáctico</h3>
+                    <p class="cop-card-desc">Repositorio de recursos y documentos institucionales.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-calendar-check"></i></div>
+                    <h3 class="cop-card-title">Asistencia</h3>
+                    <p class="cop-card-desc">Registro, historial y porcentaje de asistencia.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-clipboard-data"></i></div>
+                    <h3 class="cop-card-title">Gestión de notas</h3>
+                    <p class="cop-card-desc">Registro, importación y consulta de calificaciones.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "Monitoreo")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-graph-up"></i></div>
+                    <h3 class="cop-card-title">Monitoreo académico</h3>
+                    <p class="cop-card-desc">Rendimiento estudiantil y reportes por grupo.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "Notificaciones")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
+                    <h3 class="cop-card-title">Notificaciones</h3>
+                    <p class="cop-card-desc">Alertas de rendimiento, asistencia y riesgo académico.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-file-earmark-bar-graph"></i></div>
+                    <h3 class="cop-card-title">Reportes</h3>
+                    <p class="cop-card-desc">Reportes, fichas académicas y cartas de traslado.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-speedometer2"></i></div>
+                    <h3 class="cop-card-title">Panel principal</h3>
+                    <p class="cop-card-desc">Indicadores clave en tiempo real, según tu rol.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-journal-check"></i></div>
+                    <h3 class="cop-card-title">Auditoría</h3>
+                    <p class="cop-card-desc">Bitácora de acciones realizadas en el sistema.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bucket"></i></div>
+                    <h3 class="cop-card-title">Inventario de limpieza</h3>
+                    <p class="cop-card-desc">Control de productos de limpieza e higiene.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="#" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-basket"></i></div>
+                    <h3 class="cop-card-title">Inventario de cocina</h3>
+                    <p class="cop-card-desc">Control de insumos, vencimientos y stock mínimo.</p>
+                </a>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+@section styles {
+    <style>
+        :root {
+            --cop-primary: #133C55; /* Yale Blue */
+            --cop-secondary: #386FA4; /* Cornflower Ocean */
+            --cop-accent: #59A5D8; /* Fresh Sky */
+            --cop-soft: #84D2F6; /* Frozen Lake */
+            --cop-light: #91E5F6; /* Frosted Blue */
+            --cop-text: #212529;
+            --cop-muted: #6c757d;
+            --cop-card-bg: #ffffff;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background-color: var(--cop-page-bg);
+        }
+
+        .cop-hero {
+            background-color: var(--cop-primary);
+            color: #ffffff;
+            padding: 56px 0 48px;
+            margin-bottom: 40px;
+        }
+
+        .cop-hero-title {
+            font-weight: 700;
+            font-size: 2.25rem;
+            margin-bottom: 12px;
+        }
+
+        .cop-hero-lead {
+            font-size: 1.05rem;
+            max-width: 680px;
+            color: #dce8f2;
+            margin-bottom: 0;
+        }
+
+        .cop-modules {
+            padding-bottom: 56px;
+        }
+
+        .cop-section-title {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--cop-primary);
+            margin-bottom: 4px;
+        }
+
+        .cop-section-subtitle {
+            color: var(--cop-muted);
+            margin-bottom: 28px;
+        }
+
+        .cop-card {
+            display: block;
+            height: 100%;
+            background-color: var(--cop-card-bg);
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px 20px;
+            text-decoration: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+            .cop-card:hover {
+                border-color: var(--cop-accent);
+                box-shadow: 0 4px 14px rgba(19, 60, 85, 0.08);
+                transform: translateY(-2px);
+                text-decoration: none;
+            }
+
+        .cop-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background-color: var(--cop-light);
+            color: var(--cop-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 14px;
+        }
+
+        .cop-card-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--cop-secondary);
+            margin-bottom: 6px;
+        }
+
+        .cop-card-desc {
+            font-size: 0.9rem;
+            color: var(--cop-text);
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+    </style>
+}
