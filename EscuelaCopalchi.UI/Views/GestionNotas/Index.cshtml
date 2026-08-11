@@ -234,201 +234,201 @@
 </main>
 
 
-@section styles {
+@@section styles {
 
-    <style>
+<style>
 
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-accent: #59A5D8;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
+    :root {
+        --cop-primary: #133C55;
+        --cop-secondary: #386FA4;
+        --cop-accent: #59A5D8;
+        --cop-muted: #6c757d;
+        --cop-page-bg: #f4f7fa;
+    }
+
+    body {
+        background: var(--cop-page-bg);
+    }
+
+    .grades-header {
+        background: white;
+        border-bottom: 1px solid #e3e8ee;
+        padding: 30px 0;
+        margin-bottom: 28px;
+    }
+
+    .grades-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: .85rem;
+        color: var(--cop-muted);
+        margin-bottom: 12px;
+    }
+
+        .grades-breadcrumb a {
+            color: var(--cop-secondary);
+            text-decoration: none;
         }
 
-        body {
-            background: var(--cop-page-bg);
-        }
+    .grades-title {
+        color: var(--cop-primary);
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
 
-        .grades-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
-        }
+    .grades-subtitle {
+        color: var(--cop-muted);
+        margin: 0;
+    }
 
-        .grades-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
+    .btn-cop-primary {
+        background: var(--cop-primary);
+        color: white;
+        border-color: var(--cop-primary);
+    }
 
-            .grades-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
-
-        .grades-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .grades-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-        .btn-cop-primary {
-            background: var(--cop-primary);
+        .btn-cop-primary:hover {
+            background: var(--cop-secondary);
             color: white;
-            border-color: var(--cop-primary);
         }
 
-            .btn-cop-primary:hover {
-                background: var(--cop-secondary);
-                color: white;
-            }
+    .btn-outline-cop {
+        border: 1px solid var(--cop-secondary);
+        color: var(--cop-secondary);
+    }
 
-        .btn-outline-cop {
-            border: 1px solid var(--cop-secondary);
-            color: var(--cop-secondary);
-        }
+    .summary-card {
+        background: white;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 17px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
 
-        .summary-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 17px;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
+    .summary-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 9px;
+        background: #e6f1fb;
+        color: var(--cop-secondary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+    }
 
-        .summary-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 9px;
-            background: #e6f1fb;
-            color: var(--cop-secondary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-        }
+    .summary-card span {
+        display: block;
+        color: var(--cop-muted);
+        font-size: .8rem;
+    }
 
-        .summary-card span {
-            display: block;
-            color: var(--cop-muted);
-            font-size: .8rem;
-        }
+    .summary-card h2 {
+        color: var(--cop-primary);
+        font-size: 1.4rem;
+        margin: 0;
+    }
 
-        .summary-card h2 {
+    .grades-card {
+        background: white;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .grades-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 22px;
+    }
+
+        .grades-toolbar h2 {
             color: var(--cop-primary);
-            font-size: 1.4rem;
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+        }
+
+        .grades-toolbar p {
+            color: var(--cop-muted);
+            font-size: .85rem;
             margin: 0;
         }
 
-        .grades-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            overflow: hidden;
+    .search-box {
+        position: relative;
+        width: 260px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cop-muted);
         }
+
+        .search-box input {
+            padding-left: 34px;
+        }
+
+    .grades-table {
+        margin: 0;
+    }
+
+        .grades-table th {
+            background: #f8fafc;
+            color: #53616d;
+            font-size: .8rem;
+            text-transform: uppercase;
+            padding: 13px 17px;
+        }
+
+        .grades-table td {
+            padding: 15px 17px;
+            font-size: .9rem;
+        }
+
+    .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: .78rem;
+        font-weight: 600;
+    }
+
+    .status-progress {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-complete {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .btn-action {
+        background: white;
+        border: 1px solid #dce2e7;
+        color: var(--cop-secondary);
+        padding: 5px 9px;
+    }
+
+    @@media(max-width:768px) {
 
         .grades-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 22px;
+            flex-direction: column;
+            align-items: stretch;
         }
-
-            .grades-toolbar h2 {
-                color: var(--cop-primary);
-                font-size: 1.15rem;
-                margin-bottom: 4px;
-            }
-
-            .grades-toolbar p {
-                color: var(--cop-muted);
-                font-size: .85rem;
-                margin: 0;
-            }
 
         .search-box {
-            position: relative;
-            width: 260px;
+            width: 100%;
         }
-
-            .search-box i {
-                position: absolute;
-                left: 11px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--cop-muted);
-            }
-
-            .search-box input {
-                padding-left: 34px;
-            }
-
-        .grades-table {
-            margin: 0;
-        }
-
-            .grades-table th {
-                background: #f8fafc;
-                color: #53616d;
-                font-size: .8rem;
-                text-transform: uppercase;
-                padding: 13px 17px;
-            }
-
-            .grades-table td {
-                padding: 15px 17px;
-                font-size: .9rem;
-            }
-
-        .status {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: .78rem;
-            font-weight: 600;
-        }
-
-        .status-progress {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-complete {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .btn-action {
-            background: white;
-            border: 1px solid #dce2e7;
-            color: var(--cop-secondary);
-            padding: 5px 9px;
-        }
-
-        @@media(max-width:768px) {
-
-            .grades-toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-        }
-    </style>
+    }
+</style>
 
 }
