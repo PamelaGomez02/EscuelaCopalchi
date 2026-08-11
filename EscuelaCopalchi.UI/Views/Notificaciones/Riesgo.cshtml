@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Estudiantes en riesgo";
+}
+
+<main>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Estudiantes en riesgo académico</h2>
+            <p class="cop-page-subtitle">Listado consolidado por bajo rendimiento o asistencia.</p>
+        </div>
+        <a href="@Url.Action("Index", "Notificaciones")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+        </a>
+    </div>
+
+    <div class="table-responsive cop-table-wrapper">
+        <table class="table align-middle cop-table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Grupo</th>
+                    <th>Motivo</th>
+                    <th>Docente a cargo</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Andrés Solís</td>
+                    <td>8-B</td>
+                    <td><span class="badge cop-badge-alta">Bajo rendimiento</span></td>
+                    <td>Prof. Juan Pérez</td>
+                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
+                </tr>
+                <tr>
+                    <td>Karla Jiménez</td>
+                    <td>9-C</td>
+                    <td><span class="badge cop-badge-media">Inasistencia</span></td>
+                    <td>Prof. Laura Gómez</td>
+                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
+                </tr>
+                <tr>
+                    <td>Marco Vindas</td>
+                    <td>7-A</td>
+                    <td><span class="badge cop-badge-alta">Bajo rendimiento</span></td>
+                    <td>Prof. María Rodríguez</td>
+                    <td class="text-end"><a href="#" class="cop-icon-btn" title="Ver ficha"><i class="bi bi-eye"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-table-wrapper {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin-bottom: 40px;
+        }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .cop-badge-alta {
+            background-color: #fdeceb;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .cop-badge-media {
+            background-color: #fff6e5;
+            color: #b8860b;
+            font-weight: 600;
+        }
+
+        .cop-icon-btn {
+            border: none;
+            background: none;
+            color: #386FA4;
+            padding: 4px 6px;
+            font-size: 1rem;
+        }
+
+            .cop-icon-btn:hover {
+                color: #133C55;
+            }
+    </style>
+}

@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Estadísticas institucionales";
+}
+
+<main>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Estadísticas institucionales</h2>
+            <p class="cop-page-subtitle">Desempeño académico general de Escuela Copalchi.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Estudiantes matriculados</span>
+                <span class="cop-stat-value">412</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Promedio institucional</span>
+                <span class="cop-stat-value">85.1</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Asistencia general</span>
+                <span class="cop-stat-value">95%</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Estudiantes en riesgo</span>
+                <span class="cop-stat-value cop-stat-alert">18</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cop-chart-placeholder">
+        <i class="bi bi-bar-chart-line"></i>
+        <p>Gráfico de rendimiento por grupo (pendiente de datos)</p>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-stat-card {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cop-stat-label {
+            font-size: 0.78rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+
+        .cop-stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #133C55;
+        }
+
+        .cop-stat-alert {
+            color: #dc3545;
+        }
+
+        .cop-chart-placeholder {
+            background: #fff;
+            border: 1px dashed #c7d2db;
+            border-radius: 10px;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8a97a6;
+            margin-bottom: 40px;
+        }
+
+            .cop-chart-placeholder i {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+    </style>
+}

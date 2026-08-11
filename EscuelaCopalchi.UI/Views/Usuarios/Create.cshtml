@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "Nuevo usuario";
+}
+
+<main>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Nuevo usuario</h2>
+            <p class="cop-page-subtitle">Registra los datos personales y académicos del docente o personal.</p>
+        </div>
+    </div>
+
+    <div class="cop-form-card">
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombres</label>
+                    <input type="text" class="form-control" placeholder="Ej. María Fernanda">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" placeholder="Ej. Rodríguez Solano">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Identificación</label>
+                    <input type="text" class="form-control" placeholder="Cédula o DIMEX">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Correo institucional</label>
+                    <input type="email" class="form-control" placeholder="nombre@copalchi.edu">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" placeholder="8888-8888">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Rol</label>
+                    <select class="form-select">
+                        <option selected disabled>Selecciona un rol</option>
+                        <option>Docente</option>
+                        <option>Director</option>
+                        <option>Administrador</option>
+                        <option>Administrativo</option>
+                        <option>Comité de apoyo</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Área académica / especialidad</label>
+                    <input type="text" class="form-control" placeholder="Ej. Matemática">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de ingreso</label>
+                    <input type="date" class="form-control">
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn cop-btn-primary">Guardar usuario</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-form-card {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 28px 26px;
+            margin-bottom: 40px;
+        }
+
+            .cop-form-card .form-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #133C55;
+            }
+
+            .cop-form-card .form-control,
+            .cop-form-card .form-select {
+                border-radius: 8px;
+                border: 1px solid #dfe4ea;
+            }
+
+                .cop-form-card .form-control:focus,
+                .cop-form-card .form-select:focus {
+                    border-color: #59A5D8;
+                    box-shadow: 0 0 0 3px rgba(89, 165, 216, 0.2);
+                }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+    </style>
+}
