@@ -133,9 +133,18 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AuditoriaSistemaController.cs" />
+    <Compile Include="Controllers\InventarioCocinaController.cs" />
+    <Compile Include="Controllers\InventarioLimpiezaController.cs" />
+    <Compile Include="Controllers\PanelPrincipalController.cs" />
+    <Compile Include="Controllers\PlanesEstudioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\NotificacionesController.cs" />
+    <Compile Include="Controllers\RepositorioMaterialController.cs" />
+    <Compile Include="Controllers\AsistenciaController.cs" />
+    <Compile Include="Controllers\GestionNotasController.cs" />
+    <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -201,6 +210,38 @@
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
     <Content Include="Views\Monitoreo\Estadisticas.cshtml" />
+    <Content Include="Views\PlanesEstudio\Index.cshtml" />
+    <Content Include="Views\PlanesEstudio\Crear.cshtml" />
+    <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
+    <Content Include="Views\PlanesEstudio\Editar.cshtml" />
+    <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Crear.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Detalle.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Index.cshtml" />
+    <Content Include="Views\Asistencia\Historial.cshtml" />
+    <Content Include="Views\Asistencia\Editar.cshtml" />
+    <Content Include="Views\Asistencia\Registrar.cshtml" />
+    <Content Include="Views\Asistencia\Index.cshtml" />
+    <Content Include="Views\GestionNotas\ImportarExcel.cshtml" />
+    <Content Include="Views\GestionNotas\Historial.cshtml" />
+    <Content Include="Views\GestionNotas\Index.cshtml" />
+    <Content Include="Views\GestionNotas\Registrar.cshtml" />
+    <Content Include="Views\GestionNotas\Editar.cshtml" />
+    <Content Include="Views\Estudiantes\Editar.cshtml" />
+    <Content Include="Views\Estudiantes\HistorialBajas.cshtml" />
+    <Content Include="Views\Estudiantes\Crear.cshtml" />
+    <Content Include="Views\Estudiantes\Index.cshtml" />
+    <Content Include="Views\Estudiantes\Expediente.cshtml" />
+    <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
+    <Content Include="Views\Estudiantes\Detalle.cshtml" />
+    <Content Include="Views\AudoriaSistema\Detalle.cshtml" />
+    <Content Include="Views\AudoriaSistema\Index.cshtml" />
+    <Content Include="Views\InventarioCocina\Create.cshtml" />
+    <Content Include="Views\InventarioCocina\Index.cshtml" />
+    <Content Include="Views\InventarioLimpieza\Create.cshtml" />
+    <Content Include="Views\InventarioLimpieza\Index.cshtml" />
+    <Content Include="Views\PanelPrincipal\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

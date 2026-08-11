@@ -1,0 +1,333 @@
+﻿@{
+    ViewBag.Title = "Historial de asistencia";
+}
+
+<main>
+
+    <section class="attendance-header">
+
+        <div class="container">
+
+            <div class="attendance-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Asistencia")">
+                    Asistencia
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Historial</span>
+
+            </div>
+
+            <h1 class="attendance-title">
+                <i class="bi bi-clock-history me-2"></i>
+                Historial de asistencia
+            </h1>
+
+            <p class="attendance-subtitle">
+                Consulta registros históricos y porcentajes de asistencia.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="history-card">
+
+            <div class="filters">
+
+                <select class="form-select">
+                    <option>Primer grado A</option>
+                    <option>Segundo grado A</option>
+                </select>
+
+                <select class="form-select">
+                    <option>Todos los estudiantes</option>
+                    <option>María González</option>
+                    <option>Juan Pérez</option>
+                    <option>Andrea Solano</option>
+                </select>
+
+                <input type="date"
+                       class="form-control" />
+
+                <input type="date"
+                       class="form-control" />
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-search"></i>
+                    Consultar
+                </button>
+
+            </div>
+
+
+            <div class="student-summary">
+
+                <div>
+
+                    <span>Estudiante</span>
+                    <strong>María González</strong>
+
+                </div>
+
+                <div>
+
+                    <span>Presentes</span>
+                    <strong>18</strong>
+
+                </div>
+
+                <div>
+
+                    <span>Ausencias</span>
+                    <strong>1</strong>
+
+                </div>
+
+                <div>
+
+                    <span>Tardanzas</span>
+                    <strong>1</strong>
+
+                </div>
+
+                <div class="percentage-box">
+
+                    <span>Porcentaje</span>
+                    <strong>90%</strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table history-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Hora</th>
+                            <th>Observación</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>10/08/2026</td>
+
+                            <td>
+                                <span class="status status-present">
+                                    Presente
+                                </span>
+                            </td>
+
+                            <td>7:00 a. m.</td>
+
+                            <td>—</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>07/08/2026</td>
+
+                            <td>
+                                <span class="status status-late">
+                                    Tardanza
+                                </span>
+                            </td>
+
+                            <td>7:15 a. m.</td>
+
+                            <td>Transporte</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>06/08/2026</td>
+
+                            <td>
+                                <span class="status status-absent">
+                                    Ausente
+                                </span>
+                            </td>
+
+                            <td>—</td>
+
+                            <td>Justificación pendiente</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .attendance-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .attendance-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .attendance-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .attendance-title {
+            color: var(--cop-primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .attendance-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .history-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .filters {
+            padding: 18px;
+            background: #f8fafc;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .filters .form-select,
+            .filters .form-control {
+                max-width: 200px;
+            }
+
+        .student-summary {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr repeat(4, 1fr);
+            gap: 15px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .student-summary span {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .77rem;
+            }
+
+            .student-summary strong {
+                color: var(--cop-primary);
+            }
+
+        .percentage-box strong {
+            font-size: 1.3rem;
+            color: #198754;
+        }
+
+        .history-table {
+            margin: 0;
+        }
+
+            .history-table th {
+                background: #f8fafc;
+                font-size: .8rem;
+                text-transform: uppercase;
+                color: #53616d;
+                padding: 13px 17px;
+            }
+
+            .history-table td {
+                padding: 15px 17px;
+            }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-absent {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-late {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+        @@media(max-width:992px) {
+
+            .filters {
+                flex-wrap: wrap;
+            }
+
+            .student-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+
+}

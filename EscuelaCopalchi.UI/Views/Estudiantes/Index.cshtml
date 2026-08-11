@@ -1,0 +1,661 @@
+﻿@{
+    ViewBag.Title = "Estudiantes";
+}
+
+<main>
+
+    <section class="students-header">
+        <div class="container">
+
+            <div class="students-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Estudiantes</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <h1 class="students-title">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Gestión de estudiantes
+                    </h1>
+
+                    <p class="students-subtitle">
+                        Registra, consulta y administra la matrícula institucional.
+                    </p>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <a href="@Url.Action("ImportarExcel", "Estudiantes")"
+                       class="btn btn-outline-cop">
+                        <i class="bi bi-file-earmark-excel me-1"></i>
+                        Importar Excel
+                    </a>
+
+                    <a href="@Url.Action("Crear", "Estudiantes")"
+                       class="btn btn-cop-primary">
+                        <i class="bi bi-person-plus me-1"></i>
+                        Registrar estudiante
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <span>Total estudiantes</span>
+                        <h2>124</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon active">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Activos</span>
+                        <h2>118</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+
+                    <div class="summary-icon inactive">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <div>
+                        <span>Inactivos</span>
+                        <h2>6</h2>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="students-card">
+
+            <div class="students-toolbar">
+
+                <div>
+                    <h2>Estudiantes registrados</h2>
+                    <p>Consulta y administra la información estudiantil.</p>
+                </div>
+
+                <div class="toolbar-actions">
+
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Activos</option>
+                        <option>Inactivos</option>
+                    </select>
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Buscar estudiante..." />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table students-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Identificación</th>
+                            <th>Grado</th>
+                            <th>Encargado</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        AR
+                                    </div>
+
+                                    <div>
+                                        <strong>Ana Rodríguez</strong>
+                                        <small>Estudiante</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>1-2345-6789</td>
+
+                            <td>Primer grado A</td>
+
+                            <td>Laura Rodríguez</td>
+
+                            <td>
+                                <span class="status status-active">
+                                    <i class="bi bi-check-circle"></i>
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="@Url.Action("Editar", "Estudiantes", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a href="@Url.Action("Expediente", "Estudiantes", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Expediente">
+                                    <i class="bi bi-heart-pulse"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-action-danger"
+                                        title="Dar de baja"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalBaja">
+
+                                    <i class="bi bi-person-dash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        JM
+                                    </div>
+
+                                    <div>
+                                        <strong>José Mora</strong>
+                                        <small>Estudiante</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>1-9876-5432</td>
+
+                            <td>Segundo grado A</td>
+
+                            <td>Carlos Mora</td>
+
+                            <td>
+                                <span class="status status-inactive">
+                                    <i class="bi bi-x-circle"></i>
+                                    Inactivo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
+                                   class="btn btn-action">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="history-link">
+
+                <a href="@Url.Action("HistorialBajas", "Estudiantes")"
+                   class="btn btn-light">
+
+                    <i class="bi bi-clock-history me-1"></i>
+                    Ver historial de bajas
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL BAJA -->
+
+<div class="modal fade"
+     id="modalBaja"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Dar de baja estudiante
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="warning-box">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    <p>
+                        El estudiante cambiará al estado Inactivo.
+                    </p>
+
+                </div>
+
+
+                <label class="form-label">
+                    Motivo de la baja
+                    <span class="required">*</span>
+                </label>
+
+                <select class="form-select mb-3">
+
+                    <option selected disabled>
+                        Seleccione un motivo
+                    </option>
+
+                    <option>Traslado de institución</option>
+                    <option>Retiro</option>
+                    <option>Cambio de residencia</option>
+                    <option>Otro</option>
+
+                </select>
+
+
+                <label class="form-label">
+                    Observación
+                </label>
+
+                <textarea class="form-control"
+                          rows="3"
+                          placeholder="Agregue información adicional..."></textarea>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger">
+                    <i class="bi bi-person-dash me-1"></i>
+                    Confirmar baja
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .students-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .students-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .students-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .students-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .students-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+            .summary-icon.active {
+                background: #d1e7dd;
+                color: #0f5132;
+            }
+
+            .summary-icon.inactive {
+                background: #f8d7da;
+                color: #842029;
+            }
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .students-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .students-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+            .students-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+            }
+
+            .students-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+            .toolbar-actions .form-select {
+                width: 130px;
+            }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+        .students-table {
+            margin: 0;
+        }
+
+            .students-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .78rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .students-table td {
+                padding: 15px 17px;
+                font-size: .88rem;
+            }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: .8rem;
+        }
+
+        .student-info strong,
+        .student-info small {
+            display: block;
+        }
+
+        .student-info small {
+            color: var(--cop-muted);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .btn-action,
+        .btn-action-danger {
+            border: 1px solid #dce2e7;
+            background: white;
+            padding: 5px 9px;
+        }
+
+        .btn-action {
+            color: var(--cop-secondary);
+        }
+
+        .btn-action-danger {
+            color: #dc3545;
+        }
+
+        .history-link {
+            padding: 16px 22px;
+            border-top: 1px solid #edf0f3;
+            text-align: right;
+        }
+
+        .warning-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 18px;
+        }
+
+            .warning-box p {
+                margin: 0;
+                font-size: .88rem;
+            }
+
+        .required {
+            color: #dc3545;
+        }
+
+        @@media(max-width:768px) {
+
+            .students-toolbar,
+            .toolbar-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .search-box,
+                .toolbar-actions .form-select {
+                    width: 100%;
+                }
+        }
+    </style>
+
+}

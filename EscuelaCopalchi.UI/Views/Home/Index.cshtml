@@ -39,7 +39,7 @@
             </div>
 
             <div class="col-sm-6 col-lg-4">
-                <a href="#" class="cop-card">
+                <a href="@Url.Action("Index", "Estudiantes")" class="cop-card">
                     <div class="cop-card-icon"><i class="bi bi-mortarboard"></i></div>
                     <h3 class="cop-card-title">Estudiantes</h3>
                     <p class="cop-card-desc">Matrícula, datos médicos y bajas de estudiantes.</p>
@@ -55,15 +55,21 @@
             </div>
 
             <div class="col-sm-6 col-lg-4">
-                <a href="#" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-journal-text"></i></div>
+                <a href="@Url.Action("Index", "PlanesEstudio")" class="cop-card">
+                    <div class="cop-card-icon">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+
                     <h3 class="cop-card-title">Planes de estudio</h3>
-                    <p class="cop-card-desc">Carga, revisión y aprobación de planes mensuales.</p>
+
+                    <p class="cop-card-desc">
+                        Carga, revisión y aprobación de planes mensuales.
+                    </p>
                 </a>
             </div>
 
             <div class="col-sm-6 col-lg-4">
-                <a href="#" class="cop-card">
+                <a href="@Url.Action("Index", "RepositorioMaterial")" class="cop-card">
                     <div class="cop-card-icon"><i class="bi bi-folder2-open"></i></div>
                     <h3 class="cop-card-title">Material didáctico</h3>
                     <p class="cop-card-desc">Repositorio de recursos y documentos institucionales.</p>
@@ -71,7 +77,7 @@
             </div>
 
             <div class="col-sm-6 col-lg-4">
-                <a href="#" class="cop-card">
+                <a href="@Url.Action("Index", "Asistencia")" class="cop-card">
                     <div class="cop-card-icon"><i class="bi bi-calendar-check"></i></div>
                     <h3 class="cop-card-title">Asistencia</h3>
                     <p class="cop-card-desc">Registro, historial y porcentaje de asistencia.</p>
@@ -79,8 +85,10 @@
             </div>
 
             <div class="col-sm-6 col-lg-4">
-                <a href="#" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-clipboard-data"></i></div>
+                <a href="@Url.Action("Index", "GestionNotas")" class="cop-card">
+                    <div class="cop-card-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
                     <h3 class="cop-card-title">Gestión de notas</h3>
                     <p class="cop-card-desc">Registro, importación y consulta de calificaciones.</p>
                 </a>
@@ -99,6 +107,39 @@
                     <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
                     <h3 class="cop-card-title">Notificaciones</h3>
                     <p class="cop-card-desc">Alertas de rendimiento, asistencia y riesgo académico.</p>
+                </a>
+            </div>
+
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "PanelPrincipal")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
+                    <h3 class="cop-card-title">Notificaciones</h3>
+                    <p class="cop-card-desc">Visualizacion Dashboard.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
+                    <h3 class="cop-card-title">Notificaciones</h3>
+                    <p class="cop-card-desc">Auditorias del Sistema.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "InventarioLimpieza")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
+                    <h3 class="cop-card-title">Notificaciones</h3>
+                    <p class="cop-card-desc">Inventario de materioales de Limpieza e Hihiene.</p>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <a href="@Url.Action("Index", "InventarioCocina")" class="cop-card">
+                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
+                    <h3 class="cop-card-title">Notificaciones</h3>
+                    <p class="cop-card-desc">Inventario de insumos para la cocina, alimentos.</p>
                 </a>
             </div>
 

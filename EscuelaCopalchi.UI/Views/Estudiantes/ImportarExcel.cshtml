@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "Importar estudiantes";
+}
+
+<main>
+
+    <section class="students-header">
+
+        <div class="container">
+
+            <div class="students-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Importar Excel</span>
+            </div>
+
+            <h1 class="students-title">
+                <i class="bi bi-file-earmark-excel me-2"></i>
+                Importar estudiantes
+            </h1>
+
+            <p class="students-subtitle">
+                Realiza una matrícula masiva mediante un archivo Excel.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="import-card">
+
+            <div class="upload-box">
+
+                <i class="bi bi-file-earmark-excel"></i>
+
+                <h2>Selecciona el archivo Excel</h2>
+
+                <p>
+                    El archivo debe contener los campos requeridos para registrar
+                    los estudiantes.
+                </p>
+
+                <input type="file"
+                       class="form-control"
+                       accept=".xls,.xlsx" />
+
+                <small>
+                    Formatos permitidos: .xls y .xlsx
+                </small>
+
+            </div>
+
+
+            <div class="preview-section">
+
+                <div class="preview-heading">
+
+                    <div>
+                        <h3>Vista previa</h3>
+                        <p>Verifica la información antes de importar.</p>
+                    </div>
+
+                    <span class="badge bg-success">
+                        3 registros válidos
+                    </span>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table preview-table">
+
+                        <thead>
+                            <tr>
+                                <th>Identificación</th>
+                                <th>Nombre</th>
+                                <th>Grado</th>
+                                <th>Encargado</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>1-1111-1111</td>
+                                <td>Ana Rodríguez</td>
+                                <td>Primer grado</td>
+                                <td>Laura Rodríguez</td>
+                                <td>
+                                    <span class="text-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        Válido
+                                    </span>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>1-2222-2222</td>
+                                <td>Daniel Mora</td>
+                                <td>Segundo grado</td>
+                                <td>Carlos Mora</td>
+                                <td>
+                                    <span class="text-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        Válido
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "Estudiantes")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+
+                    <i class="bi bi-upload me-1"></i>
+                    Importar estudiantes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .students-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .students-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .students-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .students-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .students-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .import-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .upload-box {
+            border: 2px dashed #cad5df;
+            border-radius: 10px;
+            padding: 30px;
+            background: #fafcfd;
+            text-align: center;
+        }
+
+            .upload-box > i {
+                font-size: 2.3rem;
+                color: #198754;
+            }
+
+            .upload-box h2 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                margin-top: 10px;
+            }
+
+            .upload-box p,
+            .upload-box small {
+                color: var(--cop-muted);
+                font-size: .85rem;
+            }
+
+        .preview-section {
+            margin-top: 28px;
+            border-top: 1px solid #edf0f3;
+            padding-top: 22px;
+        }
+
+        .preview-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .preview-heading h3 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+                margin: 0;
+            }
+
+            .preview-heading p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 3px 0 0;
+            }
+
+        .preview-table th {
+            background: #f8fafc;
+            font-size: .8rem;
+            text-transform: uppercase;
+            color: #53616d;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            padding-top: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+    </style>
+
+}

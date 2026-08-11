@@ -1,0 +1,15 @@
+# Visual Studio
+.vs/
+
+# Compilación
+bin/
+obj/
+
+# Archivos locales
+*.user
+*.suo
+
+# Archivos generados
+*.pdb
+*.dll
+*.cache

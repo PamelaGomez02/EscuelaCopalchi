@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "Auditoría del sistema";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Auditoría del sistema</h2>
+            <p class="cop-page-subtitle">Bitácora de acciones críticas realizadas en el sistema.</p>
+        </div>
+    </div>
+
+    <div class="cop-filters">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected>Todos los módulos</option>
+                    <option>Roles</option>
+                    <option>Usuarios</option>
+                    <option>Planes de estudio</option>
+                    <option>Inventario de limpieza</option>
+                    <option>Inventario de cocina</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected>Todos los usuarios</option>
+                    <option>Administrador</option>
+                    <option>Director</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="date" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive cop-table-wrapper">
+        <table class="table align-middle cop-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Módulo</th>
+                    <th>Fecha</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ana.admin</td>
+                    <td>Creó un rol</td>
+                    <td>Roles</td>
+                    <td>Hoy, 9:12 a.m.</td>
+                    <td><a href="@Url.Action("Detalle", "AuditoriaSistema")" class="cop-link-detail">Ver detalle</a></td>
+                </tr>
+                <tr>
+                    <td>director.copalchi</td>
+                    <td>Aprobó un plan de estudio</td>
+                    <td>Planes de estudio</td>
+                    <td>Ayer, 3:40 p.m.</td>
+                    <td><a href="@Url.Action("Detalle", "AuditoriaSistema")" class="cop-link-detail">Ver detalle</a></td>
+                </tr>
+                <tr>
+                    <td>ana.admin</td>
+                    <td>Restableció contraseña</td>
+                    <td>Usuarios</td>
+                    <td>Lun 4 ago, 11:05 a.m.</td>
+                    <td><a href="@Url.Action("Detalle", "AuditoriaSistema")" class="cop-link-detail">Ver detalle</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-filters {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .cop-table-wrapper {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin-bottom: 40px;
+        }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .cop-link-detail {
+            color: #133C55;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+            .cop-link-detail:hover {
+                text-decoration: underline;
+            }
+    </style>
+}

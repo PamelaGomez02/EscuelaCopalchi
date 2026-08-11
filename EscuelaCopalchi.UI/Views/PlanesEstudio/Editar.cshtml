@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "Editar plan";
+}
+
+<main>
+
+    <section class="planes-header">
+        <div class="container">
+
+            <div class="planes-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "PlanesEstudio")">Planes de estudio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Editar</span>
+            </div>
+
+            <h1 class="planes-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar plan de estudio
+            </h1>
+
+            <p class="planes-subtitle">
+                Modifica la información registrada en la planificación mensual.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="edit-card">
+
+            <div class="alert alert-warning d-flex align-items-start gap-2">
+
+                <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+
+                <div>
+                    <strong>Plan pendiente de corrección</strong>
+
+                    <div class="small">
+                        Revisa las observaciones realizadas antes de volver a enviar el plan.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="observation-box mb-4">
+
+                <span class="observation-title">
+                    <i class="bi bi-chat-left-text me-1"></i>
+                    Observación del director
+                </span>
+
+                <p>
+                    Debe ampliar las actividades de evaluación correspondientes
+                    a la segunda semana del mes.
+                </p>
+
+            </div>
+
+
+            <form>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Mes</label>
+
+                        <select class="form-select">
+                            <option>Julio</option>
+                            <option selected>Agosto</option>
+                            <option>Septiembre</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="form-label">Año</label>
+
+                        <select class="form-select">
+                            <option selected>2026</option>
+                            <option>2027</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="form-label">Grado</label>
+
+                        <select class="form-select">
+                            <option selected>Primer grado</option>
+                            <option>Segundo grado</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="form-label">Asignatura</label>
+
+                        <select class="form-select">
+                            <option selected>Matemáticas</option>
+                            <option>Español</option>
+                            <option>Ciencias</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-12">
+                        <label class="form-label">Objetivo de aprendizaje</label>
+
+                        <textarea class="form-control"
+                                  rows="3">Desarrollar habilidades para resolver operaciones matemáticas básicas.</textarea>
+                    </div>
+
+
+                    <div class="col-12">
+                        <label class="form-label">Contenidos</label>
+
+                        <textarea class="form-control"
+                                  rows="4">Sumas, restas y resolución de problemas sencillos.</textarea>
+                    </div>
+
+
+                    <div class="col-12">
+                        <label class="form-label">Actividades</label>
+
+                        <textarea class="form-control"
+                                  rows="4">Ejercicios individuales, actividades grupales y resolución de problemas prácticos.</textarea>
+                    </div>
+
+
+                    <div class="col-12">
+                        <label class="form-label">Evaluación</label>
+
+                        <textarea class="form-control"
+                                  rows="3">Prácticas en clase, participación y evaluación corta semanal.</textarea>
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Reemplazar archivo
+                            <span class="text-muted fw-normal">(opcional)</span>
+                        </label>
+
+                        <input type="file"
+                               class="form-control"
+                               accept=".xlsx,.xls" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 1 })"
+                       class="btn btn-light">
+                        Cancelar
+                    </a>
+
+                    <button type="button"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-send me-1"></i>
+                        Guardar y reenviar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .planes-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .planes-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .planes-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .planes-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .planes-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .edit-card {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .observation-box {
+            border-left: 4px solid #dc3545;
+            background: #fff7f7;
+            padding: 14px 16px;
+            border-radius: 5px;
+        }
+
+        .observation-title {
+            color: #842029;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .observation-box p {
+            margin: 6px 0 0;
+            color: #495057;
+            font-size: .9rem;
+        }
+
+        .form-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 25px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+    </style>
+
+}

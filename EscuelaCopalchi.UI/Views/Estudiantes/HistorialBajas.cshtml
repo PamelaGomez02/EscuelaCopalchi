@@ -1,0 +1,722 @@
+﻿@{
+    ViewBag.Title = "Historial de bajas";
+}
+
+<main>
+
+    <section class="students-header">
+
+        <div class="container">
+
+            <div class="students-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">
+                    Inicio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Estudiantes")">
+                    Estudiantes
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Historial de bajas</span>
+
+            </div>
+
+
+            <h1 class="students-title">
+                <i class="bi bi-clock-history me-2"></i>
+                Historial de bajas
+            </h1>
+
+            <p class="students-subtitle">
+                Consulta los estudiantes retirados o trasladados de la institución.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-person-dash"></i>
+                    </div>
+
+                    <div>
+                        <span>Total de bajas</span>
+                        <h2>6</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+
+                    <div>
+                        <span>Traslados</span>
+                        <h2>4</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-box-arrow-left"></i>
+                    </div>
+
+                    <div>
+                        <span>Retiros</span>
+                        <h2>2</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="history-card">
+
+            <!-- BUSCADOR -->
+            <div class="history-toolbar">
+
+                <div>
+
+                    <h2>Estudiantes inactivos</h2>
+
+                    <p>
+                        Busca y consulta el historial de bajas de matrícula.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar estudiante..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="filters">
+
+                <select class="form-select">
+
+                    <option value="">
+                        Todos los motivos
+                    </option>
+
+                    <option>
+                        Traslado de institución
+                    </option>
+
+                    <option>
+                        Retiro
+                    </option>
+
+                    <option>
+                        Cambio de residencia
+                    </option>
+
+                    <option>
+                        Otro
+                    </option>
+
+                </select>
+
+
+                <select class="form-select">
+
+                    <option value="">
+                        Todos los grados
+                    </option>
+
+                    <option>
+                        Primer grado
+                    </option>
+
+                    <option>
+                        Segundo grado
+                    </option>
+
+                    <option>
+                        Tercer grado
+                    </option>
+
+                    <option>
+                        Cuarto grado
+                    </option>
+
+                    <option>
+                        Quinto grado
+                    </option>
+
+                    <option>
+                        Sexto grado
+                    </option>
+
+                </select>
+
+
+                <input type="date"
+                       class="form-control" />
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table history-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Identificación</th>
+                            <th>Grado</th>
+                            <th>Fecha de baja</th>
+                            <th>Motivo</th>
+                            <th class="text-end">Detalle</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        JM
+                                    </div>
+
+                                    <div>
+                                        <strong>José Mora</strong>
+                                        <small>Inactivo</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                1-9876-5432
+                            </td>
+
+                            <td>
+                                Segundo grado
+                            </td>
+
+                            <td>
+                                15/06/2026
+                            </td>
+
+                            <td>
+
+                                <span class="reason reason-transfer">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    Traslado
+                                </span>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <button type="button"
+                                        class="btn btn-action"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalDetalle">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        CL
+                                    </div>
+
+                                    <div>
+                                        <strong>Camila López</strong>
+                                        <small>Inactivo</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                1-5566-7788
+                            </td>
+
+                            <td>
+                                Tercer grado
+                            </td>
+
+                            <td>
+                                22/05/2026
+                            </td>
+
+                            <td>
+
+                                <span class="reason reason-retirement">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Retiro
+                                </span>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <button type="button"
+                                        class="btn btn-action"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalDetalle">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="history-footer">
+
+                <a href="@Url.Action("Index", "Estudiantes")"
+                   class="btn btn-light">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Volver
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL DETALLE BAJA -->
+<div class="modal fade"
+     id="modalDetalle"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Detalle de la baja
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="detail-row">
+
+                    <span>Estudiante</span>
+                    <strong>José Mora</strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>Identificación</span>
+                    <strong>1-9876-5432</strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>Fecha de baja</span>
+                    <strong>15/06/2026</strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>Motivo</span>
+                    <strong>Traslado de institución</strong>
+
+                </div>
+
+
+                <div class="observation-box">
+
+                    <span>
+                        Observación
+                    </span>
+
+                    <p>
+                        El encargado informa traslado de residencia y matrícula
+                        del estudiante en otra institución educativa.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-cop-primary"
+                        data-bs-dismiss="modal">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .students-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .students-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .students-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .students-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .students-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #f8d7da;
+            color: #842029;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .history-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .history-toolbar {
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+            .history-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin: 0 0 4px;
+            }
+
+            .history-toolbar p {
+                color: var(--cop-muted);
+                margin: 0;
+                font-size: .85rem;
+            }
+
+        .search-box {
+            position: relative;
+            width: 270px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+        .filters {
+            padding: 15px 22px;
+            display: flex;
+            gap: 12px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .filters .form-select,
+            .filters .form-control {
+                max-width: 220px;
+            }
+
+        .history-table {
+            margin: 0;
+        }
+
+            .history-table th {
+                background: #f8fafc;
+                color: #53616d;
+                text-transform: uppercase;
+                font-size: .78rem;
+                padding: 13px 17px;
+            }
+
+            .history-table td {
+                padding: 15px 17px;
+                font-size: .88rem;
+            }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .student-info strong,
+        .student-info small {
+            display: block;
+        }
+
+        .student-info small {
+            color: var(--cop-muted);
+        }
+
+        .reason {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+        .reason-transfer {
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+        }
+
+        .reason-retirement {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .btn-action {
+            border: 1px solid #dce2e7;
+            background: white;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+        .history-footer {
+            padding: 16px 22px;
+            border-top: 1px solid #edf0f3;
+        }
+
+        .detail-row {
+            padding: 10px 0;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .detail-row span,
+            .detail-row strong {
+                display: block;
+            }
+
+            .detail-row span {
+                color: var(--cop-muted);
+                font-size: .78rem;
+            }
+
+        .observation-box {
+            margin-top: 16px;
+            padding: 13px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+            .observation-box span {
+                color: var(--cop-muted);
+                font-size: .78rem;
+            }
+
+            .observation-box p {
+                margin: 4px 0 0;
+                font-size: .88rem;
+            }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+        @@media(max-width:768px) {
+
+            .history-toolbar,
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .search-box,
+                .filters .form-select,
+                .filters .form-control {
+                    width: 100%;
+                    max-width: none;
+                }
+        }
+    </style>
+
+}

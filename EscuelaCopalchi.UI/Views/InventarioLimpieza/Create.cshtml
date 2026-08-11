@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Nuevo producto";
+}
+
+<main>
+    <a href="@Url.Action("Index", "InventarioLimpieza")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inventario
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Nuevo producto</h2>
+            <p class="cop-page-subtitle">Registra un producto de limpieza e higiene.</p>
+        </div>
+    </div>
+
+    <div class="cop-form-wrapper">
+        <form>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre del producto</label>
+                    <input type="text" class="form-control" placeholder="Ej. Jabón líquido 1L">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Categoría</label>
+                    <select class="form-select">
+                        <option selected>Higiene</option>
+                        <option>Limpieza</option>
+                        <option>Desinfección</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Existencias</label>
+                    <input type="number" class="form-control" placeholder="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Unidad de medida</label>
+                    <select class="form-select">
+                        <option selected>Unidades</option>
+                        <option>Litros</option>
+                        <option>Paquetes</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Stock mínimo</label>
+                    <input type="number" class="form-control" placeholder="0">
+                </div>
+            </div>
+
+            <div class="cop-form-actions">
+                <a href="@Url.Action("Index", "InventarioLimpieza")" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn cop-btn-primary">Guardar producto</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-form-wrapper {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 40px;
+            max-width: 640px;
+        }
+
+        .cop-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+    </style>
+}

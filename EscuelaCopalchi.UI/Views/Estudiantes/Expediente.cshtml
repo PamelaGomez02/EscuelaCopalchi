@@ -1,0 +1,769 @@
+﻿@{
+    ViewBag.Title = "Expediente del estudiante";
+}
+
+<main>
+
+    <section class="record-header">
+
+        <div class="container">
+
+            <div class="record-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Estudiantes")">
+                    Estudiantes
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })">
+                    Ana Rodríguez
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Expediente</span>
+
+            </div>
+
+
+            <h1 class="record-title">
+                <i class="bi bi-heart-pulse me-2"></i>
+                Expediente del estudiante
+            </h1>
+
+            <p class="record-subtitle">
+                Información de apoyo, adecuaciones y observaciones registradas.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- ALERTA -->
+        <div class="privacy-alert">
+
+            <i class="bi bi-shield-lock"></i>
+
+            <div>
+                <strong>Información de acceso restringido</strong>
+
+                <p>
+                    Esta información debe ser consultada únicamente por personal autorizado.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- ESTUDIANTE -->
+        <div class="student-card">
+
+            <div class="student-avatar">
+                AR
+            </div>
+
+            <div>
+                <span>Estudiante</span>
+                <h2>Ana Rodríguez Vargas</h2>
+                <p>Primer grado A · Identificación 1-2345-6789</p>
+            </div>
+
+        </div>
+
+
+        <div class="row g-4 mt-1">
+
+            <!-- ALERGIAS -->
+            <div class="col-lg-6">
+
+                <div class="record-card">
+
+                    <div class="record-card-header">
+
+                        <div>
+
+                            <h2>
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                Alergias
+                            </h2>
+
+                            <p>
+                                Alergias registradas para el estudiante.
+                            </p>
+
+                        </div>
+
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-cop"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAlergia">
+
+                            <i class="bi bi-plus-lg"></i>
+                            Agregar
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="record-item allergy">
+
+                        <div>
+
+                            <strong>Penicilina</strong>
+
+                            <p>
+                                Reacción alérgica reportada por el encargado.
+                            </p>
+
+                        </div>
+
+
+                        <button class="btn btn-icon">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div class="record-item allergy">
+
+                        <div>
+
+                            <strong>Maní</strong>
+
+                            <p>
+                                Evitar consumo de alimentos que contengan maní.
+                            </p>
+
+                        </div>
+
+
+                        <button class="btn btn-icon">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ADECUACIONES -->
+            <div class="col-lg-6">
+
+                <div class="record-card">
+
+                    <div class="record-card-header">
+
+                        <div>
+
+                            <h2>
+                                <i class="bi bi-journal-check me-2"></i>
+                                Adecuaciones
+                            </h2>
+
+                            <p>
+                                Adecuaciones curriculares registradas.
+                            </p>
+
+                        </div>
+
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-cop"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAdecuacion">
+
+                            <i class="bi bi-plus-lg"></i>
+                            Agregar
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="record-item accommodation">
+
+                        <div>
+
+                            <strong>Adecuación no significativa</strong>
+
+                            <p>
+                                Tiempo adicional para realizar evaluaciones.
+                            </p>
+
+                            <small>
+                                Registrada: 10/03/2026
+                            </small>
+
+                        </div>
+
+
+                        <button class="btn btn-icon">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- OBSERVACIONES -->
+            <div class="col-12">
+
+                <div class="record-card">
+
+                    <div class="record-card-header">
+
+                        <div>
+
+                            <h2>
+                                <i class="bi bi-clipboard2-pulse me-2"></i>
+                                Observaciones médicas
+                            </h2>
+
+                            <p>
+                                Historial de observaciones médicas registradas.
+                            </p>
+
+                        </div>
+
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-cop"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalObservacion">
+
+                            <i class="bi bi-plus-lg"></i>
+                            Nueva observación
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="medical-record">
+
+                        <div class="record-date">
+                            05/08/2026
+                        </div>
+
+                        <div class="record-content">
+
+                            <strong>Observación general</strong>
+
+                            <p>
+                                El encargado informa que la estudiante debe evitar
+                                actividades físicas intensas durante esta semana.
+                            </p>
+
+                            <small>
+                                Registrado por Comité de Apoyo
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="medical-record">
+
+                        <div class="record-date">
+                            10/03/2026
+                        </div>
+
+                        <div class="record-content">
+
+                            <strong>Seguimiento</strong>
+
+                            <p>
+                                Se registra seguimiento de la adecuación curricular.
+                            </p>
+
+                            <small>
+                                Registrado por Comité de Apoyo
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+               class="btn btn-light">
+
+                <i class="bi bi-arrow-left me-1"></i>
+                Volver al estudiante
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL ALERGIA -->
+<div class="modal fade"
+     id="modalAlergia"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Registrar alergia
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <label class="form-label">
+                    Alergia
+                </label>
+
+                <input type="text"
+                       class="form-control mb-3"
+                       placeholder="Ej. Penicilina" />
+
+
+                <label class="form-label">
+                    Descripción
+                </label>
+
+                <textarea class="form-control"
+                          rows="3"
+                          placeholder="Ingrese información adicional..."></textarea>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button class="btn btn-cop-primary">
+                    Guardar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL ADECUACIÓN -->
+<div class="modal fade"
+     id="modalAdecuacion"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Registrar adecuación
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <label class="form-label">
+                    Tipo de adecuación
+                </label>
+
+                <select class="form-select mb-3">
+
+                    <option selected disabled>
+                        Seleccione
+                    </option>
+
+                    <option>
+                        Adecuación de acceso
+                    </option>
+
+                    <option>
+                        Adecuación no significativa
+                    </option>
+
+                    <option>
+                        Adecuación significativa
+                    </option>
+
+                </select>
+
+
+                <label class="form-label">
+                    Descripción
+                </label>
+
+                <textarea class="form-control"
+                          rows="4"
+                          placeholder="Describa la adecuación requerida..."></textarea>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button class="btn btn-cop-primary">
+                    Guardar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL OBSERVACIÓN -->
+<div class="modal fade"
+     id="modalObservacion"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Nueva observación médica
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <label class="form-label">
+                    Fecha
+                </label>
+
+                <input type="date"
+                       class="form-control mb-3"
+                       value="2026-08-10" />
+
+
+                <label class="form-label">
+                    Observación
+                </label>
+
+                <textarea class="form-control"
+                          rows="5"
+                          placeholder="Ingrese la información médica correspondiente..."></textarea>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button class="btn btn-cop-primary">
+                    Guardar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .record-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .record-breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .record-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .record-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .record-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .privacy-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            padding: 15px 18px;
+            border: 1px solid #ffe69c;
+            background: #fff8e1;
+            color: #664d03;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+            .privacy-alert > i {
+                font-size: 1.4rem;
+            }
+
+            .privacy-alert strong {
+                display: block;
+            }
+
+            .privacy-alert p {
+                margin: 3px 0 0;
+                font-size: .85rem;
+            }
+
+        .student-card {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+        }
+
+        .student-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .student-card span {
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+        .student-card h2 {
+            color: var(--cop-primary);
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .student-card p {
+            color: var(--cop-muted);
+            margin: 0;
+            font-size: .85rem;
+        }
+
+        .record-card {
+            height: 100%;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .record-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 17px;
+        }
+
+            .record-card-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+                margin: 0;
+            }
+
+            .record-card-header p {
+                color: var(--cop-muted);
+                font-size: .82rem;
+                margin: 4px 0 0;
+            }
+
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            border-radius: 8px;
+            padding: 13px;
+            margin-bottom: 10px;
+        }
+
+            .record-item.allergy {
+                background: #fff5f5;
+                border: 1px solid #f5c2c7;
+            }
+
+            .record-item.accommodation {
+                background: #f3f8fd;
+                border: 1px solid #cfe2f3;
+            }
+
+            .record-item strong {
+                font-size: .9rem;
+            }
+
+            .record-item p {
+                margin: 3px 0;
+                color: #495057;
+                font-size: .83rem;
+            }
+
+            .record-item small {
+                color: var(--cop-muted);
+            }
+
+        .btn-icon {
+            color: var(--cop-secondary);
+        }
+
+        .medical-record {
+            display: flex;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .medical-record:last-child {
+                border-bottom: none;
+            }
+
+        .record-date {
+            width: 100px;
+            flex-shrink: 0;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .record-content strong {
+            color: var(--cop-primary);
+        }
+
+        .record-content p {
+            margin: 4px 0;
+            color: #495057;
+            font-size: .88rem;
+        }
+
+        .record-content small {
+            color: var(--cop-muted);
+        }
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+        .form-label {
+            color: #344054;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+    </style>
+
+}

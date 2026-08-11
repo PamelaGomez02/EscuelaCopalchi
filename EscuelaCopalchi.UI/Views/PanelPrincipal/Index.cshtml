@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Panel principal";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Panel principal</h2>
+            <p class="cop-page-subtitle">Resumen general de la institución.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Estudiantes</span>
+                <span class="cop-stat-value">412</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Docentes activos</span>
+                <span class="cop-stat-value">28</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Planes pendientes</span>
+                <span class="cop-stat-value cop-stat-warning">5</span>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Alertas activas</span>
+                <span class="cop-stat-value cop-stat-alert">3</span>
+            </div>
+        </div>
+    </div>
+
+    <p class="cop-section-label">Accesos directos</p>
+    <div class="cop-quick-grid">
+        <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-quick-link"><i class="bi bi-journal-check"></i> Auditoría</a>
+        <a href="@Url.Action("Index", "InventarioLimpieza")" class="cop-quick-link"><i class="bi bi-bucket"></i> Inventario de limpieza</a>
+        <a href="@Url.Action("Index", "InventarioCocina")" class="cop-quick-link"><i class="bi bi-basket"></i> Inventario de cocina</a>
+        <a href="@Url.Action("Index", "Monitoreo")" class="cop-quick-link"><i class="bi bi-journal-check"></i> Monitoreo</a>
+        <a href="@Url.Action("Index", "Notificaciones")" class="cop-quick-link"><i class="bi bi-bucket"></i> Notificaciones</a>
+        <a href="@Url.Action("Index", "Usuarios")" class="cop-quick-link"><i class="bi bi-basket"></i> Usuarios</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-journal-check"></i> Auditoría</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-bucket"></i> Inventario de limpieza</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-basket"></i> Inventario de cocina</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-journal-check"></i> Usuarios</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-bucket"></i> Notificaciones</a>
+        <a href="#" class="cop-quick-link"><i class="bi bi-basket"></i> Monitoreo</a>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-stat-card {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cop-stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+
+        .cop-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #133C55;
+        }
+
+        .cop-stat-alert {
+            color: #dc3545;
+        }
+
+        .cop-stat-warning {
+            color: #b8860b;
+        }
+
+        .cop-section-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .cop-quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .cop-quick-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 16px 18px;
+            color: #133C55;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .cop-quick-link:hover {
+                background-color: #E6F1FB;
+                color: #133C55;
+            }
+
+            .cop-quick-link i {
+                font-size: 1.2rem;
+            }
+    </style>
+}

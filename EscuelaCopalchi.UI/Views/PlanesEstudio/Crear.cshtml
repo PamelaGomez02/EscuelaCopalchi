@@ -1,0 +1,569 @@
+﻿@{
+    ViewBag.Title = "Nuevo plan de estudio";
+}
+
+<main>
+
+    <section class="planes-header">
+        <div class="container">
+
+            <div class="planes-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "PlanesEstudio")">Planes de estudio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Nuevo plan</span>
+            </div>
+
+            <h1 class="planes-title">
+                <i class="bi bi-file-earmark-plus me-2"></i>
+                Nuevo plan de estudio
+            </h1>
+
+            <p class="planes-subtitle">
+                Registra la planificación académica mensual mediante un archivo Excel
+                o ingresando la información manualmente.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="creation-card">
+
+            <h2 class="section-title">¿Cómo deseas registrar el plan?</h2>
+
+            <p class="section-subtitle">
+                Selecciona una de las siguientes opciones.
+            </p>
+
+
+            <div class="row g-4 mb-4">
+
+                <!-- EXCEL -->
+                <div class="col-md-6">
+
+                    <div class="option-card active"
+                         id="optionExcel"
+                         onclick="mostrarExcel()">
+
+                        <div class="option-icon">
+                            <i class="bi bi-file-earmark-excel"></i>
+                        </div>
+
+                        <div>
+                            <h3>Subir archivo Excel</h3>
+                            <p>
+                                Carga un archivo con la planificación académica mensual.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MANUAL -->
+                <div class="col-md-6">
+
+                    <div class="option-card"
+                         id="optionManual"
+                         onclick="mostrarManual()">
+
+                        <div class="option-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+
+                        <div>
+                            <h3>Registro manual</h3>
+                            <p>
+                                Ingresa directamente los datos del plan en el sistema.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORMULARIO EXCEL -->
+            <div id="formExcel">
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        <div>
+                            <h3>Importar archivo Excel</h3>
+                            <p>Selecciona el periodo y el archivo correspondiente.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Mes</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione un mes</option>
+                                <option>Enero</option>
+                                <option>Febrero</option>
+                                <option>Marzo</option>
+                                <option>Abril</option>
+                                <option>Mayo</option>
+                                <option>Junio</option>
+                                <option>Julio</option>
+                                <option>Agosto</option>
+                                <option>Septiembre</option>
+                                <option>Octubre</option>
+                                <option>Noviembre</option>
+                                <option>Diciembre</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Año</label>
+
+                            <select class="form-select">
+                                <option>2026</option>
+                                <option>2027</option>
+                                <option>2028</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Grado</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione el grado</option>
+                                <option>Primer grado</option>
+                                <option>Segundo grado</option>
+                                <option>Tercer grado</option>
+                                <option>Cuarto grado</option>
+                                <option>Quinto grado</option>
+                                <option>Sexto grado</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Asignatura</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione una asignatura</option>
+                                <option>Español</option>
+                                <option>Matemáticas</option>
+                                <option>Ciencias</option>
+                                <option>Estudios Sociales</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <label class="form-label">Archivo Excel</label>
+
+                            <div class="upload-box">
+
+                                <i class="bi bi-cloud-arrow-up upload-icon"></i>
+
+                                <h4>Selecciona tu archivo</h4>
+
+                                <p>
+                                    Formato permitido: .xlsx o .xls
+                                </p>
+
+                                <input type="file"
+                                       class="form-control"
+                                       accept=".xlsx,.xls" />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- REGISTRO MANUAL -->
+            <div id="formManual" style="display:none;">
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                        <div>
+                            <h3>Registro manual</h3>
+                            <p>Ingresa los datos correspondientes al plan mensual.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Mes</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione un mes</option>
+                                <option>Enero</option>
+                                <option>Febrero</option>
+                                <option>Marzo</option>
+                                <option>Abril</option>
+                                <option>Mayo</option>
+                                <option>Junio</option>
+                                <option>Julio</option>
+                                <option>Agosto</option>
+                                <option>Septiembre</option>
+                                <option>Octubre</option>
+                                <option>Noviembre</option>
+                                <option>Diciembre</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Año</label>
+
+                            <select class="form-select">
+                                <option>2026</option>
+                                <option>2027</option>
+                                <option>2028</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Grado</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione el grado</option>
+                                <option>Primer grado</option>
+                                <option>Segundo grado</option>
+                                <option>Tercer grado</option>
+                                <option>Cuarto grado</option>
+                                <option>Quinto grado</option>
+                                <option>Sexto grado</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Asignatura</label>
+
+                            <select class="form-select">
+                                <option selected disabled>Seleccione una asignatura</option>
+                                <option>Español</option>
+                                <option>Matemáticas</option>
+                                <option>Ciencias</option>
+                                <option>Estudios Sociales</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Objetivo de aprendizaje</label>
+
+                            <textarea class="form-control"
+                                      rows="3"
+                                      placeholder="Ingrese el objetivo de aprendizaje..."></textarea>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Contenidos</label>
+
+                            <textarea class="form-control"
+                                      rows="4"
+                                      placeholder="Ingrese los contenidos que se desarrollarán..."></textarea>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Actividades</label>
+
+                            <textarea class="form-control"
+                                      rows="4"
+                                      placeholder="Describa las actividades planeadas..."></textarea>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Evaluación</label>
+
+                            <textarea class="form-control"
+                                      rows="3"
+                                      placeholder="Indique cómo se evaluará el aprendizaje..."></textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTONES -->
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "PlanesEstudio")"
+                   class="btn btn-cancel">
+                    Cancelar
+                </a>
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+                    <i class="bi bi-save me-1"></i>
+                    Guardar plan
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-light: #91E5F6;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background-color: var(--cop-page-bg);
+        }
+
+        .planes-header {
+            background: #fff;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .planes-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .planes-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .planes-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .planes-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .creation-card {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .section-title {
+            color: var(--cop-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            color: var(--cop-muted);
+            margin-bottom: 20px;
+        }
+
+        .option-card {
+            border: 2px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            height: 100%;
+            transition: .2s;
+        }
+
+            .option-card:hover,
+            .option-card.active {
+                border-color: var(--cop-accent);
+                background: #f3f9fd;
+            }
+
+        .option-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+        }
+
+        .option-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--cop-primary);
+        }
+
+        .option-card p {
+            font-size: .88rem;
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .form-section {
+            border-top: 1px solid #edf0f3;
+            padding-top: 25px;
+        }
+
+        .section-heading {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+            .section-heading > i {
+                font-size: 1.4rem;
+                color: var(--cop-secondary);
+            }
+
+            .section-heading h3 {
+                margin: 0;
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+            }
+
+            .section-heading p {
+                margin: 3px 0 0;
+                color: var(--cop-muted);
+                font-size: .85rem;
+            }
+
+        .form-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .upload-box {
+            border: 2px dashed #cad5df;
+            border-radius: 10px;
+            padding: 28px;
+            text-align: center;
+            background: #fafcfd;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--cop-secondary);
+        }
+
+        .upload-box h4 {
+            font-size: 1rem;
+            color: var(--cop-primary);
+            margin-top: 10px;
+        }
+
+        .upload-box p {
+            color: var(--cop-muted);
+            font-size: .85rem;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            padding-top: 20px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border: 1px solid var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+
+        .btn-cancel {
+            border: 1px solid #ced4da;
+            background: white;
+            color: #495057;
+        }
+    </style>
+
+}
+
+
+@section scripts {
+
+    <script>
+
+    function mostrarExcel() {
+
+        document.getElementById("formExcel").style.display = "block";
+        document.getElementById("formManual").style.display = "none";
+
+        document.getElementById("optionExcel").classList.add("active");
+        document.getElementById("optionManual").classList.remove("active");
+
+    }
+
+
+    function mostrarManual() {
+
+        document.getElementById("formExcel").style.display = "none";
+        document.getElementById("formManual").style.display = "block";
+
+        document.getElementById("optionManual").classList.add("active");
+        document.getElementById("optionExcel").classList.remove("active");
+
+    }
+
+    </script>
+
+}

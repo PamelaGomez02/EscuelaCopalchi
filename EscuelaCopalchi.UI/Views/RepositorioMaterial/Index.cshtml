@@ -1,0 +1,501 @@
+﻿@{
+    ViewBag.Title = "Repositorio de material";
+}
+
+<main>
+
+    <section class="repo-header">
+        <div class="container">
+
+            <div class="repo-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Repositorio de material</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <h1 class="repo-title">
+                        <i class="bi bi-folder2-open me-2"></i>
+                        Repositorio de material
+                    </h1>
+
+                    <p class="repo-subtitle">
+                        Consulta, clasifica y administra material didáctico
+                        y documentos institucionales.
+                    </p>
+                </div>
+
+                <a href="@Url.Action("Crear", "RepositorioMaterial")"
+                   class="btn btn-cop-primary">
+                    <i class="bi bi-cloud-arrow-up me-1"></i>
+                    Cargar material
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- TARJETAS RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-folder"></i>
+                    </div>
+                    <div>
+                        <span>Materiales</span>
+                        <h2>24</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div>
+                        <span>Documentos institucionales</span>
+                        <h2>8</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="bi bi-download"></i>
+                    </div>
+                    <div>
+                        <span>Descargas</span>
+                        <h2>63</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="repo-card">
+
+            <!-- BUSCADOR -->
+            <div class="repo-toolbar">
+
+                <div>
+                    <h2>Material disponible</h2>
+                    <p>Busca documentos y recursos disponibles en el sistema.</p>
+                </div>
+
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar material..." />
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="filters">
+
+                <select class="form-select">
+                    <option value="">Todas las categorías</option>
+                    <option>Matemáticas</option>
+                    <option>Español</option>
+                    <option>Ciencias</option>
+                    <option>Estudios Sociales</option>
+                    <option>Institucional</option>
+                </select>
+
+                <select class="form-select">
+                    <option value="">Todos los tipos</option>
+                    <option>PDF</option>
+                    <option>Word</option>
+                    <option>PowerPoint</option>
+                    <option>Excel</option>
+                    <option>Imagen</option>
+                </select>
+
+                <select class="form-select">
+                    <option value="">Todos los grados</option>
+                    <option>Primer grado</option>
+                    <option>Segundo grado</option>
+                    <option>Tercer grado</option>
+                    <option>Cuarto grado</option>
+                    <option>Quinto grado</option>
+                    <option>Sexto grado</option>
+                </select>
+
+            </div>
+
+
+            <!-- LISTA -->
+            <div class="table-responsive">
+
+                <table class="table repo-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Categoría</th>
+                            <th>Grado</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                <div class="material-info">
+
+                                    <div class="material-icon pdf">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Guía de Matemáticas</strong>
+                                        <small>Material de práctica semanal</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>Matemáticas</td>
+                            <td>Primer grado</td>
+                            <td>PDF</td>
+                            <td>08/08/2026</td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "RepositorioMaterial", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <button class="btn btn-action"
+                                        title="Descargar">
+                                    <i class="bi bi-download"></i>
+                                </button>
+
+                                <a href="@Url.Action("Editar", "RepositorioMaterial", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <button class="btn btn-action-danger"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <div class="material-info">
+
+                                    <div class="material-icon word">
+                                        <i class="bi bi-file-earmark-word"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Reglamento institucional</strong>
+                                        <small>Documento administrativo</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>Institucional</td>
+                            <td>No aplica</td>
+                            <td>Word</td>
+                            <td>04/08/2026</td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "RepositorioMaterial", new { id = 2 })"
+                                   class="btn btn-action">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <button class="btn btn-action">
+                                    <i class="bi bi-download"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .repo-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .repo-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .repo-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .repo-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .repo-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .summary-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+
+        .summary-card span {
+            color: var(--cop-muted);
+            font-size: .82rem;
+        }
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .repo-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .repo-toolbar {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .repo-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+            }
+
+            .repo-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+        .search-box {
+            position: relative;
+            width: 280px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .filters select {
+                max-width: 210px;
+            }
+
+        .repo-table {
+            margin-bottom: 0;
+        }
+
+            .repo-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .repo-table td {
+                padding: 16px 17px;
+                font-size: .9rem;
+            }
+
+        .material-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+            .material-info strong,
+            .material-info small {
+                display: block;
+            }
+
+            .material-info small {
+                color: var(--cop-muted);
+            }
+
+        .material-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+            .material-icon.pdf {
+                background: #f8d7da;
+                color: #842029;
+            }
+
+            .material-icon.word {
+                background: #dbeafe;
+                color: #1d4ed8;
+            }
+
+        .btn-action,
+        .btn-action-danger {
+            background: white;
+            border: 1px solid #dce2e7;
+            padding: 5px 9px;
+        }
+
+        .btn-action {
+            color: var(--cop-secondary);
+        }
+
+        .btn-action-danger {
+            color: #dc3545;
+        }
+
+        .btn-action:hover {
+            background: #e6f1fb;
+        }
+
+        .btn-action-danger:hover {
+            background: #f8d7da;
+        }
+
+        @@media (max-width:768px) {
+
+            .repo-toolbar,
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .filters select {
+                max-width: none;
+            }
+        }
+    </style>
+
+}

@@ -1,0 +1,700 @@
+﻿
+@{
+    ViewBag.Title = "Planes de estudio";
+}
+
+<main class="planes-page">
+
+    <!-- ENCABEZADO -->
+    <section class="planes-header">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <div class="planes-breadcrumb">
+                        <a href="@Url.Action("Index", "Home")">Inicio</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Planes de estudio</span>
+                    </div>
+
+                    <h1 class="planes-title">
+                        <i class="bi bi-journal-text me-2"></i>
+                        Planes de estudio
+                    </h1>
+
+                    <p class="planes-subtitle">
+                        Administra la planificación académica mensual,
+                        revisa su estado y consulta las observaciones realizadas.
+                    </p>
+                </div>
+
+                <div>
+                    <a href="@Url.Action("Crear", "PlanesEstudio")"
+                       class="btn btn-cop-primary">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Nuevo plan
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon pending">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Pendientes</span>
+                        <h2 class="summary-number">3</h2>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon approved">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Aprobados</span>
+                        <h2 class="summary-number">8</h2>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="summary-card">
+                    <div class="summary-icon rejected">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Rechazados</span>
+                        <h2 class="summary-number">1</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="plans-container">
+
+            <!-- CABECERA TABLA -->
+            <div class="plans-toolbar">
+
+                <div>
+                    <h2 class="plans-section-title">Mis planes</h2>
+                    <p class="plans-section-subtitle">
+                        Consulta las planificaciones registradas en el sistema.
+                    </p>
+                </div>
+
+                <div class="plans-search">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar plan..." />
+                </div>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="plans-filters">
+
+                <select class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option>Pendiente</option>
+                    <option>Aprobado</option>
+                    <option>Rechazado</option>
+                </select>
+
+                <select class="form-select">
+                    <option value="">Todos los meses</option>
+                    <option>Enero</option>
+                    <option>Febrero</option>
+                    <option>Marzo</option>
+                    <option>Abril</option>
+                    <option>Mayo</option>
+                    <option>Junio</option>
+                    <option>Julio</option>
+                    <option>Agosto</option>
+                    <option>Septiembre</option>
+                    <option>Octubre</option>
+                    <option>Noviembre</option>
+                    <option>Diciembre</option>
+                </select>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table plans-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Plan</th>
+                            <th>Periodo</th>
+                            <th>Fecha de registro</th>
+                            <th>Estado</th>
+                            <th>Teams</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- EJEMPLO PENDIENTE -->
+                        <tr>
+
+                            <td>
+                                <div class="plan-name">
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Plan mensual de Matemáticas</strong>
+                                        <small>Primer grado</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>Agosto 2026</td>
+
+                            <td>
+                                05/08/2026
+                            </td>
+
+                            <td>
+                                <span class="status status-pending">
+                                    <i class="bi bi-clock"></i>
+                                    Pendiente
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="teams-status">
+                                    <i class="bi bi-microsoft-teams"></i>
+                                    No sincronizado
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver plan">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- EJEMPLO APROBADO -->
+                        <tr>
+
+                            <td>
+                                <div class="plan-name">
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-excel"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Plan mensual de Ciencias</strong>
+                                        <small>Segundo grado</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>Julio 2026</td>
+
+                            <td>
+                                02/07/2026
+                            </td>
+
+                            <td>
+                                <span class="status status-approved">
+                                    <i class="bi bi-check-circle"></i>
+                                    Aprobado
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="teams-status teams-ok">
+                                    <i class="bi bi-check-circle"></i>
+                                    Sincronizado
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Ver plan">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- EJEMPLO RECHAZADO -->
+                        <tr>
+
+                            <td>
+                                <div class="plan-name">
+                                    <div class="plan-file-icon">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Plan mensual de Español</strong>
+                                        <small>Tercer grado</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>Junio 2026</td>
+
+                            <td>
+                                03/06/2026
+                            </td>
+
+                            <td>
+                                <span class="status status-rejected">
+                                    <i class="bi bi-x-circle"></i>
+                                    Rechazado
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="teams-status">
+                                    <i class="bi bi-microsoft-teams"></i>
+                                    No sincronizado
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Ver plan">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Corregir plan">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@@section styles {
+
+<style>
+
+    :root {
+        --cop-primary: #133C55;
+        --cop-secondary: #386FA4;
+        --cop-accent: #59A5D8;
+        --cop-soft: #84D2F6;
+        --cop-light: #91E5F6;
+        --cop-text: #212529;
+        --cop-muted: #6c757d;
+        --cop-page-bg: #f4f7fa;
+    }
+
+
+    body {
+        background-color: var(--cop-page-bg);
+    }
+
+
+    /* HEADER */
+
+    .planes-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e3e8ee;
+        padding: 32px 0;
+        margin-bottom: 28px;
+    }
+
+
+    .planes-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: .85rem;
+        margin-bottom: 12px;
+        color: var(--cop-muted);
+    }
+
+
+        .planes-breadcrumb a {
+            color: var(--cop-secondary);
+            text-decoration: none;
+        }
+
+
+            .planes-breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+
+    .planes-title {
+        color: var(--cop-primary);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+
+    .planes-subtitle {
+        color: var(--cop-muted);
+        margin-bottom: 0;
+    }
+
+
+    /* BOTÓN PRINCIPAL */
+
+    .btn-cop-primary {
+        background-color: var(--cop-primary);
+        color: #ffffff;
+        border: 1px solid var(--cop-primary);
+        padding: 9px 18px;
+        border-radius: 7px;
+        font-weight: 500;
+    }
+
+
+        .btn-cop-primary:hover {
+            background-color: var(--cop-secondary);
+            border-color: var(--cop-secondary);
+            color: #ffffff;
+        }
+
+
+    /* CARDS RESUMEN */
+
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+
+        .summary-icon.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+
+        .summary-icon.approved {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .summary-icon.rejected {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+
+    .summary-label {
+        display: block;
+        color: var(--cop-muted);
+        font-size: .85rem;
+    }
+
+
+    .summary-number {
+        margin: 0;
+        color: var(--cop-primary);
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+
+    /* CONTENEDOR */
+
+    .plans-container {
+        background: #ffffff;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+
+    .plans-toolbar {
+        padding: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+
+    .plans-section-title {
+        margin: 0 0 4px;
+        font-size: 1.2rem;
+        color: var(--cop-primary);
+        font-weight: 600;
+    }
+
+
+    .plans-section-subtitle {
+        margin: 0;
+        color: var(--cop-muted);
+        font-size: .88rem;
+    }
+
+
+    /* BUSCADOR */
+
+    .plans-search {
+        position: relative;
+        width: 260px;
+    }
+
+
+        .plans-search i {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cop-muted);
+        }
+
+
+        .plans-search input {
+            padding-left: 34px;
+        }
+
+
+    /* FILTROS */
+
+    .plans-filters {
+        display: flex;
+        gap: 12px;
+        padding: 15px 22px;
+        background-color: #f8fafc;
+        border-top: 1px solid #edf0f3;
+        border-bottom: 1px solid #edf0f3;
+    }
+
+
+        .plans-filters .form-select {
+            width: 190px;
+            font-size: .9rem;
+        }
+
+
+    /* TABLA */
+
+    .plans-table {
+        margin-bottom: 0;
+    }
+
+
+        .plans-table thead th {
+            background-color: #f8fafc;
+            color: #53616d;
+            font-size: .8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 13px 17px;
+            border-bottom: 1px solid #e3e8ee;
+        }
+
+
+        .plans-table tbody td {
+            padding: 16px 17px;
+            border-color: #edf0f3;
+            font-size: .9rem;
+        }
+
+
+        .plans-table tbody tr:hover {
+            background-color: #fafcfd;
+        }
+
+
+    /* PLAN */
+
+    .plan-name {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+
+        .plan-name strong {
+            display: block;
+            color: var(--cop-text);
+            font-weight: 600;
+        }
+
+
+        .plan-name small {
+            display: block;
+            color: var(--cop-muted);
+            margin-top: 2px;
+        }
+
+
+    .plan-file-icon {
+        width: 38px;
+        height: 38px;
+        background-color: #e6f1fb;
+        color: var(--cop-secondary);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+
+    /* ESTADOS */
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: .78rem;
+        font-weight: 600;
+    }
+
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+
+    .status-approved {
+        background-color: #d1e7dd;
+        color: #0f5132;
+    }
+
+
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+
+    /* TEAMS */
+
+    .teams-status {
+        color: var(--cop-muted);
+        font-size: .83rem;
+    }
+
+
+    .teams-ok {
+        color: #198754;
+    }
+
+
+    /* ACCIONES */
+
+    .btn-action {
+        border: 1px solid #dce2e7;
+        color: var(--cop-secondary);
+        background-color: #ffffff;
+        padding: 5px 9px;
+        margin-left: 3px;
+    }
+
+
+        .btn-action:hover {
+            background-color: #e6f1fb;
+            color: var(--cop-primary);
+            border-color: var(--cop-accent);
+        }
+
+
+    @@media (max-width: 768px) {
+
+        .plans-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+
+        .plans-search {
+            width: 100%;
+        }
+
+
+        .plans-filters {
+            flex-direction: column;
+        }
+
+
+            .plans-filters .form-select {
+                width: 100%;
+            }
+    }
+</style>

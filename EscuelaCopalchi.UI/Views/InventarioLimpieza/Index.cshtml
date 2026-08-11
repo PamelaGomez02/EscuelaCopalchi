@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Inventario de limpieza";
+}
+
+<main>
+    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">Inventario de limpieza e higiene</h2>
+            <p class="cop-page-subtitle">Control de productos y existencias.</p>
+        </div>
+        <a href="@Url.Action("Create", "InventarioLimpieza")" class="btn cop-btn-primary"><i class="bi bi-plus-lg me-1"></i> Nuevo movimiento</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Productos registrados</span>
+                <span class="cop-stat-value">34</span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Movimientos este mes</span>
+                <span class="cop-stat-value">18</span>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="cop-stat-card">
+                <span class="cop-stat-label">Stock bajo</span>
+                <span class="cop-stat-value cop-stat-alert">4</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive cop-table-wrapper">
+        <table class="table align-middle cop-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Existencias</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jabón líquido 1L</td>
+                    <td>Higiene</td>
+                    <td>6 unidades</td>
+                    <td><span class="badge cop-badge-alta">Stock bajo</span></td>
+                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
+                </tr>
+                <tr>
+                    <td>Cloro 3.8L</td>
+                    <td>Limpieza</td>
+                    <td>22 unidades</td>
+                    <td><span class="badge cop-badge-ok">Suficiente</span></td>
+                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
+                </tr>
+                <tr>
+                    <td>Papel higiénico</td>
+                    <td>Higiene</td>
+                    <td>10 paquetes</td>
+                    <td><span class="badge cop-badge-media">Moderado</span></td>
+                    <td><a href="@Url.Action("Create", "InventarioLimpieza")" class="cop-link-detail">Editar</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+
+        .cop-stat-card {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cop-stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+
+        .cop-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #133C55;
+        }
+
+        .cop-stat-alert {
+            color: #dc3545;
+        }
+
+        .cop-table-wrapper {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin-bottom: 40px;
+        }
+
+        .cop-table thead th {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid #e3e8ee;
+            font-weight: 600;
+        }
+
+        .cop-table td {
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .cop-badge-alta {
+            background-color: #fdeceb;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .cop-badge-media {
+            background-color: #fff6e5;
+            color: #b8860b;
+            font-weight: 600;
+        }
+
+        .cop-badge-ok {
+            background-color: #E6F7EC;
+            color: #198754;
+            font-weight: 600;
+        }
+
+        .cop-link-detail {
+            color: #133C55;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+            .cop-link-detail:hover {
+                text-decoration: underline;
+            }
+    </style>
+}

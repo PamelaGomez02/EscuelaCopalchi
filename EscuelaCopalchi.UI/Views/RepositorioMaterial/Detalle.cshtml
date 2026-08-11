@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "Detalle del material";
+}
+
+<main>
+
+    <section class="repo-header">
+
+        <div class="container">
+
+            <div class="repo-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "RepositorioMaterial")">Repositorio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Detalle</span>
+            </div>
+
+            <h1 class="repo-title">
+                Guía de Matemáticas
+            </h1>
+
+            <p class="repo-subtitle">
+                Material didáctico · Primer grado
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+
+                <div class="detail-card">
+
+                    <h2 class="section-title">
+                        Información del material
+                    </h2>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Título</span>
+                            <strong>Guía de Matemáticas</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Categoría</span>
+                            <strong>Matemáticas</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Grado</span>
+                            <strong>Primer grado</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Tipo</span>
+                            <strong>PDF</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Autor</span>
+                            <strong>María González</strong>
+                        </div>
+
+                        <div class="col-md-6">
+                            <span class="detail-label">Fecha de carga</span>
+                            <strong>08/08/2026</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-card mt-4">
+
+                    <h2 class="section-title">
+                        Descripción
+                    </h2>
+
+                    <p class="description">
+                        Guía de ejercicios para reforzar sumas, restas y
+                        resolución de problemas básicos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="detail-card text-center">
+
+                    <div class="document-icon">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </div>
+
+                    <h3>Guia_Matematicas.pdf</h3>
+
+                    <p class="text-muted">
+                        Documento PDF
+                    </p>
+
+                    <button class="btn btn-cop-primary w-100">
+                        <i class="bi bi-download me-1"></i>
+                        Descargar material
+                    </button>
+
+                </div>
+
+
+                <div class="d-grid gap-2 mt-3">
+
+                    <a href="@Url.Action("Editar", "RepositorioMaterial", new { id = 1 })"
+                       class="btn btn-outline-cop">
+                        <i class="bi bi-pencil me-1"></i>
+                        Editar
+                    </a>
+
+                    <button class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        Eliminar
+                    </button>
+
+                    <a href="@Url.Action("Index", "RepositorioMaterial")"
+                       class="btn btn-light">
+                        Volver
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .repo-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .repo-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .repo-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .repo-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .repo-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .detail-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        .section-title {
+            color: var(--cop-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+            margin-bottom: 3px;
+        }
+
+        .description {
+            color: #495057;
+            margin: 0;
+        }
+
+        .document-icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 14px;
+            background: #f8d7da;
+            color: #842029;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            font-size: 2.2rem;
+        }
+
+        .detail-card h3 {
+            font-size: 1rem;
+            color: var(--cop-primary);
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+        }
+    </style>
+
+}
