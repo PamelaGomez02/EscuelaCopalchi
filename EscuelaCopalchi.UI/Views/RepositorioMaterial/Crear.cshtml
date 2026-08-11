@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "Cargar material";
+}
+
+<main>
+
+    <section class="repo-header">
+
+        <div class="container">
+
+            <div class="repo-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "RepositorioMaterial")">Repositorio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Cargar material</span>
+            </div>
+
+            <h1 class="repo-title">
+                <i class="bi bi-cloud-arrow-up me-2"></i>
+                Cargar material
+            </h1>
+
+            <p class="repo-subtitle">
+                Agrega material didáctico o documentos institucionales al repositorio.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="form-card">
+
+            <form>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Tipo de material
+                        </label>
+
+                        <select class="form-select">
+                            <option selected disabled>Seleccione una opción</option>
+                            <option>Material didáctico</option>
+                            <option>Documento institucional</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Categoría
+                        </label>
+
+                        <select class="form-select">
+                            <option selected disabled>Seleccione una categoría</option>
+                            <option>Matemáticas</option>
+                            <option>Español</option>
+                            <option>Ciencias</option>
+                            <option>Estudios Sociales</option>
+                            <option>Inglés</option>
+                            <option>Institucional</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Título
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Ej. Guía de Matemáticas" />
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Grado
+                        </label>
+
+                        <select class="form-select">
+                            <option selected>No aplica</option>
+                            <option>Primer grado</option>
+                            <option>Segundo grado</option>
+                            <option>Tercer grado</option>
+                            <option>Cuarto grado</option>
+                            <option>Quinto grado</option>
+                            <option>Sexto grado</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  placeholder="Describe brevemente el contenido del material..."></textarea>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Archivo
+                        </label>
+
+                        <div class="upload-box">
+
+                            <i class="bi bi-cloud-arrow-up"></i>
+
+                            <h3>Selecciona un archivo</h3>
+
+                            <p>
+                                PDF, Word, PowerPoint, Excel o imágenes.
+                            </p>
+
+                            <input type="file"
+                                   class="form-control"
+                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Index", "RepositorioMaterial")"
+                       class="btn btn-light">
+                        Cancelar
+                    </a>
+
+                    <button type="button"
+                            class="btn btn-cop-primary">
+                        <i class="bi bi-cloud-arrow-up me-1"></i>
+                        Cargar material
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .repo-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .repo-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .repo-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .repo-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .repo-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .form-card {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .form-label {
+            color: #344054;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .upload-box {
+            border: 2px dashed #cad5df;
+            border-radius: 10px;
+            background: #fafcfd;
+            text-align: center;
+            padding: 30px;
+        }
+
+            .upload-box > i {
+                font-size: 2.2rem;
+                color: var(--cop-secondary);
+            }
+
+            .upload-box h3 {
+                color: var(--cop-primary);
+                font-size: 1rem;
+                margin-top: 10px;
+            }
+
+            .upload-box p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+            }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 25px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+    </style>
+
+}

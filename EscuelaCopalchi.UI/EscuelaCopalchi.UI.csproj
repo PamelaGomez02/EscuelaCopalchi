@@ -137,6 +137,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\NotificacionesController.cs" />
+    <Compile Include="Controllers\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -207,6 +208,10 @@
     <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
     <Content Include="Views\PlanesEstudio\Editar.cshtml" />
     <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Crear.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Detalle.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
+    <Content Include="Views\RepositorioMaterial\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

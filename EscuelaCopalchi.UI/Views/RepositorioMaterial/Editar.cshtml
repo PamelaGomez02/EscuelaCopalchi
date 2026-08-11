@@ -1,0 +1,689 @@
+﻿@{
+    ViewBag.Title = "Editar material";
+}
+
+<main>
+
+    <section class="repo-header">
+
+        <div class="container">
+
+            <div class="repo-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "RepositorioMaterial")">
+                    Repositorio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+                <span>Editar material</span>
+            </div>
+
+
+            <h1 class="repo-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar material
+            </h1>
+
+            <p class="repo-subtitle">
+                Modifica la información y clasificación del material seleccionado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="form-card">
+
+            <!-- INFORMACIÓN ACTUAL -->
+            <div class="current-file-box mb-4">
+
+                <div class="current-file-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
+
+                <div class="flex-grow-1">
+
+                    <span class="current-label">
+                        Archivo actual
+                    </span>
+
+                    <strong>
+                        Guia_Matematicas.pdf
+                    </strong>
+
+                    <small>
+                        PDF · Cargado el 08/08/2026
+                    </small>
+
+                </div>
+
+                <button type="button"
+                        class="btn btn-outline-cop">
+
+                    <i class="bi bi-download me-1"></i>
+                    Descargar
+
+                </button>
+
+            </div>
+
+
+            <form>
+
+                <div class="row g-3">
+
+                    <!-- TIPO -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Tipo de material
+                        </label>
+
+                        <select class="form-select">
+
+                            <option selected>
+                                Material didáctico
+                            </option>
+
+                            <option>
+                                Documento institucional
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CATEGORÍA -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Categoría
+                        </label>
+
+                        <select class="form-select">
+
+                            <option selected>
+                                Matemáticas
+                            </option>
+
+                            <option>
+                                Español
+                            </option>
+
+                            <option>
+                                Ciencias
+                            </option>
+
+                            <option>
+                                Estudios Sociales
+                            </option>
+
+                            <option>
+                                Inglés
+                            </option>
+
+                            <option>
+                                Institucional
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- TÍTULO -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Título
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="Guía de Matemáticas" />
+
+                    </div>
+
+
+                    <!-- GRADO -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Grado
+                        </label>
+
+                        <select class="form-select">
+
+                            <option>
+                                No aplica
+                            </option>
+
+                            <option selected>
+                                Primer grado
+                            </option>
+
+                            <option>
+                                Segundo grado
+                            </option>
+
+                            <option>
+                                Tercer grado
+                            </option>
+
+                            <option>
+                                Cuarto grado
+                            </option>
+
+                            <option>
+                                Quinto grado
+                            </option>
+
+                            <option>
+                                Sexto grado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4">Guía de ejercicios para reforzar sumas, restas y resolución de problemas básicos.</textarea>
+
+                    </div>
+
+
+                    <!-- NUEVO ARCHIVO -->
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Reemplazar archivo
+                        </label>
+
+                        <div class="upload-box">
+
+                            <i class="bi bi-cloud-arrow-up"></i>
+
+                            <h3>
+                                Selecciona un nuevo archivo
+                            </h3>
+
+                            <p>
+                                Si no seleccionas un archivo, se conservará el actual.
+                            </p>
+
+                            <input type="file"
+                                   class="form-control"
+                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png" />
+
+                            <div class="file-help">
+                                Formatos permitidos: PDF, Word, PowerPoint, Excel, JPG y PNG.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATOS DEL MATERIAL -->
+                <div class="metadata-section">
+
+                    <h2 class="section-title">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Información del registro
+                    </h2>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+
+                            <span class="metadata-label">
+                                Cargado por
+                            </span>
+
+                            <strong>
+                                María González
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <span class="metadata-label">
+                                Fecha de carga
+                            </span>
+
+                            <strong>
+                                08/08/2026
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <span class="metadata-label">
+                                Última modificación
+                            </span>
+
+                            <strong>
+                                09/08/2026
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Detalle", "RepositorioMaterial", new { id = 1 })"
+                       class="btn btn-light">
+
+                        Cancelar
+
+                    </a>
+
+
+                    <button type="button"
+                            class="btn btn-cop-primary"
+                            onclick="guardarCambios()">
+
+                        <i class="bi bi-save me-1"></i>
+                        Guardar cambios
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade"
+     id="modalGuardar"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Guardar cambios
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body text-center">
+
+                <div class="modal-icon">
+                    <i class="bi bi-save"></i>
+                </div>
+
+                <p class="mb-0">
+                    ¿Deseas guardar los cambios realizados en este material?
+                </p>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+
+                <button type="button"
+                        class="btn btn-cop-primary">
+
+                    <i class="bi bi-check-lg me-1"></i>
+                    Confirmar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .repo-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .repo-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+
+            .repo-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .repo-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .repo-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+
+        .repo-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+
+        /* CONTENEDOR */
+
+        .form-card {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+
+        /* ARCHIVO ACTUAL */
+
+        .current-file-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #e3e8ee;
+            border-radius: 9px;
+            padding: 15px;
+            background: #fafcfd;
+        }
+
+
+        .current-file-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #f8d7da;
+            color: #842029;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+
+        .current-label {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .77rem;
+            margin-bottom: 2px;
+        }
+
+
+        .current-file-box strong {
+            display: block;
+            color: var(--cop-primary);
+        }
+
+
+        .current-file-box small {
+            display: block;
+            color: var(--cop-muted);
+            margin-top: 2px;
+        }
+
+
+        /* FORMULARIO */
+
+        .form-label {
+            color: #344054;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--cop-accent);
+            box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+        }
+
+
+        /* SUBIDA */
+
+        .upload-box {
+            border: 2px dashed #cad5df;
+            border-radius: 10px;
+            background: #fafcfd;
+            text-align: center;
+            padding: 28px;
+        }
+
+
+            .upload-box > i {
+                font-size: 2rem;
+                color: var(--cop-secondary);
+            }
+
+
+            .upload-box h3 {
+                color: var(--cop-primary);
+                font-size: 1rem;
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+
+            .upload-box p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+            }
+
+
+        .file-help {
+            color: var(--cop-muted);
+            font-size: .75rem;
+            margin-top: 8px;
+        }
+
+
+        /* METADATOS */
+
+        .metadata-section {
+            margin-top: 28px;
+            border-top: 1px solid #edf0f3;
+            padding-top: 22px;
+        }
+
+
+        .section-title {
+            color: var(--cop-primary);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+
+        .metadata-label {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .78rem;
+            margin-bottom: 3px;
+        }
+
+
+        /* BOTONES */
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 25px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border: 1px solid var(--cop-primary);
+        }
+
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+            background: white;
+        }
+
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+            }
+
+
+        /* MODAL */
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            font-size: 1.6rem;
+        }
+
+
+        @@media (max-width: 576px) {
+
+            .current-file-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+                .current-file-box .btn {
+                    width: 100%;
+                }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+                .form-actions .btn {
+                    width: 100%;
+                }
+        }
+    </style>
+
+}
+
+
+@section scripts {
+
+    <script>
+
+    function guardarCambios() {
+
+        var modal = new bootstrap.Modal(
+            document.getElementById("modalGuardar")
+        );
+
+        modal.show();
+
+    }
+
+    </script>
+
+}
