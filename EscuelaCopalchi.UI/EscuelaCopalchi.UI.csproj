@@ -133,6 +133,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AuditoriaSistemaController.cs" />
+    <Compile Include="Controllers\InventarioCocinaController.cs" />
+    <Compile Include="Controllers\InventarioLimpiezaController.cs" />
+    <Compile Include="Controllers\PanelPrincipalController.cs" />
     <Compile Include="Controllers\PlanesEstudioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
@@ -231,6 +235,13 @@
     <Content Include="Views\Estudiantes\Expediente.cshtml" />
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Detalle.cshtml" />
+    <Content Include="Views\AudoriaSistema\Detalle.cshtml" />
+    <Content Include="Views\AudoriaSistema\Index.cshtml" />
+    <Content Include="Views\InventarioCocina\Create.cshtml" />
+    <Content Include="Views\InventarioCocina\Index.cshtml" />
+    <Content Include="Views\InventarioLimpieza\Create.cshtml" />
+    <Content Include="Views\InventarioLimpieza\Index.cshtml" />
+    <Content Include="Views\PanelPrincipal\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
