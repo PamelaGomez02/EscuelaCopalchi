@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Editar asistencia";
+}
+
+<main>
+
+    <section class="attendance-header">
+
+        <div class="container">
+
+            <div class="attendance-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Asistencia")">
+                    Asistencia
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Editar</span>
+
+            </div>
+
+
+            <h1 class="attendance-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar asistencia
+            </h1>
+
+            <p class="attendance-subtitle">
+                Modifica el registro de asistencia seleccionado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="edit-card">
+
+            <div class="student-card">
+
+                <div class="student-avatar">
+                    JP
+                </div>
+
+                <div>
+
+                    <span class="label">
+                        Estudiante
+                    </span>
+
+                    <h2>
+                        Juan Pérez
+                    </h2>
+
+                    <p>
+                        Primer grado A
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Fecha
+                    </label>
+
+                    <input type="date"
+                           class="form-control"
+                           value="2026-08-10"
+                           readonly />
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Estado
+                    </label>
+
+                    <select class="form-select">
+
+                        <option>Presente</option>
+
+                        <option selected>
+                            Ausente
+                        </option>
+
+                        <option>
+                            Justificado
+                        </option>
+
+                        <option>
+                            Tardanza
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Hora de llegada
+                    </label>
+
+                    <input type="time"
+                           class="form-control" />
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="4"
+                              placeholder="Ingrese una observación...">Sin justificar</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "Asistencia")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-save me-1"></i>
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .attendance-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .attendance-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .attendance-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .attendance-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .attendance-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .edit-card {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .student-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8fafc;
+            border: 1px solid #edf0f3;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .student-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .student-card .label {
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+        .student-card h2 {
+            font-size: 1rem;
+            color: var(--cop-primary);
+            margin: 2px 0;
+        }
+
+        .student-card p {
+            margin: 0;
+            color: var(--cop-muted);
+            font-size: .85rem;
+        }
+
+        .form-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 24px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+    </style>
+
+}

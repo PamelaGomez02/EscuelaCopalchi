@@ -138,6 +138,7 @@
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\NotificacionesController.cs" />
     <Compile Include="Controllers\RepositorioMaterialController.cs" />
+    <Compile Include="Controllers\AsistenciaController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -212,6 +213,10 @@
     <Content Include="Views\RepositorioMaterial\Detalle.cshtml" />
     <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
     <Content Include="Views\RepositorioMaterial\Index.cshtml" />
+    <Content Include="Views\Asistencia\Historial.cshtml" />
+    <Content Include="Views\Asistencia\Editar.cshtml" />
+    <Content Include="Views\Asistencia\Registrar.cshtml" />
+    <Content Include="Views\Asistencia\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

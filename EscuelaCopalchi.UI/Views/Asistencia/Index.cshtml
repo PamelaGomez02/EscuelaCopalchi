@@ -1,0 +1,569 @@
+﻿@{
+    ViewBag.Title = "Asistencia";
+}
+
+<main>
+
+    <section class="attendance-header">
+        <div class="container">
+
+            <div class="attendance-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Asistencia</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <h1 class="attendance-title">
+                        <i class="bi bi-calendar-check me-2"></i>
+                        Asistencia de alumnos
+                    </h1>
+
+                    <p class="attendance-subtitle">
+                        Registra, consulta y administra la asistencia de los estudiantes.
+                    </p>
+                </div>
+
+                <a href="@Url.Action("Registrar", "Asistencia")"
+                   class="btn btn-cop-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Registrar asistencia
+
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3">
+                <div class="summary-card">
+
+                    <div class="summary-icon present">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Presentes</span>
+                        <h2>21</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="summary-card">
+
+                    <div class="summary-icon absent">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Ausentes</span>
+                        <h2>2</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="summary-card">
+
+                    <div class="summary-icon late">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+
+                    <div>
+                        <span>Tardanzas</span>
+                        <h2>1</h2>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="summary-card">
+
+                    <div class="summary-icon percentage">
+                        <i class="bi bi-percent"></i>
+                    </div>
+
+                    <div>
+                        <span>Asistencia</span>
+                        <h2>91%</h2>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="attendance-card">
+
+            <div class="attendance-toolbar">
+
+                <div>
+                    <h2>Consulta de asistencia</h2>
+                    <p>Consulta registros por grupo y fecha.</p>
+                </div>
+
+                <a href="@Url.Action("Historial", "Asistencia")"
+                   class="btn btn-outline-cop">
+
+                    <i class="bi bi-clock-history me-1"></i>
+                    Ver historial
+
+                </a>
+
+            </div>
+
+
+            <!-- FILTROS -->
+            <div class="filters">
+
+                <select class="form-select">
+                    <option selected disabled>Seleccione un grupo</option>
+                    <option>Primer grado A</option>
+                    <option>Segundo grado A</option>
+                    <option>Tercer grado A</option>
+                </select>
+
+                <input type="date"
+                       class="form-control"
+                       value="2026-08-10" />
+
+                <button class="btn btn-cop-primary">
+                    <i class="bi bi-search me-1"></i>
+                    Consultar
+                </button>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table attendance-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Estado</th>
+                            <th>Hora</th>
+                            <th>Observación</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        MG
+                                    </div>
+
+                                    <div>
+                                        <strong>María González</strong>
+                                        <small>Primer grado A</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="status status-present">
+                                    <i class="bi bi-check-circle"></i>
+                                    Presente
+                                </span>
+                            </td>
+
+                            <td>7:00 a. m.</td>
+
+                            <td>
+                                <span class="text-muted">
+                                    Sin observaciones
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Asistencia", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        JP
+                                    </div>
+
+                                    <div>
+                                        <strong>Juan Pérez</strong>
+                                        <small>Primer grado A</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="status status-absent">
+                                    <i class="bi bi-x-circle"></i>
+                                    Ausente
+                                </span>
+                            </td>
+
+                            <td>—</td>
+
+                            <td>
+                                Sin justificar
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Asistencia", new { id = 2 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <div class="student-info">
+
+                                    <div class="student-avatar">
+                                        AS
+                                    </div>
+
+                                    <div>
+                                        <strong>Andrea Solano</strong>
+                                        <small>Primer grado A</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="status status-late">
+                                    <i class="bi bi-clock"></i>
+                                    Tardanza
+                                </span>
+                            </td>
+
+                            <td>7:18 a. m.</td>
+
+                            <td>
+                                Transporte
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Editar", "Asistencia", new { id = 3 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .attendance-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .attendance-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+        }
+
+            .attendance-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .attendance-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .attendance-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+            .summary-icon.present {
+                background: #d1e7dd;
+                color: #0f5132;
+            }
+
+            .summary-icon.absent {
+                background: #f8d7da;
+                color: #842029;
+            }
+
+            .summary-icon.late {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+            .summary-icon.percentage {
+                background: #e6f1fb;
+                color: var(--cop-secondary);
+            }
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            margin: 0;
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+        }
+
+        .attendance-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .attendance-toolbar {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .attendance-toolbar h2 {
+                font-size: 1.15rem;
+                color: var(--cop-primary);
+                margin-bottom: 4px;
+            }
+
+            .attendance-toolbar p {
+                margin: 0;
+                color: var(--cop-muted);
+                font-size: .85rem;
+            }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .filters .form-select,
+            .filters .form-control {
+                max-width: 230px;
+            }
+
+        .attendance-table {
+            margin-bottom: 0;
+        }
+
+            .attendance-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .attendance-table td {
+                padding: 16px 17px;
+                font-size: .9rem;
+            }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: .8rem;
+        }
+
+        .student-info strong,
+        .student-info small {
+            display: block;
+        }
+
+        .student-info small {
+            color: var(--cop-muted);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-absent {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-late {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-action {
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            background: white;
+            padding: 5px 9px;
+        }
+
+        @@media(max-width:768px) {
+
+            .filters,
+            .attendance-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+                .filters .form-select,
+                .filters .form-control {
+                    max-width: none;
+                }
+        }
+    </style>
+
+}
