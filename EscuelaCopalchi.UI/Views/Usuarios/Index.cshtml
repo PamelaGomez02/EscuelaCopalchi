@@ -1,233 +1,665 @@
-﻿@{
-    ViewBag.Title = "Gestión académica";
+﻿
+@{
+    ViewBag.Title = "Usuarios";
 }
 
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
 
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Gestión académica</h2>
-            <p class="cop-page-subtitle">
-                Administración de aulas, grupos, estudiantes y docentes.
-            </p>
-        </div>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="usuarios-header">
 
-    <div class="row g-3 mb-4">
+        <div class="container">
 
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Aulas registradas</span>
-                <span class="cop-stat-value">12</span>
+            <!-- Breadcrumb -->
+            <div class="usuarios-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Usuarios</span>
             </div>
-        </div>
 
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Grupos activos</span>
-                <span class="cop-stat-value">14</span>
-            </div>
-        </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes asignados</span>
-                <span class="cop-stat-value">412</span>
-            </div>
-        </div>
+                <div>
 
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Docentes asignados</span>
-                <span class="cop-stat-value">28</span>
+                    <h1 class="usuarios-title">
+                        <i class="bi bi-people me-2"></i>
+                        Gestión de usuarios
+                    </h1>
+
+                    <p class="usuarios-subtitle">
+                        Administra los usuarios, roles y estados de acceso al sistema.
+                    </p>
+
+                </div>
+
+                <a href="@Url.Action("Crear", "Usuarios")"
+                   class="btn btn-cop-primary">
+
+                    <i class="bi bi-person-plus me-1"></i>
+                    Nuevo usuario
+
+                </a>
+
             </div>
+
         </div>
 
-    </div>
+    </section>
 
-    <p class="cop-section-label">Administración académica</p>
 
-    <div class="cop-quick-grid">
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
 
-        <a href="@Url.Action("Aulas", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-door-open"></i>
-            <div>
-                <span class="cop-quick-title">Aulas y horarios</span>
-                <span class="cop-quick-desc">Capacidad y horarios de las aulas.</span>
+        <!-- TARJETAS RESUMEN -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <span>Usuarios registrados</span>
+                        <h2>28</h2>
+                    </div>
+
+                </div>
+
             </div>
-        </a>
 
-        <a href="@Url.Action("Asignaciones", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-person-plus"></i>
-            <div>
-                <span class="cop-quick-title">Asignar estudiantes</span>
-                <span class="cop-quick-desc">Asignación y traslado entre grupos.</span>
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-success">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Usuarios activos</span>
+                        <h2>25</h2>
+                    </div>
+
+                </div>
+
             </div>
-        </a>
 
-        <a href="@Url.Action("Distribucion", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-diagram-3"></i>
-            <div>
-                <span class="cop-quick-title">Distribución automática</span>
-                <span class="cop-quick-desc">Distribución según capacidad disponible.</span>
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <div>
+                        <span>Usuarios inactivos</span>
+                        <h2>3</h2>
+                    </div>
+
+                </div>
+
             </div>
-        </a>
 
-        <a href="@Url.Action("Docentes", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-person-badge"></i>
-            <div>
-                <span class="cop-quick-title">Asignar docentes</span>
-                <span class="cop-quick-desc">Docentes responsables de cada grupo.</span>
+        </div>
+
+
+        <!-- TABLA -->
+        <div class="usuarios-card">
+
+            <div class="usuarios-toolbar">
+
+                <div>
+                    <h2>Usuarios del sistema</h2>
+                    <p>Consulta y administra los usuarios registrados.</p>
+                </div>
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar usuario..." />
+
+                </div>
+
             </div>
-        </a>
 
-        <a href="@Url.Action("MiGrupo", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-people"></i>
-            <div>
-                <span class="cop-quick-title">Mi grupo</span>
-                <span class="cop-quick-desc">Estudiantes, aula y horario asignado.</span>
+
+            <div class="table-responsive">
+
+                <table class="table usuarios-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Correo electrónico</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- USUARIO 1 -->
+                        <tr>
+
+                            <td>
+
+                                <div class="usuario-info">
+
+                                    <div class="usuario-avatar">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>María Rodríguez</strong>
+                                        <small>mrodriguez</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                maria.rodriguez@copalchi.ed.cr
+                            </td>
+
+                            <td>
+                                <span class="role-badge">
+                                    Administrador
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-ok">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Ver usuario">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Editar usuario">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Cambiar estado">
+
+                                    <i class="bi bi-power"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- USUARIO 2 -->
+                        <tr>
+
+                            <td>
+
+                                <div class="usuario-info">
+
+                                    <div class="usuario-avatar">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Carlos Jiménez</strong>
+                                        <small>cjimenez</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                carlos.jimenez@copalchi.ed.cr
+                            </td>
+
+                            <td>
+                                <span class="role-badge">
+                                    Docente
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-ok">
+                                    Activo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Ver usuario">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Editar usuario">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 2 })"
+                                   class="btn btn-action"
+                                   title="Cambiar estado">
+
+                                    <i class="bi bi-power"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- USUARIO 3 -->
+                        <tr>
+
+                            <td>
+
+                                <div class="usuario-info">
+
+                                    <div class="usuario-avatar">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Ana Vargas</strong>
+                                        <small>avargas</small>
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                ana.vargas@copalchi.ed.cr
+                            </td>
+
+                            <td>
+                                <span class="role-badge">
+                                    Comité de apoyo
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status status-inactive">
+                                    Inactivo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Ver usuario">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Editar", "Usuarios", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Editar usuario">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 3 })"
+                                   class="btn btn-action"
+                                   title="Cambiar estado">
+
+                                    <i class="bi bi-power"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
-        </a>
 
-        <a href="@Url.Action("Reportes", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-file-earmark-bar-graph"></i>
-            <div>
-                <span class="cop-quick-title">Reportes</span>
-                <span class="cop-quick-desc">Distribución por aula, grupo o docente.</span>
-            </div>
-        </a>
+        </div>
 
-        <a href="@Url.Action("ImportarExcel", "GestionAcademica")" class="cop-quick-link">
-            <i class="bi bi-file-earmark-excel"></i>
-            <div>
-                <span class="cop-quick-title">Importar Excel</span>
-                <span class="cop-quick-desc">Carga masiva de asignaciones.</span>
-            </div>
-        </a>
+    </section>
 
-    </div>
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* =========================
+           ENCABEZADO
+        ========================= */
+
+        .usuarios-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .usuarios-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .usuarios-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .usuarios-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
-        }
-
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
-        }
-
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .cop-stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
             margin-bottom: 6px;
         }
 
-        .cop-stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #133C55;
+        .usuarios-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-section-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            font-weight: 600;
-            margin-bottom: 10px;
+
+        /* =========================
+           BOTÓN PRINCIPAL
+        ========================= */
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
         }
 
-        .cop-quick-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 40px;
-        }
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
 
-        .cop-quick-link {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: #fff;
+
+        /* =========================
+           TARJETAS RESUMEN
+        ========================= */
+
+        .summary-card {
+            height: 100%;
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 18px;
-            color: #133C55;
-            text-decoration: none;
-            min-height: 90px;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
         }
 
-            .cop-quick-link:hover {
-                background-color: #E6F1FB;
-                border-color: #cbddec;
-                color: #133C55;
-            }
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
 
-            .cop-quick-link > i {
-                width: 40px;
-                height: 40px;
-                border-radius: 8px;
-                background-color: #E6F1FB;
-                color: #386FA4;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                font-size: 1.2rem;
-            }
+        .summary-icon-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
 
-        .cop-quick-title {
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .summary-card span {
             display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+        .summary-card h2 {
+            margin: 0;
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+        }
+
+
+        /* =========================
+           CONTENEDOR TABLA
+        ========================= */
+
+        .usuarios-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .usuarios-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+            .usuarios-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+            }
+
+            .usuarios-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* =========================
+           BUSCADOR
+        ========================= */
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+
+        /* =========================
+           TABLA
+        ========================= */
+
+        .usuarios-table {
+            margin: 0;
+        }
+
+            .usuarios-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .usuarios-table td {
+                padding: 15px 17px;
+                font-size: .9rem;
+                border-color: #edf0f3;
+            }
+
+
+        /* =========================
+           INFORMACIÓN USUARIO
+        ========================= */
+
+        .usuario-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .usuario-info small {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .78rem;
+                margin-top: 2px;
+            }
+
+        .usuario-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+
+        /* =========================
+           ROL
+        ========================= */
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #e6f1fb;
+            color: var(--cop-primary);
+            font-size: .77rem;
             font-weight: 600;
-            color: #133C55;
-            margin-bottom: 2px;
         }
 
-        .cop-quick-desc {
-            display: block;
-            color: #6c757d;
-            font-size: 0.82rem;
-            font-weight: 400;
+
+        /* =========================
+           ESTADOS
+        ========================= */
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .77rem;
+            font-weight: 600;
         }
 
-        @@media (max-width: 992px) {
-            .cop-quick-grid {
-                grid-template-columns: repeat(2, 1fr);
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        /* =========================
+           ACCIONES
+        ========================= */
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+            padding: 5px 9px;
+        }
+
+            .btn-action:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
             }
-        }
 
-        @@media (max-width: 576px) {
-            .cop-quick-grid {
-                grid-template-columns: 1fr;
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @@media (max-width: 768px) {
+
+            .usuarios-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
             }
         }
     </style>
+
 }

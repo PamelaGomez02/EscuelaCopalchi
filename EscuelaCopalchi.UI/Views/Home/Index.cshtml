@@ -1,273 +1,1206 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Inicio";
 }
 
 <main>
-    <!-- HERO -->
-    <section class="cop-hero">
+
+    <!-- =========================
+         ENCABEZADO DEL DASHBOARD
+    ========================== -->
+    <section class="dashboard-header">
+
         <div class="container">
-            <h1 class="cop-hero-title">Aula Virtual Copalchi</h1>
-            <p class="cop-hero-lead">
-                Plataforma institucional para la gestión académica, administrativa y de bienestar
-                de la Escuela Copalchi: matrícula, asistencia, calificaciones, reportes y más,
-                en un solo lugar.
-            </p>
+
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+                <div>
+
+                  
+
+                    <h1 class="dashboard-title">
+                        Aula Virtual Copalchi
+                    </h1>
+
+                    <p class="dashboard-subtitle">
+                        Gestión académica, administrativa y operativa de la Escuela Copalchi.
+                    </p>
+
+                </div>
+
+                <div class="dashboard-date">
+                    <i class="bi bi-calendar3 me-2"></i>
+                    Panel institucional
+                </div>
+
+            </div>
+
         </div>
+
     </section>
 
-    <!-- MÓDULOS -->
-    <section class="container cop-modules">
-        <h2 class="cop-section-title">Módulos del sistema</h2>
-        <p class="cop-section-subtitle">Selecciona un módulo para comenzar.</p>
 
-        <div class="row g-4 cop-card-grid">
+    <section class="container dashboard-content">
 
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Roles")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-shield-lock"></i>
+        <!-- =========================
+             INDICADORES GENERALES
+        ========================== -->
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-mortarboard"></i>
                     </div>
-                    <h3 class="cop-card-title">Roles</h3>
-                    <p class="cop-card-desc">
-                        Crea y administra roles y niveles de acceso.
-                    </p>
-                </a>
-            </div>
 
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Usuarios")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-person-badge"></i></div>
-                    <h3 class="cop-card-title">Usuarios</h3>
-                    <p class="cop-card-desc">Registro y administración de docentes y personal.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Estudiantes")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-mortarboard"></i></div>
-                    <h3 class="cop-card-title">Estudiantes</h3>
-                    <p class="cop-card-desc">Matrícula, datos médicos y bajas de estudiantes.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "GestionAcademica")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-diagram-3"></i>
+                    <div>
+                        <span>Estudiantes</span>
+                        <h2>186</h2>
+                        <small>Registrados</small>
                     </div>
-                    <h3 class="cop-card-title">Gestión académica</h3>
-                    <p class="cop-card-desc">
-                        Aulas, grupos y asignación de docentes.
-                    </p>
-                </a>
+
+                </div>
+
             </div>
 
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "PlanesEstudio")" class="cop-card">
-                    <div class="cop-card-icon">
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <div>
+                        <span>Usuarios</span>
+                        <h2>28</h2>
+                        <small>En el sistema</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-success">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Asistencia</span>
+                        <h2>94%</h2>
+                        <small>Promedio general</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+                        <span>Alertas</span>
+                        <h2>6</h2>
+                        <small>Pendientes</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ACCESOS PRINCIPALES
+        ========================== -->
+
+        <div class="dashboard-section-heading">
+
+            <div>
+                <h2>Accesos principales</h2>
+                <p>Módulos utilizados con mayor frecuencia.</p>
+            </div>
+
+        </div>
+
+
+        <div class="row g-3 mb-4">
+
+            <!-- ESTUDIANTES -->
+            <div class="col-md-6 col-xl-3">
+
+                <a href="@Url.Action("Index", "Estudiantes")"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+
+                    <div class="quick-content">
+                        <h3>Estudiantes</h3>
+                        <p>Matrícula y expediente estudiantil.</p>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- ASISTENCIA -->
+            <div class="col-md-6 col-xl-3">
+
+                <a href="@Url.Action("Index", "Asistencia")"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div class="quick-content">
+                        <h3>Asistencia</h3>
+                        <p>Registro y control diario.</p>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- NOTAS -->
+            <div class="col-md-6 col-xl-3">
+
+                <a href="@Url.Action("Index", "GestionNotas")"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+
+                    <div class="quick-content">
+                        <h3>Gestión de notas</h3>
+                        <p>Calificaciones estudiantiles.</p>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- PLANES -->
+            <div class="col-md-6 col-xl-3">
+
+                <a href="@Url.Action("Index", "PlanesEstudio")"
+                   class="quick-card">
+
+                    <div class="quick-icon">
                         <i class="bi bi-journal-text"></i>
                     </div>
 
-                    <h3 class="cop-card-title">Planes de estudio</h3>
-
-                    <p class="cop-card-desc">
-                        Carga, revisión y aprobación de planes mensuales.
-                    </p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "RepositorioMaterial")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-folder2-open"></i></div>
-                    <h3 class="cop-card-title">Material didáctico</h3>
-                    <p class="cop-card-desc">Repositorio de recursos y documentos institucionales.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Asistencia")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-calendar-check"></i></div>
-                    <h3 class="cop-card-title">Asistencia</h3>
-                    <p class="cop-card-desc">Registro, historial y porcentaje de asistencia.</p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "GestionNotas")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-clipboard-data"></i>
+                    <div class="quick-content">
+                        <h3>Planes de estudio</h3>
+                        <p>Carga, revisión y aprobación.</p>
                     </div>
-                    <h3 class="cop-card-title">Gestión de notas</h3>
-                    <p class="cop-card-desc">Registro, importación y consulta de calificaciones.</p>
-                </a>
-            </div>
 
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Monitoreo")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-graph-up"></i></div>
-                    <h3 class="cop-card-title">Monitoreo académico</h3>
-                    <p class="cop-card-desc">Rendimiento estudiantil y reportes por grupo.</p>
-                </a>
-            </div>
+                    <i class="bi bi-chevron-right quick-arrow"></i>
 
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "Notificaciones")" class="cop-card">
-                    <div class="cop-card-icon"><i class="bi bi-bell"></i></div>
-                    <h3 class="cop-card-title">Notificaciones</h3>
-                    <p class="cop-card-desc">Alertas de rendimiento, asistencia y riesgo académico.</p>
                 </a>
-            </div>
 
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "PanelPrincipal")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-speedometer2"></i>
-                    </div>
-                    <h3 class="cop-card-title">Panel principal</h3>
-                    <p class="cop-card-desc">
-                        Indicadores clave en tiempo real, según tu rol.
-                    </p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-journal-check"></i>
-                    </div>
-                    <h3 class="cop-card-title">Auditoría</h3>
-                    <p class="cop-card-desc">
-                        Bitácora de acciones realizadas en el sistema.
-                    </p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "InventarioLimpieza")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-bucket"></i>
-                    </div>
-                    <h3 class="cop-card-title">Inventario de limpieza</h3>
-                    <p class="cop-card-desc">
-                        Control de productos de limpieza e higiene.
-                    </p>
-                </a>
-            </div>
-
-            <div class="col-sm-6 col-lg-4">
-                <a href="@Url.Action("Index", "InventarioCocina")" class="cop-card">
-                    <div class="cop-card-icon">
-                        <i class="bi bi-basket"></i>
-                    </div>
-                    <h3 class="cop-card-title">Inventario de cocina</h3>
-                    <p class="cop-card-desc">
-                        Control de insumos, vencimientos y stock mínimo.
-                    </p>
-                </a>
             </div>
 
         </div>
+
+
+        <!-- =========================
+             TODOS LOS MÓDULOS
+        ========================== -->
+
+        <div class="dashboard-section-heading">
+
+            <div>
+                <h2>Módulos del sistema</h2>
+                <p>Accede a las diferentes áreas de la plataforma.</p>
+            </div>
+
+        </div>
+
+
+        <div class="modules-card">
+
+            <div class="row g-0">
+
+
+                <!-- ROLES -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Roles")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Roles</h3>
+                            <p>Roles y niveles de acceso.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- USUARIOS -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Usuarios")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Usuarios</h3>
+                            <p>Administración del personal.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- ESTUDIANTES -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Estudiantes")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Estudiantes</h3>
+                            <p>Matrícula y expedientes.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- GESTIÓN ACADÉMICA -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "GestionAcademica")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-diagram-3"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Gestión académica</h3>
+                            <p>Aulas, grupos y docentes.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- PLANES -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "PlanesEstudio")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Planes de estudio</h3>
+                            <p>Planeamiento académico mensual.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- MATERIAL DIDÁCTICO -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "RepositorioMaterial")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Material didáctico</h3>
+                            <p>Repositorio institucional.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- ASISTENCIA -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Asistencia")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Asistencia</h3>
+                            <p>Control e historial de asistencia.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- NOTAS -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "GestionNotas")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-clipboard-data"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Gestión de notas</h3>
+                            <p>Registro de calificaciones.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- MONITOREO -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Monitoreo")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Monitoreo académico</h3>
+                            <p>Seguimiento del rendimiento.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- NOTIFICACIONES -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "Notificaciones")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-bell"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Notificaciones</h3>
+                            <p>Alertas y avisos académicos.</p>
+                        </div>
+
+                        <span class="notification-count">6</span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- PANEL PRINCIPAL -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "PanelPrincipal")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Panel principal</h3>
+                            <p>Indicadores institucionales.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- AUDITORÍA -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "AuditoriaSistema")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-journal-check"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Auditoría</h3>
+                            <p>Bitácora de acciones.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- INVENTARIO LIMPIEZA -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "InventarioLimpieza")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-bucket"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Inventario de limpieza</h3>
+                            <p>Productos e insumos de limpieza.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- INVENTARIO COCINA -->
+                <div class="col-md-6 col-xl-4">
+
+                    <a href="@Url.Action("Index", "InventarioCocina")"
+                       class="module-item">
+
+                        <div class="module-icon">
+                            <i class="bi bi-basket"></i>
+                        </div>
+
+                        <div class="module-info">
+                            <h3>Inventario de cocina</h3>
+                            <p>Insumos y control de existencias.</p>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PARTE INFERIOR
+        ========================== -->
+
+        <div class="row g-4 mt-1 mb-5">
+
+
+            <!-- ACTIVIDAD -->
+            <div class="col-lg-7">
+
+                <div class="dashboard-card h-100">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+                            <h2>Actividad reciente</h2>
+                            <p>Últimos movimientos registrados.</p>
+                        </div>
+
+                        <a href="@Url.Action("Index", "AuditoriaSistema")"
+                           class="dashboard-link">
+                            Ver auditoría
+                        </a>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+
+                        <div class="activity-info">
+                            <strong>Nuevo estudiante registrado</strong>
+                            <span>Se agregó un estudiante al sistema.</span>
+                        </div>
+
+                        <small>Hoy</small>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <div class="activity-info">
+                            <strong>Asistencia registrada</strong>
+                            <span>Se actualizó la asistencia de un grupo.</span>
+                        </div>
+
+                        <small>Hoy</small>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            <i class="bi bi-clipboard-data"></i>
+                        </div>
+
+                        <div class="activity-info">
+                            <strong>Calificaciones actualizadas</strong>
+                            <span>Se registraron nuevas notas.</span>
+                        </div>
+
+                        <small>Ayer</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ALERTAS -->
+            <div class="col-lg-5">
+
+                <div class="dashboard-card h-100">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+                            <h2>Alertas</h2>
+                            <p>Elementos que requieren atención.</p>
+                        </div>
+
+                        <a href="@Url.Action("Index", "Notificaciones")"
+                           class="dashboard-link">
+                            Ver todas
+                        </a>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-danger-icon">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                        <div>
+                            <strong>3 estudiantes</strong>
+                            <span>con rendimiento académico bajo.</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-warning-icon">
+                            <i class="bi bi-calendar-x"></i>
+                        </div>
+
+                        <div>
+                            <strong>2 estudiantes</strong>
+                            <span>con asistencia inferior al promedio.</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-warning-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+
+                        <div>
+                            <strong>1 producto</strong>
+                            <span>con existencias por debajo del mínimo.</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </section>
+
 </main>
 
+
 @section styles {
+
     <style>
+
         :root {
-            --cop-primary: #133C55; /* Yale Blue */
-            --cop-secondary: #386FA4; /* Cornflower Ocean */
-            --cop-accent: #59A5D8; /* Fresh Sky */
-            --cop-soft: #84D2F6; /* Frozen Lake */
-            --cop-light: #91E5F6; /* Frosted Blue */
-            --cop-text: #212529;
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-light: #91E5F6;
             --cop-muted: #6c757d;
-            --cop-card-bg: #ffffff;
-            --cop-page-bg: #f4f7fa;
+            --cop-bg: #f4f7fa;
+            --cop-border: #e3e8ee;
         }
+
 
         body {
-            background-color: var(--cop-page-bg);
+            background: var(--cop-bg);
         }
 
-        .cop-hero {
-            background-color: var(--cop-primary);
-            color: #ffffff;
-            padding: 56px 0 48px;
-            margin-bottom: 40px;
-        }
 
-        .cop-hero-title {
-            font-weight: 700;
-            font-size: 2.25rem;
-            margin-bottom: 12px;
-        }
+        /* =========================
+           HEADER
+        ========================= */
 
-        .cop-hero-lead {
-            font-size: 1.05rem;
-            max-width: 680px;
-            color: #dce8f2;
-            margin-bottom: 0;
-        }
-
-        .cop-modules {
-            padding-bottom: 56px;
-        }
-
-        .cop-section-title {
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: var(--cop-primary);
-            margin-bottom: 4px;
-        }
-
-        .cop-section-subtitle {
-            color: var(--cop-muted);
+        .dashboard-header {
+            background: white;
+            border-bottom: 1px solid var(--cop-border);
+            padding: 30px 0;
             margin-bottom: 28px;
         }
 
-        .cop-card {
-            display: block;
-            height: 100%;
-            background-color: var(--cop-card-bg);
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 22px 20px;
-            text-decoration: none;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+
+        .dashboard-welcome {
+            color: var(--cop-secondary);
+            font-size: .85rem;
+            margin-bottom: 5px;
+            font-weight: 500;
         }
 
-            .cop-card:hover {
-                border-color: var(--cop-accent);
-                box-shadow: 0 4px 14px rgba(19, 60, 85, 0.08);
-                transform: translateY(-2px);
-                text-decoration: none;
-            }
 
-        .cop-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 8px;
-            background-color: var(--cop-light);
+        .dashboard-title {
             color: var(--cop-primary);
+            font-weight: 700;
+            font-size: 1.9rem;
+            margin-bottom: 5px;
+        }
+
+
+        .dashboard-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+
+        .dashboard-date {
+            border: 1px solid var(--cop-border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            background: #f8fafc;
+            color: var(--cop-secondary);
+            font-size: .85rem;
+        }
+
+
+        /* =========================
+           RESUMEN
+        ========================= */
+
+        .summary-card {
+            background: white;
+            border: 1px solid var(--cop-border);
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            height: 100%;
+        }
+
+
+        .summary-icon {
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            margin-bottom: 14px;
+            font-size: 1.2rem;
         }
 
-        .cop-card-title {
-            font-weight: 600;
-            font-size: 1.05rem;
+
+        .summary-icon-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .summary-card span {
+            display: block;
+            font-size: .78rem;
+            color: var(--cop-muted);
+        }
+
+
+        .summary-card h2 {
+            margin: 1px 0;
+            color: var(--cop-primary);
+            font-size: 1.45rem;
+            font-weight: 700;
+        }
+
+
+        .summary-card small {
+            color: #8a969f;
+            font-size: .73rem;
+        }
+
+
+        /* =========================
+           TÍTULOS DE SECCIÓN
+        ========================= */
+
+        .dashboard-section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 28px 0 15px;
+        }
+
+
+            .dashboard-section-heading h2 {
+                color: var(--cop-primary);
+                font-size: 1.2rem;
+                margin-bottom: 3px;
+                font-weight: 650;
+            }
+
+
+            .dashboard-section-heading p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* =========================
+           ACCESOS RÁPIDOS
+        ========================= */
+
+        .quick-card {
+            position: relative;
+            height: 100%;
+            background: white;
+            border: 1px solid var(--cop-border);
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: .15s ease;
+        }
+
+
+            .quick-card:hover {
+                border-color: var(--cop-accent);
+                box-shadow: 0 4px 12px rgba(19, 60, 85, .07);
+                transform: translateY(-2px);
+            }
+
+
+        .quick-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            background: #e6f1fb;
             color: var(--cop-secondary);
-            margin-bottom: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
         }
 
-        .cop-card-desc {
-            font-size: 0.9rem;
-            color: var(--cop-text);
-            margin-bottom: 0;
-            line-height: 1.5;
+
+        .quick-content {
+            flex-grow: 1;
+        }
+
+
+            .quick-content h3 {
+                color: var(--cop-primary);
+                font-size: .92rem;
+                margin: 0 0 3px;
+                font-weight: 600;
+            }
+
+
+            .quick-content p {
+                color: var(--cop-muted);
+                font-size: .76rem;
+                margin: 0;
+            }
+
+
+        .quick-arrow {
+            color: #aab4bc;
+            font-size: .8rem;
+        }
+
+
+        /* =========================
+           MÓDULOS
+        ========================= */
+
+        .modules-card {
+            background: white;
+            border: 1px solid var(--cop-border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        .module-item {
+            min-height: 92px;
+            height: 100%;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            border-right: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+            transition: .15s ease;
+        }
+
+
+            .module-item:hover {
+                background: #f7fbfe;
+            }
+
+
+        .module-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+
+        .module-info {
+            flex-grow: 1;
+        }
+
+
+            .module-info h3 {
+                color: var(--cop-primary);
+                font-size: .9rem;
+                font-weight: 600;
+                margin: 0 0 3px;
+            }
+
+
+            .module-info p {
+                color: var(--cop-muted);
+                font-size: .76rem;
+                margin: 0;
+            }
+
+
+        .module-item > .bi-chevron-right {
+            color: #adb5bd;
+            font-size: .75rem;
+        }
+
+
+        .notification-count {
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            border-radius: 20px;
+            background: #f8d7da;
+            color: #842029;
+            font-size: .72rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        /* =========================
+           TARJETAS INFERIORES
+        ========================= */
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid var(--cop-border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+
+        .dashboard-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+
+            .dashboard-card-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+                margin-bottom: 2px;
+            }
+
+
+            .dashboard-card-header p {
+                color: var(--cop-muted);
+                font-size: .8rem;
+                margin: 0;
+            }
+
+
+        .dashboard-link {
+            color: var(--cop-secondary);
+            font-size: .8rem;
+            text-decoration: none;
+        }
+
+
+            .dashboard-link:hover {
+                text-decoration: underline;
+            }
+
+
+        /* =========================
+           ACTIVIDAD
+        ========================= */
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 0;
+            border-top: 1px solid #edf0f3;
+        }
+
+
+        .activity-icon {
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .activity-info {
+            flex-grow: 1;
+        }
+
+
+            .activity-info strong {
+                display: block;
+                color: #36434d;
+                font-size: .82rem;
+            }
+
+
+            .activity-info span {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .76rem;
+            }
+
+
+        .activity-item small {
+            color: #929da5;
+            font-size: .7rem;
+        }
+
+
+        /* =========================
+           ALERTAS
+        ========================= */
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 13px 0;
+            border-top: 1px solid #edf0f3;
+        }
+
+
+        .alert-icon {
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .alert-danger-icon {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .alert-warning-icon {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .alert-item strong {
+            color: #36434d;
+            font-size: .8rem;
+        }
+
+
+        .alert-item span {
+            color: var(--cop-muted);
+            font-size: .76rem;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @@media (max-width: 767px) {
+
+            .dashboard-title {
+                font-size: 1.55rem;
+            }
+
+
+            .dashboard-card-header {
+                gap: 10px;
+            }
+
+
+            .module-item {
+                border-right: none;
+            }
+        }
+
+
+        @@media (min-width: 768px) and (max-width: 1199px) {
+
+            .module-item:nth-child(2n) {
+                border-right: none;
+            }
+        }
+
+
+        @@media (min-width: 1200px) {
+
+            .module-item:nth-child(3n) {
+                border-right: none;
+            }
         }
     </style>
+
 }
