@@ -1,15 +1,15 @@
 ﻿@{
-    ViewBag.Title = "Estudiantes en riesgo";
+    ViewBag.Title = "Auditoría del sistema";
 }
 
 <main>
 
     <!-- ENCABEZADO -->
-    <section class="risk-header">
+    <section class="audit-header">
 
         <div class="container">
 
-            <div class="risk-breadcrumb">
+            <div class="audit-breadcrumb">
 
                 <a href="@Url.Action("Index", "Home")">
                     Inicio
@@ -17,44 +17,22 @@
 
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "Notificaciones")">
-                    Notificaciones
-                </a>
-
-                <i class="bi bi-chevron-right"></i>
-
-                <span>
-                    Estudiantes en riesgo
-                </span>
+                <span>Auditoría del sistema</span>
 
             </div>
 
 
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <h1 class="audit-title">
 
-                <div>
+                <i class="bi bi-journal-check me-2"></i>
+                Auditoría del sistema
 
-                    <h1 class="risk-title">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        Estudiantes en riesgo académico
-                    </h1>
-
-                    <p class="risk-subtitle">
-                        Listado consolidado de estudiantes con alertas por bajo rendimiento o asistencia.
-                    </p>
-
-                </div>
+            </h1>
 
 
-                <a href="@Url.Action("Index", "Notificaciones")"
-                   class="btn btn-outline-cop">
-
-                    <i class="bi bi-arrow-left me-1"></i>
-                    Volver a notificaciones
-
-                </a>
-
-            </div>
+            <p class="audit-subtitle">
+                Consulta la bitácora de acciones críticas realizadas en el sistema.
+            </p>
 
         </div>
 
@@ -72,12 +50,12 @@
                 <div class="summary-card">
 
                     <div class="summary-icon">
-                        <i class="bi bi-people"></i>
+                        <i class="bi bi-list-check"></i>
                     </div>
 
                     <div>
-                        <span>Estudiantes en riesgo</span>
-                        <h2>8</h2>
+                        <span>Eventos registrados</span>
+                        <h2>128</h2>
                     </div>
 
                 </div>
@@ -89,13 +67,13 @@
 
                 <div class="summary-card">
 
-                    <div class="summary-icon summary-icon-danger">
-                        <i class="bi bi-graph-down-arrow"></i>
+                    <div class="summary-icon">
+                        <i class="bi bi-calendar-check"></i>
                     </div>
 
                     <div>
-                        <span>Bajo rendimiento</span>
-                        <h2 class="text-danger">5</h2>
+                        <span>Eventos de hoy</span>
+                        <h2>12</h2>
                     </div>
 
                 </div>
@@ -107,13 +85,13 @@
 
                 <div class="summary-card">
 
-                    <div class="summary-icon summary-icon-warning">
-                        <i class="bi bi-calendar-x"></i>
+                    <div class="summary-icon">
+                        <i class="bi bi-person-check"></i>
                     </div>
 
                     <div>
-                        <span>Problemas de asistencia</span>
-                        <h2 class="warning-value">3</h2>
+                        <span>Usuarios con actividad</span>
+                        <h2>7</h2>
                     </div>
 
                 </div>
@@ -124,19 +102,19 @@
 
 
         <!-- CONTENEDOR PRINCIPAL -->
-        <div class="risk-card">
+        <div class="audit-card">
 
             <!-- TOOLBAR -->
-            <div class="risk-toolbar">
+            <div class="audit-toolbar">
 
                 <div>
 
                     <h2>
-                        Seguimiento de estudiantes
+                        Registro de actividad
                     </h2>
 
                     <p>
-                        Consulta estudiantes que requieren atención o seguimiento académico.
+                        Consulta las acciones realizadas por los usuarios del sistema.
                     </p>
 
                 </div>
@@ -148,7 +126,7 @@
 
                     <input type="text"
                            class="form-control"
-                           placeholder="Buscar estudiante..." />
+                           placeholder="Buscar evento..." />
 
                 </div>
 
@@ -156,27 +134,31 @@
 
 
             <!-- FILTROS -->
-            <div class="risk-filters">
+            <div class="audit-filters">
 
                 <div>
 
                     <label class="filter-label">
-                        Motivo
+                        Módulo
                     </label>
 
                     <select class="form-select">
 
                         <option selected>
-                            Todos los motivos
+                            Todos los módulos
                         </option>
 
-                        <option>
-                            Bajo rendimiento
-                        </option>
-
-                        <option>
-                            Inasistencia
-                        </option>
+                        <option>Roles</option>
+                        <option>Usuarios</option>
+                        <option>Estudiantes</option>
+                        <option>Gestión académica</option>
+                        <option>Planes de estudio</option>
+                        <option>Material didáctico</option>
+                        <option>Asistencia</option>
+                        <option>Gestión de notas</option>
+                        <option>Monitoreo académico</option>
+                        <option>Inventario de limpieza</option>
+                        <option>Inventario de cocina</option>
 
                     </select>
 
@@ -186,18 +168,19 @@
                 <div>
 
                     <label class="filter-label">
-                        Grupo
+                        Usuario
                     </label>
 
                     <select class="form-select">
 
                         <option selected>
-                            Todos los grupos
+                            Todos los usuarios
                         </option>
 
-                        <option>7-A</option>
-                        <option>8-B</option>
-                        <option>9-C</option>
+                        <option>Administrador</option>
+                        <option>Director</option>
+                        <option>Docente</option>
+                        <option>Comité de apoyo</option>
 
                     </select>
 
@@ -207,28 +190,11 @@
                 <div>
 
                     <label class="filter-label">
-                        Docente
+                        Fecha
                     </label>
 
-                    <select class="form-select">
-
-                        <option selected>
-                            Todos los docentes
-                        </option>
-
-                        <option>
-                            Prof. Juan Pérez
-                        </option>
-
-                        <option>
-                            Prof. Laura Gómez
-                        </option>
-
-                        <option>
-                            Prof. María Rodríguez
-                        </option>
-
-                    </select>
+                    <input type="date"
+                           class="form-control" />
 
                 </div>
 
@@ -238,15 +204,15 @@
             <!-- TABLA -->
             <div class="table-responsive">
 
-                <table class="table risk-table align-middle">
+                <table class="table audit-table align-middle">
 
                     <thead>
 
                         <tr>
-                            <th>Estudiante</th>
-                            <th>Grupo</th>
-                            <th>Motivo</th>
-                            <th>Docente a cargo</th>
+                            <th>Usuario</th>
+                            <th>Acción</th>
+                            <th>Módulo</th>
+                            <th>Fecha</th>
                             <th class="text-end">Acciones</th>
                         </tr>
 
@@ -255,25 +221,25 @@
 
                     <tbody>
 
-                        <!-- ANDRÉS -->
+                        <!-- EVENTO 1 -->
                         <tr>
 
                             <td>
 
-                                <div class="student-info">
+                                <div class="user-info">
 
-                                    <div class="student-avatar">
-                                        AS
+                                    <div class="user-avatar">
+                                        AA
                                     </div>
 
                                     <div>
 
                                         <strong>
-                                            Andrés Solís
+                                            ana.admin
                                         </strong>
 
                                         <small>
-                                            Estudiante
+                                            Administrador
                                         </small>
 
                                     </div>
@@ -284,30 +250,34 @@
 
 
                             <td>
-                                8-B
+                                Creó un rol
                             </td>
 
 
                             <td>
 
-                                <span class="risk-status risk-danger">
-                                    <i class="bi bi-graph-down-arrow"></i>
-                                    Bajo rendimiento
+                                <span class="module-badge">
+                                    Roles
                                 </span>
 
                             </td>
 
 
                             <td>
-                                Prof. Juan Pérez
+
+                                <div class="date-info">
+                                    <strong>Hoy</strong>
+                                    <small>9:12 a.m.</small>
+                                </div>
+
                             </td>
 
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+                                <a href="@Url.Action("Detalle", "AuditoriaSistema", new { id = 1 })"
                                    class="btn btn-action"
-                                   title="Ver ficha">
+                                   title="Ver detalle">
 
                                     <i class="bi bi-eye"></i>
 
@@ -318,25 +288,25 @@
                         </tr>
 
 
-                        <!-- KARLA -->
+                        <!-- EVENTO 2 -->
                         <tr>
 
                             <td>
 
-                                <div class="student-info">
+                                <div class="user-info">
 
-                                    <div class="student-avatar">
-                                        KJ
+                                    <div class="user-avatar">
+                                        DC
                                     </div>
 
                                     <div>
 
                                         <strong>
-                                            Karla Jiménez
+                                            director.copalchi
                                         </strong>
 
                                         <small>
-                                            Estudiante
+                                            Director
                                         </small>
 
                                     </div>
@@ -347,30 +317,34 @@
 
 
                             <td>
-                                9-C
+                                Aprobó un plan de estudio
                             </td>
 
 
                             <td>
 
-                                <span class="risk-status risk-warning">
-                                    <i class="bi bi-calendar-x"></i>
-                                    Inasistencia
+                                <span class="module-badge">
+                                    Planes de estudio
                                 </span>
 
                             </td>
 
 
                             <td>
-                                Prof. Laura Gómez
+
+                                <div class="date-info">
+                                    <strong>Ayer</strong>
+                                    <small>3:40 p.m.</small>
+                                </div>
+
                             </td>
 
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
+                                <a href="@Url.Action("Detalle", "AuditoriaSistema", new { id = 2 })"
                                    class="btn btn-action"
-                                   title="Ver ficha">
+                                   title="Ver detalle">
 
                                     <i class="bi bi-eye"></i>
 
@@ -381,25 +355,25 @@
                         </tr>
 
 
-                        <!-- MARCO -->
+                        <!-- EVENTO 3 -->
                         <tr>
 
                             <td>
 
-                                <div class="student-info">
+                                <div class="user-info">
 
-                                    <div class="student-avatar">
-                                        MV
+                                    <div class="user-avatar">
+                                        AA
                                     </div>
 
                                     <div>
 
                                         <strong>
-                                            Marco Vindas
+                                            ana.admin
                                         </strong>
 
                                         <small>
-                                            Estudiante
+                                            Administrador
                                         </small>
 
                                     </div>
@@ -410,30 +384,101 @@
 
 
                             <td>
-                                7-A
+                                Restableció contraseña
                             </td>
 
 
                             <td>
 
-                                <span class="risk-status risk-danger">
-                                    <i class="bi bi-graph-down-arrow"></i>
-                                    Bajo rendimiento
+                                <span class="module-badge">
+                                    Usuarios
                                 </span>
 
                             </td>
 
 
                             <td>
-                                Prof. María Rodríguez
+
+                                <div class="date-info">
+                                    <strong>04/08/2026</strong>
+                                    <small>11:05 a.m.</small>
+                                </div>
+
                             </td>
 
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 3 })"
+                                <a href="@Url.Action("Detalle", "AuditoriaSistema", new { id = 3 })"
                                    class="btn btn-action"
-                                   title="Ver ficha">
+                                   title="Ver detalle">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- EVENTO 4 -->
+                        <tr>
+
+                            <td>
+
+                                <div class="user-info">
+
+                                    <div class="user-avatar">
+                                        DM
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            docente.maria
+                                        </strong>
+
+                                        <small>
+                                            Docente
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                Modificó una asistencia
+                            </td>
+
+
+                            <td>
+
+                                <span class="module-badge">
+                                    Asistencia
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="date-info">
+                                    <strong>04/08/2026</strong>
+                                    <small>8:30 a.m.</small>
+                                </div>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a href="@Url.Action("Detalle", "AuditoriaSistema", new { id = 4 })"
+                                   class="btn btn-action"
+                                   title="Ver detalle">
 
                                     <i class="bi bi-eye"></i>
 
@@ -476,7 +521,7 @@
 
         /* ENCABEZADO */
 
-        .risk-header {
+        .audit-header {
             background: white;
             border-bottom: 1px solid #e3e8ee;
             padding: 30px 0;
@@ -484,10 +529,9 @@
         }
 
 
-        .risk-breadcrumb {
+        .audit-breadcrumb {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
             gap: 7px;
             font-size: .85rem;
             color: var(--cop-muted);
@@ -495,18 +539,18 @@
         }
 
 
-            .risk-breadcrumb a {
+            .audit-breadcrumb a {
                 color: var(--cop-secondary);
                 text-decoration: none;
             }
 
 
-                .risk-breadcrumb a:hover {
+                .audit-breadcrumb a:hover {
                     text-decoration: underline;
                 }
 
 
-        .risk-title {
+        .audit-title {
             color: var(--cop-primary);
             font-size: 1.8rem;
             font-weight: 700;
@@ -514,27 +558,10 @@
         }
 
 
-        .risk-subtitle {
+        .audit-subtitle {
             color: var(--cop-muted);
             margin: 0;
         }
-
-
-        /* BOTÓN */
-
-        .btn-outline-cop {
-            border: 1px solid var(--cop-secondary);
-            color: var(--cop-secondary);
-            background: white;
-            font-weight: 500;
-        }
-
-
-            .btn-outline-cop:hover {
-                background: #e6f1fb;
-                border-color: var(--cop-secondary);
-                color: var(--cop-primary);
-            }
 
 
         /* RESUMEN */
@@ -559,21 +586,9 @@
             background: #e6f1fb;
             color: var(--cop-secondary);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
-        }
-
-
-        .summary-icon-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .summary-icon-warning {
-            background: #fff3cd;
-            color: #856404;
         }
 
 
@@ -592,14 +607,9 @@
         }
 
 
-        .warning-value {
-            color: #b8860b !important;
-        }
-
-
         /* CONTENEDOR */
 
-        .risk-card {
+        .audit-card {
             background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
@@ -609,7 +619,7 @@
 
         /* TOOLBAR */
 
-        .risk-toolbar {
+        .audit-toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -618,7 +628,7 @@
         }
 
 
-            .risk-toolbar h2 {
+            .audit-toolbar h2 {
                 color: var(--cop-primary);
                 font-size: 1.15rem;
                 font-weight: 600;
@@ -626,7 +636,7 @@
             }
 
 
-            .risk-toolbar p {
+            .audit-toolbar p {
                 color: var(--cop-muted);
                 font-size: .85rem;
                 margin: 0;
@@ -657,7 +667,7 @@
 
         /* FILTROS */
 
-        .risk-filters {
+        .audit-filters {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
@@ -679,12 +689,12 @@
 
         /* TABLA */
 
-        .risk-table {
+        .audit-table {
             margin: 0;
         }
 
 
-            .risk-table th {
+            .audit-table th {
                 background: #f8fafc;
                 color: #53616d;
                 font-size: .8rem;
@@ -694,28 +704,28 @@
             }
 
 
-            .risk-table td {
+            .audit-table td {
                 padding: 15px 17px;
                 font-size: .9rem;
                 border-color: #edf0f3;
             }
 
 
-            .risk-table tbody tr:hover {
+            .audit-table tbody tr:hover {
                 background: #fafcfd;
             }
 
 
-        /* ESTUDIANTE */
+        /* USUARIO */
 
-        .student-info {
+        .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
 
-        .student-avatar {
+        .user-avatar {
             width: 38px;
             height: 38px;
             flex-shrink: 0;
@@ -730,42 +740,51 @@
         }
 
 
-        .student-info strong {
+        .user-info strong {
             display: block;
             color: #212529;
             font-size: .88rem;
         }
 
 
-        .student-info small {
+        .user-info small {
             display: block;
             color: var(--cop-muted);
             font-size: .75rem;
         }
 
 
-        /* MOTIVO */
+        /* MÓDULO */
 
-        .risk-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+        .module-badge {
+            display: inline-block;
             padding: 5px 9px;
             border-radius: 20px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
             font-size: .77rem;
             font-weight: 600;
         }
 
 
-        .risk-danger {
-            background: #f8d7da;
-            color: #842029;
+        /* FECHA */
+
+        .date-info strong,
+        .date-info small {
+            display: block;
         }
 
 
-        .risk-warning {
-            background: #fff3cd;
-            color: #856404;
+        .date-info strong {
+            color: #343a40;
+            font-size: .85rem;
+            font-weight: 500;
+        }
+
+
+        .date-info small {
+            color: var(--cop-muted);
+            font-size: .75rem;
         }
 
 
@@ -805,7 +824,7 @@
 
         @@media (max-width: 768px) {
 
-            .risk-toolbar {
+            .audit-toolbar {
                 flex-direction: column;
                 align-items: stretch;
             }
@@ -816,7 +835,7 @@
             }
 
 
-            .risk-filters {
+            .audit-filters {
                 grid-template-columns: 1fr;
             }
         }

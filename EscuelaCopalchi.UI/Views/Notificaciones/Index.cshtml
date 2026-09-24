@@ -3,175 +3,747 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Notificaciones</h2>
-            <p class="cop-page-subtitle">Historial de alertas de rendimiento y asistencia.</p>
-        </div>
-        <a href="@Url.Action("Riesgo", "Notificaciones")" class="btn btn-outline-secondary">
-            <i class="bi bi-exclamation-triangle me-1"></i> Ver estudiantes en riesgo
-        </a>
-    </div>
 
-    <div class="cop-filters">
-        <div class="row g-2 align-items-center">
+    <!-- ENCABEZADO -->
+    <section class="notifications-header">
+
+        <div class="container">
+
+            <div class="notifications-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Notificaciones</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+
+                    <h1 class="notifications-title">
+                        <i class="bi bi-bell me-2"></i>
+                        Notificaciones
+                    </h1>
+
+                    <p class="notifications-subtitle">
+                        Historial de alertas de rendimiento, asistencia y riesgo académico.
+                    </p>
+
+                </div>
+
+
+                <a href="@Url.Action("Riesgo", "Notificaciones")"
+                   class="btn btn-outline-cop">
+
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Ver estudiantes en riesgo
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- RESUMEN -->
+        <div class="row g-3 mb-4">
+
             <div class="col-md-4">
-                <select class="form-select">
-                    <option selected>Todos los tipos</option>
-                    <option>Bajo rendimiento</option>
-                    <option>Inasistencia</option>
-                </select>
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+                        <span>Notificaciones</span>
+                        <h2>18</h2>
+                    </div>
+
+                </div>
+
             </div>
+
+
             <div class="col-md-4">
-                <select class="form-select">
-                    <option selected>Todos los grupos</option>
-                    <option>7-A</option>
-                    <option>8-B</option>
-                    <option>9-C</option>
-                </select>
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <span>Prioridad alta</span>
+                        <h2 class="text-danger">3</h2>
+                    </div>
+
+                </div>
+
             </div>
+
+
             <div class="col-md-4">
-                <input type="date" class="form-control">
-            </div>
-        </div>
-    </div>
 
-    <div class="cop-notif-list">
+                <div class="summary-card">
 
-        <div class="cop-notif-item">
-            <div class="cop-notif-icon cop-notif-danger"><i class="bi bi-graph-down-arrow"></i></div>
-            <div class="cop-notif-body">
-                <div class="cop-notif-title">Calificación baja — Andrés Solís</div>
-                <p class="cop-notif-text">Obtuvo 58 en el examen de Matemática (grupo 8-B).</p>
-                <span class="cop-notif-date">Hoy, 9:40 a.m.</span>
-            </div>
-            <span class="badge cop-badge-alta">Alta</span>
-        </div>
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
 
-        <div class="cop-notif-item">
-            <div class="cop-notif-icon cop-notif-warning"><i class="bi bi-calendar-x"></i></div>
-            <div class="cop-notif-body">
-                <div class="cop-notif-title">Ausencias frecuentes — Karla Jiménez</div>
-                <p class="cop-notif-text">Acumula 4 ausencias en el último mes (grupo 9-C).</p>
-                <span class="cop-notif-date">Ayer, 2:15 p.m.</span>
+                    <div>
+                        <span>Pendientes de revisión</span>
+                        <h2 class="warning-value">5</h2>
+                    </div>
+
+                </div>
+
             </div>
-            <span class="badge cop-badge-media">Media</span>
+
         </div>
 
-        <div class="cop-notif-item">
-            <div class="cop-notif-icon cop-notif-danger"><i class="bi bi-graph-down-arrow"></i></div>
-            <div class="cop-notif-body">
-                <div class="cop-notif-title">Calificación baja — Marco Vindas</div>
-                <p class="cop-notif-text">Obtuvo 61 en Ciencias (grupo 7-A).</p>
-                <span class="cop-notif-date">Lun 4 ago, 11:05 a.m.</span>
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="notifications-card">
+
+            <!-- TOOLBAR -->
+            <div class="notifications-toolbar">
+
+                <div>
+
+                    <h2>
+                        Historial de alertas
+                    </h2>
+
+                    <p>
+                        Consulta las notificaciones generadas por rendimiento y asistencia.
+                    </p>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar estudiante..." />
+
+                </div>
+
             </div>
-            <span class="badge cop-badge-alta">Alta</span>
+
+
+            <!-- FILTROS -->
+            <div class="notifications-filters">
+
+                <div>
+
+                    <label class="filter-label">
+                        Tipo de alerta
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los tipos
+                        </option>
+
+                        <option>
+                            Bajo rendimiento
+                        </option>
+
+                        <option>
+                            Inasistencia
+                        </option>
+
+                        <option>
+                            Riesgo académico
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Grupo
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>
+                            Todos los grupos
+                        </option>
+
+                        <option>7-A</option>
+                        <option>8-B</option>
+                        <option>9-C</option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="filter-label">
+                        Fecha
+                    </label>
+
+                    <input type="date"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+
+            <!-- LISTA DE NOTIFICACIONES -->
+            <div class="notifications-list">
+
+                <!-- NOTIFICACIÓN 1 -->
+                <div class="notification-item">
+
+                    <div class="notification-icon notification-danger">
+                        <i class="bi bi-graph-down-arrow"></i>
+                    </div>
+
+
+                    <div class="notification-body">
+
+                        <div class="notification-top">
+
+                            <div>
+
+                                <h3>
+                                    Calificación baja — Andrés Solís
+                                </h3>
+
+                                <p>
+                                    Obtuvo 58 en el examen de Matemática del grupo 8-B.
+                                </p>
+
+                            </div>
+
+
+                            <span class="priority priority-high">
+                                Alta
+                            </span>
+
+                        </div>
+
+
+                        <div class="notification-footer">
+
+                            <span>
+                                <i class="bi bi-clock me-1"></i>
+                                Hoy, 9:40 a.m.
+                            </span>
+
+                            <span>
+                                <i class="bi bi-mortarboard me-1"></i>
+                                Grupo 8-B
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NOTIFICACIÓN 2 -->
+                <div class="notification-item">
+
+                    <div class="notification-icon notification-warning">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+
+
+                    <div class="notification-body">
+
+                        <div class="notification-top">
+
+                            <div>
+
+                                <h3>
+                                    Ausencias frecuentes — Karla Jiménez
+                                </h3>
+
+                                <p>
+                                    Acumula 4 ausencias en el último mes en el grupo 9-C.
+                                </p>
+
+                            </div>
+
+
+                            <span class="priority priority-medium">
+                                Media
+                            </span>
+
+                        </div>
+
+
+                        <div class="notification-footer">
+
+                            <span>
+                                <i class="bi bi-clock me-1"></i>
+                                Ayer, 2:15 p.m.
+                            </span>
+
+                            <span>
+                                <i class="bi bi-mortarboard me-1"></i>
+                                Grupo 9-C
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NOTIFICACIÓN 3 -->
+                <div class="notification-item">
+
+                    <div class="notification-icon notification-danger">
+                        <i class="bi bi-graph-down-arrow"></i>
+                    </div>
+
+
+                    <div class="notification-body">
+
+                        <div class="notification-top">
+
+                            <div>
+
+                                <h3>
+                                    Calificación baja — Marco Vindas
+                                </h3>
+
+                                <p>
+                                    Obtuvo 61 en Ciencias del grupo 7-A.
+                                </p>
+
+                            </div>
+
+
+                            <span class="priority priority-high">
+                                Alta
+                            </span>
+
+                        </div>
+
+
+                        <div class="notification-footer">
+
+                            <span>
+                                <i class="bi bi-clock me-1"></i>
+                                Lun 4 ago, 11:05 a.m.
+                            </span>
+
+                            <span>
+                                <i class="bi bi-mortarboard me-1"></i>
+                                Grupo 7-A
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-    </div>
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .notifications-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .notifications-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+
+            .notifications-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .notifications-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .notifications-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
+
+        .notifications-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
         }
 
-        .cop-filters {
-            background-color: #fff;
+
+        /* BOTÓN */
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+            background: white;
+            font-weight: 500;
+        }
+
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                border-color: var(--cop-secondary);
+                color: var(--cop-primary);
+            }
+
+
+        /* RESUMEN */
+
+        .summary-card {
+            height: 100%;
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 20px;
-        }
-
-        .cop-notif-list {
+            padding: 17px;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 40px;
+            align-items: center;
+            gap: 13px;
         }
 
-        .cop-notif-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 16px 18px;
-        }
 
-        .cop-notif-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+        }
+
+
+        .summary-icon-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+
+        .warning-value {
+            color: #b8860b !important;
+        }
+
+
+        /* CONTENEDOR */
+
+        .notifications-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        /* TOOLBAR */
+
+        .notifications-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 22px;
+        }
+
+
+            .notifications-toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.15rem;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+
+            .notifications-toolbar p {
+                color: var(--cop-muted);
+                font-size: .85rem;
+                margin: 0;
+            }
+
+
+        /* BUSCADOR */
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+
+            .search-box i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--cop-muted);
+            }
+
+
+            .search-box input {
+                padding-left: 34px;
+            }
+
+
+        /* FILTROS */
+
+        .notifications-filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 15px 22px;
+            background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+        .filter-label {
+            display: block;
+            color: #53616d;
+            font-size: .78rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+
+        /* LISTA */
+
+        .notifications-list {
+            padding: 0 22px;
+        }
+
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px 0;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+            .notification-item:last-child {
+                border-bottom: none;
+            }
+
+
+        .notification-icon {
+            width: 42px;
+            height: 42px;
             flex-shrink: 0;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
         }
 
-        .cop-notif-danger {
-            background-color: #fdeceb;
-            color: #dc3545;
+
+        .notification-danger {
+            background: #f8d7da;
+            color: #842029;
         }
 
-        .cop-notif-warning {
-            background-color: #fff6e5;
-            color: #b8860b;
+
+        .notification-warning {
+            background: #fff3cd;
+            color: #856404;
         }
 
-        .cop-notif-body {
+
+        .notification-body {
             flex: 1;
         }
 
-        .cop-notif-title {
+
+        .notification-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+
+            .notification-top h3 {
+                color: var(--cop-primary);
+                font-size: .95rem;
+                font-weight: 600;
+                margin: 0 0 4px;
+            }
+
+
+            .notification-top p {
+                color: #495057;
+                font-size: .86rem;
+                margin: 0;
+            }
+
+
+        /* PRIORIDAD */
+
+        .priority {
+            display: inline-block;
+            flex-shrink: 0;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: .75rem;
             font-weight: 600;
-            color: #133C55;
         }
 
-        .cop-notif-text {
-            margin: 2px 0 4px;
-            color: #495057;
-            font-size: 0.9rem;
+
+        .priority-high {
+            background: #f8d7da;
+            color: #842029;
         }
 
-        .cop-notif-date {
-            font-size: 0.78rem;
-            color: #6c757d;
+
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
         }
 
-        .cop-badge-alta {
-            background-color: #fdeceb;
-            color: #dc3545;
-            font-weight: 600;
-            height: fit-content;
+
+        /* PIE DE NOTIFICACIÓN */
+
+        .notification-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 9px;
         }
 
-        .cop-badge-media {
-            background-color: #fff6e5;
-            color: #b8860b;
-            font-weight: 600;
-            height: fit-content;
+
+            .notification-footer span {
+                color: var(--cop-muted);
+                font-size: .75rem;
+            }
+
+
+        /* INPUTS */
+
+        .form-control,
+        .form-select {
+            border-color: #dfe4e8;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .notifications-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .search-box {
+                width: 100%;
+            }
+
+
+            .notifications-filters {
+                grid-template-columns: 1fr;
+            }
+
+
+            .notification-top {
+                flex-direction: column;
+                gap: 8px;
+            }
         }
     </style>
+
 }

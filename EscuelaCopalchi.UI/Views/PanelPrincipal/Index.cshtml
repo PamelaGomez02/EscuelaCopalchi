@@ -3,147 +3,914 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inicio
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Panel principal</h2>
-            <p class="cop-page-subtitle">Resumen general de la institución.</p>
-        </div>
-    </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Estudiantes</span>
-                <span class="cop-stat-value">412</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Docentes activos</span>
-                <span class="cop-stat-value">28</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Planes pendientes</span>
-                <span class="cop-stat-value cop-stat-warning">5</span>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="cop-stat-card">
-                <span class="cop-stat-label">Alertas activas</span>
-                <span class="cop-stat-value cop-stat-alert">3</span>
-            </div>
-        </div>
-    </div>
+    <!-- ENCABEZADO -->
+    <section class="dashboard-header">
 
-    <p class="cop-section-label">Accesos directos</p>
-    <div class="cop-quick-grid">
-        <a href="@Url.Action("Index", "AuditoriaSistema")" class="cop-quick-link"><i class="bi bi-journal-check"></i> Auditoría</a>
-        <a href="@Url.Action("Index", "InventarioLimpieza")" class="cop-quick-link"><i class="bi bi-bucket"></i> Inventario de limpieza</a>
-        <a href="@Url.Action("Index", "InventarioCocina")" class="cop-quick-link"><i class="bi bi-basket"></i> Inventario de cocina</a>
-        <a href="@Url.Action("Index", "Monitoreo")" class="cop-quick-link"><i class="bi bi-journal-check"></i> Monitoreo</a>
-        <a href="@Url.Action("Index", "Notificaciones")" class="cop-quick-link"><i class="bi bi-bucket"></i> Notificaciones</a>
-        <a href="@Url.Action("Index", "Usuarios")" class="cop-quick-link"><i class="bi bi-basket"></i> Usuarios</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-journal-check"></i> Auditoría</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-bucket"></i> Inventario de limpieza</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-basket"></i> Inventario de cocina</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-journal-check"></i> Usuarios</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-bucket"></i> Notificaciones</a>
-        <a href="#" class="cop-quick-link"><i class="bi bi-basket"></i> Monitoreo</a>
-    </div>
+        <div class="container">
+
+            <div class="dashboard-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Panel principal</span>
+            </div>
+
+            <h1 class="dashboard-title">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Panel principal
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Resumen general de la institución e indicadores principales del sistema.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <!-- INDICADORES -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+
+                    <div>
+                        <span>Estudiantes</span>
+                        <h2>412</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <div>
+                        <span>Docentes activos</span>
+                        <h2>28</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-warning">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+
+                    <div>
+                        <span>Planes pendientes</span>
+                        <h2 class="text-warning-custom">5</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon summary-icon-danger">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+                        <span>Alertas activas</span>
+                        <h2 class="text-danger">3</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESUMEN GENERAL -->
+        <div class="row g-4 mb-4">
+
+            <!-- RENDIMIENTO -->
+            <div class="col-lg-8">
+
+                <div class="dashboard-card">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h2>
+                                Resumen académico
+                            </h2>
+
+                            <p>
+                                Indicadores generales del rendimiento institucional.
+                            </p>
+
+                        </div>
+
+                        <a href="@Url.Action("Index", "Monitoreo")"
+                           class="dashboard-link">
+
+                            Ver monitoreo
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+
+                            <div class="metric-box">
+
+                                <span>
+                                    Asistencia promedio
+                                </span>
+
+                                <strong class="metric-success">
+                                    92%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <div class="metric-box">
+
+                                <span>
+                                    Rendimiento promedio
+                                </span>
+
+                                <strong>
+                                    84
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <div class="metric-box">
+
+                                <span>
+                                    Estudiantes en riesgo
+                                </span>
+
+                                <strong class="metric-danger">
+                                    8
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-section">
+
+                        <div class="progress-item">
+
+                            <div class="progress-info">
+
+                                <span>
+                                    Primer ciclo
+                                </span>
+
+                                <strong>
+                                    88%
+                                </strong>
+
+                            </div>
+
+                            <div class="progress">
+
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     style="width: 88%;"
+                                     aria-valuenow="88"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="progress-item">
+
+                            <div class="progress-info">
+
+                                <span>
+                                    Segundo ciclo
+                                </span>
+
+                                <strong>
+                                    81%
+                                </strong>
+
+                            </div>
+
+                            <div class="progress">
+
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     style="width: 81%;"
+                                     aria-valuenow="81"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ALERTAS RECIENTES -->
+            <div class="col-lg-4">
+
+                <div class="dashboard-card h-100">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h2>
+                                Alertas recientes
+                            </h2>
+
+                            <p>
+                                Eventos que requieren atención.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-danger-icon">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Bajo rendimiento
+                            </strong>
+
+                            <p>
+                                3 estudiantes requieren seguimiento.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-warning-icon">
+                            <i class="bi bi-calendar-x"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Baja asistencia
+                            </strong>
+
+                            <p>
+                                2 estudiantes por debajo del porcentaje esperado.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert-item">
+
+                        <div class="alert-icon alert-info-icon">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Planes pendientes
+                            </strong>
+
+                            <p>
+                                5 planes esperan revisión.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a href="@Url.Action("Index", "Notificaciones")"
+                       class="btn btn-outline-cop w-100 mt-3">
+
+                        <i class="bi bi-bell me-1"></i>
+                        Ver todas las notificaciones
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCESOS DIRECTOS -->
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-header">
+
+                <div>
+
+                    <h2>
+                        Accesos directos
+                    </h2>
+
+                    <p>
+                        Ingresa rápidamente a los módulos principales.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+                <a href="@Url.Action("Index", "Monitoreo")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+
+                    <div>
+                        <strong>Monitoreo académico</strong>
+                        <span>Rendimiento y seguimiento</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <a href="@Url.Action("Index", "Notificaciones")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+                        <strong>Notificaciones</strong>
+                        <span>Alertas y eventos</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <a href="@Url.Action("Index", "Usuarios")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <div>
+                        <strong>Usuarios</strong>
+                        <span>Docentes y personal</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <a href="@Url.Action("Index", "AuditoriaSistema")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-journal-check"></i>
+                    </div>
+
+                    <div>
+                        <strong>Auditoría</strong>
+                        <span>Bitácora del sistema</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <a href="@Url.Action("Index", "InventarioLimpieza")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-bucket"></i>
+                    </div>
+
+                    <div>
+                        <strong>Inventario de limpieza</strong>
+                        <span>Productos y existencias</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+
+                <a href="@Url.Action("Index", "InventarioCocina")"
+                   class="quick-link">
+
+                    <div class="quick-icon">
+                        <i class="bi bi-basket"></i>
+                    </div>
+
+                    <div>
+                        <strong>Inventario de cocina</strong>
+                        <span>Insumos y vencimientos</span>
+                    </div>
+
+                    <i class="bi bi-chevron-right quick-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .dashboard-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .dashboard-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+
+            .dashboard-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .dashboard-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .dashboard-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
-        }
-
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
-        }
-
-        .cop-stat-card {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 18px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cop-stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
             margin-bottom: 6px;
         }
 
-        .cop-stat-value {
-            font-size: 1.8rem;
+
+        .dashboard-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+
+        /* TARJETAS RESUMEN */
+
+        .summary-card {
+            height: 100%;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+
+        .summary-icon-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .summary-icon-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .summary-card span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .8rem;
+        }
+
+
+        .summary-card h2 {
+            color: var(--cop-primary);
+            font-size: 1.4rem;
+            margin: 0;
             font-weight: 700;
-            color: #133C55;
         }
 
-        .cop-stat-alert {
-            color: #dc3545;
+
+        .text-warning-custom {
+            color: #b8860b !important;
         }
 
-        .cop-stat-warning {
-            color: #b8860b;
+
+        /* CARDS */
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
         }
 
-        .cop-section-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+
+        .dashboard-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+
+            .dashboard-card-header h2 {
+                color: var(--cop-primary);
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+
+            .dashboard-card-header p {
+                color: var(--cop-muted);
+                font-size: .84rem;
+                margin: 0;
+            }
+
+
+        .dashboard-link {
+            color: var(--cop-secondary);
+            font-size: .84rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
-        .cop-quick-grid {
+
+            .dashboard-link:hover {
+                color: var(--cop-primary);
+            }
+
+
+        /* MÉTRICAS */
+
+        .metric-box {
+            background: #f8fafc;
+            border: 1px solid #edf0f3;
+            border-radius: 9px;
+            padding: 15px;
+        }
+
+
+            .metric-box span {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .78rem;
+                margin-bottom: 5px;
+            }
+
+
+            .metric-box strong {
+                color: var(--cop-primary);
+                font-size: 1.4rem;
+            }
+
+
+        .metric-success {
+            color: #198754 !important;
+        }
+
+
+        .metric-danger {
+            color: #dc3545 !important;
+        }
+
+
+        /* PROGRESO */
+
+        .progress-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f3;
+        }
+
+
+        .progress-item {
+            margin-bottom: 17px;
+        }
+
+
+            .progress-item:last-child {
+                margin-bottom: 0;
+            }
+
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: .82rem;
+        }
+
+
+            .progress-info span {
+                color: #495057;
+            }
+
+
+            .progress-info strong {
+                color: var(--cop-primary);
+            }
+
+
+        .progress {
+            height: 7px;
+            background: #edf0f3;
+        }
+
+
+        .progress-bar {
+            background: var(--cop-secondary);
+        }
+
+
+        /* ALERTAS */
+
+        .alert-item {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+
+            .alert-item:last-of-type {
+                border-bottom: none;
+            }
+
+
+        .alert-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .alert-danger-icon {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        .alert-warning-icon {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .alert-info-icon {
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+        }
+
+
+        .alert-item strong {
+            display: block;
+            color: #343a40;
+            font-size: .88rem;
+        }
+
+
+        .alert-item p {
+            color: var(--cop-muted);
+            font-size: .78rem;
+            margin: 2px 0 0;
+        }
+
+
+        /* ACCESOS DIRECTOS */
+
+        .quick-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            margin-bottom: 40px;
         }
 
-        .cop-quick-link {
+
+        .quick-link {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             background: #fff;
             border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 16px 18px;
-            color: #133C55;
-            font-weight: 600;
+            border-radius: 9px;
+            padding: 15px 42px 15px 15px;
             text-decoration: none;
+            transition: .15s ease;
         }
 
-            .cop-quick-link:hover {
-                background-color: #E6F1FB;
-                color: #133C55;
+
+            .quick-link:hover {
+                background: #f3f8fd;
+                border-color: var(--cop-accent);
+                transform: translateY(-1px);
             }
 
-            .cop-quick-link i {
-                font-size: 1.2rem;
+
+        .quick-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+
+        .quick-link strong {
+            display: block;
+            color: var(--cop-primary);
+            font-size: .88rem;
+        }
+
+
+        .quick-link span {
+            display: block;
+            color: var(--cop-muted);
+            font-size: .75rem;
+            margin-top: 2px;
+        }
+
+
+        .quick-arrow {
+            position: absolute;
+            right: 15px;
+            color: #a0aab4;
+        }
+
+
+        /* BOTÓN */
+
+        .btn-outline-cop {
+            border: 1px solid var(--cop-secondary);
+            color: var(--cop-secondary);
+            background: white;
+            font-weight: 500;
+        }
+
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+                border-color: var(--cop-secondary);
             }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 992px) {
+
+            .quick-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+
+        @@media (max-width: 576px) {
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .dashboard-card-header {
+                flex-direction: column;
+            }
+        }
     </style>
+
 }

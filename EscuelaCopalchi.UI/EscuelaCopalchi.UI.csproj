@@ -134,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
+    <Compile Include="Controllers\GestionAcademicaController.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\PanelPrincipalController.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Controllers\AsistenciaController.cs" />
     <Compile Include="Controllers\GestionNotasController.cs" />
     <Compile Include="Controllers\EstudiantesController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -204,8 +206,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
-    <Content Include="Views\Usuarios\Create.cshtml" />
-    <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\Usuarios\Crear.cshtml" />
+    <Content Include="Views\Usuarios\Editar.cshtml" />
     <Content Include="Views\Monitoreo\Index.cshtml" />
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
@@ -235,13 +237,26 @@
     <Content Include="Views\Estudiantes\Expediente.cshtml" />
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Detalle.cshtml" />
-    <Content Include="Views\AudoriaSistema\Detalle.cshtml" />
-    <Content Include="Views\AudoriaSistema\Index.cshtml" />
+    <Content Include="Views\AuditoriaSistema\Detalle.cshtml" />
+    <Content Include="Views\AuditoriaSistema\Index.cshtml" />
     <Content Include="Views\InventarioCocina\Create.cshtml" />
     <Content Include="Views\InventarioCocina\Index.cshtml" />
     <Content Include="Views\InventarioLimpieza\Create.cshtml" />
     <Content Include="Views\InventarioLimpieza\Index.cshtml" />
     <Content Include="Views\PanelPrincipal\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Aulas.cshtml" />
+    <Content Include="Views\GestionAcademica\Asignaciones.cshtml" />
+    <Content Include="Views\GestionAcademica\Distribucion.cshtml" />
+    <Content Include="Views\GestionAcademica\Docentes.cshtml" />
+    <Content Include="Views\GestionAcademica\MiGrupo.cshtml" />
+    <Content Include="Views\Roles\Asignar.cshtml" />
+    <Content Include="Views\Roles\Crear.cshtml" />
+    <Content Include="Views\Roles\Editar.cshtml" />
+    <Content Include="Views\Roles\Permisos.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
+    <Content Include="Views\GestionAcademica\Reportes.cshtml" />
+    <Content Include="Views\GestionAcademica\ImportarExcel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

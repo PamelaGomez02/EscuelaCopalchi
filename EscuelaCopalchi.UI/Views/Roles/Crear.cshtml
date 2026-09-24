@@ -1,0 +1,301 @@
+﻿@{
+    ViewBag.Title = "Crear rol";
+}
+
+<main>
+
+    <section class="roles-header">
+
+        <div class="container">
+
+            <div class="roles-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Roles")">
+                    Roles
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Crear rol</span>
+
+            </div>
+
+            <h1 class="roles-title">
+                <i class="bi bi-shield-plus me-2"></i>
+                Crear nuevo rol
+            </h1>
+
+            <p class="roles-subtitle">
+                Registra un rol para controlar los niveles de acceso del sistema.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="form-card">
+
+            <div class="form-card-header">
+
+                <div class="form-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <div>
+                    <h2>Información del rol</h2>
+                    <p>Completa los datos requeridos.</p>
+                </div>
+
+            </div>
+
+
+            <form>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Nombre del rol
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Ej. Comité de evaluación"
+                               required />
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Estado
+                        </label>
+
+                        <select class="form-select">
+                            <option selected>Activo</option>
+                            <option>Inactivo</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Descripción
+                            <span class="required">*</span>
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  placeholder="Describe las funciones principales del rol..."
+                                  required></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <div>
+
+                        <strong>Configuración de permisos</strong>
+
+                        <p>
+                            Después de crear el rol podrás definir los módulos
+                            y funcionalidades a los que tendrá acceso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Index", "Roles")"
+                       class="btn btn-light">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-save me-1"></i>
+                        Guardar rol
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .roles-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .roles-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .roles-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .roles-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .roles-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .form-card {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .form-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .form-card-header h2 {
+            color: var(--cop-primary);
+            font-size: 1.1rem;
+            margin: 0 0 3px;
+        }
+
+        .form-card-header p {
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin: 0;
+        }
+
+        .form-label {
+            font-size: .9rem;
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .info-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 14px 16px;
+            background: #f3f8fd;
+            border: 1px solid #d7e8f5;
+            border-radius: 9px;
+        }
+
+            .info-box i {
+                color: var(--cop-secondary);
+                font-size: 1.2rem;
+            }
+
+            .info-box strong {
+                color: var(--cop-primary);
+                display: block;
+                font-size: .9rem;
+            }
+
+            .info-box p {
+                color: var(--cop-muted);
+                font-size: .83rem;
+                margin: 3px 0 0;
+            }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #edf0f3;
+            padding-top: 20px;
+            margin-top: 25px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            color: white;
+            border-color: var(--cop-primary);
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+    </style>
+
+}

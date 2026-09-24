@@ -3,106 +3,542 @@
 }
 
 <main>
-    <a href="@Url.Action("Index", "InventarioCocina")" class="cop-back-link">
-        <i class="bi bi-arrow-left"></i> Volver al inventario
-    </a>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title">Nuevo insumo</h2>
-            <p class="cop-page-subtitle">Registra un insumo de cocina.</p>
+
+    <!-- ENCABEZADO -->
+    <section class="inventory-header">
+
+        <div class="container">
+
+            <div class="inventory-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">
+                    Inicio
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "InventarioCocina")">
+                    Inventario de cocina
+                </a>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span>
+                    Nuevo insumo
+                </span>
+
+            </div>
+
+
+            <h1 class="inventory-title">
+
+                <i class="bi bi-plus-square me-2"></i>
+                Nuevo insumo
+
+            </h1>
+
+
+            <p class="inventory-subtitle">
+                Registra un nuevo insumo y configura sus existencias,
+                unidad de medida y fecha de vencimiento.
+            </p>
+
         </div>
-    </div>
 
-    <div class="cop-form-wrapper">
-        <form>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nombre del insumo</label>
-                    <input type="text" class="form-control" placeholder="Ej. Arroz 1kg">
+    </section>
+
+
+    <!-- CONTENIDO -->
+    <section class="container pb-5">
+
+        <div class="form-card">
+
+            <div class="form-card-header">
+
+                <div class="form-card-icon">
+                    <i class="bi bi-basket"></i>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select">
-                        <option selected>Granos</option>
-                        <option>Lácteos</option>
-                        <option>Enlatados</option>
-                        <option>Frescos</option>
-                    </select>
+
+                <div>
+
+                    <h2>
+                        Información del insumo
+                    </h2>
+
+                    <p>
+                        Completa los datos requeridos para registrar el producto.
+                    </p>
+
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Existencias</label>
-                    <input type="number" class="form-control" placeholder="0">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Unidad de medida</label>
-                    <select class="form-select">
-                        <option selected>Unidades</option>
-                        <option>Kilogramos</option>
-                        <option>Litros</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Fecha de vencimiento</label>
-                    <input type="date" class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Stock mínimo</label>
-                    <input type="number" class="form-control" placeholder="0">
-                </div>
+
             </div>
 
-            <div class="cop-form-actions">
-                <a href="@Url.Action("Index", "InventarioCocina")" class="btn btn-outline-secondary">Cancelar</a>
-                <button type="submit" class="btn cop-btn-primary">Guardar insumo</button>
-            </div>
-        </form>
-    </div>
+
+            <form>
+
+                <div class="row g-3">
+
+                    <!-- NOMBRE -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Nombre del insumo
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Ej. Arroz 1kg"
+                               required />
+
+                    </div>
+
+
+                    <!-- CATEGORÍA -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Categoría
+                            <span class="required">*</span>
+                        </label>
+
+                        <select class="form-select"
+                                required>
+
+                            <option value=""
+                                    selected
+                                    disabled>
+                                Seleccione una categoría
+                            </option>
+
+                            <option>
+                                Granos
+                            </option>
+
+                            <option>
+                                Lácteos
+                            </option>
+
+                            <option>
+                                Enlatados
+                            </option>
+
+                            <option>
+                                Frescos
+                            </option>
+
+                            <option>
+                                Bebidas
+                            </option>
+
+                            <option>
+                                Otros
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- EXISTENCIAS -->
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Existencias
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="number"
+                               class="form-control"
+                               placeholder="0"
+                               min="0"
+                               required />
+
+                    </div>
+
+
+                    <!-- UNIDAD -->
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Unidad de medida
+                            <span class="required">*</span>
+                        </label>
+
+                        <select class="form-select"
+                                required>
+
+                            <option value=""
+                                    selected
+                                    disabled>
+                                Seleccione
+                            </option>
+
+                            <option>
+                                Unidades
+                            </option>
+
+                            <option>
+                                Kilogramos
+                            </option>
+
+                            <option>
+                                Gramos
+                            </option>
+
+                            <option>
+                                Litros
+                            </option>
+
+                            <option>
+                                Mililitros
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- STOCK MÍNIMO -->
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Stock mínimo
+                        </label>
+
+                        <input type="number"
+                               class="form-control"
+                               placeholder="0"
+                               min="0" />
+
+                    </div>
+
+
+                    <!-- VENCIMIENTO -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Fecha de vencimiento
+                        </label>
+
+                        <input type="date"
+                               class="form-control" />
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Estado inicial
+                        </label>
+
+                        <select class="form-select">
+
+                            <option selected>
+                                Disponible
+                            </option>
+
+                            <option>
+                                No disponible
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- OBSERVACIONES -->
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Observaciones
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  placeholder="Información adicional del insumo..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMACIÓN -->
+                <div class="info-box">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <div>
+
+                        <strong>
+                            Control de inventario
+                        </strong>
+
+                        <p>
+                            El sistema podrá utilizar el stock mínimo y la fecha de
+                            vencimiento para identificar insumos que requieren atención.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Index", "InventarioCocina")"
+                       class="btn btn-light">
+
+                        Cancelar
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-save me-1"></i>
+                        Guardar insumo
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
 </main>
 
+
 @section styles {
+
     <style>
-        .cop-page-header {
-            margin: 28px 0 20px;
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-accent: #59A5D8;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
         }
 
-        .cop-page-title {
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+
+        /* ENCABEZADO */
+
+        .inventory-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+
+        .inventory-breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+
+            .inventory-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+
+                .inventory-breadcrumb a:hover {
+                    text-decoration: underline;
+                }
+
+
+        .inventory-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #133C55;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
         }
 
-        .cop-page-subtitle {
-            color: #6c757d;
-            margin-bottom: 0;
+
+        .inventory-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+            max-width: 700px;
         }
 
-        .cop-form-wrapper {
-            background: #fff;
+
+        /* FORMULARIO */
+
+        .form-card {
+            max-width: 900px;
+            margin: auto;
+            background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 40px;
-            max-width: 640px;
+            padding: 26px;
         }
 
-        .cop-form-actions {
+
+        .form-card-header {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 24px;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #edf0f3;
         }
 
-        .cop-btn-primary {
-            background-color: #133C55;
-            border-color: #133C55;
-            color: #fff;
+
+        .form-card-icon {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+
+        .form-card-header h2 {
+            color: var(--cop-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+
+
+        .form-card-header p {
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin: 0;
+        }
+
+
+        /* CAMPOS */
+
+        .form-label {
+            color: #344054;
+            font-size: .9rem;
             font-weight: 600;
         }
 
-            .cop-btn-primary:hover {
-                background-color: #386FA4;
-                border-color: #386FA4;
-                color: #fff;
+
+        .required {
+            color: #dc3545;
+        }
+
+
+        .form-control,
+        .form-select {
+            border-color: #dfe4e8;
+        }
+
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--cop-accent);
+                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
             }
+
+
+        /* INFORMACIÓN */
+
+        .info-box {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-top: 24px;
+            padding: 14px 16px;
+            border-radius: 9px;
+            background: #f3f8fd;
+            border: 1px solid #d7e8f5;
+        }
+
+
+            .info-box > i {
+                color: var(--cop-secondary);
+                font-size: 1.2rem;
+                margin-top: 2px;
+            }
+
+
+            .info-box strong {
+                display: block;
+                color: var(--cop-primary);
+                font-size: .9rem;
+            }
+
+
+            .info-box p {
+                color: var(--cop-muted);
+                font-size: .83rem;
+                margin: 3px 0 0;
+            }
+
+
+        /* BOTONES */
+
+        .form-actions {
+            border-top: 1px solid #edf0f3;
+            margin-top: 25px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+            font-weight: 500;
+        }
+
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 768px) {
+
+            .form-card {
+                padding: 20px;
+            }
+
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+
+                .form-actions .btn {
+                    width: 100%;
+                }
+        }
     </style>
+
 }

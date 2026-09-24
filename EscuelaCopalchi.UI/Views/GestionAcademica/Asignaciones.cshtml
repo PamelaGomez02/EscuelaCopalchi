@@ -1,0 +1,305 @@
+﻿@{
+    ViewBag.Title = "Asignación de estudiantes";
+}
+
+<main>
+
+    <section class="academic-header">
+
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Asignaciones</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-person-plus me-2"></i>
+                Asignación de estudiantes
+            </h1>
+
+            <p class="academic-subtitle">
+                Asigna estudiantes a grupos y gestiona cambios o traslados.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="row g-4">
+
+            <div class="col-lg-5">
+
+                <div class="form-card">
+
+                    <h2>Realizar asignación</h2>
+
+                    <label class="form-label">
+                        Estudiante
+                    </label>
+
+                    <select class="form-select mb-3">
+                        <option selected disabled>Seleccione estudiante</option>
+                        <option>Ana Rodríguez</option>
+                        <option>José Mora</option>
+                        <option>Karla Jiménez</option>
+                    </select>
+
+
+                    <label class="form-label">
+                        Grupo
+                    </label>
+
+                    <select class="form-select mb-3">
+                        <option selected disabled>Seleccione grupo</option>
+                        <option>1-A</option>
+                        <option>2-A</option>
+                        <option>3-A</option>
+                    </select>
+
+
+                    <label class="form-label">
+                        Aula
+                    </label>
+
+                    <select class="form-select mb-3">
+                        <option>Aula 1 · 2 espacios disponibles</option>
+                        <option>Aula 2 · Completa</option>
+                    </select>
+
+
+                    <div class="capacity-box">
+                        <i class="bi bi-people"></i>
+                        <div>
+                            <span>Capacidad</span>
+                            <strong>28 / 30 estudiantes</strong>
+                        </div>
+                    </div>
+
+
+                    <button class="btn btn-cop-primary w-100 mt-3">
+                        <i class="bi bi-check-lg me-1"></i>
+                        Confirmar asignación
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-7">
+
+                <div class="academic-card">
+
+                    <div class="toolbar">
+
+                        <div>
+                            <h2>Asignaciones actuales</h2>
+                            <p>Consulta o modifica estudiantes asignados.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table academic-table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Grupo</th>
+                                    <th>Aula</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>Ana Rodríguez</td>
+                                    <td>1-A</td>
+                                    <td>Aula 1</td>
+
+                                    <td class="text-end">
+                                        <button class="btn btn-action"
+                                                title="Cambiar grupo">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Marco Vindas</td>
+                                    <td>2-A</td>
+                                    <td>Aula 3</td>
+
+                                    <td class="text-end">
+                                        <button class="btn btn-action">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .form-card,
+        .academic-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        .academic-card {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .form-card h2,
+        .toolbar h2 {
+            color: var(--cop-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            color: #344054;
+            font-size: .88rem;
+            font-weight: 600;
+        }
+
+        .capacity-box {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            background: #f3f8fd;
+            border: 1px solid #d7e8f5;
+            padding: 13px;
+            border-radius: 8px;
+        }
+
+            .capacity-box i {
+                color: var(--cop-secondary);
+            }
+
+            .capacity-box span,
+            .capacity-box strong {
+                display: block;
+            }
+
+            .capacity-box span {
+                color: var(--cop-muted);
+                font-size: .75rem;
+            }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+        .toolbar {
+            padding: 22px;
+        }
+
+            .toolbar p {
+                color: var(--cop-muted);
+                font-size: .84rem;
+                margin: 0;
+            }
+
+        .academic-table {
+            margin: 0;
+        }
+
+            .academic-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .academic-table td {
+                padding: 15px 17px;
+                border-color: #edf0f3;
+            }
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+        }
+    </style>
+
+}

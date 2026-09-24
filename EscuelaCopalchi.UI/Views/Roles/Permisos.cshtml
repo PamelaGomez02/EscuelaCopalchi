@@ -1,0 +1,408 @@
+﻿@{
+    ViewBag.Title = "Permisos del rol";
+}
+
+<main>
+
+    <section class="roles-header">
+
+        <div class="container">
+
+            <div class="roles-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Roles")">Roles</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Permisos</span>
+
+            </div>
+
+            <h1 class="roles-title">
+                <i class="bi bi-key me-2"></i>
+                Permisos del rol
+            </h1>
+
+            <p class="roles-subtitle">
+                Configura los módulos y acciones disponibles para el rol seleccionado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="permissions-card">
+
+            <div class="selected-role">
+
+                <div class="role-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div>
+                    <span>Rol</span>
+                    <h2>Docente</h2>
+                    <p>Selecciona las funciones que podrá utilizar.</p>
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table permissions-table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Módulo</th>
+                            <th class="text-center">Ver</th>
+                            <th class="text-center">Crear</th>
+                            <th class="text-center">Editar</th>
+                            <th class="text-center">Eliminar</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-mortarboard me-2"></i>
+                                Estudiantes
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Asistencia
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-clipboard-data me-2"></i>
+                                Gestión de notas
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-journal-text me-2"></i>
+                                Planes de estudio
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" checked />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-journal-check me-2"></i>
+                                Auditoría
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" disabled />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" disabled />
+                            </td>
+
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" disabled />
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="permissions-info">
+
+                <i class="bi bi-shield-lock"></i>
+
+                <div>
+
+                    <strong>
+                        Control de acceso
+                    </strong>
+
+                    <p>
+                        Los usuarios únicamente podrán acceder a las funcionalidades
+                        habilitadas para el rol que tengan asignado.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="@Url.Action("Index", "Roles")"
+                   class="btn btn-light">
+                    Cancelar
+                </a>
+
+                <button class="btn btn-cop-primary">
+
+                    <i class="bi bi-save me-1"></i>
+                    Guardar permisos
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .roles-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .roles-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .roles-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .roles-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .roles-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .permissions-card {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .selected-role {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 20px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .role-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selected-role span {
+            color: var(--cop-muted);
+            font-size: .75rem;
+        }
+
+        .selected-role h2 {
+            color: var(--cop-primary);
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .selected-role p {
+            color: var(--cop-muted);
+            font-size: .82rem;
+            margin: 0;
+        }
+
+        .permissions-table {
+            margin: 0;
+        }
+
+            .permissions-table th {
+                background: #f8fafc;
+                color: #53616d;
+                font-size: .8rem;
+                text-transform: uppercase;
+                padding: 13px 17px;
+            }
+
+            .permissions-table td {
+                padding: 15px 17px;
+                border-color: #edf0f3;
+            }
+
+        .form-check-input {
+            width: 1.15rem;
+            height: 1.15rem;
+            cursor: pointer;
+        }
+
+        .permissions-info {
+            display: flex;
+            gap: 12px;
+            padding: 15px 20px;
+            background: #f3f8fd;
+            border-top: 1px solid #edf0f3;
+        }
+
+            .permissions-info i {
+                color: var(--cop-secondary);
+                font-size: 1.2rem;
+            }
+
+            .permissions-info strong {
+                color: var(--cop-primary);
+                display: block;
+                font-size: .88rem;
+            }
+
+            .permissions-info p {
+                color: var(--cop-muted);
+                font-size: .8rem;
+                margin: 3px 0 0;
+            }
+
+        .form-actions {
+            padding: 20px;
+            border-top: 1px solid #edf0f3;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+    </style>
+
+}

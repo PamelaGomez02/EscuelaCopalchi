@@ -1,42 +1,39 @@
-﻿
-@{
-    ViewBag.Title = "Usuarios";
+﻿@{
+    ViewBag.Title = "Roles";
 }
 
 <main>
 
-    <!-- ENCABEZADO -->
-    <section class="usuarios-header">
+    <section class="roles-header">
 
         <div class="container">
 
-            <!-- Breadcrumb -->
-            <div class="usuarios-breadcrumb">
+            <div class="roles-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-                <span>Usuarios</span>
+                <span>Roles</span>
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
                 <div>
 
-                    <h1 class="usuarios-title">
-                        <i class="bi bi-people me-2"></i>
-                        Gestión de usuarios
+                    <h1 class="roles-title">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Gestión de roles
                     </h1>
 
-                    <p class="usuarios-subtitle">
-                        Administra los usuarios, roles y estados de acceso al sistema.
+                    <p class="roles-subtitle">
+                        Administra roles, asignaciones y niveles de acceso del sistema.
                     </p>
 
                 </div>
 
-                <a href="@Url.Action("Crear", "Usuarios")"
+                <a href="@Url.Action("Crear", "Roles")"
                    class="btn btn-cop-primary">
 
-                    <i class="bi bi-person-plus me-1"></i>
-                    Nuevo usuario
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Nuevo rol
 
                 </a>
 
@@ -47,11 +44,27 @@
     </section>
 
 
-    <!-- CONTENIDO -->
     <section class="container pb-5">
 
-        <!-- TARJETAS RESUMEN -->
         <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+                        <i class="bi bi-shield"></i>
+                    </div>
+
+                    <div>
+                        <span>Roles registrados</span>
+                        <h2>5</h2>
+                    </div>
+
+                </div>
+
+            </div>
+
 
             <div class="col-md-4">
 
@@ -62,7 +75,7 @@
                     </div>
 
                     <div>
-                        <span>Usuarios registrados</span>
+                        <span>Usuarios asignados</span>
                         <h2>28</h2>
                     </div>
 
@@ -75,31 +88,13 @@
 
                 <div class="summary-card">
 
-                    <div class="summary-icon summary-icon-success">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-
-                    <div>
-                        <span>Usuarios activos</span>
-                        <h2>25</h2>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
                     <div class="summary-icon summary-icon-warning">
-                        <i class="bi bi-person-x"></i>
+                        <i class="bi bi-key"></i>
                     </div>
 
                     <div>
-                        <span>Usuarios inactivos</span>
-                        <h2>3</h2>
+                        <span>Permisos configurados</span>
+                        <h2>42</h2>
                     </div>
 
                 </div>
@@ -109,14 +104,13 @@
         </div>
 
 
-        <!-- TABLA -->
-        <div class="usuarios-card">
+        <div class="roles-card">
 
-            <div class="usuarios-toolbar">
+            <div class="roles-toolbar">
 
                 <div>
-                    <h2>Usuarios del sistema</h2>
-                    <p>Consulta y administra los usuarios registrados.</p>
+                    <h2>Roles del sistema</h2>
+                    <p>Consulta y administra los roles registrados.</p>
                 </div>
 
                 <div class="search-box">
@@ -125,7 +119,7 @@
 
                     <input type="text"
                            class="form-control"
-                           placeholder="Buscar usuario..." />
+                           placeholder="Buscar rol..." />
 
                 </div>
 
@@ -134,13 +128,13 @@
 
             <div class="table-responsive">
 
-                <table class="table usuarios-table align-middle">
+                <table class="table roles-table align-middle">
 
                     <thead>
                         <tr>
-                            <th>Usuario</th>
-                            <th>Correo electrónico</th>
                             <th>Rol</th>
+                            <th>Descripción</th>
+                            <th>Usuarios</th>
                             <th>Estado</th>
                             <th class="text-end">Acciones</th>
                         </tr>
@@ -148,35 +142,27 @@
 
                     <tbody>
 
-                        <!-- USUARIO 1 -->
                         <tr>
 
                             <td>
 
-                                <div class="usuario-info">
+                                <div class="role-info">
 
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
+                                    <div class="role-icon">
+                                        <i class="bi bi-shield-check"></i>
                                     </div>
 
-                                    <div>
-                                        <strong>María Rodríguez</strong>
-                                        <small>mrodriguez</small>
-                                    </div>
+                                    <strong>Administrador</strong>
 
                                 </div>
 
                             </td>
 
                             <td>
-                                maria.rodriguez@copalchi.ed.cr
+                                Control total del sistema.
                             </td>
 
-                            <td>
-                                <span class="role-badge">
-                                    Administrador
-                                </span>
-                            </td>
+                            <td>2</td>
 
                             <td>
                                 <span class="status status-ok">
@@ -186,28 +172,22 @@
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 1 })"
+                                <a href="@Url.Action("Editar", "Roles", new { id = 1 })"
                                    class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
-
+                                   title="Editar">
                                     <i class="bi bi-pencil"></i>
-
                                 </a>
 
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 1 })"
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 1 })"
                                    class="btn btn-action"
-                                   title="Cambiar estado">
+                                   title="Asignar usuarios">
+                                    <i class="bi bi-person-plus"></i>
+                                </a>
 
-                                    <i class="bi bi-power"></i>
-
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 1 })"
+                                   class="btn btn-action"
+                                   title="Permisos">
+                                    <i class="bi bi-key"></i>
                                 </a>
 
                             </td>
@@ -215,35 +195,27 @@
                         </tr>
 
 
-                        <!-- USUARIO 2 -->
                         <tr>
 
                             <td>
 
-                                <div class="usuario-info">
+                                <div class="role-info">
 
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
+                                    <div class="role-icon">
+                                        <i class="bi bi-person-badge"></i>
                                     </div>
 
-                                    <div>
-                                        <strong>Carlos Jiménez</strong>
-                                        <small>cjimenez</small>
-                                    </div>
+                                    <strong>Docente</strong>
 
                                 </div>
 
                             </td>
 
                             <td>
-                                carlos.jimenez@copalchi.ed.cr
+                                Gestión académica y seguimiento de estudiantes.
                             </td>
 
-                            <td>
-                                <span class="role-badge">
-                                    Docente
-                                </span>
-                            </td>
+                            <td>20</td>
 
                             <td>
                                 <span class="status status-ok">
@@ -253,27 +225,24 @@
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
+                                <a href="@Url.Action("Editar", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
 
                                     <i class="bi bi-pencil"></i>
 
                                 </a>
 
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Cambiar estado">
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
 
-                                    <i class="bi bi-power"></i>
+                                    <i class="bi bi-person-plus"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 2 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-key"></i>
 
                                 </a>
 
@@ -282,65 +251,54 @@
                         </tr>
 
 
-                        <!-- USUARIO 3 -->
                         <tr>
 
                             <td>
 
-                                <div class="usuario-info">
+                                <div class="role-info">
 
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
+                                    <div class="role-icon">
+                                        <i class="bi bi-people"></i>
                                     </div>
 
-                                    <div>
-                                        <strong>Ana Vargas</strong>
-                                        <small>avargas</small>
-                                    </div>
+                                    <strong>Comité de apoyo</strong>
 
                                 </div>
 
                             </td>
 
                             <td>
-                                ana.vargas@copalchi.ed.cr
+                                Acceso a adecuaciones y seguimiento estudiantil.
                             </td>
 
-                            <td>
-                                <span class="role-badge">
-                                    Comité de apoyo
-                                </span>
-                            </td>
+                            <td>3</td>
 
                             <td>
-                                <span class="status status-inactive">
-                                    Inactivo
+                                <span class="status status-ok">
+                                    Activo
                                 </span>
                             </td>
 
                             <td class="text-end">
 
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
+                                <a href="@Url.Action("Editar", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
 
                                     <i class="bi bi-pencil"></i>
 
                                 </a>
 
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Cambiar estado">
+                                <a href="@Url.Action("Asignar", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
 
-                                    <i class="bi bi-power"></i>
+                                    <i class="bi bi-person-plus"></i>
+
+                                </a>
+
+                                <a href="@Url.Action("Permisos", "Roles", new { id = 3 })"
+                                   class="btn btn-action">
+
+                                    <i class="bi bi-key"></i>
 
                                 </a>
 
@@ -377,19 +335,14 @@
             background: var(--cop-page-bg);
         }
 
-
-        /* =========================
-           ENCABEZADO
-        ========================= */
-
-        .usuarios-header {
+        .roles-header {
             background: white;
             border-bottom: 1px solid #e3e8ee;
             padding: 30px 0;
             margin-bottom: 28px;
         }
 
-        .usuarios-breadcrumb {
+        .roles-breadcrumb {
             display: flex;
             align-items: center;
             gap: 7px;
@@ -398,27 +351,22 @@
             margin-bottom: 12px;
         }
 
-            .usuarios-breadcrumb a {
+            .roles-breadcrumb a {
                 color: var(--cop-secondary);
                 text-decoration: none;
             }
 
-        .usuarios-title {
+        .roles-title {
             color: var(--cop-primary);
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 6px;
         }
 
-        .usuarios-subtitle {
+        .roles-subtitle {
             color: var(--cop-muted);
             margin: 0;
         }
-
-
-        /* =========================
-           BOTÓN PRINCIPAL
-        ========================= */
 
         .btn-cop-primary {
             background: var(--cop-primary);
@@ -431,11 +379,6 @@
                 border-color: var(--cop-secondary);
                 color: white;
             }
-
-
-        /* =========================
-           TARJETAS RESUMEN
-        ========================= */
 
         .summary-card {
             height: 100%;
@@ -460,11 +403,6 @@
             font-size: 1.2rem;
         }
 
-        .summary-icon-success {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
         .summary-icon-warning {
             background: #fff3cd;
             color: #856404;
@@ -482,19 +420,14 @@
             font-size: 1.4rem;
         }
 
-
-        /* =========================
-           CONTENEDOR TABLA
-        ========================= */
-
-        .usuarios-card {
+        .roles-card {
             background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
             overflow: hidden;
         }
 
-        .usuarios-toolbar {
+        .roles-toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -502,22 +435,17 @@
             padding: 22px;
         }
 
-            .usuarios-toolbar h2 {
+            .roles-toolbar h2 {
                 color: var(--cop-primary);
                 font-size: 1.15rem;
                 margin-bottom: 4px;
             }
 
-            .usuarios-toolbar p {
+            .roles-toolbar p {
                 color: var(--cop-muted);
                 font-size: .85rem;
                 margin: 0;
             }
-
-
-        /* =========================
-           BUSCADOR
-        ========================= */
 
         .search-box {
             position: relative;
@@ -536,16 +464,11 @@
                 padding-left: 34px;
             }
 
-
-        /* =========================
-           TABLA
-        ========================= */
-
-        .usuarios-table {
+        .roles-table {
             margin: 0;
         }
 
-            .usuarios-table th {
+            .roles-table th {
                 background: #f8fafc;
                 color: #53616d;
                 font-size: .8rem;
@@ -553,31 +476,19 @@
                 padding: 13px 17px;
             }
 
-            .usuarios-table td {
+            .roles-table td {
                 padding: 15px 17px;
                 font-size: .9rem;
                 border-color: #edf0f3;
             }
 
-
-        /* =========================
-           INFORMACIÓN USUARIO
-        ========================= */
-
-        .usuario-info {
+        .role-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-            .usuario-info small {
-                display: block;
-                color: var(--cop-muted);
-                font-size: .78rem;
-                margin-top: 2px;
-            }
-
-        .usuario-avatar {
+        .role-icon {
             width: 38px;
             height: 38px;
             border-radius: 8px;
@@ -586,28 +497,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
         }
-
-
-        /* =========================
-           ROL
-        ========================= */
-
-        .role-badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            background: #e6f1fb;
-            color: var(--cop-primary);
-            font-size: .77rem;
-            font-weight: 600;
-        }
-
-
-        /* =========================
-           ESTADOS
-        ========================= */
 
         .status {
             display: inline-block;
@@ -622,16 +512,6 @@
             color: #0f5132;
         }
 
-        .status-inactive {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        /* =========================
-           ACCIONES
-        ========================= */
-
         .btn-action {
             background: white;
             border: 1px solid #dce2e7;
@@ -644,14 +524,9 @@
                 color: var(--cop-primary);
             }
 
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
         @@media (max-width: 768px) {
 
-            .usuarios-toolbar {
+            .roles-toolbar {
                 flex-direction: column;
                 align-items: stretch;
             }

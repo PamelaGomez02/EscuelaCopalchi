@@ -1,0 +1,281 @@
+﻿@{
+    ViewBag.Title = "Editar rol";
+}
+
+<main>
+
+    <section class="roles-header">
+
+        <div class="container">
+
+            <div class="roles-breadcrumb">
+
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <a href="@Url.Action("Index", "Roles")">Roles</a>
+                <i class="bi bi-chevron-right"></i>
+
+                <span>Editar rol</span>
+
+            </div>
+
+            <h1 class="roles-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar rol
+            </h1>
+
+            <p class="roles-subtitle">
+                Actualiza la información del rol seleccionado.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        <div class="form-card">
+
+            <form>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Nombre del rol
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="Docente" />
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Estado
+                        </label>
+
+                        <select class="form-select">
+                            <option selected>Activo</option>
+                            <option>Inactivo</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Descripción
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4">Gestión académica y seguimiento de estudiantes.</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEliminar">
+
+                        <i class="bi bi-trash me-1"></i>
+                        Eliminar rol
+
+                    </button>
+
+
+                    <div class="ms-auto d-flex gap-2">
+
+                        <a href="@Url.Action("Index", "Roles")"
+                           class="btn btn-light">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-cop-primary">
+
+                            <i class="bi bi-save me-1"></i>
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<div class="modal fade"
+     id="modalEliminar"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Eliminar rol
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="warning-box">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    <div>
+
+                        <strong>
+                            ¿Deseas eliminar este rol?
+                        </strong>
+
+                        <p>
+                            Si existen usuarios activos asociados al rol,
+                            el sistema no permitirá eliminarlo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button class="btn btn-danger">
+                    Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .roles-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .roles-breadcrumb {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            font-size: .85rem;
+            color: var(--cop-muted);
+            margin-bottom: 12px;
+        }
+
+            .roles-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .roles-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .roles-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .form-card {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 26px;
+        }
+
+        .form-label {
+            color: #344054;
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        .form-actions {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f3;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+        .warning-box {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 9px;
+        }
+
+            .warning-box p {
+                font-size: .84rem;
+                margin: 4px 0 0;
+            }
+    </style>
+
+}
