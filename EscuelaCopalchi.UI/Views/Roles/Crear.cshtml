@@ -1,4 +1,6 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Rol
+
+@{
     ViewBag.Title = "Crear rol";
 }
 
@@ -55,7 +57,9 @@
             </div>
 
 
-            <form>
+            @using (Html.BeginForm("Crear", "Roles", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
 
                 <div class="row g-3">
 
@@ -66,10 +70,20 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input type="text"
-                               class="form-control"
-                               placeholder="Ej. Comité de evaluación"
-                               required />
+                        @Html.TextBoxFor(
+                            m => m.Nombre,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Ej. Comité de evaluación"
+                            }
+                        )
+
+                        @Html.ValidationMessageFor(
+                            m => m.Nombre,
+                            "",
+                            new { @class = "text-danger small" }
+                        )
 
                     </div>
 
@@ -80,10 +94,24 @@
                             Estado
                         </label>
 
-                        <select class="form-select">
-                            <option selected>Activo</option>
-                            <option>Inactivo</option>
-                        </select>
+                        @Html.DropDownListFor(
+                            m => m.Estado,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem
+                                {
+                                    Text = "Activo",
+                                    Value = "true",
+                                    Selected = true
+                                },
+                                new SelectListItem
+                                {
+                                    Text = "Inactivo",
+                                    Value = "false"
+                                }
+                            },
+                            new { @class = "form-select" }
+                        )
 
                     </div>
 
@@ -95,10 +123,22 @@
                             <span class="required">*</span>
                         </label>
 
-                        <textarea class="form-control"
-                                  rows="4"
-                                  placeholder="Describe las funciones principales del rol..."
-                                  required></textarea>
+                        @Html.TextAreaFor(
+                            m => m.Descripcion,
+                            new
+                            {
+                                @class = "form-control",
+                                rows = "4",
+                                placeholder =
+                                    "Describe las funciones principales del rol..."
+                            }
+                        )
+
+                        @Html.ValidationMessageFor(
+                            m => m.Descripcion,
+                            "",
+                            new { @class = "text-danger small" }
+                        )
 
                     </div>
 
@@ -139,8 +179,7 @@
                     </button>
 
                 </div>
-
-            </form>
+            }
 
         </div>
 

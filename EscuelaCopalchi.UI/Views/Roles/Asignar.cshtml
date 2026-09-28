@@ -1,4 +1,6 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.AsignarRolViewModel
+
+@{
     ViewBag.Title = "Asignar rol";
 }
 
@@ -26,7 +28,7 @@
             </h1>
 
             <p class="roles-subtitle">
-                Asigna el rol seleccionado a uno o varios usuarios.
+                Asigna el rol seleccionado a uno o varios docentes.
             </p>
 
         </div>
@@ -46,8 +48,14 @@
 
                 <div>
                     <span>Rol seleccionado</span>
-                    <h2>Docente</h2>
-                    <p>Gestión académica y seguimiento de estudiantes.</p>
+
+                    <h2>@Model.NombreRol</h2>
+
+                    <p>
+                        @(string.IsNullOrWhiteSpace(Model.DescripcionRol)
+                            ? "Sin descripción."
+                            : Model.DescripcionRol)
+                    </p>
                 </div>
 
             </div>
@@ -58,89 +66,126 @@
                 <i class="bi bi-search"></i>
 
                 <input type="text"
+                       id="buscarUsuario"
                        class="form-control"
-                       placeholder="Buscar usuario..." />
+                       placeholder="Buscar docente..." />
 
             </div>
 
 
-            <div class="user-list">
+            @using (Html.BeginForm("Asignar", "Roles", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
 
-                <label class="user-item">
+                @Html.HiddenFor(m => m.IdRol)
 
-                    <div class="user-info">
 
-                        <div class="user-avatar">MG</div>
+                <div class="user-list" id="listaUsuarios">
 
-                        <div>
-                            <strong>María González</strong>
-                            <small>mgonzalez@copalchi.ed.cr</small>
+                    @if (Model.Usuarios != null &&
+                         Model.Usuarios.Count > 0)
+                    {
+                        for (int i = 0;
+                             i < Model.Usuarios.Count;
+                             i++)
+                        {
+                            <label class="user-item">
+
+                                @Html.HiddenFor(
+                                    m => m.Usuarios[i].IdUsuario
+                                )
+
+                                <div class="user-info">
+
+                                    <div class="user-avatar">
+
+                                        @{
+                                            string iniciales = "";
+
+                                            if (!string.IsNullOrWhiteSpace(
+                                                Model.Usuarios[i].NombreCompleto))
+                                            {
+                                                var partes =
+                                                    Model.Usuarios[i]
+                                                         .NombreCompleto
+                                                         .Split(' ');
+
+                                                iniciales =
+                                                    partes[0]
+                                                    .Substring(0, 1)
+                                                    .ToUpper();
+
+                                                if (partes.Length > 1)
+                                                {
+                                                    iniciales +=
+                                                        partes[1]
+                                                        .Substring(0, 1)
+                                                        .ToUpper();
+                                                }
+                                            }
+                                        }
+
+                                        @iniciales
+
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            @Model.Usuarios[i].NombreCompleto
+                                        </strong>
+
+                                        <small>
+                                            @Model.Usuarios[i].Correo
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                @Html.CheckBoxFor(
+                                    m => m.Usuarios[i].Seleccionado,
+                                    new
+                                    {
+                                        @class = "form-check-input"
+                                    }
+                                )
+
+                            </label>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+
+                            <i class="bi bi-info-circle me-1"></i>
+
+                            No existen docentes activos registrados.
+
                         </div>
+                    }
 
-                    </div>
-
-                    <input type="checkbox"
-                           class="form-check-input"
-                           checked />
-
-                </label>
+                </div>
 
 
-                <label class="user-item">
+                <div class="form-actions">
 
-                    <div class="user-info">
+                    <a href="@Url.Action("Index", "Roles")"
+                       class="btn btn-light">
+                        Cancelar
+                    </a>
 
-                        <div class="user-avatar">JP</div>
+                    <button type="submit"
+                            class="btn btn-cop-primary">
 
-                        <div>
-                            <strong>José Pérez</strong>
-                            <small>jperez@copalchi.ed.cr</small>
-                        </div>
+                        <i class="bi bi-person-check me-1"></i>
+                        Guardar asignación
 
-                    </div>
+                    </button>
 
-                    <input type="checkbox"
-                           class="form-check-input" />
-
-                </label>
-
-
-                <label class="user-item">
-
-                    <div class="user-info">
-
-                        <div class="user-avatar">LR</div>
-
-                        <div>
-                            <strong>Laura Rodríguez</strong>
-                            <small>lrodriguez@copalchi.ed.cr</small>
-                        </div>
-
-                    </div>
-
-                    <input type="checkbox"
-                           class="form-check-input" />
-
-                </label>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "Roles")"
-                   class="btn btn-light">
-                    Cancelar
-                </a>
-
-                <button class="btn btn-cop-primary">
-
-                    <i class="bi bi-person-check me-1"></i>
-                    Guardar asignación
-
-                </button>
-
-            </div>
+                </div>
+            }
 
         </div>
 
@@ -312,6 +357,47 @@
             color: white;
             border-color: var(--cop-primary);
         }
-    </style>
 
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+    </style>
+}
+
+
+@section scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const buscador =
+                document.getElementById("buscarUsuario");
+
+            buscador.addEventListener("keyup", function () {
+
+                const texto =
+                    this.value.toLowerCase();
+
+                const usuarios =
+                    document.querySelectorAll(".user-item");
+
+                usuarios.forEach(function (usuario) {
+
+                    const contenido =
+                        usuario.innerText.toLowerCase();
+
+                    usuario.style.display =
+                        contenido.includes(texto)
+                        ? ""
+                        : "none";
+
+                });
+
+            });
+
+        });
+
+    </script>
 }

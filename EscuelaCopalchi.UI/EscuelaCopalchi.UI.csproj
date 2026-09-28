@@ -183,6 +183,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Logica\GestionAcademica\AsignacionService.cs" />
     <Compile Include="Logica\GestionAcademica\AulaService.cs" />
     <Compile Include="Logica\GestionAcademica\BitacoraService.cs" />
@@ -207,6 +208,12 @@
     <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
     <Compile Include="Models\Usuarios\Usuario.cs" />
     <Compile Include="Models\Usuarios\UsuarioRepository.cs" />
+=======
+    <Compile Include="Models\AsignarRolViewModel.cs" />
+    <Compile Include="Models\ConexionBD.cs" />
+    <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\RolPermisosViewModel.cs" />
+>>>>>>> origin/main
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
