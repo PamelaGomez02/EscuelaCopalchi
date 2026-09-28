@@ -183,7 +183,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+
+
     <Compile Include="Logica\GestionAcademica\AsignacionService.cs" />
     <Compile Include="Logica\GestionAcademica\AulaService.cs" />
     <Compile Include="Logica\GestionAcademica\BitacoraService.cs" />
@@ -196,25 +197,26 @@
     <Compile Include="Logica\GestionAcademica\ReporteServicecs.cs" />
     <Compile Include="Logica\GestionAcademica\SesionUsuario.cs" />
     <Compile Include="Logica\GestionAcademica\UsuarioService.cs" />
+
     <Compile Include="Models\ConexionBD.cs" />
+
     <Compile Include="Models\Estudiantes\Estudiante.cs" />
     <Compile Include="Models\Estudiantes\EstudianteRepository.cs" />
+
     <Compile Include="Models\Gestion Academica\Modelos.cs" />
     <Compile Include="Models\Gestion Academica\ViewModels.cs" />
+
     <Compile Include="Models\Roles\AsignarRolViewModel.cs" />
     <Compile Include="Models\Roles\Rol.cs" />
     <Compile Include="Models\Roles\RolPermisosViewModel.cs" />
+
     <Compile Include="Models\Usuarios\RolDropdownItem.cs" />
     <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
     <Compile Include="Models\Usuarios\Usuario.cs" />
     <Compile Include="Models\Usuarios\UsuarioRepository.cs" />
-=======
-    <Compile Include="Models\AsignarRolViewModel.cs" />
-    <Compile Include="Models\ConexionBD.cs" />
-    <Compile Include="Models\Rol.cs" />
-    <Compile Include="Models\RolPermisosViewModel.cs" />
->>>>>>> origin/main
+
     <Compile Include="Properties\AssemblyInfo.cs" />
+
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
