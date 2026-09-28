@@ -1,0 +1,185 @@
+﻿@using EscuelaCopalchi.UI.Models.GestionAcademica
+@*
+    Barra común del módulo: usuario actual, notificaciones y mensajes (TempData).
+    Uso: @Html.Partial("_BarraUsuario")
+*@
+@{
+    var usuarioBarra = ViewBag.UsuarioActual as UsuarioSesion;
+    int noLeidasBarra = ViewBag.NotificacionesNoLeidas is int ? (int)ViewBag.NotificacionesNoLeidas : 0;
+}
+
+<div class="ga-userbar">
+    @if (usuarioBarra != null)
+    {
+        <div class="ga-userbar-info">
+            <i class="bi bi-person-circle"></i>
+            <span>Trabajando como <strong>@usuarioBarra.Nombre</strong></span>
+            <span class="ga-rol ga-rol-@(usuarioBarra.PuedeGestionar ? "director" : "docente")">@usuarioBarra.Rol</span>
+        </div>
+
+        <div class="ga-userbar-actions">
+            <a href="@Url.Action("Notificaciones", "GestionAcademica")" class="ga-bell" title="Notificaciones">
+                <i class="bi bi-bell"></i>
+                @if (noLeidasBarra > 0)
+                {
+                    <span class="ga-badge">@(noLeidasBarra > 99 ? "99+" : noLeidasBarra.ToString())</span>
+                }
+            </a>
+            <a href="@Url.Action("Index", "GestionAcademica")" class="ga-userbar-link">Cambiar usuario</a>
+        </div>
+    }
+    else
+    {
+        <div class="ga-userbar-info">
+            <i class="bi bi-info-circle"></i>
+            <span>No ha seleccionado con qué usuario trabajar.</span>
+        </div>
+        <a href="@Url.Action("Index", "GestionAcademica")" class="ga-userbar-link">Seleccionar usuario</a>
+    }
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show ga-alert" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (TempData["Advertencia"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show ga-alert" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Advertencia"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show ga-alert" role="alert">
+        <i class="bi bi-x-circle me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (ViewBag.ErrorCarga != null)
+{
+    <div class="alert alert-danger ga-alert" role="alert">
+        <i class="bi bi-database-exclamation me-2"></i>
+        No se pudo consultar la base de datos: @ViewBag.ErrorCarga
+    </div>
+}
+
+<style>
+    .ga-userbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: white;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 11px 16px;
+        margin-bottom: 18px;
+        font-size: .87rem;
+        color: #53616d;
+    }
+
+    .ga-userbar-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+        .ga-userbar-info > i {
+            color: #386FA4;
+            font-size: 1.1rem;
+        }
+
+        .ga-userbar-info strong {
+            color: #133C55;
+        }
+
+    .ga-userbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ga-userbar-link {
+        color: #386FA4;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .ga-userbar-link:hover {
+            text-decoration: underline;
+        }
+
+    .ga-rol {
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: .72rem;
+        font-weight: 600;
+    }
+
+    .ga-rol-director {
+        background: #e8e4f8;
+        color: #4a3a8c;
+    }
+
+    .ga-rol-docente {
+        background: #e6f1fb;
+        color: #1d5a8c;
+    }
+
+    .ga-bell {
+        position: relative;
+        color: #133C55;
+        font-size: 1.15rem;
+        text-decoration: none;
+    }
+
+    .ga-badge {
+        position: absolute;
+        top: -7px;
+        right: -10px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 9px;
+        background: #dc3545;
+        color: white;
+        font-size: .66rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ga-alert {
+        border-radius: 9px;
+        font-size: .88rem;
+    }
+
+    .ga-empty {
+        text-align: center;
+        padding: 42px 20px;
+        color: #6c757d;
+    }
+
+        .ga-empty i {
+            font-size: 2.2rem;
+            color: #9dc3e6;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .ga-empty strong {
+            display: block;
+            color: #133C55;
+            margin-bottom: 4px;
+        }
+</style>

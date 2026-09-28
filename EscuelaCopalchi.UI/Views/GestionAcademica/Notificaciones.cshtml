@@ -1,0 +1,299 @@
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.NotificacionesViewModel
+@{
+    ViewBag.Title = "Notificaciones";
+
+    Func<string, string> icono = tipo =>
+        tipo == "Nueva asignación" ? "bi-collection" :
+        tipo == "Incorporación de estudiante" ? "bi-person-plus" :
+        tipo == "Retiro de estudiante" ? "bi-person-dash" :
+        tipo == "Cambio de aula" ? "bi-door-open" :
+        tipo == "Cambio de horario" ? "bi-clock" :
+        tipo == "Retiro de grupo" ? "bi-x-circle" : "bi-bell";
+}
+
+<main>
+
+    <section class="academic-header">
+
+        <div class="container">
+
+            <div class="academic-breadcrumb">
+                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Notificaciones</span>
+            </div>
+
+            <h1 class="academic-title">
+                <i class="bi bi-bell me-2"></i>
+                Notificaciones
+            </h1>
+
+            <p class="academic-subtitle">
+                Avisos sobre nuevos grupos asignados, incorporación o retiro de estudiantes y cambios de aula u horario.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="container pb-5">
+
+        @Html.Partial("_BarraUsuario")
+
+        <div class="academic-card">
+
+            <div class="toolbar">
+
+                <div>
+                    <h2>@(Model.SoloNoLeidas ? "No leídas" : "Todas las notificaciones")</h2>
+                    <p>@Model.Notificaciones.Count notificaciones · @Model.NoLeidas sin leer</p>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <div class="btn-group btn-group-sm">
+                        <a href="@Url.Action("Notificaciones", new { soloNoLeidas = false })"
+                           class="btn @(Model.SoloNoLeidas ? "btn-outline-secondary" : "btn-secondary")">Todas</a>
+                        <a href="@Url.Action("Notificaciones", new { soloNoLeidas = true })"
+                           class="btn @(Model.SoloNoLeidas ? "btn-secondary" : "btn-outline-secondary")">No leídas</a>
+                    </div>
+
+                    @if (Model.NoLeidas > 0)
+                    {
+                        using (Html.BeginForm("MarcarLeida", "GestionAcademica", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="0" />
+                            <input type="hidden" name="soloNoLeidas" value="@(Model.SoloNoLeidas ? "true" : "false")" />
+                            <button type="submit" class="btn btn-sm btn-cop-primary">
+                                <i class="bi bi-check2-all me-1"></i>
+                                Marcar todas como leídas
+                            </button>
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+            @if (!Model.Notificaciones.Any())
+            {
+                <div class="ga-empty">
+                    <i class="bi bi-bell-slash"></i>
+                    <strong>No tiene notificaciones</strong>
+                    Aquí verá los avisos cuando se le asigne un grupo o cambie su composición.
+                </div>
+            }
+            else
+            {
+                <ul class="notif-list">
+                    @foreach (var n in Model.Notificaciones)
+                    {
+                        <li class="notif @(n.Leida ? "" : "notif-new")">
+
+                            <div class="notif-icon">
+                                <i class="bi @icono(n.Tipo)"></i>
+                            </div>
+
+                            <div class="notif-body">
+                                <div class="notif-top">
+                                    <strong>@n.Titulo</strong>
+                                    @if (!n.Leida)
+                                    {
+                                        <span class="notif-badge">Nueva</span>
+                                    }
+                                </div>
+                                <p>@n.Mensaje</p>
+                                <small>
+                                    @n.Tipo · @n.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                    @if (n.EstadoEnvio == "Error")
+                                    {
+                                        <span class="text-danger ms-1"><i class="bi bi-envelope-x"></i> No se pudo enviar por correo</span>
+                                    }
+                                </small>
+                            </div>
+
+                            @if (!n.Leida)
+                            {
+                                using (Html.BeginForm("MarcarLeida", "GestionAcademica", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@n.IdNotificacion" />
+                                    <input type="hidden" name="soloNoLeidas" value="@(Model.SoloNoLeidas ? "true" : "false")" />
+                                    <button type="submit" class="btn btn-sm btn-action" title="Marcar como leída">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
+                                }
+                            }
+
+                        </li>
+                    }
+                </ul>
+            }
+
+        </div>
+
+    </section>
+
+</main>
+
+
+@section styles {
+
+    <style>
+
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .academic-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e3e8ee;
+            margin-bottom: 28px;
+        }
+
+        .academic-breadcrumb {
+            display: flex;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .academic-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .academic-title {
+            color: var(--cop-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .academic-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .academic-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .toolbar h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+            }
+
+            .toolbar p {
+                color: var(--cop-muted);
+                font-size: .83rem;
+                margin: 0;
+            }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+        .btn-action {
+            background: white;
+            border: 1px solid #dce2e7;
+            color: var(--cop-secondary);
+        }
+
+        .notif-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .notif {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 22px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .notif:last-child {
+                border-bottom: 0;
+            }
+
+        .notif-new {
+            background: #f5f9fd;
+        }
+
+        .notif-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #e6f1fb;
+            color: var(--cop-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notif-body {
+            flex: 1;
+        }
+
+            .notif-body p {
+                margin: 3px 0;
+                font-size: .88rem;
+                color: #3d4a55;
+            }
+
+            .notif-body small {
+                color: var(--cop-muted);
+                font-size: .75rem;
+            }
+
+        .notif-top strong {
+            color: var(--cop-primary);
+            font-size: .92rem;
+        }
+
+        .notif-badge {
+            background: #dc3545;
+            color: white;
+            font-size: .65rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+    </style>
+
+}

@@ -45,10 +45,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt-Net-Next, Version=4.2.0.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
+      <HintPath>..\packages\BCrypt.Net-Next.4.2.0\lib\net48\BCrypt-Net-Next.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -134,7 +151,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
-    <Compile Include="Controllers\GestionAcademicaController.cs" />
+    <Compile Include="Controllers\Estudiante\EstudiantesAddController.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Asignaciones.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Grupo.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Importacion.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.MiGrupo.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Notificaciones.cs" />
+    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Reportes.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\PanelPrincipalController.cs" />
@@ -147,14 +171,49 @@
     <Compile Include="Controllers\GestionNotasController.cs" />
     <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
-    <Compile Include="Controllers\UsuariosController.cs" />
+    <Compile Include="Controllers\Usuarios\UsuariosController.cs" />
+    <Compile Include="Datos\GestionAcademica\AccesoDatos.cs" />
+    <Compile Include="Datos\GestionAcademica\AuditoriaRepository.cs" />
+    <Compile Include="Datos\GestionAcademica\AulaRepository.cs" />
+    <Compile Include="Datos\GestionAcademica\GrupoRepository.cs" />
+    <Compile Include="Datos\GestionAcademica\MatriculaRepository.cs" />
+    <Compile Include="Datos\GestionAcademica\NotificacionRepository.cs" />
+    <Compile Include="Datos\GestionAcademica\Repositorios.cs" />
+    <Compile Include="Datos\GestionAcademica\UsuarioRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+<<<<<<< HEAD
+    <Compile Include="Logica\GestionAcademica\AsignacionService.cs" />
+    <Compile Include="Logica\GestionAcademica\AulaService.cs" />
+    <Compile Include="Logica\GestionAcademica\BitacoraService.cs" />
+    <Compile Include="Logica\GestionAcademica\ExcelHelper.cs" />
+    <Compile Include="Logica\GestionAcademica\GrupoService.cs" />
+    <Compile Include="Logica\GestionAcademica\ImportacionExcelService.cs" />
+    <Compile Include="Logica\GestionAcademica\NotificacionService.cs" />
+    <Compile Include="Logica\GestionAcademica\Operacion.cs" />
+    <Compile Include="Logica\GestionAcademica\PdfHelper.cs" />
+    <Compile Include="Logica\GestionAcademica\ReporteServicecs.cs" />
+    <Compile Include="Logica\GestionAcademica\SesionUsuario.cs" />
+    <Compile Include="Logica\GestionAcademica\UsuarioService.cs" />
+    <Compile Include="Models\ConexionBD.cs" />
+    <Compile Include="Models\Estudiantes\Estudiante.cs" />
+    <Compile Include="Models\Estudiantes\EstudianteRepository.cs" />
+    <Compile Include="Models\Gestion Academica\Modelos.cs" />
+    <Compile Include="Models\Gestion Academica\ViewModels.cs" />
+    <Compile Include="Models\Roles\AsignarRolViewModel.cs" />
+    <Compile Include="Models\Roles\Rol.cs" />
+    <Compile Include="Models\Roles\RolPermisosViewModel.cs" />
+    <Compile Include="Models\Usuarios\RolDropdownItem.cs" />
+    <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
+    <Compile Include="Models\Usuarios\Usuario.cs" />
+    <Compile Include="Models\Usuarios\UsuarioRepository.cs" />
+=======
     <Compile Include="Models\AsignarRolViewModel.cs" />
     <Compile Include="Models\ConexionBD.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\RolPermisosViewModel.cs" />
+>>>>>>> origin/main
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +320,9 @@
     <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\GestionAcademica\Reportes.cshtml" />
     <Content Include="Views\GestionAcademica\ImportarExcel.cshtml" />
+    <Content Include="Views\GestionAcademica\_BarraUsuario.cshtml" />
+    <Content Include="Views\GestionAcademica\Notificaciones.cshtml" />
+    <Content Include="Views\GestionAcademica\Bitacora.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.AsignacionesViewModel
+@{
     ViewBag.Title = "Asignación de estudiantes";
 }
 
@@ -22,7 +23,7 @@
             </h1>
 
             <p class="academic-subtitle">
-                Asigna estudiantes a grupos y gestiona cambios o traslados.
+                Asigna estudiantes a grupos y gestiona cambios o traslados. Cada cambio queda en la bitácora y se notifica a los docentes.
             </p>
 
         </div>
@@ -32,68 +33,92 @@
 
     <section class="container pb-5">
 
+        @Html.Partial("_BarraUsuario")
+
         <div class="row g-4">
 
-            <div class="col-lg-5">
+            <div class="col-lg-4">
 
                 <div class="form-card">
 
                     <h2>Realizar asignación</h2>
 
-                    <label class="form-label">
-                        Estudiante
-                    </label>
+                    @using (Html.BeginForm("AsignarEstudiante", "GestionAcademica", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="filtroGrupo" value="@Model.FiltroGrupo" />
+                        <input type="hidden" name="busqueda" value="@Model.Busqueda" />
 
-                    <select class="form-select mb-3">
-                        <option selected disabled>Seleccione estudiante</option>
-                        <option>Ana Rodríguez</option>
-                        <option>José Mora</option>
-                        <option>Karla Jiménez</option>
-                    </select>
+                        <label class="form-label">
+                            Estudiante
+                        </label>
 
-
-                    <label class="form-label">
-                        Grupo
-                    </label>
-
-                    <select class="form-select mb-3">
-                        <option selected disabled>Seleccione grupo</option>
-                        <option>1-A</option>
-                        <option>2-A</option>
-                        <option>3-A</option>
-                    </select>
+                        <select name="idEstudiante" class="form-select mb-3" required>
+                            <option value="" selected disabled>Seleccione estudiante</option>
+                            @foreach (var e in Model.Estudiantes)
+                            {
+                                <option value="@e.IdEstudiante">
+                                    @e.NombreCompleto · @(e.TieneGrupo ? "Grupo " + e.Grupo : "Sin grupo")
+                                </option>
+                            }
+                        </select>
 
 
-                    <label class="form-label">
-                        Aula
-                    </label>
+                        <label class="form-label">
+                            Grupo destino
+                        </label>
 
-                    <select class="form-select mb-3">
-                        <option>Aula 1 · 2 espacios disponibles</option>
-                        <option>Aula 2 · Completa</option>
-                    </select>
+                        <select name="idGrupo" id="grupoDestino" class="form-select mb-3" required>
+                            <option value="" selected disabled>Seleccione grupo</option>
+                            @foreach (var g in Model.Grupos)
+                            {
+                                <option value="@g.IdGrupo"
+                                        data-aula="@(string.IsNullOrEmpty(g.Aula) ? "Sin aula" : g.Aula)"
+                                        data-total="@g.TotalEstudiantes"
+                                        data-capacidad="@g.Capacidad">
+                                    @g.Nombre (@g.Periodo) · @(string.IsNullOrEmpty(g.Aula) ? "sin aula" : g.Aula) · @(g.TieneCapacidad ? g.EspaciosDisponibles + " espacios" : "Completa")
+                                </option>
+                            }
+                        </select>
 
 
-                    <div class="capacity-box">
-                        <i class="bi bi-people"></i>
-                        <div>
-                            <span>Capacidad</span>
-                            <strong>28 / 30 estudiantes</strong>
+                        <div class="capacity-box" id="cajaCapacidad">
+                            <i class="bi bi-people"></i>
+                            <div>
+                                <span>Capacidad del aula</span>
+                                <strong id="textoCapacidad">Seleccione un grupo</strong>
+                            </div>
                         </div>
-                    </div>
 
 
-                    <button class="btn btn-cop-primary w-100 mt-3">
-                        <i class="bi bi-check-lg me-1"></i>
-                        Confirmar asignación
-                    </button>
+                        <label class="form-label mt-3">
+                            Motivo <small class="text-muted">(opcional)</small>
+                        </label>
+
+                        <textarea name="motivo" class="form-control" rows="2" maxlength="300"
+                                  placeholder="Ej. Traslado solicitado por el encargado"></textarea>
+
+
+                        <button type="submit" class="btn btn-cop-primary w-100 mt-3">
+                            <i class="bi bi-check-lg me-1"></i>
+                            Confirmar asignación
+                        </button>
+                    }
+
+                    @if (!Model.Grupos.Any())
+                    {
+                        <p class="text-muted small mt-3 mb-0">
+                            No hay grupos registrados. Créelos en
+                            <a href="@Url.Action("Docentes", "GestionAcademica")">Grupos, horarios y docentes</a>.
+                        </p>
+                    }
 
                 </div>
 
             </div>
 
 
-            <div class="col-lg-7">
+            <div class="col-lg-8">
 
                 <div class="academic-card">
 
@@ -101,57 +126,106 @@
 
                         <div>
                             <h2>Asignaciones actuales</h2>
-                            <p>Consulta o modifica estudiantes asignados.</p>
+                            <p>
+                                @Model.Estudiantes.Count estudiantes
+                                @if (Model.SinAsignar > 0)
+                                {
+                                    <text>· <strong class="text-danger">@Model.SinAsignar sin grupo</strong></text>
+                                }
+                            </p>
                         </div>
 
-                    </div>
-
-
-                    <div class="table-responsive">
-
-                        <table class="table academic-table align-middle">
-
-                            <thead>
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th>Grupo</th>
-                                    <th>Aula</th>
-                                    <th class="text-end">Acciones</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td>Ana Rodríguez</td>
-                                    <td>1-A</td>
-                                    <td>Aula 1</td>
-
-                                    <td class="text-end">
-                                        <button class="btn btn-action"
-                                                title="Cambiar grupo">
-                                            <i class="bi bi-arrow-left-right"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>Marco Vindas</td>
-                                    <td>2-A</td>
-                                    <td>Aula 3</td>
-
-                                    <td class="text-end">
-                                        <button class="btn btn-action">
-                                            <i class="bi bi-arrow-left-right"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
+                        <form method="get" action="@Url.Action("Asignaciones")" class="filters">
+                            <select name="grupo" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="0" @(Model.FiltroGrupo == 0 ? "selected" : "")>Todos los grupos</option>
+                                <option value="-1" @(Model.FiltroGrupo == -1 ? "selected" : "")>Sin asignar</option>
+                                @foreach (var g in Model.Grupos)
+                                {
+                                    <option value="@g.IdGrupo" @(Model.FiltroGrupo == g.IdGrupo ? "selected" : "")>@g.Nombre (@g.Periodo)</option>
+                                }
+                            </select>
+                            <input name="busqueda" value="@Model.Busqueda" class="form-control form-control-sm" placeholder="Nombre o identificación" />
+                            <button class="btn btn-sm btn-action" type="submit" title="Buscar"><i class="bi bi-search"></i></button>
+                        </form>
 
                     </div>
+
+
+                    @if (!Model.Estudiantes.Any())
+                    {
+                        <div class="ga-empty">
+                            <i class="bi bi-search"></i>
+                            <strong>No hay estudiantes para mostrar</strong>
+                            Revise los filtros o registre estudiantes en el módulo de Estudiantes.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+
+                            <table class="table academic-table align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Grupo</th>
+                                        <th>Aula</th>
+                                        <th>Docente</th>
+                                        <th class="text-end">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var e in Model.Estudiantes)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@e.NombreCompleto</strong>
+                                                <small class="d-block text-muted">@e.Identificacion</small>
+                                            </td>
+                                            <td>
+                                                @if (e.TieneGrupo)
+                                                {
+                                                    @e.Grupo
+                                                }
+                                                else
+                                                {
+                                                    <span class="status status-warning">Sin grupo</span>
+                                                }
+                                            </td>
+                                            <td>@e.Aula</td>
+                                            <td>@e.Docente</td>
+
+                                            <td class="text-end text-nowrap">
+                                                <button type="button" class="btn btn-action"
+                                                        title="@(e.TieneGrupo ? "Cambiar de grupo" : "Asignar grupo")"
+                                                        data-bs-toggle="modal" data-bs-target="#modalTraslado"
+                                                        data-id="@e.IdEstudiante"
+                                                        data-nombre="@e.NombreCompleto"
+                                                        data-grupo="@e.IdGrupo">
+                                                    <i class="bi bi-arrow-left-right"></i>
+                                                </button>
+
+                                                @if (e.TieneGrupo)
+                                                {
+                                                    <button type="button" class="btn btn-action-danger"
+                                                            title="Retirar del grupo"
+                                                            data-bs-toggle="modal" data-bs-target="#modalRetiro"
+                                                            data-id="@e.IdEstudiante"
+                                                            data-nombre="@e.NombreCompleto"
+                                                            data-grupo-nombre="@e.Grupo">
+                                                        <i class="bi bi-box-arrow-right"></i>
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    }
 
                 </div>
 
@@ -162,6 +236,141 @@
     </section>
 
 </main>
+
+
+@* ===== Modal: cambiar de grupo ===== *@
+<div class="modal fade" id="modalTraslado" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @using (Html.BeginForm("AsignarEstudiante", "GestionAcademica", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idEstudiante" id="trasladoId" />
+                <input type="hidden" name="filtroGrupo" value="@Model.FiltroGrupo" />
+                <input type="hidden" name="busqueda" value="@Model.Busqueda" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambiar de grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-3">Estudiante: <strong id="trasladoNombre"></strong></p>
+
+                    <label class="form-label">Nuevo grupo *</label>
+                    <select name="idGrupo" id="trasladoGrupo" class="form-select mb-3" required>
+                        <option value="" selected disabled>Seleccione grupo</option>
+                        @foreach (var g in Model.Grupos)
+                        {
+                            <option value="@g.IdGrupo">
+                                @g.Nombre (@g.Periodo) · @(string.IsNullOrEmpty(g.Aula) ? "sin aula" : g.Aula) · @(g.TieneCapacidad ? g.EspaciosDisponibles + " espacios" : "Completa")
+                            </option>
+                        }
+                    </select>
+
+                    <label class="form-label">Motivo del traslado</label>
+                    <textarea name="motivo" class="form-control" rows="2" maxlength="300"
+                              placeholder="Ej. Cambio de aula por traslado de sede"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-cop-primary">Guardar cambio</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@* ===== Modal: retirar del grupo ===== *@
+<div class="modal fade" id="modalRetiro" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @using (Html.BeginForm("RetirarEstudiante", "GestionAcademica", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idEstudiante" id="retiroId" />
+                <input type="hidden" name="filtroGrupo" value="@Model.FiltroGrupo" />
+                <input type="hidden" name="busqueda" value="@Model.Busqueda" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Retirar del grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        ¿Retirar a <strong id="retiroNombre"></strong> del grupo <strong id="retiroGrupo"></strong>?
+                        El estudiante quedará sin grupo asignado y se notificará al docente.
+                    </p>
+
+                    <label class="form-label">Motivo</label>
+                    <textarea name="motivo" class="form-control" rows="2" maxlength="300"
+                              placeholder="Ej. Traslado a otra institución"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Retirar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        (function () {
+            // Object(...) devuelve el mismo elemento sin tipo, así Visual Studio no marca avisos de TypeScript
+            function campo(id) {
+                return Object(document.getElementById(id));
+            }
+
+            // Capacidad del grupo seleccionado (escenario 2: aula sin capacidad)
+            var destino = campo('grupoDestino');
+            var caja = campo('cajaCapacidad');
+            var texto = campo('textoCapacidad');
+
+            destino.addEventListener('change', function () {
+                var op = destino.options[destino.selectedIndex];
+                var total = parseInt(op.dataset.total, 10) || 0;
+                var capacidad = parseInt(op.dataset.capacidad, 10) || 0;
+
+                if (capacidad === 0) {
+                    texto.textContent = op.dataset.aula + ' · el grupo no tiene aula asignada';
+                    caja.classList.add('capacity-full');
+                } else {
+                    texto.textContent = op.dataset.aula + ' · ' + total + ' / ' + capacidad + ' estudiantes' +
+                        (total >= capacidad ? ' (sin espacio disponible)' : '');
+                    caja.classList.toggle('capacity-full', total >= capacidad);
+                }
+            });
+
+            // Modal: cambiar de grupo (el grupo actual queda deshabilitado)
+            campo('modalTraslado').addEventListener('show.bs.modal', function (ev) {
+                var b = Object(ev).relatedTarget;
+                campo('trasladoId').value = b.dataset.id;
+                campo('trasladoNombre').textContent = b.dataset.nombre;
+
+                var select = campo('trasladoGrupo');
+                select.value = '';
+                Array.prototype.forEach.call(select.options, function (o) {
+                    o.disabled = o.value === '' || o.value === b.dataset.grupo;
+                });
+            });
+
+            // Modal: retirar del grupo
+            campo('modalRetiro').addEventListener('show.bs.modal', function (ev) {
+                var b = Object(ev).relatedTarget;
+                campo('retiroId').value = b.dataset.id;
+                campo('retiroNombre').textContent = b.dataset.nombre;
+                campo('retiroGrupo').textContent = b.dataset.grupoNombre;
+            });
+        })();
+    </script>
+}
 
 
 @section styles {
@@ -299,6 +508,74 @@
             background: white;
             border: 1px solid #dce2e7;
             color: var(--cop-secondary);
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+            .form-card h2 {
+                color: var(--cop-primary);
+                font-size: 1.05rem;
+                margin-bottom: 16px;
+            }
+
+        .capacity-full {
+            background: #fdecee;
+            border-color: #f5c2c7;
+        }
+
+            .capacity-full i,
+            .capacity-full strong {
+                color: #b02a37;
+            }
+
+        .btn-cop-primary:hover {
+            background: var(--cop-secondary);
+            border-color: var(--cop-secondary);
+            color: white;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 6px;
+        }
+
+            .filters .form-select {
+                width: 170px;
+            }
+
+            .filters .form-control {
+                width: 190px;
+            }
+
+        .btn-action-danger {
+            background: white;
+            border: 1px solid #f1c6cb;
+            color: #b02a37;
+        }
+
+        .status {
+            padding: 4px 9px;
+            border-radius: 20px;
+            font-size: .75rem;
+            white-space: nowrap;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
         }
     </style>
 

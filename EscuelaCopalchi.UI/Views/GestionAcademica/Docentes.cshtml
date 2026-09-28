@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = "Asignación de docentes";
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.DocentesViewModel
+@{
+    ViewBag.Title = "Grupos, horarios y docentes";
+    string[] nombresDias = { "", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" };
 }
 
 <main>
@@ -10,17 +12,28 @@
             <div class="academic-breadcrumb">
                 <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
                 <i class="bi bi-chevron-right"></i>
-                <span>Docentes</span>
+                <span>Grupos y docentes</span>
             </div>
 
-            <h1 class="academic-title">
-                <i class="bi bi-person-badge me-2"></i>
-                Asignación de docentes
-            </h1>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-            <p class="academic-subtitle">
-                Vincula docentes responsables con los grupos académicos.
-            </p>
+                <div>
+                    <h1 class="academic-title">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Grupos, horarios y docentes
+                    </h1>
+
+                    <p class="academic-subtitle">
+                        Crea grupos, define su aula y horario, y vincula al docente responsable.
+                    </p>
+                </div>
+
+                <button class="btn btn-cop-primary" data-bs-toggle="modal" data-bs-target="#modalGrupo" data-nuevo="1">
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Nuevo grupo
+                </button>
+
+            </div>
 
         </div>
     </section>
@@ -28,101 +41,298 @@
 
     <section class="container pb-5">
 
+        @Html.Partial("_BarraUsuario")
+
         <div class="academic-card">
 
             <div class="toolbar">
 
                 <div>
                     <h2>Grupos y docentes responsables</h2>
-                    <p>Consulta y modifica la asignación docente.</p>
+                    <p>Al asignar o cambiar el docente, el aula o el horario se notifica al docente y se registra en la bitácora.</p>
                 </div>
 
-            </div>
-
-
-            <div class="table-responsive">
-
-                <table class="table academic-table align-middle">
-
-                    <thead>
-                        <tr>
-                            <th>Grupo</th>
-                            <th>Aula</th>
-                            <th>Docente responsable</th>
-                            <th>Carga</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>1-A</td>
-                            <td>Aula 1</td>
-
-                            <td>
-                                <select class="form-select">
-                                    <option>María González</option>
-                                    <option>José Pérez</option>
-                                    <option>Laura Gómez</option>
-                                </select>
-                            </td>
-
-                            <td>
-                                1 grupo
-                            </td>
-
-                            <td class="text-end">
-                                <button class="btn btn-action">
-                                    <i class="bi bi-save"></i>
-                                </button>
-
-                                <button class="btn btn-action-danger">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>2-A</td>
-                            <td>Aula 3</td>
-
-                            <td>
-                                <select class="form-select">
-                                    <option>José Pérez</option>
-                                    <option>María González</option>
-                                </select>
-                            </td>
-
-                            <td>2 grupos</td>
-
-                            <td class="text-end">
-                                <button class="btn btn-action">
-                                    <i class="bi bi-save"></i>
-                                </button>
-
-                                <button class="btn btn-action-danger">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                <form method="get" action="@Url.Action("Docentes")">
+                    <select name="periodo" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="0" @(Model.Periodo == 0 ? "selected" : "")>Todos los períodos</option>
+                        @foreach (var p in Model.Periodos)
+                        {
+                            <option value="@p" @(Model.Periodo == p ? "selected" : "")>@p</option>
+                        }
+                    </select>
+                </form>
 
             </div>
+
+            @if (!Model.Grupos.Any())
+            {
+                <div class="ga-empty">
+                    <i class="bi bi-collection"></i>
+                    <strong>No hay grupos registrados</strong>
+                    Cree un grupo con el botón "Nuevo grupo" o impórtelos desde Excel.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table academic-table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Grupo</th>
+                                <th>Aula</th>
+                                <th>Horario</th>
+                                <th>Docente responsable</th>
+                                <th>Estudiantes</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var g in Model.Grupos)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@g.Nombre</strong>
+                                        <small class="d-block text-muted">@g.Nivel @(string.IsNullOrEmpty(g.Nivel) ? "" : "·") @g.Periodo</small>
+                                    </td>
+
+                                    <td>@(string.IsNullOrEmpty(g.Aula) ? "Sin aula" : g.Aula)</td>
+
+                                    <td class="small">@g.Horario</td>
+
+                                    <td>
+                                        <select name="idDocente" form="formDocente@(g.IdGrupo)" class="form-select form-select-sm">
+                                            <option value="0">— Sin docente —</option>
+                                            @foreach (var d in Model.Docentes)
+                                            {
+                                                <option value="@d.IdDocente" @(d.IdDocente == g.IdDocente ? "selected" : "")>
+                                                    @d.NombreCompleto (@d.TotalGrupos @(d.TotalGrupos == 1 ? "grupo" : "grupos"))
+                                                </option>
+                                            }
+                                        </select>
+                                    </td>
+
+                                    <td>@g.TotalEstudiantes / @g.Capacidad</td>
+
+                                    <td class="text-end text-nowrap">
+
+                                        @using (Html.BeginForm("AsignarDocente", "GestionAcademica", FormMethod.Post,
+                                                               new { id = "formDocente" + g.IdGrupo, @class = "d-inline" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="idGrupo" value="@g.IdGrupo" />
+                                            <input type="hidden" name="periodoFiltro" value="@Model.Periodo" />
+                                            <button type="submit" class="btn btn-action" title="Guardar docente">
+                                                <i class="bi bi-save"></i>
+                                            </button>
+                                        }
+
+                                        <button type="button" class="btn btn-action" title="Editar grupo"
+                                                data-bs-toggle="modal" data-bs-target="#modalGrupo"
+                                                data-id="@g.IdGrupo"
+                                                data-nombre="@g.Nombre"
+                                                data-nivel="@g.Nivel"
+                                                data-periodo="@g.Periodo"
+                                                data-cupo="@g.Cupo"
+                                                data-aula="@g.IdAula"
+                                                data-docente="@g.IdDocente"
+                                                data-dias="@g.Dias"
+                                                data-inicio="@g.HoraInicio"
+                                                data-fin="@g.HoraFin">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        @if (g.IdDocente > 0)
+                                        {
+                                            using (Html.BeginForm("AsignarDocente", "GestionAcademica", FormMethod.Post, new { @class = "d-inline" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="idGrupo" value="@g.IdGrupo" />
+                                                <input type="hidden" name="idDocente" value="0" />
+                                                <input type="hidden" name="periodoFiltro" value="@Model.Periodo" />
+                                                <button type="submit" class="btn btn-action-danger" title="Quitar docente"
+                                                        onclick="return confirm('¿Quitar el docente del grupo @g.Nombre?');">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            }
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
 
         </div>
+
+        @if (!Model.Docentes.Any())
+        {
+            <p class="text-muted small mt-3">
+                <i class="bi bi-info-circle"></i>
+                No hay docentes activos en la tabla DOCENTE. Ejecute el script de Gestión Académica o registre docentes.
+            </p>
+        }
 
     </section>
 
 </main>
+
+
+@* ===== Modal: crear / editar grupo ===== *@
+<div class="modal fade" id="modalGrupo" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content">
+
+            @using (Html.BeginForm("GuardarGrupo", "GestionAcademica", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idGrupo" id="grupoId" value="0" />
+                <input type="hidden" name="periodoFiltro" value="@Model.Periodo" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="grupoTitulo">Nuevo grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre del grupo *</label>
+                            <input name="nombre" id="grupoNombre" class="form-control" maxlength="20" placeholder="Ej. 3-A" required />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Nivel</label>
+                            <input name="nivel" id="grupoNivel" class="form-control" maxlength="30" placeholder="Ej. Tercero" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Período *</label>
+                            <input name="periodo" id="grupoPeriodo" type="number" min="2000" max="2100" class="form-control"
+                                   value="@DateTime.Today.Year" required />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Aula</label>
+                            <select name="idAula" id="grupoAula" class="form-select">
+                                <option value="0">— Sin aula —</option>
+                                @foreach (var a in Model.Aulas)
+                                {
+                                    <option value="@a.IdAula" data-capacidad="@a.Capacidad">@a.Nombre · capacidad @a.Capacidad</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cupo del grupo *</label>
+                            <input name="cupo" id="grupoCupo" type="number" min="1" max="200" class="form-control" required />
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label">Docente responsable</label>
+                            <select name="idDocente" id="grupoDocente" class="form-select">
+                                <option value="0">— Sin docente —</option>
+                                @foreach (var d in Model.Docentes)
+                                {
+                                    <option value="@d.IdDocente">@d.NombreCompleto</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label d-block">Días de clase</label>
+                            @for (int dia = 1; dia <= 7; dia++)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input dia-check" type="checkbox" name="dias" value="@dia" id="dia@(dia)" />
+                                    <label class="form-check-label" for="dia@(dia)">@nombresDias[dia]</label>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Hora de inicio</label>
+                            <input type="time" name="horaInicio" id="grupoInicio" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Hora final</label>
+                            <input type="time" name="horaFin" id="grupoFin" class="form-control" />
+                        </div>
+
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0">
+                        El cupo no puede superar la capacidad del aula. Si el grupo ya tiene estudiantes,
+                        el aula nueva debe tener capacidad suficiente.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-cop-primary">Guardar grupo</button>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section scripts {
+    <script>
+                // Object(...) devuelve el mismo elemento sin tipo, así Visual Studio no marca avisos de TypeScript
+                function campo(id) {
+                    return Object(document.getElementById(id));
+                }
+
+                campo('modalGrupo').addEventListener('show.bs.modal', function (ev) {
+                    var boton = Object(ev).relatedTarget;
+                    var d = (boton && boton.dataset) || {};
+                    var nuevo = !d.id;
+
+                    campo('grupoTitulo').textContent = nuevo ? 'Nuevo grupo' : 'Editar grupo ' + d.nombre;
+                    campo('grupoId').value = nuevo ? 0 : d.id;
+                    campo('grupoNombre').value = nuevo ? '' : d.nombre;
+                    campo('grupoNivel').value = nuevo ? '' : d.nivel;
+                    campo('grupoPeriodo').value = nuevo ? new Date().getFullYear() : d.periodo;
+                    campo('grupoAula').value = nuevo ? 0 : d.aula;
+                    campo('grupoCupo').value = nuevo ? '' : d.cupo;
+                    campo('grupoDocente').value = nuevo ? 0 : d.docente;
+                    campo('grupoInicio').value = nuevo ? '07:00' : d.inicio;
+                    campo('grupoFin').value = nuevo ? '12:00' : d.fin;
+
+                    var dias = nuevo ? ['1', '2', '3', '4', '5'] : (d.dias || '').split(',');
+                    document.querySelectorAll('.dia-check').forEach(function (c) {
+                        var check = Object(c);
+                        check.checked = dias.indexOf(check.value) >= 0;
+                    });
+                });
+
+                // Al elegir un aula, el cupo se ajusta a su capacidad si está vacío o la supera
+                campo('grupoAula').addEventListener('change', function () {
+                    var aula = campo('grupoAula');
+                    var capacidad = parseInt(aula.options[aula.selectedIndex].dataset.capacidad, 10);
+                    var cupo = campo('grupoCupo');
+                    if (capacidad && (!cupo.value || parseInt(cupo.value, 10) > capacidad)) cupo.value = capacidad;
+                });
+    </script>
+}
 
 
 @section styles {
@@ -224,6 +434,30 @@
 
         .btn-action-danger {
             color: #dc3545;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .academic-table .form-select-sm {
+            min-width: 210px;
         }
     </style>
 

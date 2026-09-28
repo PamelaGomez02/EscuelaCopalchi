@@ -1,20 +1,18 @@
 ﻿using EscuelaCopalchi.UI.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly string conexion;
+        private readonly string conexion =
+            ConfigurationManager.ConnectionStrings["AulaVirtualDB"].ConnectionString;
 
-        public RolesController()
-        {
-            ConexionBD db = new ConexionBD();
-            conexion = db.ObtenerConexion();
-        }
 
         public ActionResult Index()
         {
@@ -60,7 +58,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Crear(Rol modelo)
         {
-   
+
             if (string.IsNullOrWhiteSpace(modelo.Nombre))
             {
                 ModelState.AddModelError(
@@ -86,7 +84,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-               
+
                 string sqlExiste = @"
             SELECT COUNT(*)
             FROM ROL
@@ -148,9 +146,9 @@ namespace EscuelaCopalchi.UI.Controllers
             return RedirectToAction("Index");
         }
 
-      
+
         // EDITAR ROL - MOSTRAR
-     
+
         [HttpGet]
         public ActionResult Editar(int? id)
         {
@@ -206,7 +204,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
 
         // EDITAR ROL - GUARDAR
-   
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Editar(Rol modelo)
@@ -312,64 +310,81 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
+        
+
         // ELIMINAR ROL
-   
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Eliminar(int id)
         {
-            using (SqlConnection con = new SqlConnection(conexion))
+            string[] rolesDelSistema = { "Administrador", "Director", "Docente", "Apoyo", "Evaluación" };
+
+            try
             {
-                con.Open();
-
-                // Verificar usuarios ACTIVOS asociados
-                string sqlUsuarios = @"
-            SELECT COUNT(*)
-            FROM USUARIO
-            WHERE id_rol = @id
-              AND estado = 1";
-
-                using (SqlCommand cmdUsuarios =
-                       new SqlCommand(sqlUsuarios, con))
+                using (SqlConnection con = new SqlConnection(conexion))
                 {
-                    cmdUsuarios.Parameters.AddWithValue("@id", id);
+                    con.Open();
 
-                    int usuarios =
-                        Convert.ToInt32(
-                            cmdUsuarios.ExecuteScalar()
-                        );
-
-                    if (usuarios > 0)
+                    string nombre;
+                    using (SqlCommand cmd = new SqlCommand("SELECT nombre FROM ROL WHERE id_rol = @id", con))
                     {
-                        TempData["Error"] =
-                            "No se puede eliminar el rol porque tiene usuarios activos asociados. Debe desvincularlos primero.";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        nombre = cmd.ExecuteScalar() as string;
+                    }
 
-                        return RedirectToAction(
-                            "Editar",
-                            new { id = id }
-                        );
+                    if (nombre == null)
+                    {
+                        TempData["Error"] = "El rol no existe.";
+                        return RedirectToAction("Index");
+                    }
+
+                    if (rolesDelSistema.Contains(nombre))
+                    {
+                        TempData["Error"] = "El rol " + nombre + " es un rol base del sistema y no se puede eliminar. Puede desactivarlo.";
+                        return RedirectToAction("Editar", new { id });
+                    }
+
+                    // Cualquier usuario (activo o inactivo) impide borrar el rol por la llave FK_USUARIO_ROL
+                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM USUARIO WHERE id_rol = @id", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        if (Convert.ToInt32(cmd.ExecuteScalar()) > 0)
+                        {
+                            TempData["Error"] = "No se puede eliminar el rol porque tiene usuarios asociados (activos o inactivos). Debe cambiarles el rol primero.";
+                            return RedirectToAction("Editar", new { id });
+                        }
+                    }
+
+                    using (SqlTransaction tx = con.BeginTransaction())
+                    {
+                        // Primero sus permisos: ROL_PERMISO tiene llave foránea a ROL
+                        using (SqlCommand cmd = new SqlCommand("DELETE FROM ROL_PERMISO WHERE id_rol = @id", con, tx))
+                        {
+                            cmd.Parameters.AddWithValue("@id", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        using (SqlCommand cmd = new SqlCommand("DELETE FROM ROL WHERE id_rol = @id", con, tx))
+                        {
+                            cmd.Parameters.AddWithValue("@id", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        tx.Commit();
                     }
                 }
-
-
-                string sqlEliminar = @"
-            DELETE FROM ROL
-            WHERE id_rol = @id";
-
-                using (SqlCommand cmd =
-                       new SqlCommand(sqlEliminar, con))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
-                }
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "No se pudo eliminar el rol: " + ex.Message;
+                return RedirectToAction("Index");
             }
 
-            TempData["Exito"] =
-                "El rol se eliminó correctamente.";
-
+            TempData["Exito"] = "El rol se eliminó correctamente.";
             return RedirectToAction("Index");
         }
-
 
         // ASIGNAR ROL - MOSTRAR DOCENTES
 
@@ -387,7 +402,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-               
+
                 string sqlRol = @"
             SELECT id_rol, nombre, descripcion
             FROM ROL
@@ -475,9 +490,9 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
- 
+
         // ASIGNAR ROL - GUARDAR
-    
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Asignar(AsignarRolViewModel modelo)
@@ -507,7 +522,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-              
+
                 string sqlRol = @"
             SELECT COUNT(*)
             FROM ROL
@@ -533,7 +548,7 @@ namespace EscuelaCopalchi.UI.Controllers
                     }
                 }
 
-           
+
                 foreach (int idUsuario in seleccionados)
                 {
                     string sqlActualizar = @"
@@ -591,7 +606,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-              
+
                 string sqlRol = @"
             SELECT id_rol, nombre, descripcion
             FROM ROL
@@ -723,7 +738,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 try
                 {
-                
+
                     string sqlEliminar = @"
                 DELETE FROM ROL_PERMISO
                 WHERE id_rol = @idRol";

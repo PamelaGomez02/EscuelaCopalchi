@@ -1,5 +1,7 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.ReportesViewModel
+@{
     ViewBag.Title = "Reportes de distribución";
+    var r = Model.Resultado;
 }
 
 <main>
@@ -20,7 +22,7 @@
             </h1>
 
             <p class="academic-subtitle">
-                Consulta la distribución académica por aula, grupo o docente.
+                Consulta la distribución de estudiantes por aula, grupo o docente.
             </p>
 
         </div>
@@ -30,16 +32,18 @@
 
     <section class="container pb-5">
 
-        <div class="filters-card">
+        @Html.Partial("_BarraUsuario")
+
+        <form method="get" action="@Url.Action("Reportes")" class="filters-card">
 
             <div>
 
                 <label class="form-label">Tipo de reporte</label>
 
-                <select class="form-select">
-                    <option>Por aula</option>
-                    <option>Por grupo</option>
-                    <option>Por docente</option>
+                <select name="tipo" class="form-select">
+                    <option value="AULA" @(Model.Tipo == "AULA" ? "selected" : "")>Por aula</option>
+                    <option value="GRUPO" @(Model.Tipo == "GRUPO" ? "selected" : "")>Por grupo</option>
+                    <option value="DOCENTE" @(Model.Tipo == "DOCENTE" ? "selected" : "")>Por docente</option>
                 </select>
 
             </div>
@@ -49,19 +53,23 @@
 
                 <label class="form-label">Período</label>
 
-                <select class="form-select">
-                    <option>2026</option>
+                <select name="periodo" class="form-select">
+                    <option value="0" @(Model.Periodo == 0 ? "selected" : "")>Todos</option>
+                    @foreach (var p in Model.Periodos)
+                    {
+                        <option value="@p" @(Model.Periodo == p ? "selected" : "")>@p</option>
+                    }
                 </select>
 
             </div>
 
 
-            <button class="btn btn-cop-primary">
+            <button type="submit" class="btn btn-cop-primary">
                 <i class="bi bi-search me-1"></i>
                 Generar
             </button>
 
-        </div>
+        </form>
 
 
         <div class="academic-card mt-4">
@@ -69,65 +77,86 @@
             <div class="toolbar">
 
                 <div>
-                    <h2>Resultados</h2>
-                    <p>Distribución actual por aula.</p>
+                    <h2>@(r != null ? r.Titulo : "Resultados")</h2>
+                    <p>@(r != null ? r.Subtitulo : "")</p>
                 </div>
 
+                @if (r != null && r.TieneDatos)
+                {
+                    <div class="d-flex gap-2">
 
-                <div class="d-flex gap-2">
+                        <a class="btn btn-outline-success"
+                           href="@Url.Action("ExportarReporte", new { tipo = Model.Tipo, periodo = Model.Periodo, formato = "excel" })">
+                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            Excel
+                        </a>
 
-                    <button class="btn btn-outline-success">
-                        <i class="bi bi-file-earmark-excel me-1"></i>
-                        Excel
-                    </button>
+                        <a class="btn btn-outline-danger"
+                           href="@Url.Action("ExportarReporte", new { tipo = Model.Tipo, periodo = Model.Periodo, formato = "pdf" })">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                            PDF
+                        </a>
 
-                    <button class="btn btn-outline-danger">
-                        <i class="bi bi-file-earmark-pdf me-1"></i>
-                        PDF
-                    </button>
-
-                </div>
+                    </div>
+                }
 
             </div>
 
 
-            <div class="table-responsive">
+            @if (r == null || !r.TieneDatos)
+            {
+                <div class="ga-empty">
+                    <i class="bi bi-bar-chart"></i>
+                    <strong>No hay información para mostrar</strong>
+                    No existen grupos con asignaciones para el tipo de reporte y período seleccionados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
 
-                <table class="table academic-table">
+                    <table class="table academic-table">
 
-                    <thead>
-                        <tr>
-                            <th>Aula</th>
-                            <th>Grupo</th>
-                            <th>Docente</th>
-                            <th>Estudiantes</th>
-                            <th>Capacidad</th>
-                        </tr>
-                    </thead>
+                        <thead>
+                            <tr>
+                                @foreach (var c in r.Columnas)
+                                {
+                                    <th>@c</th>
+                                }
+                            </tr>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
+                            @foreach (var fila in r.Filas)
+                            {
+                                <tr>
+                                    @for (int i = 0; i < fila.Length; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            <td><strong>@fila[i]</strong></td>
+                                        }
+                                        else
+                                        {
+                                            <td>@fila[i]</td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </tbody>
 
-                        <tr>
-                            <td>Aula 1</td>
-                            <td>1-A</td>
-                            <td>María González</td>
-                            <td>28</td>
-                            <td>30</td>
-                        </tr>
+                        <tfoot>
+                            <tr>
+                                <td colspan="@r.Columnas.Count" class="text-muted small">
+                                    @r.Filas.Count @(r.Filas.Count == 1 ? "registro" : "registros")
+                                </td>
+                            </tr>
+                        </tfoot>
 
-                        <tr>
-                            <td>Aula 2</td>
-                            <td>1-B</td>
-                            <td>José Pérez</td>
-                            <td>27</td>
-                            <td>30</td>
-                        </tr>
+                    </table>
 
-                    </tbody>
-
-                </table>
-
-            </div>
+                </div>
+            }
 
         </div>
 
@@ -199,6 +228,12 @@
             color: white;
         }
 
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
         .academic-card {
             background: white;
             border: 1px solid #e3e8ee;
@@ -209,6 +244,9 @@
         .toolbar {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
             padding: 22px;
         }
 

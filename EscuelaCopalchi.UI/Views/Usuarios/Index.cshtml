@@ -1,16 +1,11 @@
-﻿
+﻿@model List<EscuelaCopalchi.UI.Models.Usuarios.Usuario>
 @{
     ViewBag.Title = "Usuarios";
 }
 
 <main>
-
-    <!-- ENCABEZADO -->
     <section class="usuarios-header">
-
         <div class="container">
-
-            <!-- Breadcrumb -->
             <div class="usuarios-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
@@ -18,124 +13,66 @@
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-
                 <div>
-
-                    <h1 class="usuarios-title">
-                        <i class="bi bi-people me-2"></i>
-                        Gestión de usuarios
-                    </h1>
-
-                    <p class="usuarios-subtitle">
-                        Administra los usuarios, roles y estados de acceso al sistema.
-                    </p>
-
+                    <h1 class="usuarios-title"><i class="bi bi-people me-2"></i>Gestión de usuarios</h1>
+                    <p class="usuarios-subtitle">Administra los usuarios, roles y estados de acceso al sistema.</p>
                 </div>
-
-                <a href="@Url.Action("Crear", "Usuarios")"
-                   class="btn btn-cop-primary">
-
-                    <i class="bi bi-person-plus me-1"></i>
-                    Nuevo usuario
-
+                <a href="@Url.Action("Registrar", "Usuarios")" class="btn btn-cop-primary">
+                    <i class="bi bi-person-plus me-1"></i> Nuevo usuario
                 </a>
-
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- CONTENIDO -->
     <section class="container pb-5">
 
-        <!-- TARJETAS RESUMEN -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
         <div class="row g-3 mb-4">
-
             <div class="col-md-4">
-
                 <div class="summary-card">
-
-                    <div class="summary-icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-
-                    <div>
-                        <span>Usuarios registrados</span>
-                        <h2>28</h2>
-                    </div>
-
+                    <div class="summary-icon"><i class="bi bi-people"></i></div>
+                    <div><span>Usuarios registrados</span><h2>@Model.Count</h2></div>
                 </div>
-
             </div>
-
-
             <div class="col-md-4">
-
                 <div class="summary-card">
-
-                    <div class="summary-icon summary-icon-success">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-
-                    <div>
-                        <span>Usuarios activos</span>
-                        <h2>25</h2>
-                    </div>
-
+                    <div class="summary-icon summary-icon-success"><i class="bi bi-person-check"></i></div>
+                    <div><span>Usuarios activos</span><h2>@Model.Count(x => x.Estado)</h2></div>
                 </div>
-
             </div>
-
-
             <div class="col-md-4">
-
                 <div class="summary-card">
-
-                    <div class="summary-icon summary-icon-warning">
-                        <i class="bi bi-person-x"></i>
-                    </div>
-
-                    <div>
-                        <span>Usuarios inactivos</span>
-                        <h2>3</h2>
-                    </div>
-
+                    <div class="summary-icon summary-icon-warning"><i class="bi bi-person-x"></i></div>
+                    <div><span>Usuarios inactivos</span><h2>@Model.Count(x => !x.Estado)</h2></div>
                 </div>
-
             </div>
-
         </div>
 
-
-        <!-- TABLA -->
         <div class="usuarios-card">
-
             <div class="usuarios-toolbar">
-
                 <div>
                     <h2>Usuarios del sistema</h2>
                     <p>Consulta y administra los usuarios registrados.</p>
                 </div>
-
-                <div class="search-box">
-
-                    <i class="bi bi-search"></i>
-
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Buscar usuario..." />
-
-                </div>
-
+                @using (Html.BeginForm("Index", "Usuarios", FormMethod.Get))
+                {
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="busqueda" value="@ViewBag.Busqueda" class="form-control" placeholder="Buscar usuario...">
+                    </div>
+                }
             </div>
 
-
             <div class="table-responsive">
-
                 <table class="table usuarios-table align-middle">
-
                     <thead>
                         <tr>
                             <th>Usuario</th>
@@ -145,230 +82,50 @@
                             <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
-
                     <tbody>
-
-                        <!-- USUARIO 1 -->
-                        <tr>
-
-                            <td>
-
-                                <div class="usuario-info">
-
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
+                        @foreach (var u in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="usuario-info">
+                                        <div class="usuario-avatar"><i class="bi bi-person"></i></div>
+                                        <div>
+                                            <strong>@u.Nombre @u.Apellido1</strong>
+                                            <small>@u.Identificacion</small>
+                                        </div>
                                     </div>
-
-                                    <div>
-                                        <strong>María Rodríguez</strong>
-                                        <small>mrodriguez</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                            <td>
-                                maria.rodriguez@copalchi.ed.cr
-                            </td>
-
-                            <td>
-                                <span class="role-badge">
-                                    Administrador
-                                </span>
-                            </td>
-
-                            <td>
-                                <span class="status status-ok">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Cambiar estado">
-
-                                    <i class="bi bi-power"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- USUARIO 2 -->
-                        <tr>
-
-                            <td>
-
-                                <div class="usuario-info">
-
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
-                                    </div>
-
-                                    <div>
-                                        <strong>Carlos Jiménez</strong>
-                                        <small>cjimenez</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                            <td>
-                                carlos.jimenez@copalchi.ed.cr
-                            </td>
-
-                            <td>
-                                <span class="role-badge">
-                                    Docente
-                                </span>
-                            </td>
-
-                            <td>
-                                <span class="status status-ok">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Cambiar estado">
-
-                                    <i class="bi bi-power"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- USUARIO 3 -->
-                        <tr>
-
-                            <td>
-
-                                <div class="usuario-info">
-
-                                    <div class="usuario-avatar">
-                                        <i class="bi bi-person"></i>
-                                    </div>
-
-                                    <div>
-                                        <strong>Ana Vargas</strong>
-                                        <small>avargas</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                            <td>
-                                ana.vargas@copalchi.ed.cr
-                            </td>
-
-                            <td>
-                                <span class="role-badge">
-                                    Comité de apoyo
-                                </span>
-                            </td>
-
-                            <td>
-                                <span class="status status-inactive">
-                                    Inactivo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Ver usuario">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Editar usuario">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Cambiar estado">
-
-                                    <i class="bi bi-power"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
+                                </td>
+                                <td>@u.Correo</td>
+                                <td><span class="role-badge">@u.NombreRol</span></td>
+                                <td>
+                                    @if (u.Estado)
+                                    {
+                                        <span class="status status-ok">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status status-inactive">Inactivo</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a href="@Url.Action("Detalle", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Ver usuario"><i class="bi bi-eye"></i></a>
+                                    <a href="@Url.Action("Editar", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Editar usuario"><i class="bi bi-pencil"></i></a>
+                                    <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Cambiar estado"><i class="bi bi-power"></i></a>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
     </section>
-
 </main>
 
-
 @section styles {
-
     <style>
-
         :root {
             --cop-primary: #133C55;
             --cop-secondary: #386FA4;
-            --cop-accent: #59A5D8;
             --cop-muted: #6c757d;
             --cop-page-bg: #f4f7fa;
         }
@@ -376,11 +133,6 @@
         body {
             background: var(--cop-page-bg);
         }
-
-
-        /* =========================
-           ENCABEZADO
-        ========================= */
 
         .usuarios-header {
             background: white;
@@ -415,11 +167,6 @@
             margin: 0;
         }
 
-
-        /* =========================
-           BOTÓN PRINCIPAL
-        ========================= */
-
         .btn-cop-primary {
             background: var(--cop-primary);
             border-color: var(--cop-primary);
@@ -431,11 +178,6 @@
                 border-color: var(--cop-secondary);
                 color: white;
             }
-
-
-        /* =========================
-           TARJETAS RESUMEN
-        ========================= */
 
         .summary-card {
             height: 100%;
@@ -482,11 +224,6 @@
             font-size: 1.4rem;
         }
 
-
-        /* =========================
-           CONTENEDOR TABLA
-        ========================= */
-
         .usuarios-card {
             background: white;
             border: 1px solid #e3e8ee;
@@ -514,11 +251,6 @@
                 margin: 0;
             }
 
-
-        /* =========================
-           BUSCADOR
-        ========================= */
-
         .search-box {
             position: relative;
             width: 260px;
@@ -535,11 +267,6 @@
             .search-box input {
                 padding-left: 34px;
             }
-
-
-        /* =========================
-           TABLA
-        ========================= */
 
         .usuarios-table {
             margin: 0;
@@ -558,11 +285,6 @@
                 font-size: .9rem;
                 border-color: #edf0f3;
             }
-
-
-        /* =========================
-           INFORMACIÓN USUARIO
-        ========================= */
 
         .usuario-info {
             display: flex;
@@ -589,11 +311,6 @@
             font-size: 1rem;
         }
 
-
-        /* =========================
-           ROL
-        ========================= */
-
         .role-badge {
             display: inline-block;
             padding: 5px 9px;
@@ -603,11 +320,6 @@
             font-size: .77rem;
             font-weight: 600;
         }
-
-
-        /* =========================
-           ESTADOS
-        ========================= */
 
         .status {
             display: inline-block;
@@ -627,11 +339,6 @@
             color: #842029;
         }
 
-
-        /* =========================
-           ACCIONES
-        ========================= */
-
         .btn-action {
             background: white;
             border: 1px solid #dce2e7;
@@ -644,13 +351,7 @@
                 color: var(--cop-primary);
             }
 
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
         @@media (max-width: 768px) {
-
             .usuarios-toolbar {
                 flex-direction: column;
                 align-items: stretch;
@@ -661,5 +362,4 @@
             }
         }
     </style>
-
 }

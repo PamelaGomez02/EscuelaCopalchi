@@ -1,0 +1,138 @@
+﻿@model EscuelaCopalchi.UI.Models.Usuarios.Usuario
+@{
+    ViewBag.Title = "Detalle de usuario";
+}
+
+<main>
+    <div class="cop-page-header">
+        <div>
+            <h2 class="cop-page-title">@Model.Nombre @Model.Apellido1 @Model.Apellido2</h2>
+            <p class="cop-page-subtitle">Información completa del usuario.</p>
+        </div>
+        <a href="@Url.Action("Editar", "Usuarios", new { id = Model.IdUsuario })" class="btn cop-btn-primary">
+            <i class="bi bi-pencil me-1"></i> Editar
+        </a>
+    </div>
+
+    <div class="cop-detail-wrapper">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <span class="cop-detail-label">Identificación</span>
+                <p class="cop-detail-value">@Model.Identificacion</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Rol</span>
+                <p class="cop-detail-value">@Model.NombreRol</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Correo institucional</span>
+                <p class="cop-detail-value">@Model.Correo</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Teléfono</span>
+                <p class="cop-detail-value">@Model.Telefono</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Estado</span>
+                <p class="cop-detail-value">
+                    @if (Model.Estado)
+                    {
+                        <span class="status status-ok">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="status status-inactive">Inactivo</span>
+                    }
+                </p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Último acceso</span>
+                <p class="cop-detail-value">@(Model.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca ha ingresado")</p>
+            </div>
+            <div class="col-md-6">
+                <span class="cop-detail-label">Fecha de creación</span>
+                <p class="cop-detail-value">@(Model.FechaCreacion?.ToString("dd/MM/yyyy HH:mm") ?? "-")</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="@Url.Action("Index", "Usuarios")" class="cop-back-link">
+        <i class="bi bi-arrow-left"></i> Volver al listado
+    </a>
+</main>
+
+@section styles {
+    <style>
+        .cop-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 28px 0 20px;
+        }
+
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
+
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .cop-detail-wrapper {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 20px;
+            max-width: 720px;
+        }
+
+        .cop-detail-label {
+            font-size: 0.78rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            font-weight: 600;
+        }
+
+        .cop-detail-value {
+            font-size: 0.95rem;
+            color: #212529;
+            margin: 4px 0 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
+    </style>
+}
