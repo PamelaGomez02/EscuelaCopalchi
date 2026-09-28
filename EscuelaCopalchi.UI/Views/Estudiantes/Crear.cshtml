@@ -1,4 +1,6 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
+
+@{
     ViewBag.Title = "Registrar estudiante";
 }
 
@@ -23,7 +25,6 @@
 
             </div>
 
-
             <h1 class="students-title">
                 <i class="bi bi-person-plus me-2"></i>
                 Registrar estudiante
@@ -37,18 +38,31 @@
 
     </section>
 
-
     <section class="container pb-5">
 
         <div class="form-card">
 
-            <form>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
 
+            @if (ViewBag.Error != null) 
+            {
+                <div class="alert alert-danger">
+                    Estudiantes
+                    @ViewBag.Error
+                </div>
+            }
+
+            @using (Html.BeginForm("Registrar", "EstudiantesAdd", FormMethod.Post))
+            {
                 <h2 class="section-title">
                     <i class="bi bi-person me-2"></i>
                     Datos del estudiante
                 </h2>
-
 
                 <div class="row g-3">
 
@@ -60,25 +74,37 @@
                         </label>
 
                         <input type="text"
+                               name="Nombre"
                                class="form-control"
                                required />
 
                     </div>
-
 
                     <div class="col-md-6">
 
                         <label class="form-label">
-                            Apellidos
+                            Primer Apellido
                             <span class="required">*</span>
                         </label>
 
                         <input type="text"
+                               name="Apellido1"
                                class="form-control"
                                required />
 
                     </div>
 
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Segundo Apellido
+                        </label>
+
+                        <input type="text"
+                               name="Apellido2"
+                               class="form-control" />
+
+                    </div>
 
                     <div class="col-md-6">
 
@@ -88,12 +114,12 @@
                         </label>
 
                         <input type="text"
+                               name="Identificacion"
                                class="form-control"
                                placeholder="Ej. 1-1234-5678"
                                required />
 
                     </div>
-
 
                     <div class="col-md-6">
 
@@ -103,11 +129,11 @@
                         </label>
 
                         <input type="date"
+                               name="FechaNacimiento"
                                class="form-control"
                                required />
 
                     </div>
-
 
                     <div class="col-md-6">
 
@@ -118,37 +144,9 @@
                         <input type="email"
                                class="form-control"
                                placeholder="correo@ejemplo.com" />
-
-                    </div>
-
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Grado
-                            <span class="required">*</span>
-                        </label>
-
-                        <select class="form-select"
-                                required>
-
-                            <option selected disabled>
-                                Seleccione
-                            </option>
-
-                            <option>Primer grado</option>
-                            <option>Segundo grado</option>
-                            <option>Tercer grado</option>
-                            <option>Cuarto grado</option>
-                            <option>Quinto grado</option>
-                            <option>Sexto grado</option>
-
-                        </select>
-
                     </div>
 
                 </div>
-
 
                 <div class="form-section">
 
@@ -156,7 +154,6 @@
                         <i class="bi bi-people me-2"></i>
                         Datos del encargado
                     </h2>
-
 
                     <div class="row g-3">
 
@@ -168,27 +165,27 @@
                             </label>
 
                             <input type="text"
+                                   name="NombreEncargado"
                                    class="form-control"
                                    required />
 
                         </div>
 
-
                         <div class="col-md-6">
-
                             <label class="form-label">
                                 Parentesco
+                                <span class="required">*</span>
                             </label>
-
-                            <select class="form-select">
-                                <option>Madre</option>
-                                <option>Padre</option>
-                                <option>Encargado legal</option>
-                                <option>Otro</option>
+                            <select name="Parentesco"
+                                    class="form-select"
+                                    required>
+                                <option value="">Seleccione</option>
+                                <option value="Madre">Madre</option>
+                                <option value="Padre">Padre</option>
+                                <option value="Encargado legal">Encargado legal</option>
+                                <option value="Otro">Otro</option>
                             </select>
-
                         </div>
-
 
                         <div class="col-md-6">
 
@@ -198,27 +195,29 @@
                             </label>
 
                             <input type="tel"
+                                   name="TelefonoEncargado"
                                    class="form-control"
                                    placeholder="8888-8888"
                                    required />
 
                         </div>
 
-
                         <div class="col-md-6">
-
                             <label class="form-label">
                                 Correo
-                            </label>
+                                <span class="required">*</span>
 
+                            </label>
                             <input type="email"
-                                   class="form-control" />
+                                   name="CorreoEncargado"
+                                   class="form-control"
+                                   placeholder="correo@ejemplo.com"
+                                   required />
+                        </div>
 
                         </div>
 
                     </div>
-
-                </div>
 
 
                 <div class="form-section">
@@ -228,7 +227,6 @@
                         Información adicional
                     </h2>
 
-
                     <div class="row g-3">
 
                         <div class="col-12">
@@ -237,11 +235,11 @@
                                 Dirección
                             </label>
 
-                            <textarea class="form-control"
+                            <textarea name="Direccion"
+                                      class="form-control"
                                       rows="3"></textarea>
 
                         </div>
-
 
                         <div class="col-md-6">
 
@@ -249,9 +247,17 @@
                                 Estado
                             </label>
 
-                            <select class="form-select">
-                                <option selected>Activo</option>
-                                <option>Inactivo</option>
+                            <select name="Estado"
+                                    class="form-select">
+
+                                <option value="true" selected>
+                                    Activo
+                                </option>
+
+                                <option value="false">
+                                    Inactivo
+                                </option>
+
                             </select>
 
                         </div>
@@ -260,23 +266,23 @@
 
                 </div>
 
-
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Index", "Estudiantes")"
+                    <a href="@Url.Action("Index", "EstudiantesAdd")"
                        class="btn btn-light">
                         Cancelar
                     </a>
 
                     <button type="submit"
                             class="btn btn-cop-primary">
+
                         <i class="bi bi-save me-1"></i>
                         Registrar estudiante
+
                     </button>
 
                 </div>
-
-            </form>
+            }
 
         </div>
 

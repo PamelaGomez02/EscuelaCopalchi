@@ -1,4 +1,9 @@
-﻿@{
+﻿@using System.Linq
+
+@model List<EscuelaCopalchi.UI.Models.Estudiantes.Estudiante>
+
+
+@{
     ViewBag.Title = "Estudiantes";
 }
 
@@ -6,6 +11,10 @@
 
     <section class="students-header">
         <div class="container">
+
+            <h1>Total recuperados: @(ViewBag.Total ?? "NULL")</h1>
+
+            <h2>Model es null: @(Model == null)</h2>
 
             <div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
@@ -61,7 +70,7 @@
 
                     <div>
                         <span>Total estudiantes</span>
-                        <h2>124</h2>
+                        <h2>@(Model?.Count() ?? 0)</h2>
                     </div>
 
                 </div>
@@ -77,7 +86,7 @@
 
                     <div>
                         <span>Activos</span>
-                        <h2>118</h2>
+                        <h2>@(Model?.Count(x => x.Estado) ?? 0)</h2>
                     </div>
 
                 </div>
@@ -93,7 +102,7 @@
 
                     <div>
                         <span>Inactivos</span>
-                        <h2>6</h2>
+                        <h2>@(Model?.Count(x => !x.Estado) ?? 0)</h2>
                     </div>
 
                 </div>
@@ -111,25 +120,57 @@
                     <p>Consulta y administra la información estudiantil.</p>
                 </div>
 
-                <div class="toolbar-actions">
+                @using (Html.BeginForm(
+                    "Index",
+                    "EstudiantesAdd",
+                    FormMethod.Get))
+                {
+                    <div class="toolbar-actions">
 
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Activos</option>
-                        <option>Inactivos</option>
-                    </select>
+                        <select name="filtroEstado"
+                                class="form-select">
 
-                    <div class="search-box">
+                            <option value="Todos"
+                                    @(ViewBag.FiltroEstado == "Todos" ? "selected" : "")>
+                                Todos
+                            </option>
 
-                        <i class="bi bi-search"></i>
+                            <option value="Activos"
+                                    @(ViewBag.FiltroEstado == "Activos" ? "selected" : "")>
+                                Activos
+                            </option>
 
-                        <input type="text"
-                               class="form-control"
-                               placeholder="Buscar estudiante..." />
+                            <option value="Inactivos"
+                                    @(ViewBag.FiltroEstado == "Inactivos" ? "selected" : "")>
+                                Inactivos
+                            </option>
+
+                        </select>
+
+                        <div class="search-box">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="text"
+                                   name="busqueda"
+                                   class="form-control"
+                                   value="@ViewBag.Busqueda"
+                                   placeholder="Buscar estudiante..." />
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-cop-primary">
+
+                            Buscar
+
+                        </button>
 
                     </div>
+                }
 
-                </div>
+                <p>Filtro: @ViewBag.FiltroActual</p>
+<p>Búsqueda: @ViewBag.BusquedaActual</p>
 
             </div>
 
@@ -142,7 +183,6 @@
                         <tr>
                             <th>Estudiante</th>
                             <th>Identificación</th>
-                            <th>Grado</th>
                             <th>Encargado</th>
                             <th>Estado</th>
                             <th class="text-end">Acciones</th>
@@ -150,7 +190,10 @@
                     </thead>
 
                     <tbody>
-
+                    @if (Model != null)
+                    {
+                            foreach(var estudiante in Model)
+                            {
                         <tr>
 
                             <td>
@@ -158,11 +201,16 @@
                                 <div class="student-info">
 
                                     <div class="student-avatar">
-                                        AR
+                                        @(estudiante.Nombre.Length > 0 ? estudiante.Nombre.Substring(0, 1) : "")
+                                        @(estudiante.Apellido1.Length > 0 ? estudiante.Apellido1.Substring(0, 1) : "")
                                     </div>
 
                                     <div>
-                                        <strong>Ana Rodríguez</strong>
+                                        <strong>
+                                            @estudiante.Nombre
+                                            @estudiante.Apellido1
+                                            @estudiante.Apellido2
+                                        </strong>
                                         <small>Estudiante</small>
                                     </div>
 
@@ -170,17 +218,25 @@
 
                             </td>
 
-                            <td>1-2345-6789</td>
+                            <td>@estudiante.Identificacion</td>
 
-                            <td>Primer grado A</td>
-
-                            <td>Laura Rodríguez</td>
+                            <td>@estudiante.NombreEncargado</td>
 
                             <td>
-                                <span class="status status-active">
-                                    <i class="bi bi-check-circle"></i>
-                                    Activo
-                                </span>
+                                @if (estudiante.Estado)
+                                {
+                                    <span class="status status-active">
+                                        <i class="bi bi-check-circle"></i>
+                                        Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status status-inactive">
+                                        <i class="bi bi-x-circle"></i>
+                                        Inactivo
+                                    </span>
+                                }
                             </td>
 
                             <td class="text-end">
@@ -218,48 +274,9 @@
                         </tr>
 
 
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        JM
-                                    </div>
-
-                                    <div>
-                                        <strong>José Mora</strong>
-                                        <small>Estudiante</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                            <td>1-9876-5432</td>
-
-                            <td>Segundo grado A</td>
-
-                            <td>Carlos Mora</td>
-
-                            <td>
-                                <span class="status status-inactive">
-                                    <i class="bi bi-x-circle"></i>
-                                    Inactivo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
-                                   class="btn btn-action">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-
-                            </td>
-
-                        </tr>
+                       
+                        }
+                     }
 
                     </tbody>
 

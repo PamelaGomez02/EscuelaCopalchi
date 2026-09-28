@@ -1,5 +1,8 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.ImportacionViewModel
+@using EscuelaCopalchi.UI.Logica.GestionAcademica
+@{
     ViewBag.Title = "Importar asignaciones";
+    string[] nombresDias = { "", "L", "K", "M", "J", "V", "S", "D" };
 }
 
 <main>
@@ -20,7 +23,7 @@
             </h1>
 
             <p class="academic-subtitle">
-                Carga grupos, aulas y docentes mediante un archivo Excel.
+                Carga grupos, aulas, docentes y horarios mediante un archivo Excel.
             </p>
 
         </div>
@@ -30,106 +33,204 @@
 
     <section class="container pb-5">
 
+        @Html.Partial("_BarraUsuario")
+
         <div class="import-card">
 
-            <div class="upload-zone">
+            @if (!Model.HayVistaPrevia)
+            {
+                @* ===== Paso 1: seleccionar archivo ===== *@
+                using (Html.BeginForm("VistaPreviaImportacion", "GestionAcademica", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
 
-                <i class="bi bi-file-earmark-excel"></i>
+                    <div class="upload-zone">
 
-                <h2>Selecciona un archivo Excel</h2>
+                        <i class="bi bi-file-earmark-excel"></i>
 
-                <p>
-                    El archivo debe cumplir con el formato institucional.
-                </p>
+                        <h2>Selecciona un archivo Excel</h2>
 
-                <input type="file"
-                       class="form-control"
-                       accept=".xls,.xlsx" />
+                        <p>
+                            El archivo debe tener una fila de encabezados con estas columnas:
+                        </p>
 
-                <small>
-                    Formatos permitidos: .xls y .xlsx
-                </small>
+                        <div class="columns-list">
+                            @foreach (var c in ImportacionExcelService.Encabezados)
+                            {
+                                <span>@c</span>
+                            }
+                        </div>
 
-            </div>
+                        <input type="file"
+                               name="archivo"
+                               class="form-control"
+                               accept=".xlsx"
+                               required />
 
+                        <small>
+                            Formato permitido: .xlsx (máximo 5 MB). Obligatorias: Grupo, Periodo, Aula e Identificación docente.
+                            Días: "Lunes a Viernes", "L-V" o "L,K,M,J,V". Horas: 07:00.
+                        </small>
 
-            <div class="preview-section">
+                        <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap">
+                            <a href="@Url.Action("DescargarPlantilla")" class="btn btn-outline-success">
+                                <i class="bi bi-download me-1"></i>
+                                Descargar plantilla
+                            </a>
 
-                <div class="preview-header">
+                            <button type="submit" class="btn btn-cop-primary">
+                                <i class="bi bi-eye me-1"></i>
+                                Cargar y ver vista previa
+                            </button>
+                        </div>
 
-                    <div>
-                        <h3>Vista previa</h3>
-                        <p>Verifica los registros antes de procesar.</p>
+                    </div>
+                }
+
+                <div class="form-actions">
+                    <a href="@Url.Action("Index", "GestionAcademica")" class="btn btn-light">
+                        Volver
+                    </a>
+                </div>
+            }
+            else
+            {
+                @* ===== Paso 2: vista previa ===== *@
+                <div class="preview-section">
+
+                    <div class="preview-header">
+
+                        <div>
+                            <h3>Vista previa · @Model.NombreArchivo</h3>
+                            <p>Verifica los registros antes de procesar. Todavía no se ha guardado nada.</p>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="status-ok">
+                                @Model.Validas válidos
+                            </span>
+
+                            @if (Model.Duplicadas > 0)
+                            {
+                                <span class="status-dup">@Model.Duplicadas duplicados</span>
+                            }
+
+                            @if (Model.ConErrores > 0)
+                            {
+                                <span class="status-err">@Model.ConErrores con errores</span>
+                            }
+                        </div>
+
                     </div>
 
-                    <span class="status-ok">
-                        3 registros válidos
-                    </span>
+
+                    <div class="table-responsive">
+
+                        <table class="table preview-table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Fila</th>
+                                    <th>Grupo</th>
+                                    <th>Período</th>
+                                    <th>Aula</th>
+                                    <th>Docente</th>
+                                    <th>Horario</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var f in Model.Filas)
+                                {
+                                    <tr class="@(f.Valida ? "" : "row-invalid")">
+                                        <td class="text-muted">@f.NumeroFila</td>
+                                        <td>
+                                            <strong>@f.Grupo</strong>
+                                            <small class="d-block text-muted">@f.Nivel</small>
+                                        </td>
+                                        <td>@f.Periodo</td>
+                                        <td>@f.Aula</td>
+                                        <td>
+                                            @(string.IsNullOrEmpty(f.NombreDocente) ? f.IdentificacionDocente : f.NombreDocente)
+                                            @if (!string.IsNullOrEmpty(f.NombreDocente))
+                                            {
+                                                <small class="d-block text-muted">@f.IdentificacionDocente</small>
+                                            }
+                                        </td>
+                                        <td class="small">
+                                            @if (!string.IsNullOrEmpty(f.Dias))
+                                            {
+                                                <span>@(string.Join(" ", f.Dias.Split(',').Select(d => nombresDias[int.Parse(d)])))</span>
+                                                <br />
+                                            }
+                                            else if (!string.IsNullOrEmpty(f.DiasTexto))
+                                            {
+                                                <span>@f.DiasTexto</span>
+                                                <br />
+                                            }
+                                            @if (!string.IsNullOrEmpty(f.HoraInicio) || !string.IsNullOrEmpty(f.HoraFin))
+                                            {
+                                                <span>@f.HoraInicio – @f.HoraFin</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (f.Valida)
+                                            {
+                                                <span class="valid">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Válido
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="@(f.EsDuplicado ? "dup" : "invalid")">
+                                                    <i class="bi @(f.EsDuplicado ? "bi-files" : "bi-x-circle")"></i>
+                                                    @f.Estado
+                                                </span>
+                                                <ul class="error-list">
+                                                    @foreach (var e in f.Errores)
+                                                    {
+                                                        <li>@e</li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                 </div>
 
 
-                <div class="table-responsive">
+                <div class="form-actions">
 
-                    <table class="table preview-table">
+                    @using (Html.BeginForm("CancelarImportacion", "GestionAcademica", FormMethod.Post, new { @class = "d-inline" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-light">
+                            Cancelar importación
+                        </button>
+                    }
 
-                        <thead>
-                            <tr>
-                                <th>Grupo</th>
-                                <th>Aula</th>
-                                <th>Docente</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>1-A</td>
-                                <td>Aula 1</td>
-                                <td>María González</td>
-                                <td>
-                                    <span class="valid">
-                                        <i class="bi bi-check-circle"></i>
-                                        Válido
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>2-A</td>
-                                <td>Aula 2</td>
-                                <td>José Pérez</td>
-                                <td>
-                                    <span class="valid">
-                                        <i class="bi bi-check-circle"></i>
-                                        Válido
-                                    </span>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
+                    @using (Html.BeginForm("ConfirmarImportacion", "GestionAcademica", FormMethod.Post, new { @class = "d-inline" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-cop-primary" @(Model.Validas == 0 ? "disabled" : "")
+                                onclick="return confirm('Se importarán @Model.Validas registros válidos. ¿Desea continuar?');">
+                            <i class="bi bi-upload me-1"></i>
+                            Importar @Model.Validas @(Model.Validas == 1 ? "registro válido" : "registros válidos")
+                        </button>
+                    }
 
                 </div>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "GestionAcademica")"
-                   class="btn btn-light">
-                    Cancelar
-                </a>
-
-                <button class="btn btn-cop-primary">
-                    <i class="bi bi-upload me-1"></i>
-                    Importar asignaciones
-                </button>
-
-            </div>
+            }
 
         </div>
 
@@ -265,6 +366,70 @@
             background: var(--cop-primary);
             border-color: var(--cop-primary);
             color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+        .columns-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+            .columns-list span {
+                background: #e6f1fb;
+                color: var(--cop-primary);
+                border-radius: 6px;
+                padding: 3px 9px;
+                font-size: .78rem;
+                font-weight: 600;
+            }
+
+        .status-dup,
+        .status-err {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+        }
+
+        .status-dup {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-err {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .row-invalid td {
+            background: #fffafa;
+        }
+
+        .dup {
+            color: #856404;
+            font-weight: 600;
+            font-size: .82rem;
+        }
+
+        .invalid {
+            color: #b02a37;
+            font-weight: 600;
+            font-size: .82rem;
+        }
+
+        .error-list {
+            margin: 4px 0 0;
+            padding-left: 16px;
+            font-size: .75rem;
+            color: #6c757d;
         }
     </style>
 

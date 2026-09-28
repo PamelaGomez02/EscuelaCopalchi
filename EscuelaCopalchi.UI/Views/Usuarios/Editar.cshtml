@@ -1,4 +1,5 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Usuarios.Usuario
+@{
     ViewBag.Title = "Editar usuario";
 }
 
@@ -6,74 +7,82 @@
     <div class="cop-page-header">
         <div>
             <h2 class="cop-page-title">Editar usuario</h2>
-            <p class="cop-page-subtitle">Actualiza la información de María Rodríguez.</p>
+            <p class="cop-page-subtitle">Actualiza la información de @Model.Nombre @Model.Apellido1.</p>
         </div>
     </div>
 
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@Html.Raw(ViewBag.Error)</div>
+    }
+
     <div class="cop-form-card">
-        <form method="post">
+        @using (Html.BeginForm("Editar", "Usuarios", FormMethod.Post))
+        {
+            @Html.HiddenFor(m => m.IdUsuario)
+
             <div class="d-flex justify-content-between align-items-center mb-4 cop-status-row">
                 <div>
                     <span class="fw-semibold">Estado de la cuenta</span>
-                    <p class="cop-page-subtitle mb-0">Los usuarios inactivos no pueden iniciar sesión.</p>
+                    <p class="cop-page-subtitle mb-0">Este cambio también se puede hacer desde el listado.</p>
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="EstadoActivo" checked>
-                    <label class="form-check-label" for="EstadoActivo">Activo</label>
-                </div>
+                <span class="status @(Model.Estado ? "status-ok" : "status-inactive")">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </span>
             </div>
 
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Nombres</label>
-                    <input type="text" class="form-control" value="María Fernanda">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="Nombre" class="form-control" value="@Model.Nombre">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" value="Rodríguez Solano">
+                <div class="col-md-3">
+                    <label class="form-label">Primer apellido</label>
+                    <input type="text" name="Apellido1" class="form-control" value="@Model.Apellido1">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Segundo apellido</label>
+                    <input type="text" name="Apellido2" class="form-control" value="@Model.Apellido2">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Identificación</label>
-                    <input type="text" class="form-control" value="1-1111-1111">
+                    <input type="text" name="Identificacion" class="form-control" value="@Model.Identificacion">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Correo institucional</label>
-                    <input type="email" class="form-control" value="maria.rodriguez@copalchi.edu">
+                    <input type="email" name="Correo" class="form-control" value="@Model.Correo">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" value="8888-8888">
+                    <input type="tel" name="Telefono" class="form-control" value="@Model.Telefono">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Rol</label>
-                    <select class="form-select">
-                        <option selected>Docente</option>
-                        <option>Director</option>
-                        <option>Administrador</option>
-                        <option>Administrativo</option>
-                        <option>Comité de apoyo</option>
+                    <select name="IdRol" class="form-select">
+                        @foreach (var rol in ViewBag.Roles as List<EscuelaCopalchi.UI.Models.Usuarios.RolDropdownItem>)
+                        {
+                            if (rol.IdRol == Model.IdRol)
+                            {
+                                <option value="@rol.IdRol" selected>@rol.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@rol.IdRol">@rol.Nombre</option>
+                            }
+                        }
                     </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Área académica / especialidad</label>
-                    <input type="text" class="form-control" value="Matemática">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Fecha de ingreso</label>
-                    <input type="date" class="form-control" value="2022-02-01">
                 </div>
             </div>
 
             <hr class="my-4">
 
             <div class="d-flex justify-content-end gap-2">
-                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary">Cancelar</a>
                 <button type="submit" class="btn cop-btn-primary">Guardar cambios</button>
             </div>
-        </form>
+        }
     </div>
 </main>
 
@@ -122,6 +131,24 @@
             background-color: #F4F7FA;
             border-radius: 8px;
             padding: 14px 18px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
         }
 
         .cop-btn-primary {

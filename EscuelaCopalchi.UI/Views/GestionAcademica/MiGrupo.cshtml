@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = "Mi grupo";
+﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.MiGrupoViewModel
+@{
+    ViewBag.Title = "Mis grupos";
+    var g = Model.GrupoSeleccionado;
 }
 
 <main>
@@ -11,16 +13,16 @@
             <div class="academic-breadcrumb">
                 <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
                 <i class="bi bi-chevron-right"></i>
-                <span>Mi grupo</span>
+                <span>Mis grupos</span>
             </div>
 
             <h1 class="academic-title">
                 <i class="bi bi-people me-2"></i>
-                Mi grupo
+                Mis grupos
             </h1>
 
             <p class="academic-subtitle">
-                Consulta estudiantes, aula y horario del grupo asignado.
+                Consulta estudiantes, aula y horario de cada grupo a su cargo.
             </p>
 
         </div>
@@ -30,123 +32,292 @@
 
     <section class="container pb-5">
 
-        <div class="row g-3 mb-4">
+        @Html.Partial("_BarraUsuario")
 
-            <div class="col-md-4">
-                <div class="summary-card">
-                    <span>Grupo asignado</span>
-                    <h2>3-A</h2>
+        @if (!Model.TieneGrupos)
+        {
+            <div class="academic-card">
+                <div class="ga-empty">
+                    <i class="bi bi-inbox"></i>
+                    <strong>No posee grupos asignados</strong>
+                    Cuando la dirección le asigne un grupo, aparecerá aquí y recibirá una notificación.
                 </div>
             </div>
+        }
+        else
+        {
+            @* ===== Todos los grupos a cargo: horario y aula ===== *@
+            <div class="academic-card mb-4">
 
-            <div class="col-md-4">
-                <div class="summary-card">
-                    <span>Aula</span>
-                    <h2>Aula 3</h2>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="summary-card">
-                    <span>Estudiantes</span>
-                    <h2>27</h2>
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="row g-4">
-
-            <div class="col-lg-8">
-
-                <div class="academic-card">
-
-                    <div class="toolbar">
-                        <div>
-                            <h2>Estudiantes del grupo</h2>
-                            <p>Listado de estudiantes matriculados.</p>
-                        </div>
+                <div class="toolbar">
+                    <div>
+                        <h2>Grupos a cargo</h2>
+                        <p>Horario y aula asignada para cada grupo. La información se consulta en tiempo real.</p>
                     </div>
+                </div>
 
-
-                    <div class="table-responsive">
-
-                        <table class="table academic-table">
-
-                            <thead>
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th>Identificación</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>Ana Rodríguez</td>
-                                    <td>1-1111-1111</td>
-                                    <td>
-                                        <span class="status">Activo</span>
+                <div class="table-responsive">
+                    <table class="table academic-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Grupo</th>
+                                <th>Período</th>
+                                <th>Aula</th>
+                                <th>Horario</th>
+                                <th>Estudiantes</th>
+                                <th class="text-end"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var grupo in Model.Grupos)
+                            {
+                                <tr class="@(grupo.IdGrupo == g.IdGrupo ? "row-selected" : "")">
+                                    <td><strong>@grupo.Nombre</strong> <span class="text-muted small">@grupo.Nivel</span></td>
+                                    <td>@grupo.Periodo</td>
+                                    <td>@(string.IsNullOrEmpty(grupo.Aula) ? "Sin aula asignada" : grupo.Aula)</td>
+                                    <td>@grupo.Horario</td>
+                                    <td>@grupo.TotalEstudiantes de @grupo.Capacidad</td>
+                                    <td class="text-end">
+                                        @if (grupo.IdGrupo == g.IdGrupo)
+                                        {
+                                            <span class="status">Consultando</span>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("MiGrupo", new { id = grupo.IdGrupo })">
+                                                Ver grupo
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
-
-                                <tr>
-                                    <td>Marco Vindas</td>
-                                    <td>1-2222-2222</td>
-                                    <td>
-                                        <span class="status">Activo</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
 
 
-            <div class="col-lg-4">
+            @* ===== Grupo seleccionado ===== *@
+            <div class="row g-3 mb-4">
 
-                <div class="info-card">
-
-                    <h2>
-                        <i class="bi bi-clock me-2"></i>
-                        Horario
-                    </h2>
-
-                    <div class="info-row">
-                        <span>Lunes a viernes</span>
-                        <strong>7:00 a.m. – 12:00 m.d.</strong>
+                <div class="col-md-3">
+                    <div class="summary-card">
+                        <span>Grupo</span>
+                        <h2>@g.Nombre</h2>
                     </div>
+                </div>
 
-                    <div class="info-row">
+                <div class="col-md-3">
+                    <div class="summary-card">
                         <span>Aula</span>
-                        <strong>Aula 3</strong>
+                        <h2>@(string.IsNullOrEmpty(g.Aula) ? "Sin aula" : g.Aula)</h2>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-card">
+                        <span>Estudiantes</span>
+                        <h2>@Model.Estudiantes.Count</h2>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-card">
+                        <span>Período</span>
+                        <h2>@g.Periodo</h2>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                <div class="col-lg-8">
+
+                    <div class="academic-card">
+
+                        <div class="toolbar d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <h2>Estudiantes del grupo @g.Nombre</h2>
+                                <p>Listado de estudiantes con los datos del encargado.</p>
+                            </div>
+
+                            <input id="buscarEstudiante" class="form-control search-input" placeholder="Buscar estudiante..." />
+                        </div>
+
+                        @if (!Model.Estudiantes.Any())
+                        {
+                            <div class="ga-empty">
+                                <i class="bi bi-person-x"></i>
+                                <strong>El grupo aún no tiene estudiantes</strong>
+                                La dirección debe asignar los estudiantes al grupo.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+
+                                <table class="table academic-table" id="tablaEstudiantes">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Estudiante</th>
+                                            <th>Edad</th>
+                                            <th>Encargado</th>
+                                            <th>Contacto</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach (var e in Model.Estudiantes)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <strong>@e.NombreCompleto</strong>
+                                                    <small class="d-block text-muted">@e.Identificacion</small>
+                                                    @if (!string.IsNullOrEmpty(e.Direccion))
+                                                    {
+                                                        <small class="d-block text-muted"><i class="bi bi-geo-alt"></i> @e.Direccion</small>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @(e.Edad.HasValue ? e.Edad + " años" : "—")
+                                                    @if (e.FechaNacimiento.HasValue)
+                                                    {
+                                                        <small class="d-block text-muted">@e.FechaNacimiento.Value.ToString("dd/MM/yyyy")</small>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @e.NombreEncargado
+                                                    <small class="d-block text-muted">@e.Parentesco</small>
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(e.TelefonoEncargado))
+                                                    {
+                                                        <small class="d-block"><i class="bi bi-telephone"></i> @e.TelefonoEncargado</small>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(e.CorreoEncargado))
+                                                    {
+                                                        <small class="d-block"><i class="bi bi-envelope"></i> <a href="mailto:@e.CorreoEncargado">@e.CorreoEncargado</a></small>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (e.Estado)
+                                                    {
+                                                        <span class="status">Activo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="status status-off">Inactivo</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        }
+
                     </div>
 
-                    <div class="info-row">
-                        <span>Capacidad</span>
-                        <strong>27 / 30</strong>
+                </div>
+
+
+                <div class="col-lg-4">
+
+                    <div class="info-card mb-4">
+
+                        <h2>
+                            <i class="bi bi-clock me-2"></i>
+                            Horario
+                        </h2>
+
+                        @if (!Model.Horario.Any())
+                        {
+                            <p class="text-muted small mb-0">El grupo aún no tiene horario definido.</p>
+                        }
+                        else
+                        {
+                            foreach (var h in Model.Horario)
+                            {
+                                <div class="info-row info-row-inline">
+                                    <span>@h.Dia</span>
+                                    <strong>@h.HoraInicio – @h.HoraFin</strong>
+                                </div>
+                            }
+
+                            <p class="updated">
+                                <i class="bi bi-arrow-repeat"></i>
+                                Actualizado el @Model.Horario.Max(h => h.FechaModificacion).ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        }
+
                     </div>
 
-                    <div class="info-row">
-                        <span>Docente</span>
-                        <strong>María González</strong>
+                    <div class="info-card">
+
+                        <h2>
+                            <i class="bi bi-door-open me-2"></i>
+                            Aula
+                        </h2>
+
+                        <div class="info-row">
+                            <span>Aula</span>
+                            <strong>@(string.IsNullOrEmpty(g.Aula) ? "Sin aula asignada" : g.Aula)</strong>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(g.Ubicacion))
+                        {
+                            <div class="info-row">
+                                <span>Ubicación</span>
+                                <strong>@g.Ubicacion</strong>
+                            </div>
+                        }
+
+                        <div class="info-row">
+                            <span>Capacidad</span>
+                            <strong>@g.TotalEstudiantes de @g.Capacidad estudiantes</strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Docente</span>
+                            <strong>@g.Docente</strong>
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
-
-        </div>
+        }
 
     </section>
 
 </main>
+
+
+@section scripts {
+    <script>
+        (function () {
+            // Object(...) devuelve el mismo elemento sin tipo, así Visual Studio no marca avisos de TypeScript
+            var input = Object(document.getElementById('buscarEstudiante'));
+            if (!input.addEventListener) return;   // el docente no tiene grupos: no hay buscador
+
+            input.addEventListener('input', function () {
+                var texto = input.value.toLowerCase();
+                document.querySelectorAll('#tablaEstudiantes tbody tr').forEach(function (f) {
+                    var fila = Object(f);
+                    fila.style.display = fila.textContent.toLowerCase().indexOf(texto) >= 0 ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+}
 
 
 @section styles {
@@ -284,6 +455,39 @@
                 color: var(--cop-muted);
                 font-size: .75rem;
             }
+
+        .row-selected td {
+            background: #f3f8fd;
+        }
+
+        .status-off {
+            background: #f1f3f5;
+            color: #6c757d;
+        }
+
+        .search-input {
+            max-width: 240px;
+        }
+
+        .info-row-inline {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .info-row-inline span,
+            .info-row-inline strong {
+                display: inline;
+            }
+
+            .info-row-inline span {
+                font-size: .85rem;
+            }
+
+        .updated {
+            color: var(--cop-muted);
+            font-size: .75rem;
+            margin: 12px 0 0;
+        }
     </style>
 
 }

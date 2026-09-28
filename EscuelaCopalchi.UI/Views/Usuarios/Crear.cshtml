@@ -1,69 +1,85 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Usuarios.Usuario
+@{
     ViewBag.Title = "Nuevo usuario";
 }
 
 <main>
-    <div class="cop-page-header">
+     <div class="cop-page-header">
         <div>
             <h2 class="cop-page-title">Nuevo usuario</h2>
-            <p class="cop-page-subtitle">Registra los datos personales y académicos del docente o personal.</p>
+            <p class="cop-page-subtitle">Registra los datos personales y de acceso del docente o personal.</p>
         </div>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
     </div>
 
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@Html.Raw(ViewBag.Error)</div>
+    }
+
     <div class="cop-form-card">
-        <form method="post">
+        @using (Html.BeginForm("Registrar", "Usuarios", FormMethod.Post))
+        {
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Nombres</label>
-                    <input type="text" class="form-control" placeholder="Ej. María Fernanda">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="Nombre" class="form-control" placeholder="Ej. María Fernanda">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" placeholder="Ej. Rodríguez Solano">
+                <div class="col-md-3">
+                    <label class="form-label">Primer apellido</label>
+                    <input type="text" name="Apellido1" class="form-control" placeholder="Ej. Rodríguez">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Segundo apellido</label>
+                    <input type="text" name="Apellido2" class="form-control" placeholder="Ej. Solano">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Identificación</label>
-                    <input type="text" class="form-control" placeholder="Cédula o DIMEX">
+                    <input type="text" name="Identificacion" class="form-control" placeholder="Cédula o DIMEX">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Correo institucional</label>
-                    <input type="email" class="form-control" placeholder="nombre@copalchi.edu">
+                    <input type="email" name="Correo" class="form-control" placeholder="nombre@copalchi.edu">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" placeholder="8888-8888">
+                    <input type="tel" name="Telefono" class="form-control" placeholder="8888-8888">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Rol</label>
-                    <select class="form-select">
-                        <option selected disabled>Selecciona un rol</option>
-                        <option>Docente</option>
-                        <option>Director</option>
-                        <option>Administrador</option>
-                        <option>Administrativo</option>
-                        <option>Comité de apoyo</option>
+                    <select name="IdRol" class="form-select">
+                        <option selected disabled value="">Selecciona un rol</option>
+                        @foreach (var rol in ViewBag.Roles as List<EscuelaCopalchi.UI.Models.Usuarios.RolDropdownItem>)
+                        {
+                            <option value="@rol.IdRol">@rol.Nombre</option>
+                        }
                     </select>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Área académica / especialidad</label>
-                    <input type="text" class="form-control" placeholder="Ej. Matemática">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="Contrasena" class="form-control" placeholder="Mínimo 8 caracteres">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Fecha de ingreso</label>
-                    <input type="date" class="form-control">
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="Estado" value="true" checked>
+                        <label class="form-check-label">Usuario activo</label>
+                    </div>
                 </div>
             </div>
 
             <hr class="my-4">
 
             <div class="d-flex justify-content-end gap-2">
-                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary">Cancelar</a>
                 <button type="submit" class="btn cop-btn-primary">Guardar usuario</button>
             </div>
-        </form>
+        }
     </div>
 </main>
 
