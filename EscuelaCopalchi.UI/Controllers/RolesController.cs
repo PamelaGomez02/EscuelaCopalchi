@@ -1,7 +1,6 @@
 ﻿using EscuelaCopalchi.UI.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Web.Mvc;
 
@@ -9,10 +8,14 @@ namespace EscuelaCopalchi.UI.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly string conexion =
-            ConfigurationManager.ConnectionStrings["AulaVirtualDB"].ConnectionString;
+        private readonly string conexion;
 
- 
+        public RolesController()
+        {
+            ConexionBD db = new ConexionBD();
+            conexion = db.ObtenerConexion();
+        }
+
         public ActionResult Index()
         {
             List<Rol> roles = new List<Rol>();
