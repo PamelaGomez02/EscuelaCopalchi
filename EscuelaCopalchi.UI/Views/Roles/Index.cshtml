@@ -1,11 +1,12 @@
-﻿@{
+﻿@model IEnumerable<EscuelaCopalchi.UI.Models.Rol>
+
+@{
     ViewBag.Title = "Roles";
 }
 
 <main>
 
     <section class="roles-header">
-
         <div class="container">
 
             <div class="roles-breadcrumb">
@@ -17,7 +18,6 @@
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
                 <div>
-
                     <h1 class="roles-title">
                         <i class="bi bi-shield-lock me-2"></i>
                         Gestión de roles
@@ -26,30 +26,52 @@
                     <p class="roles-subtitle">
                         Administra roles, asignaciones y niveles de acceso del sistema.
                     </p>
-
                 </div>
 
                 <a href="@Url.Action("Crear", "Roles")"
                    class="btn btn-cop-primary">
-
                     <i class="bi bi-plus-lg me-1"></i>
                     Nuevo rol
-
                 </a>
 
             </div>
-
         </div>
-
     </section>
 
 
     <section class="container pb-5">
 
+        @* MENSAJES *@
+        @if (TempData["Exito"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["Exito"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+
         <div class="row g-3 mb-4">
 
             <div class="col-md-4">
-
                 <div class="summary-card">
 
                     <div class="summary-icon">
@@ -58,16 +80,14 @@
 
                     <div>
                         <span>Roles registrados</span>
-                        <h2>5</h2>
+                        <h2>@Model.Count()</h2>
                     </div>
 
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="summary-card">
 
                     <div class="summary-icon">
@@ -75,30 +95,27 @@
                     </div>
 
                     <div>
-                        <span>Usuarios asignados</span>
-                        <h2>28</h2>
+                        <span>Roles activos</span>
+                        <h2>@Model.Count(r => r.Estado)</h2>
                     </div>
 
                 </div>
-
             </div>
 
 
             <div class="col-md-4">
-
                 <div class="summary-card">
 
                     <div class="summary-icon summary-icon-warning">
-                        <i class="bi bi-key"></i>
+                        <i class="bi bi-shield-x"></i>
                     </div>
 
                     <div>
-                        <span>Permisos configurados</span>
-                        <h2>42</h2>
+                        <span>Roles inactivos</span>
+                        <h2>@Model.Count(r => !r.Estado)</h2>
                     </div>
 
                 </div>
-
             </div>
 
         </div>
@@ -118,6 +135,7 @@
                     <i class="bi bi-search"></i>
 
                     <input type="text"
+                           id="buscarRol"
                            class="form-control"
                            placeholder="Buscar rol..." />
 
@@ -128,13 +146,13 @@
 
             <div class="table-responsive">
 
-                <table class="table roles-table align-middle">
+                <table class="table roles-table align-middle"
+                       id="tablaRoles">
 
                     <thead>
                         <tr>
                             <th>Rol</th>
                             <th>Descripción</th>
-                            <th>Usuarios</th>
                             <th>Estado</th>
                             <th class="text-end">Acciones</th>
                         </tr>
@@ -142,169 +160,100 @@
 
                     <tbody>
 
-                        <tr>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var rol in Model)
+                            {
+                                <tr>
 
-                            <td>
+                                    <td>
+                                        <div class="role-info">
 
-                                <div class="role-info">
+                                            <div class="role-icon">
+                                                <i class="bi bi-shield-check"></i>
+                                            </div>
 
-                                    <div class="role-icon">
-                                        <i class="bi bi-shield-check"></i>
-                                    </div>
+                                            <strong>@rol.Nombre</strong>
 
-                                    <strong>Administrador</strong>
+                                        </div>
+                                    </td>
 
-                                </div>
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(rol.Descripcion))
+                                        {
+                                            <span class="text-muted">
+                                                Sin descripción
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @rol.Descripcion
+                                        }
+                                    </td>
 
-                            </td>
+                                    <td>
 
-                            <td>
-                                Control total del sistema.
-                            </td>
+                                        @if (rol.Estado)
+                                        {
+                                            <span class="status status-ok">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status status-inactive">
+                                                Inactivo
+                                            </span>
+                                        }
 
-                            <td>2</td>
+                                    </td>
 
-                            <td>
-                                <span class="status status-ok">
-                                    Activo
-                                </span>
-                            </td>
+                                    <td class="text-end">
 
-                            <td class="text-end">
+                                        <a href="@Url.Action("Editar", "Roles",
+                                                 new { id = rol.IdRol })"
+                                           class="btn btn-action"
+                                           title="Editar">
 
-                                <a href="@Url.Action("Editar", "Roles", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                                            <i class="bi bi-pencil"></i>
 
-                                <a href="@Url.Action("Asignar", "Roles", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Asignar usuarios">
-                                    <i class="bi bi-person-plus"></i>
-                                </a>
+                                        </a>
 
-                                <a href="@Url.Action("Permisos", "Roles", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Permisos">
-                                    <i class="bi bi-key"></i>
-                                </a>
+                                        <a href="@Url.Action("Asignar", "Roles",
+                                                 new { id = rol.IdRol })"
+                                           class="btn btn-action"
+                                           title="Asignar usuarios">
 
-                            </td>
+                                            <i class="bi bi-person-plus"></i>
 
-                        </tr>
+                                        </a>
 
+                                        <a href="@Url.Action("Permisos", "Roles",
+                                                 new { id = rol.IdRol })"
+                                           class="btn btn-action"
+                                           title="Permisos">
 
-                        <tr>
+                                            <i class="bi bi-key"></i>
 
-                            <td>
+                                        </a>
 
-                                <div class="role-info">
+                                    </td>
 
-                                    <div class="role-icon">
-                                        <i class="bi bi-person-badge"></i>
-                                    </div>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4"
+                                    class="text-center py-4 text-muted">
 
-                                    <strong>Docente</strong>
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    No existen roles registrados.
 
-                                </div>
-
-                            </td>
-
-                            <td>
-                                Gestión académica y seguimiento de estudiantes.
-                            </td>
-
-                            <td>20</td>
-
-                            <td>
-                                <span class="status status-ok">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Editar", "Roles", new { id = 2 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Asignar", "Roles", new { id = 2 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-person-plus"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Permisos", "Roles", new { id = 2 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-key"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-
-                                <div class="role-info">
-
-                                    <div class="role-icon">
-                                        <i class="bi bi-people"></i>
-                                    </div>
-
-                                    <strong>Comité de apoyo</strong>
-
-                                </div>
-
-                            </td>
-
-                            <td>
-                                Acceso a adecuaciones y seguimiento estudiantil.
-                            </td>
-
-                            <td>3</td>
-
-                            <td>
-                                <span class="status status-ok">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Editar", "Roles", new { id = 3 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Asignar", "Roles", new { id = 3 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-person-plus"></i>
-
-                                </a>
-
-                                <a href="@Url.Action("Permisos", "Roles", new { id = 3 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-key"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
+                                </td>
+                            </tr>
+                        }
 
                     </tbody>
 
@@ -512,6 +461,11 @@
             color: #0f5132;
         }
 
+        .status-inactive {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
         .btn-action {
             background: white;
             border: 1px solid #dce2e7;
@@ -536,5 +490,37 @@
             }
         }
     </style>
+}
 
+
+@section scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const buscador = document.getElementById("buscarRol");
+
+            buscador.addEventListener("keyup", function () {
+
+                const texto = this.value.toLowerCase();
+
+                const filas =
+                    document.querySelectorAll("#tablaRoles tbody tr");
+
+                filas.forEach(function (fila) {
+
+                    const contenido =
+                        fila.innerText.toLowerCase();
+
+                    fila.style.display =
+                        contenido.includes(texto) ? "" : "none";
+
+                });
+
+            });
+
+        });
+
+    </script>
 }

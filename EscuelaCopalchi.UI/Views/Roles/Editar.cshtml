@@ -1,4 +1,6 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Rol
+
+@{
     ViewBag.Title = "Editar rol";
 }
 
@@ -36,9 +38,23 @@
 
     <section class="container pb-5">
 
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+            </div>
+        }
+
+
         <div class="form-card">
 
-            <form>
+            @using (Html.BeginForm("Editar", "Roles", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(m => m.IdRol)
+
 
                 <div class="row g-3">
 
@@ -48,9 +64,16 @@
                             Nombre del rol
                         </label>
 
-                        <input type="text"
-                               class="form-control"
-                               value="Docente" />
+                        @Html.TextBoxFor(
+                            m => m.Nombre,
+                            new { @class = "form-control" }
+                        )
+
+                        @Html.ValidationMessageFor(
+                            m => m.Nombre,
+                            "",
+                            new { @class = "text-danger small" }
+                        )
 
                     </div>
 
@@ -61,10 +84,23 @@
                             Estado
                         </label>
 
-                        <select class="form-select">
-                            <option selected>Activo</option>
-                            <option>Inactivo</option>
-                        </select>
+                        @Html.DropDownListFor(
+                            m => m.Estado,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem
+                                {
+                                    Text = "Activo",
+                                    Value = "true"
+                                },
+                                new SelectListItem
+                                {
+                                    Text = "Inactivo",
+                                    Value = "false"
+                                }
+                            },
+                            new { @class = "form-select" }
+                        )
 
                     </div>
 
@@ -75,8 +111,20 @@
                             Descripción
                         </label>
 
-                        <textarea class="form-control"
-                                  rows="4">Gestión académica y seguimiento de estudiantes.</textarea>
+                        @Html.TextAreaFor(
+                            m => m.Descripcion,
+                            new
+                            {
+                                @class = "form-control",
+                                rows = "4"
+                            }
+                        )
+
+                        @Html.ValidationMessageFor(
+                            m => m.Descripcion,
+                            "",
+                            new { @class = "text-danger small" }
+                        )
 
                     </div>
 
@@ -114,8 +162,7 @@
                     </div>
 
                 </div>
-
-            </form>
+            }
 
         </div>
 
@@ -138,7 +185,8 @@
                     Eliminar rol
                 </h5>
 
-                <button class="btn-close"
+                <button type="button"
+                        class="btn-close"
                         data-bs-dismiss="modal">
                 </button>
 
@@ -153,7 +201,7 @@
                     <div>
 
                         <strong>
-                            ¿Deseas eliminar este rol?
+                            ¿Deseas eliminar el rol @Model.Nombre?
                         </strong>
 
                         <p>
@@ -167,16 +215,36 @@
 
             </div>
 
+
             <div class="modal-footer">
 
-                <button class="btn btn-light"
+                <button type="button"
+                        class="btn btn-light"
                         data-bs-dismiss="modal">
                     Cancelar
                 </button>
 
-                <button class="btn btn-danger">
-                    Eliminar
-                </button>
+
+                @using (Html.BeginForm(
+                    "Eliminar",
+                    "Roles",
+                    FormMethod.Post,
+                    new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="id"
+                           value="@Model.IdRol" />
+
+                    <button type="submit"
+                            class="btn btn-danger">
+
+                        <i class="bi bi-trash me-1"></i>
+                        Eliminar
+
+                    </button>
+                }
 
             </div>
 
@@ -263,6 +331,11 @@
             color: white;
         }
 
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                color: white;
+            }
+
         .warning-box {
             display: flex;
             gap: 12px;
@@ -277,5 +350,4 @@
                 margin: 4px 0 0;
             }
     </style>
-
 }
