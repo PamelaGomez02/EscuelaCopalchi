@@ -1,6 +1,12 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
+
+@{
     ViewBag.Title = "Expediente del estudiante";
 }
+
+
+
+
 
 <main>
 
@@ -13,27 +19,26 @@
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "Estudiantes")">
+                <a href="@Url.Action("Index", "EstudiantesAdd")">
                     Estudiantes
                 </a>
 
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })">
-                    Ana Rodríguez
-                </a>
-
-                <i class="bi bi-chevron-right"></i>
-
-                <span>Expediente</span>
+                <span>Expediente de @Model.Nombre  @Model.Apellido1</span>
 
             </div>
 
+            <h4>
+                Cantidad de alergias:
+                @ViewBag.Alergias.Count
+            </h4>
 
             <h1 class="record-title">
                 <i class="bi bi-heart-pulse me-2"></i>
                 Expediente del estudiante
             </h1>
+
 
             <p class="record-subtitle">
                 Información de apoyo, adecuaciones y observaciones registradas.
@@ -71,11 +76,47 @@
 
             <div>
                 <span>Estudiante</span>
-                <h2>Ana Rodríguez Vargas</h2>
-                <p>Primer grado A · Identificación 1-2345-6789</p>
+                <h2> @Model.Nombre  @Model.Apellido1  @Model.Apellido2</h2>
+                <p>Identificación @Model.Identificacion</p>
             </div>
 
         </div>
+
+        <br>
+
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+
+                <i class="bi bi-check-circle me-2"></i>
+
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+        }
+
 
 
         <div class="row g-4 mt-1">
@@ -114,44 +155,87 @@
                     </div>
 
 
-                    <div class="record-item allergy">
+                    @if (ViewBag.Alergias != null)
+                    {
+                        foreach (
+                            EscuelaCopalchi.UI.Models.Estudiantes.Alergia alergia
+                            in ViewBag.Alergias)
+                        {
+                            <div class="record-item allergy">
 
-                        <div>
+                                <div>
 
-                            <strong>Penicilina</strong>
+                                    <strong>
+                                        @alergia.NombreAlergia
+                                    </strong>
 
-                            <p>
-                                Reacción alérgica reportada por el encargado.
-                            </p>
+                                    <p>
+                                        @alergia.Descripcion
+                                    </p>
+
+                                    <small>
+                                        Registrada:
+                                        @alergia.FechaRegistro.ToString("dd/MM/yyyy")
+                                    </small>
+
+                                </div>
+
+                                <div class="d-flex flex-column align-items-center">
+
+                                    <button class="btn btn-icon mb-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditarAlergia"
+                                            onclick="cargarAlergia(
+                                            '@alergia.IdAlergia',
+                                            '@alergia.NombreAlergia',
+                                            '@alergia.Descripcion')">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </button>
+
+                                    @using (Html.BeginForm(
+                                        "EliminarAlergia",
+                                        "EstudiantesAdd",
+                                        FormMethod.Post,
+                                        new { style = "display:inline;" }))
+                                    {
+                                        <input type="hidden"
+                                               name="idAlergia"
+                                               value="@alergia.IdAlergia" />
+
+                                        <input type="hidden"
+                                               name="idEstudiante"
+                                               value="@Model.IdEstudiante" />
+
+                                        <button type="submit"
+                                                class="btn btn-icon text-danger"
+                                                onclick="return confirm('¿Desea eliminar esta alergia?');">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="record-item allergy">
+
+                            <div>
+
+                                <strong>
+                                    No hay alergias registradas
+                                </strong>
+
+                            </div>
 
                         </div>
-
-
-                        <button class="btn btn-icon">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-
-                    </div>
-
-
-                    <div class="record-item allergy">
-
-                        <div>
-
-                            <strong>Maní</strong>
-
-                            <p>
-                                Evitar consumo de alimentos que contengan maní.
-                            </p>
-
-                        </div>
-
-
-                        <button class="btn btn-icon">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-
-                    </div>
+                    }
 
                 </div>
 
@@ -192,28 +276,48 @@
                     </div>
 
 
-                    <div class="record-item accommodation">
+                    @if (ViewBag.Adecuaciones != null)
+                    {
+                        foreach (var adecuacion in ViewBag.Adecuaciones)
+                        {
+                            <div class="record-item accommodation">
 
-                        <div>
+                                <div>
 
-                            <strong>Adecuación no significativa</strong>
+                                    <strong>
+                                        @adecuacion.NombreTipoAdecuacion
+                                    </strong>
 
-                            <p>
-                                Tiempo adicional para realizar evaluaciones.
-                            </p>
+                                    <p>
+                                        @adecuacion.Descripcion
+                                    </p>
 
-                            <small>
-                                Registrada: 10/03/2026
-                            </small>
+                                    <small>
+                                        Registrada:
+                                        @(Convert.ToDateTime(adecuacion.FechaRegistro).ToString("dd/MM/yyyy"))
+                                    </small>
 
-                        </div>
+                                </div>
 
+                                <button class="btn btn-icon"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEditarAdecuacion"
+                                        onclick="cargarAdecuacion(
+            '@adecuacion.IdAdecuacion',
+            '@adecuacion.TipoAdecuacion',
+            '@adecuacion.Descripcion',
+            '@adecuacion.Medidas',
+            '@adecuacion.FechaInicio.ToString("yyyy-MM-dd")',
+            '@(adecuacion.FechaFin == null? "": Convert.ToDateTime(adecuacion.FechaFin).ToString("yyyy-MM-dd"))',
+            '@adecuacion.Estado')">
 
-                        <button class="btn btn-icon">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                                    <i class="bi bi-pencil"></i>
 
-                    </div>
+                                </button>
+
+                            </div>
+                        }
+                    }
 
                 </div>
 
@@ -254,53 +358,77 @@
                     </div>
 
 
-                    <div class="medical-record">
+                    @if (ViewBag.Observaciones != null)
+                    {
+                        foreach (EscuelaCopalchi.UI.Models.Estudiantes.Observaciones observacion
+                            in ViewBag.Observaciones)
+                        {
+                            <div class="medical-record d-flex">
 
-                        <div class="record-date">
-                            05/08/2026
-                        </div>
+                                <div class="flex-grow-1">
 
-                        <div class="record-content">
+                                    <div class="record-date">
 
-                            <strong>Observación general</strong>
+                                        @observacion.FechaRegistro.ToString("dd/MM/yyyy")
 
-                            <p>
-                                El encargado informa que la estudiante debe evitar
-                                actividades físicas intensas durante esta semana.
-                            </p>
+                                    </div>
 
-                            <small>
-                                Registrado por Comité de Apoyo
-                            </small>
+                                    <div class="record-content">
 
-                        </div>
+                                        <strong>
+                                            @observacion.Titulo
+                                        </strong>
 
-                    </div>
+                                        <p>
+                                            @observacion.Observacion
+                                        </p>
 
+                                    </div>
+                                </div>
 
-                    <div class="medical-record">
+                                <div class="d-flex flex-column gap-2 ms-auto">
 
-                        <div class="record-date">
-                            10/03/2026
-                        </div>
+                                    <button class="btn btn-icon"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditarObservacion"
+                                            onclick="cargarObservacion(
+                                                '@observacion.IdObservacion',
+                                                '@observacion.Titulo',
+                                                '@observacion.Observacion')">
 
-                        <div class="record-content">
+                                        <i class="bi bi-pencil"></i>
 
-                            <strong>Seguimiento</strong>
+                                    </button>
 
-                            <p>
-                                Se registra seguimiento de la adecuación curricular.
-                            </p>
+                                    @using (Html.BeginForm(
+                                        "EliminarObservacion",
+                                        "EstudiantesAdd",
+                                        FormMethod.Post))
+                                    {
+                                        <input type="hidden"
+                                               name="idObservacion"
+                                               value="@observacion.IdObservacion" />
 
-                            <small>
-                                Registrado por Comité de Apoyo
-                            </small>
+                                        <input type="hidden"
+                                               name="idEstudiante"
+                                               value="@Model.IdEstudiante" />
 
-                        </div>
+                                        <button type="submit"
+                                                class="btn btn-icon text-danger"
+                                                onclick="return confirm('¿Desea eliminar esta observación?');">
 
-                    </div>
+                                            <i class="bi bi-trash"></i>
 
-                </div>
+                                        </button>
+                                    }
+
+                                </div>
+
+                                </div>
+                                }
+                                }
+
+                            </div>
 
             </div>
 
@@ -309,7 +437,7 @@
 
         <div class="mt-4">
 
-            <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
+            <a href="@Url.Action("Detalle", "EstudiantesAdd", new { id = Model.IdEstudiante })"
                class="btn btn-light">
 
                 <i class="bi bi-arrow-left me-1"></i>
@@ -331,146 +459,516 @@
 
     <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content">
+        @using (Html.BeginForm(
+            "RegistrarAlergia",
+            "EstudiantesAdd",
+            FormMethod.Post))
+        {
+            <div class="modal-content">
 
-            <div class="modal-header">
+                <div class="modal-header">
 
-                <h5 class="modal-title">
-                    Registrar alergia
-                </h5>
+                    <h5 class="modal-title">
+                        Registrar alergia
+                    </h5>
 
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <label class="form-label">
+                        Alergia
+                    </label>
+
+                    <input type="text"
+                           class="form-control mb-3"
+                           name="NombreAlergia"
+                           placeholder="Ej. Penicilina"
+                           required />
+
+                    <label class="form-label">
+                        Descripción
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="3"
+                              name="Descripcion"
+                              placeholder="Ingrese información adicional..."
+                              required></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        Guardar
+
+                    </button>
+
+                </div>
 
             </div>
-
-
-            <div class="modal-body">
-
-                <label class="form-label">
-                    Alergia
-                </label>
-
-                <input type="text"
-                       class="form-control mb-3"
-                       placeholder="Ej. Penicilina" />
-
-
-                <label class="form-label">
-                    Descripción
-                </label>
-
-                <textarea class="form-control"
-                          rows="3"
-                          placeholder="Ingrese información adicional..."></textarea>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button class="btn btn-cop-primary">
-                    Guardar
-                </button>
-
-            </div>
-
-        </div>
+        }
 
     </div>
 
 </div>
+<div class="modal fade"
+     id="modalEditarAlergia"
+     tabindex="-1">
 
+    <div class="modal-dialog modal-dialog-centered">
+
+        @using (Html.BeginForm(
+            "EditarAlergia",
+            "EstudiantesAdd",
+            FormMethod.Post))
+        {
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Editar alergia
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="editIdAlergia"
+                           name="IdAlergia" />
+
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <label class="form-label">
+                        Alergia
+                    </label>
+
+                    <input type="text"
+                           class="form-control mb-3"
+                           id="editNombreAlergia"
+                           name="NombreAlergia"
+                           required />
+
+                    <label class="form-label">
+                        Descripción
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="3"
+                              id="editDescripcionAlergia"
+                              name="Descripcion"
+                              required></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-save me-1"></i>
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
 
 <!-- MODAL ADECUACIÓN -->
 <div class="modal fade"
      id="modalAdecuacion"
      tabindex="-1">
 
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
 
-        <div class="modal-content">
+        @using (Html.BeginForm(
+        "RegistrarAdecuacion",
+        "EstudiantesAdd",
+        FormMethod.Post))
+        {
+            <div class="modal-content">
 
-            <div class="modal-header">
+                <div class="modal-header">
 
-                <h5 class="modal-title">
-                    Registrar adecuación
-                </h5>
+                    <h5 class="modal-title">
+                        Registrar adecuación académica
+                    </h5>
 
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <input type="hidden"
+                           name="IdUsuarioRegistro"
+                           value="1" />
+
+                    <div class="row g-3">
+
+                        <!-- Tipo -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tipo de adecuación
+                                <span class="required">*</span>
+                            </label>
+
+                            <select class="form-select"
+                                    name="TipoAdecuacion"
+                                    required>
+
+                                <option selected disabled>
+                                    Seleccione
+                                </option>
+
+                                @foreach (var tipo in ViewBag.TiposAdecuacion)
+                                {
+                                    <option value="@tipo.IdTipo">
+                                        @tipo.NombreAdecuacion
+                                    </option>
+                                }
+
+                            </select>
+
+
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Estado
+                            </label>
+
+                            <select class="form-select"
+                                    name="estado">
+
+                                <option value="Activa" selected>
+                                    Activa
+                                </option>
+
+                                <option value="Finalizada">
+                                    Finalizada
+                                </option>
+
+                                <option value="Suspendida">
+                                    Suspendida
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+                        <!-- Fecha inicio -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fecha inicio
+                                <span class="required">*</span>
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   name="FechaInicio"
+                                   required />
+
+                        </div>
+
+                        <!-- Fecha fin -->
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fecha fin
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   name="FechaFin" />
+
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Descripción
+                                <span class="required">*</span>
+                            </label>
+
+                            <textarea class="form-control"
+                                      rows="4"
+                                      name="Descripcion"
+                                      placeholder="Describa la adecuación..."
+                                      required></textarea>
+
+                        </div>
+
+                        <!-- Medidas -->
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Medidas de apoyo
+                            </label>
+
+                            <textarea class="form-control"
+                                      rows="4"
+                                      name="Medidas"
+                                      placeholder="Indique las medidas, estrategias o apoyos pedagógicos..."></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-save me-1"></i>
+                        Guardar
+
+                    </button>
+
+                </div>
 
             </div>
 
-
-            <div class="modal-body">
-
-                <label class="form-label">
-                    Tipo de adecuación
-                </label>
-
-                <select class="form-select mb-3">
-
-                    <option selected disabled>
-                        Seleccione
-                    </option>
-
-                    <option>
-                        Adecuación de acceso
-                    </option>
-
-                    <option>
-                        Adecuación no significativa
-                    </option>
-
-                    <option>
-                        Adecuación significativa
-                    </option>
-
-                </select>
-
-
-                <label class="form-label">
-                    Descripción
-                </label>
-
-                <textarea class="form-control"
-                          rows="4"
-                          placeholder="Describa la adecuación requerida..."></textarea>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button class="btn btn-cop-primary">
-                    Guardar
-                </button>
-
-            </div>
-
-        </div>
+        }
 
     </div>
 
 </div>
 
+<!-- Modal de Actualizar -->
+
+<div class="modal fade"
+     id="modalEditarAdecuacion"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        @using (Html.BeginForm(
+            "EditarAdecuacion",
+            "EstudiantesAdd",
+            FormMethod.Post))
+        {
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Editar adecuación académica
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IdAdecuacion"
+                           id="editIdAdecuacion" />
+
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Tipo de adecuación
+                            </label>
+
+                            <select class="form-select"
+                                    id="editTipoAdecuacion"
+                                    name="TipoAdecuacion">
+
+                                @foreach (var tipo in ViewBag.TiposAdecuacion)
+                                {
+                                    <option value="@tipo.IdTipo">
+                                        @tipo.NombreAdecuacion
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Estado
+                            </label>
+
+                            <select class="form-select"
+                                    id="editEstado"
+                                    name="Estado">
+
+                                <option value="Activa">
+                                    Activa
+                                </option>
+
+                                <option value="Finalizada">
+                                    Finalizada
+                                </option>
+
+                                <option value="Suspendida">
+                                    Suspendida
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fecha inicio
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   id="editFechaInicio"
+                                   name="FechaInicio" />
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fecha fin
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   id="editFechaFin"
+                                   name="FechaFin" />
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Descripción
+                            </label>
+
+                            <textarea class="form-control"
+                                      id="editDescripcion"
+                                      name="Descripcion"
+                                      rows="4"></textarea>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Medidas
+                            </label>
+
+                            <textarea class="form-control"
+                                      id="editMedidas"
+                                      name="Medidas"
+                                      rows="4"></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-save me-1"></i>
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
 
 <!-- MODAL OBSERVACIÓN -->
 <div class="modal fade"
@@ -479,63 +977,222 @@
 
     <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content">
+        @using (Html.BeginForm(
+            "RegistrarObservacion",
+            "EstudiantesAdd",
+            FormMethod.Post))
+        {
+            <div class="modal-content">
 
-            <div class="modal-header">
+                <div class="modal-header">
 
-                <h5 class="modal-title">
-                    Nueva observación médica
-                </h5>
+                    <h5 class="modal-title">
+                        Nueva observación médica
+                    </h5>
 
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <label class="form-label">
+                        Título
+                    </label>
+
+                    <input type="text"
+                           class="form-control mb-3"
+                           name="Titulo"
+                           required />
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="4"
+                              name="Observacion"
+                              required></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+                        Guardar
+                    </button>
+
+                </div>
 
             </div>
-
-
-            <div class="modal-body">
-
-                <label class="form-label">
-                    Fecha
-                </label>
-
-                <input type="date"
-                       class="form-control mb-3"
-                       value="2026-08-10" />
-
-
-                <label class="form-label">
-                    Observación
-                </label>
-
-                <textarea class="form-control"
-                          rows="5"
-                          placeholder="Ingrese la información médica correspondiente..."></textarea>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button class="btn btn-cop-primary">
-                    Guardar
-                </button>
-
-            </div>
-
-        </div>
+        }
 
     </div>
 
 </div>
+
+<div class="modal fade"
+     id="modalEditarObservacion"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        @using (Html.BeginForm(
+            "EditarObservacion",
+            "EstudiantesAdd",
+            FormMethod.Post))
+        {
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Editar observación médica
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="editIdObservacion"
+                           name="IdObservacion" />
+
+                    <input type="hidden"
+                           name="IdEstudiante"
+                           value="@Model.IdEstudiante" />
+
+                    <label class="form-label">
+                        Título
+                    </label>
+
+                    <input type="text"
+                           class="form-control mb-3"
+                           id="editTituloObservacion"
+                           name="Titulo"
+                           required />
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="4"
+                              id="editObservacion"
+                              name="Observacion"
+                              required></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+    function cargarAdecuacion(
+        id,
+        tipo,
+        descripcion,
+        medidas,
+        fechaInicio,
+        fechaFin,
+        estado) {
+        document.getElementById(
+            "editIdAdecuacion").value = id;
+
+        document.getElementById(
+            "editTipoAdecuacion").value = tipo;
+
+        document.getElementById(
+            "editDescripcion").value = descripcion;
+
+        document.getElementById(
+            "editMedidas").value = medidas;
+
+        document.getElementById(
+            "editFechaInicio").value = fechaInicio;
+
+        document.getElementById(
+            "editFechaFin").value = fechaFin;
+
+        document.getElementById(
+            "editEstado").value = estado;
+    }
+
+    function cargarAlergia(
+        id,
+        alergia,
+        descripcion) {
+        document.getElementById(
+            "editIdAlergia").value = id;
+
+        document.getElementById(
+            "editNombreAlergia").value = alergia;
+
+        document.getElementById(
+            "editDescripcionAlergia").value = descripcion;
+    }
+
+        function cargarObservacion(
+        id,
+        titulo,
+        observacion)
+        {
+            document.getElementById(
+                "editIdObservacion").value = id;
+
+        document.getElementById(
+        "editTituloObservacion").value = titulo;
+
+        document.getElementById(
+        "editObservacion").value = observacion;
+}
+</script>
+
 
 
 @section styles {

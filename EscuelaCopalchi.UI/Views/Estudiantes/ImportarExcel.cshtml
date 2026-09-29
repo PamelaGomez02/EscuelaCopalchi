@@ -11,7 +11,7 @@
             <div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a>
+                <a href="@Url.Action("Index", "EstudiantesAdd")">Estudiantes</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Importar Excel</span>
             </div>
@@ -34,26 +34,69 @@
 
         <div class="import-card">
 
-            <div class="upload-box">
+            @using (Html.BeginForm(
+                "ImportarExcel",
+                "EstudiantesAdd",
+                FormMethod.Post,
+                new { enctype = "multipart/form-data" }))
+            {
+                <div class="upload-box">
 
-                <i class="bi bi-file-earmark-excel"></i>
+                    <i class="bi bi-file-earmark-excel"></i>
 
-                <h2>Selecciona el archivo Excel</h2>
+                    <h2>
+                        Selecciona el archivo Excel
+                    </h2>
 
-                <p>
-                    El archivo debe contener los campos requeridos para registrar
-                    los estudiantes.
-                </p>
+                    <p>
+                        El archivo debe contener los campos requeridos para registrar
+                        los estudiantes.
+                    </p>
 
-                <input type="file"
-                       class="form-control"
-                       accept=".xls,.xlsx" />
+                    <input type="file"
+                           name="archivoExcel"
+                           class="form-control"
+                           accept=".xls,.xlsx"
+                           required />
 
-                <small>
-                    Formatos permitidos: .xls y .xlsx
-                </small>
+                    <small>
+                        Formatos permitidos: .xls y .xlsx
+                    </small>
 
-            </div>
+                </div>
+
+                <div class="form-actions">
+
+                    <a href="@Url.Action("Index", "EstudiantesAdd")"
+                       class="btn btn-light">
+
+                        Cancelar
+
+                    </a>
+
+                    <button type="submit"
+                            name="accion"
+                            value="Cargar"
+                            class="btn btn-outline-success">
+
+                        <i class="bi bi-file-earmark-excel me-1"></i>
+                        Cargar Excel
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-cop-primary">
+
+                        <i class="bi bi-upload me-1"></i>
+                        Importar estudiantes
+
+                    </button>
+
+                </div>
+
+
+
+
+            }
 
 
             <div class="preview-section">
@@ -66,7 +109,10 @@
                     </div>
 
                     <span class="badge bg-success">
-                        3 registros válidos
+                        @(ViewBag.Preview != null
+                        ? ((List<EscuelaCopalchi.UI.Models.Estudiantes.Estudiante>)ViewBag.Preview).Count
+                        : 0)
+                        registros válidos
                     </span>
 
                 </div>
@@ -78,66 +124,68 @@
 
                         <thead>
                             <tr>
-                                <th>Identificación</th>
                                 <th>Nombre</th>
-                                <th>Grado</th>
+                                <th>Primer Apellido</th>
+                                <th>Segundo Apellido</th>
+                                <th>Identificación</th>
+                                <th>Fecha Nacimiento</th>
                                 <th>Encargado</th>
+                                <th>Parentesco</th>
+                                <th>Teléfono</th>
+                                <th>Correo Encargado</th>
+                                <th>Dirección</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
 
                         <tbody>
 
-                            <tr>
-                                <td>1-1111-1111</td>
-                                <td>Ana Rodríguez</td>
-                                <td>Primer grado</td>
-                                <td>Laura Rodríguez</td>
-                                <td>
-                                    <span class="text-success">
-                                        <i class="bi bi-check-circle"></i>
-                                        Válido
-                                    </span>
-                                </td>
-                            </tr>
+                            @if (ViewBag.Preview != null)
+                            {
+                                foreach (EscuelaCopalchi.UI.Models.Estudiantes.Estudiante estudiante
+                                    in ViewBag.Preview)
+                                {
+                                    <tr>
 
+                                        <td>@estudiante.Nombre</td>
 
-                            <tr>
-                                <td>1-2222-2222</td>
-                                <td>Daniel Mora</td>
-                                <td>Segundo grado</td>
-                                <td>Carlos Mora</td>
-                                <td>
-                                    <span class="text-success">
-                                        <i class="bi bi-check-circle"></i>
-                                        Válido
-                                    </span>
-                                </td>
-                            </tr>
+                                        <td>@estudiante.Apellido1</td>
+
+                                        <td>@estudiante.Apellido2</td>
+
+                                        <td>@estudiante.Identificacion</td>
+
+                                        <td>
+                                            @estudiante.FechaNacimiento
+                                            .ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <td>@estudiante.NombreEncargado</td>
+
+                                        <td>@estudiante.Parentesco</td>
+
+                                        <td>@estudiante.TelefonoEncargado</td>
+
+                                        <td>@estudiante.CorreoEncargado</td>
+
+                                        <td>@estudiante.Direccion</td>
+
+                                        <td>
+                                            <span class="text-success">
+                                                <i class="bi bi-check-circle"></i>
+                                                Válido
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
 
                         </tbody>
 
                     </table>
 
                 </div>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "Estudiantes")"
-                   class="btn btn-light">
-                    Cancelar
-                </a>
-
-                <button type="button"
-                        class="btn btn-cop-primary">
-
-                    <i class="bi bi-upload me-1"></i>
-                    Importar estudiantes
-
-                </button>
 
             </div>
 

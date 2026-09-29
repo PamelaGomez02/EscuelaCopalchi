@@ -16,7 +16,7 @@
 
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "Estudiantes")">
+                <a href="@Url.Action("Index", "EstudiantesAdd")">
                     Estudiantes
                 </a>
 
@@ -56,48 +56,13 @@
 
                     <div>
                         <span>Total de bajas</span>
-                        <h2>6</h2>
+                        <h2>@ViewBag.TotalBajas</h2>
                     </div>
 
                 </div>
 
             </div>
 
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon">
-                        <i class="bi bi-arrow-left-right"></i>
-                    </div>
-
-                    <div>
-                        <span>Traslados</span>
-                        <h2>4</h2>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon">
-                        <i class="bi bi-box-arrow-left"></i>
-                    </div>
-
-                    <div>
-                        <span>Retiros</span>
-                        <h2>2</h2>
-                    </div>
-
-                </div>
-
-            </div>
 
         </div>
 
@@ -131,73 +96,6 @@
             </div>
 
 
-            <!-- FILTROS -->
-            <div class="filters">
-
-                <select class="form-select">
-
-                    <option value="">
-                        Todos los motivos
-                    </option>
-
-                    <option>
-                        Traslado de institución
-                    </option>
-
-                    <option>
-                        Retiro
-                    </option>
-
-                    <option>
-                        Cambio de residencia
-                    </option>
-
-                    <option>
-                        Otro
-                    </option>
-
-                </select>
-
-
-                <select class="form-select">
-
-                    <option value="">
-                        Todos los grados
-                    </option>
-
-                    <option>
-                        Primer grado
-                    </option>
-
-                    <option>
-                        Segundo grado
-                    </option>
-
-                    <option>
-                        Tercer grado
-                    </option>
-
-                    <option>
-                        Cuarto grado
-                    </option>
-
-                    <option>
-                        Quinto grado
-                    </option>
-
-                    <option>
-                        Sexto grado
-                    </option>
-
-                </select>
-
-
-                <input type="date"
-                       class="form-control" />
-
-            </div>
-
-
             <!-- TABLA -->
             <div class="table-responsive">
 
@@ -208,7 +106,7 @@
                         <tr>
                             <th>Estudiante</th>
                             <th>Identificación</th>
-                            <th>Grado</th>
+                            <th>Nombre Encargado</th>
                             <th>Fecha de baja</th>
                             <th>Motivo</th>
                             <th class="text-end">Detalle</th>
@@ -219,116 +117,86 @@
 
                     <tbody>
 
-                        <tr>
+                        @foreach (EscuelaCopalchi.UI.Models.Estudiantes.Estudiante estudiante in ViewBag.HistorialBajas)
+                        {
+                            <tr>
 
-                            <td>
+                                <td>
 
-                                <div class="student-info">
+                                    <div class="student-info">
 
-                                    <div class="student-avatar">
-                                        JM
+                                        <div class="student-avatar">
+
+                                            @(
+                                                (!string.IsNullOrEmpty(estudiante.Nombre)
+                                                    ? estudiante.Nombre.Substring(0,1)
+                                                    : "") +
+                                                (!string.IsNullOrEmpty(estudiante.Apellido1)
+                                                    ? estudiante.Apellido1.Substring(0,1)
+                                                    : "")
+                                            )
+
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                @estudiante.Nombre
+                                                @estudiante.Apellido1
+                                            </strong>
+
+                                            <small>
+                                                Inactivo
+                                            </small>
+
+                                        </div>
+
                                     </div>
 
-                                    <div>
-                                        <strong>José Mora</strong>
-                                        <small>Inactivo</small>
-                                    </div>
+                                </td>
 
-                                </div>
+                                <td>
+                                    @estudiante.Identificacion
+                                </td>
 
-                            </td>
+                                <td>
+                                    @estudiante.NombreEncargado
+                                </td>
 
-                            <td>
-                                1-9876-5432
-                            </td>
+                                <td>
+                                    @(estudiante.FechaBaja.HasValue
+                                        ? estudiante.FechaBaja.Value.ToString("dd/MM/yyyy")
+                                        : "")
+                                </td>
 
-                            <td>
-                                Segundo grado
-                            </td>
+                                <td>
+                                    @estudiante.ObservacionBaja
+                                </td>
 
-                            <td>
-                                15/06/2026
-                            </td>
+                                <td class="text-end">
 
-                            <td>
+                                    <button type="button"
+                                            class="btn btn-action"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalDetalle"
+                                            onclick="cargarDetalleBaja(
+                                                '@(estudiante.Nombre + " " + estudiante.Apellido1 + " " + estudiante.Apellido2)',
+                                                '@estudiante.Identificacion',
+                                                '@estudiante.NombreEncargado',
+                                                '@(estudiante.FechaBaja.HasValue
+                                                    ? estudiante.FechaBaja.Value.ToString("dd/MM/yyyy")
+                                                    : "")',
 
-                                <span class="reason reason-transfer">
-                                    <i class="bi bi-arrow-left-right"></i>
-                                    Traslado
-                                </span>
+                                                '@estudiante.ObservacionBaja')">
 
-                            </td>
+                                        <i class="bi bi-eye"></i>
 
-                            <td class="text-end">
+                                    </button>
 
-                                <button type="button"
-                                        class="btn btn-action"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalDetalle">
+                                </td>
 
-                                    <i class="bi bi-eye"></i>
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        CL
-                                    </div>
-
-                                    <div>
-                                        <strong>Camila López</strong>
-                                        <small>Inactivo</small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-                            <td>
-                                1-5566-7788
-                            </td>
-
-                            <td>
-                                Tercer grado
-                            </td>
-
-                            <td>
-                                22/05/2026
-                            </td>
-
-                            <td>
-
-                                <span class="reason reason-retirement">
-                                    <i class="bi bi-box-arrow-left"></i>
-                                    Retiro
-                                </span>
-
-                            </td>
-
-                            <td class="text-end">
-
-                                <button type="button"
-                                        class="btn btn-action"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalDetalle">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </button>
-
-                            </td>
-
-                        </tr>
+                            </tr>
+                        }
 
                     </tbody>
 
@@ -339,7 +207,7 @@
 
             <div class="history-footer">
 
-                <a href="@Url.Action("Index", "Estudiantes")"
+                <a href="@Url.Action("Index", "EstudiantesAdd")"
                    class="btn btn-light">
 
                     <i class="bi bi-arrow-left me-1"></i>
@@ -378,40 +246,39 @@
 
             </div>
 
-
             <div class="modal-body">
 
                 <div class="detail-row">
 
                     <span>Estudiante</span>
-                    <strong>José Mora</strong>
+
+                    <strong id="detalleEstudiante"></strong>
 
                 </div>
-
 
                 <div class="detail-row">
 
                     <span>Identificación</span>
-                    <strong>1-9876-5432</strong>
+
+                    <strong id="detalleIdentificacion"></strong>
 
                 </div>
 
+                <div class="detail-row">
+
+                    <span>Encargado</span>
+
+                    <strong id="detalleEncargado"></strong>
+
+                </div>
 
                 <div class="detail-row">
 
                     <span>Fecha de baja</span>
-                    <strong>15/06/2026</strong>
+
+                    <strong id="detalleFechaBaja"></strong>
 
                 </div>
-
-
-                <div class="detail-row">
-
-                    <span>Motivo</span>
-                    <strong>Traslado de institución</strong>
-
-                </div>
-
 
                 <div class="observation-box">
 
@@ -419,15 +286,11 @@
                         Observación
                     </span>
 
-                    <p>
-                        El encargado informa traslado de residencia y matrícula
-                        del estudiante en otra institución educativa.
-                    </p>
+                    <p id="detalleObservacion"></p>
 
                 </div>
 
             </div>
-
 
             <div class="modal-footer">
 
@@ -446,6 +309,39 @@
     </div>
 
 </div>
+
+
+<script>
+
+    function cargarDetalleBaja(
+        estudiante,
+        identificacion,
+        encargado,
+        fechaBaja,
+        observacion) {
+        document.getElementById(
+            "detalleEstudiante").innerText =
+            estudiante;
+
+        document.getElementById(
+            "detalleIdentificacion").innerText =
+            identificacion;
+
+        document.getElementById(
+            "detalleEncargado").innerText =
+            encargado;
+
+        document.getElementById(
+            "detalleFechaBaja").innerText =
+            fechaBaja;
+
+        document.getElementById(
+            "detalleObservacion").innerText =
+            observacion;
+    }
+
+</script>
+
 
 
 @section styles {

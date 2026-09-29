@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace EscuelaCopalchi.UI.Models.Usuarios
 {

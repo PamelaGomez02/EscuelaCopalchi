@@ -2,6 +2,9 @@
     ViewBag.Title = "Detalle del estudiante";
 }
 
+@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
+
+
 <main>
 
     <section class="students-header">
@@ -13,7 +16,7 @@
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "Estudiantes")">
+                <a href="@Url.Action("Index", "EstudiantesAdd")">
                     Estudiantes
                 </a>
 
@@ -29,19 +32,27 @@
                 <div>
 
                     <h1 class="students-title">
-                        Ana Rodríguez Vargas
+                        @Model.Nombre
+                        @Model.Apellido1
+                        @Model.Apellido2
                     </h1>
-
-                    <p class="students-subtitle">
-                        Primer grado A
-                    </p>
 
                 </div>
 
-                <span class="status status-active">
-                    <i class="bi bi-check-circle"></i>
-                    Activo
-                </span>
+                @if (Model.Estado)
+                {
+                    <span class="status status-active">
+                        <i class="bi bi-check-circle"></i>
+                        Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="status status-inactive">
+                        <i class="bi bi-x-circle"></i>
+                        Inactivo
+                    </span>
+                }
 
             </div>
 
@@ -68,32 +79,28 @@
 
                         <div class="col-md-6">
                             <span class="detail-label">Nombre completo</span>
-                            <strong>Ana Rodríguez Vargas</strong>
+                            <strong>
+                                @Model.Nombre
+                                @Model.Apellido1
+                                @Model.Apellido2
+                            </strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Identificación</span>
-                            <strong>1-2345-6789</strong>
+                            <strong>@Model.Identificacion</strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Fecha de nacimiento</span>
-                            <strong>18/04/2019</strong>
+                            <strong>
+                                @Model.FechaNacimiento.ToString("dd/MM/yyyy")
+                            </strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Correo</span>
-                            <strong>ana.rodriguez@correo.com</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Grado</span>
-                            <strong>Primer grado</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Sección</span>
-                            <strong>A</strong>
+                            <strong>@Model.CorreoEncargado</strong>
                         </div>
 
                     </div>
@@ -113,22 +120,22 @@
 
                         <div class="col-md-6">
                             <span class="detail-label">Nombre</span>
-                            <strong>Laura Rodríguez Vargas</strong>
+                            <strong>@Model.NombreEncargado</strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Parentesco</span>
-                            <strong>Madre</strong>
+                            <strong>@Model.Parentesco</strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Teléfono</span>
-                            <strong>8888-1234</strong>
+                            <strong>@Model.TelefonoEncargado</strong>
                         </div>
 
                         <div class="col-md-6">
                             <span class="detail-label">Correo</span>
-                            <strong>laura.rodriguez@correo.com</strong>
+                            <strong>@Model.CorreoEncargado</strong>
                         </div>
 
                     </div>
@@ -145,7 +152,7 @@
                     </h2>
 
                     <p class="detail-text">
-                        Copalchí, Cartago, Costa Rica.
+                        @Model.Direccion
                     </p>
 
                 </div>
@@ -159,26 +166,41 @@
                 <div class="profile-card">
 
                     <div class="profile-avatar">
-                        AR
+
+                        @(Model.Nombre.Substring(0,1))
+                        @(Model.Apellido1.Substring(0,1))
+
                     </div>
 
-                    <h2>Ana Rodríguez</h2>
+                    <h2>
+                        @Model.Nombre
+                        @Model.Apellido1
+                    </h2>
 
                     <p>
                         Estudiante
                     </p>
 
-                    <span class="status status-active">
-                        Activo
-                    </span>
-
+                    @if (Model.Estado)
+                    {
+                        <span class="status status-active">
+                            Activo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status status-inactive">
+                            Inactivo
+                        </span>
+                    }
+                    
 
                     <hr />
 
 
                     <div class="profile-data">
 
-                        <span>Fecha de matrícula</span>
+                        <span>Fecha de ingreso</span>
                         <strong>05/02/2026</strong>
 
                     </div>
@@ -196,7 +218,7 @@
 
                 <div class="action-card mt-3">
 
-                    <a href="@Url.Action("Editar", "Estudiantes", new { id = 1 })"
+                    <a href="@Url.Action("Editar","EstudiantesAdd",new { id = Model.IdEstudiante })"
                        class="btn btn-outline-cop w-100">
 
                         <i class="bi bi-pencil me-1"></i>
@@ -205,7 +227,7 @@
                     </a>
 
 
-                    <a href="@Url.Action("Expediente", "Estudiantes", new { id = 1 })"
+                    <a href="@Url.Action("Expediente",  "EstudiantesAdd", new { id = Model.IdEstudiante})"
                        class="btn btn-outline-cop w-100 mt-2">
 
                         <i class="bi bi-heart-pulse me-1"></i>
@@ -225,7 +247,7 @@
                     </button>
 
 
-                    <a href="@Url.Action("Index", "Estudiantes")"
+                    <a href="@Url.Action("Index", "EstudiantesAdd")"
                        class="btn btn-light w-100 mt-2">
 
                         Volver
@@ -508,20 +530,20 @@
 
     <script>
 
-    function confirmarBaja() {
+        function confirmarBaja() {
 
-        var motivo =
-            document.getElementById("motivoBaja").value;
+            var motivo =
+                document.getElementById("motivoBaja").value;
 
-        if (motivo === "") {
+            if (motivo === "") {
 
-            alert("Debe seleccionar un motivo para dar de baja al estudiante.");
+                alert("Debe seleccionar un motivo para dar de baja al estudiante.");
 
-            return;
+                return;
+            }
+
+            alert("La baja del estudiante fue registrada correctamente.");
         }
-
-        alert("La baja del estudiante fue registrada correctamente.");
-    }
 
     </script>
 

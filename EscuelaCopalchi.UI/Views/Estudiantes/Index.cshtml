@@ -12,9 +12,6 @@
     <section class="students-header">
         <div class="container">
 
-            <h1>Total recuperados: @(ViewBag.Total ?? "NULL")</h1>
-
-            <h2>Model es null: @(Model == null)</h2>
 
             <div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
@@ -37,13 +34,13 @@
 
                 <div class="d-flex gap-2">
 
-                    <a href="@Url.Action("ImportarExcel", "Estudiantes")"
+                    <a href="@Url.Action("ImportarExcel", "EstudiantesAdd")"
                        class="btn btn-outline-cop">
                         <i class="bi bi-file-earmark-excel me-1"></i>
                         Importar Excel
                     </a>
 
-                    <a href="@Url.Action("Crear", "Estudiantes")"
+                    <a href="@Url.Action("Registrar", "EstudiantesAdd")"
                        class="btn btn-cop-primary">
                         <i class="bi bi-person-plus me-1"></i>
                         Registrar estudiante
@@ -110,6 +107,22 @@
 
         </div>
 
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show"
+                 role="alert">
+
+                <i class="bi bi-check-circle-fill me-2"></i>
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+        }
+
 
         <div class="students-card">
 
@@ -169,8 +182,6 @@
                     </div>
                 }
 
-                <p>Filtro: @ViewBag.FiltroActual</p>
-<p>Búsqueda: @ViewBag.BusquedaActual</p>
 
             </div>
 
@@ -190,93 +201,109 @@
                     </thead>
 
                     <tbody>
-                    @if (Model != null)
-                    {
-                            foreach(var estudiante in Model)
+                        @if (Model != null)
+                        {
+                            foreach (var estudiante in Model)
                             {
-                        <tr>
+                                <tr>
 
-                            <td>
+                                    <td>
 
-                                <div class="student-info">
+                                        <div class="student-info">
 
-                                    <div class="student-avatar">
-                                        @(estudiante.Nombre.Length > 0 ? estudiante.Nombre.Substring(0, 1) : "")
-                                        @(estudiante.Apellido1.Length > 0 ? estudiante.Apellido1.Substring(0, 1) : "")
-                                    </div>
+                                            <div class="student-avatar">
+                                                @(estudiante.Nombre.Length > 0 ? estudiante.Nombre.Substring(0, 1) : "")
+                                                @(estudiante.Apellido1.Length > 0 ? estudiante.Apellido1.Substring(0, 1) : "")
+                                            </div>
 
-                                    <div>
-                                        <strong>
-                                            @estudiante.Nombre
-                                            @estudiante.Apellido1
-                                            @estudiante.Apellido2
-                                        </strong>
-                                        <small>Estudiante</small>
-                                    </div>
+                                            <div>
+                                                <strong>
+                                                    @estudiante.Nombre
+                                                    @estudiante.Apellido1
+                                                    @estudiante.Apellido2
+                                                </strong>
+                                                <small>Estudiante</small>
+                                            </div>
 
-                                </div>
+                                        </div>
 
-                            </td>
+                                    </td>
 
-                            <td>@estudiante.Identificacion</td>
+                                    <td>@estudiante.Identificacion</td>
 
-                            <td>@estudiante.NombreEncargado</td>
+                                    <td>@estudiante.NombreEncargado</td>
 
-                            <td>
-                                @if (estudiante.Estado)
-                                {
-                                    <span class="status status-active">
-                                        <i class="bi bi-check-circle"></i>
-                                        Activo
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="status status-inactive">
-                                        <i class="bi bi-x-circle"></i>
-                                        Inactivo
-                                    </span>
-                                }
-                            </td>
+                                    <td>
+                                        @if (estudiante.Estado)
+                                        {
+                                            <span class="status status-active">
+                                                <i class="bi bi-check-circle"></i>
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status status-inactive">
+                                                <i class="bi bi-x-circle"></i>
+                                                Inactivo
+                                            </span>
+                                        }
+                                    </td>
 
-                            <td class="text-end">
+                                    <td class="text-end">
+                                        <a href="@Url.Action("Detalle","EstudiantesAdd", new { id = estudiante.IdEstudiante})"
+                                           class="btn btn-action"
+                                           title="Detalle">
+                                            <i class="bi bi-eye"></i>
 
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Ver">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-
-                                <a href="@Url.Action("Editar", "Estudiantes", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-
-                                <a href="@Url.Action("Expediente", "Estudiantes", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Expediente">
-                                    <i class="bi bi-heart-pulse"></i>
-                                </a>
-
-                                <button type="button"
-                                        class="btn btn-action-danger"
-                                        title="Dar de baja"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalBaja">
-
-                                    <i class="bi bi-person-dash"></i>
-
-                                </button>
-
-                            </td>
-
-                        </tr>
+                                        </a>
 
 
-                       
+                                        <a href="@Url.Action("Editar", "EstudiantesAdd", new { id = estudiante.IdEstudiante})"
+                                           class="btn btn-action"
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a href="@Url.Action("Expediente",  "EstudiantesAdd", new { id = estudiante.IdEstudiante})"
+                                           class="btn btn-action"
+                                           title="Expediente">
+                                            <i class="bi bi-heart-pulse"></i>
+                                        </a>
+
+                                        @if (estudiante.Estado)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-action-danger"
+                                                    title="Dar de baja"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalBaja"
+                                                    onclick="seleccionarEstudiante(@estudiante.IdEstudiante)">
+
+                                                <i class="bi bi-person-dash"></i>
+
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-action-danger"
+                                                    title="El estudiante ya está inactivo"
+                                                    disabled>
+
+                                                <i class="bi bi-person-dash-fill"></i>
+
+                                            </button>
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+
+
+                            }
                         }
-                     }
 
                     </tbody>
 
@@ -286,7 +313,7 @@
 
             <div class="history-link">
 
-                <a href="@Url.Action("HistorialBajas", "Estudiantes")"
+                <a href="@Url.Action("HistorialBajas", "EstudiantesAdd")"
                    class="btn btn-light">
 
                     <i class="bi bi-clock-history me-1"></i>
@@ -313,84 +340,83 @@
 
         <div class="modal-content">
 
-            <div class="modal-header">
+            @using (Html.BeginForm("DarBaja",
+                                   "EstudiantesAdd",
+                                   FormMethod.Post))
+            {
+                <input type="hidden"
+                       id="idEstudianteBaja"
+                       name="id" />
 
-                <h5 class="modal-title">
-                    Dar de baja estudiante
-                </h5>
+                <div class="modal-header">
 
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
+                    <h5 class="modal-title">
+                        Dar de baja estudiante
+                    </h5>
 
-            </div>
-
-
-            <div class="modal-body">
-
-                <div class="warning-box">
-
-                    <i class="bi bi-exclamation-triangle"></i>
-
-                    <p>
-                        El estudiante cambiará al estado Inactivo.
-                    </p>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
 
                 </div>
 
+                <div class="modal-body">
 
-                <label class="form-label">
-                    Motivo de la baja
-                    <span class="required">*</span>
-                </label>
+                    <div class="warning-box">
 
-                <select class="form-select mb-3">
+                        <i class="bi bi-exclamation-triangle"></i>
 
-                    <option selected disabled>
-                        Seleccione un motivo
-                    </option>
+                        <p>
+                            El estudiante cambiará al estado Inactivo.
+                        </p>
 
-                    <option>Traslado de institución</option>
-                    <option>Retiro</option>
-                    <option>Cambio de residencia</option>
-                    <option>Otro</option>
+                    </div>
 
-                </select>
+                    <label class="form-label">
+                        Observación de baja
+                    </label>
 
+                    <textarea class="form-control"
+                              rows="4"
+                              name="observacionBaja"
+                              placeholder="Agregue el motivo por el que se da de baja al estudiante."></textarea>
 
-                <label class="form-label">
-                    Observación
-                </label>
+                </div>
 
-                <textarea class="form-control"
-                          rows="3"
-                          placeholder="Agregue información adicional..."></textarea>
+                <div class="modal-footer">
 
-            </div>
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
 
+                    <button type="submit"
+                            class="btn btn-danger">
 
-            <div class="modal-footer">
+                        <i class="bi bi-person-dash me-1"></i>
+                        Confirmar baja
 
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
+                    </button>
 
-                <button type="button"
-                        class="btn btn-danger">
-                    <i class="bi bi-person-dash me-1"></i>
-                    Confirmar baja
-                </button>
-
-            </div>
+                </div>
+            }
 
         </div>
 
     </div>
 
 </div>
+
+
+
+
+<script>
+    function seleccionarEstudiante(id) {
+        document.getElementById("idEstudianteBaja").value = id;
+    }
+</script>
 
 
 @section styles {

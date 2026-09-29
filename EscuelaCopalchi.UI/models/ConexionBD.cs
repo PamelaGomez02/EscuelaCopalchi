@@ -15,7 +15,7 @@ namespace EscuelaCopalchi.UI.Models
 
         public ConexionBD()
         {
-            this.connString = connString_Fran;
+            this.connString = connString_Adrian;
 
             this.DataSet = new DataSet();
         }
@@ -124,6 +124,30 @@ namespace EscuelaCopalchi.UI.Models
                     return ex.Message;
                 }
             }
+        }
+
+        public DataSet EjecutarConsulta(string query)
+        {
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+
+                try
+                {
+                    SqlDataAdapter da =
+                        new SqlDataAdapter(query, conn);
+
+                    da.Fill(ds);
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+
+            return ds;
         }
 
 

@@ -2,6 +2,7 @@
     ViewBag.Title = "Editar estudiante";
 }
 
+@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
 <main>
 
     <!-- ENCABEZADO -->
@@ -12,7 +13,7 @@
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "Estudiantes")">
+                <a href="@Url.Action("Index", "EstudiantesAdd")">
                     Estudiantes
                 </a>
 
@@ -38,22 +39,56 @@
         <div class="form-card">
 
             <!-- ESTUDIANTE -->
+            <!-- ESTUDIANTE -->
             <div class="student-summary">
 
                 <div class="student-avatar">
-                    AR
+
+                    @(string.IsNullOrEmpty(Model.Nombre)
+            ? ""
+            : Model.Nombre.Substring(0, 1))
+                    @(string.IsNullOrEmpty(Model.Apellido1)
+            ? ""
+            : Model.Apellido1.Substring(0, 1))
+
                 </div>
 
                 <div>
+
                     <span>Estudiante</span>
-                    <h2>Ana Rodríguez</h2>
-                    <p>Primer grado A · Activo</p>
+
+                    <h2>
+                        @Model.Nombre
+                        @Model.Apellido1
+                    </h2>
+
+                    <p>
+
+                        @if (Model.Estado)
+                        {
+                            <span>Activo</span>
+                        }
+                        else
+                        {
+                            <span>Inactivo</span>
+                        }
+
+                    </p>
+
                 </div>
 
             </div>
 
 
-            <form>
+            @using (Html.BeginForm(
+         "Editar",
+         "EstudiantesAdd",
+         FormMethod.Post,
+         new { id = "formEditarEstudiante" }))
+            {
+                @Html.HiddenFor(x => x.IdEstudiante)
+
+                @Html.HiddenFor(x => x.IdEstudiante)
 
                 <!-- DATOS PERSONALES -->
                 <h2 class="section-title">
@@ -70,28 +105,15 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input type="text"
-                               class="form-control"
-                               value="Ana"
-                               required />
+                        @Html.TextBoxFor(
+                             x => x.Nombre,
+                             new
+                             {
+                                 @class = "form-control",
+                                 required = "required"
+                             })
 
                     </div>
-
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Apellidos
-                            <span class="required">*</span>
-                        </label>
-
-                        <input type="text"
-                               class="form-control"
-                               value="Rodríguez Vargas"
-                               required />
-
-                    </div>
-
 
                     <div class="col-md-6">
 
@@ -100,10 +122,30 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input type="text"
-                               class="form-control"
-                               value="1-2345-6789"
-                               required />
+                        @Html.TextBoxFor(
+                             x => x.Identificacion,
+                             new
+                             {
+                                 @class = "form-control",
+                                 required = "required"
+                             })
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Apellido 1
+                            <span class="required">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(
+                             x => x.Apellido1,
+                             new
+                             {
+                                 @class = "form-control",
+                                 required = "required"
+                             })
 
                     </div>
 
@@ -115,13 +157,33 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input type="date"
-                               class="form-control"
-                               value="2019-04-18"
-                               required />
+                        @Html.TextBoxFor(
+                             x => x.FechaNacimiento,
+                             "{0:yyyy-MM-dd}",
+                             new
+                             {
+                                 type = "date",
+                                 @class = "form-control",
+                                 required = "required"
+                             })
 
                     </div>
 
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Apellido 2
+                            <span class="required">*</span>
+                        </label>
+
+                        @Html.TextBoxFor(
+                         x => x.Apellido2,
+                         new
+                         {
+                             @class = "form-control",
+                             required = "required"
+                         })
+                    </div>
 
                     <div class="col-md-6">
 
@@ -129,47 +191,16 @@
                             Correo electrónico
                         </label>
 
-                        <input type="email"
-                               class="form-control"
-                               value="ana.rodriguez@correo.com" />
+                        @Html.TextBoxFor(
+                             x => x.CorreoEncargado,
+                             new
+                             {
+                                 @class = "form-control",
+                                 type = "email"
+                             })
 
                     </div>
 
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Grado
-                            <span class="required">*</span>
-                        </label>
-
-                        <select class="form-select">
-
-                            <option selected>Primer grado</option>
-                            <option>Segundo grado</option>
-                            <option>Tercer grado</option>
-                            <option>Cuarto grado</option>
-                            <option>Quinto grado</option>
-                            <option>Sexto grado</option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Sección
-                        </label>
-
-                        <select class="form-select">
-                            <option selected>A</option>
-                            <option>B</option>
-                            <option>C</option>
-                        </select>
-
-                    </div>
 
                 </div>
 
@@ -191,10 +222,13 @@
                                 <span class="required">*</span>
                             </label>
 
-                            <input type="text"
-                                   class="form-control"
-                                   value="Laura Rodríguez Vargas"
-                                   required />
+                            @Html.TextBoxFor(
+                             x => x.NombreEncargado,
+                             new
+                             {
+                                 @class = "form-control",
+                                 required = "required"
+                             })
 
                         </div>
 
@@ -204,14 +238,33 @@
                             <label class="form-label">
                                 Parentesco
                             </label>
-
-                            <select class="form-select">
-                                <option selected>Madre</option>
-                                <option>Padre</option>
-                                <option>Encargado legal</option>
-                                <option>Otro</option>
-                            </select>
-
+                            @Html.DropDownListFor(
+                             x => x.Parentesco,
+                             new List<SelectListItem>
+                             {
+                                    new SelectListItem
+                                    {
+                                        Text = "Madre",
+                                        Value = "Madre"
+                                    },
+                                    new SelectListItem
+                                    {
+                                        Text = "Padre",
+                                        Value = "Padre"
+                                    },
+                                    new SelectListItem
+                                    {
+                                        Text = "Encargado legal",
+                                        Value = "Encargado legal"
+                                    },
+                                    new SelectListItem
+                                    {
+                                        Text = "Otro",
+                                        Value = "Otro"
+                                    }
+                             },
+                             new { @class = "form-select" }
+                         )
                         </div>
 
 
@@ -222,10 +275,14 @@
                                 <span class="required">*</span>
                             </label>
 
-                            <input type="tel"
-                                   class="form-control"
-                                   value="8888-1234"
-                                   required />
+                            @Html.TextBoxFor(
+                             x => x.TelefonoEncargado,
+                             new
+                             {
+                                 @class = "form-control",
+                                 type = "tel",
+                                 required = "required"
+                             })
 
                         </div>
 
@@ -236,11 +293,16 @@
                                 Correo electrónico
                             </label>
 
-                            <input type="email"
-                                   class="form-control"
-                                   value="laura.rodriguez@correo.com" />
+                            @Html.TextBoxFor(
+                             x => x.CorreoEncargado,
+                             new
+                             {
+                                 @class = "form-control",
+                                 type = "email"
+                             })
 
                         </div>
+
 
                     </div>
 
@@ -257,30 +319,74 @@
 
                     <div class="row g-3">
 
-                        <div class="col-12">
+                        <label class="form-label">
+                            Dirección
+                        </label>
 
-                            <label class="form-label">
-                                Dirección
-                            </label>
+                        @Html.TextAreaFor(
+                             x => x.Direccion,
+                             new
+                             {
+                                 @class = "form-control",
+                                 rows = 3
+                             })
 
-                            <textarea class="form-control"
-                                      rows="3">Copalchí, Cartago, Costa Rica.</textarea>
 
-                        </div>
+                    <div class="col-md-6">
 
+                        <label class="form-label">
+                            Estado
+                        </label>
 
-                        <div class="col-md-6">
+                        @if (Model.Estado)
+                        {
+                            @Html.DropDownListFor(
+                                x => x.Estado,
+                                new List<SelectListItem>
+                                {
+                                    new SelectListItem
+                                    {
+                                        Text = "Activo",
+                                        Value = "true"
+                                    },
+                                    new SelectListItem
+                                    {
+                                        Text = "Inactivo",
+                                        Value = "false"
+                                    }
+                                },
+                                new
+                                {
+                                    @class = "form-select",
+                                    disabled = "disabled"
+                                })
 
-                            <label class="form-label">
-                                Estado
-                            </label>
+                            @Html.HiddenFor(x => x.Estado)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(
+                                x => x.Estado,
+                                new List<SelectListItem>
+                                {
+                                    new SelectListItem
+                                    {
+                                        Text = "Activo",
+                                        Value = "true"
+                                    },
+                                    new SelectListItem
+                                    {
+                                        Text = "Inactivo",
+                                        Value = "false"
+                                    }
+                                },
+                                new
+                                {
+                                    @class = "form-select"
+                                })
+                        }
 
-                            <select class="form-select">
-                                <option selected>Activo</option>
-                                <option>Inactivo</option>
-                            </select>
-
-                        </div>
+                    </div>
 
                     </div>
 
@@ -289,14 +395,16 @@
 
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
-                       class="btn btn-light">
+                    <a href="@Url.Action("Index", "EstudiantesAdd")" class="btn btn-light">
+
                         Cancelar
+
                     </a>
 
                     <button type="button"
                             class="btn btn-cop-primary"
-                            onclick="mostrarConfirmacion()">
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalGuardar">
 
                         <i class="bi bi-save me-1"></i>
                         Guardar cambios
@@ -305,69 +413,73 @@
 
                 </div>
 
-            </form>
+                <div class="modal fade"
+                     id="modalGuardar"
+                     tabindex="-1">
 
-        </div>
+                    <div class="modal-dialog modal-dialog-centered">
+
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+
+                                <h5 class="modal-title">
+                                    Guardar cambios
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+
+                            </div>
+
+                            <div class="modal-body text-center">
+
+                                <div class="modal-icon">
+                                    <i class="bi bi-save"></i>
+                                </div>
+
+                                <p class="mb-0">
+                                    ¿Deseas guardar los cambios realizados en la información del estudiante?
+                                </p>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-light"
+                                        data-bs-dismiss="modal">
+
+                                    Cancelar
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-cop-primary"
+                                        onclick="document.getElementById('formEditarEstudiante').submit();">
+
+                                    Confirmar
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                }
+
+            </div>
 
     </section>
 
 </main>
 
-
-<!-- MODAL -->
-<div class="modal fade"
-     id="modalGuardar"
-     tabindex="-1">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Guardar cambios
-                </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body text-center">
-
-                <div class="modal-icon">
-                    <i class="bi bi-save"></i>
-                </div>
-
-                <p class="mb-0">
-                    ¿Deseas guardar los cambios realizados en la información del estudiante?
-                </p>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button type="button"
-                        class="btn btn-cop-primary">
-                    Confirmar
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 
 @section styles {
@@ -537,14 +649,14 @@
 
     <script>
 
-    function mostrarConfirmacion() {
+        function mostrarConfirmacion() {
 
-        var modal = new bootstrap.Modal(
-            document.getElementById("modalGuardar")
-        );
+            var modal = new bootstrap.Modal(
+                document.getElementById("modalGuardar")
+            );
 
-        modal.show();
-    }
+            modal.show();
+        }
 
     </script>
 
