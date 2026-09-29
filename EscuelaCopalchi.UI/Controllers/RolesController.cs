@@ -1,7 +1,6 @@
 ﻿using EscuelaCopalchi.UI.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
@@ -10,10 +9,17 @@ namespace EscuelaCopalchi.UI.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly string conexion =
-            ConfigurationManager.ConnectionStrings["AulaVirtualDB"].ConnectionString;
+        private readonly string conexion;
 
+        public RolesController()
+        {
+            ConexionBD db = new ConexionBD();
+            conexion = db.ObtenerConexion();
+        }
 
+        // =========================================================
+        // LISTAR ROLES
+        // =========================================================
         public ActionResult Index()
         {
             List<Rol> roles = new List<Rol>();
@@ -36,9 +42,11 @@ namespace EscuelaCopalchi.UI.Controllers
                     {
                         IdRol = Convert.ToInt32(reader["id_rol"]),
                         Nombre = reader["nombre"].ToString(),
+
                         Descripcion = reader["descripcion"] == DBNull.Value
                             ? ""
                             : reader["descripcion"].ToString(),
+
                         Estado = Convert.ToBoolean(reader["estado"])
                     };
 
@@ -49,16 +57,24 @@ namespace EscuelaCopalchi.UI.Controllers
             return View(roles);
         }
 
+
+        // =========================================================
+        // CREAR ROL - MOSTRAR
+        // =========================================================
+        [HttpGet]
         public ActionResult Crear()
         {
             return View();
         }
 
+
+        // =========================================================
+        // CREAR ROL - GUARDAR
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Crear(Rol modelo)
         {
-
             if (string.IsNullOrWhiteSpace(modelo.Nombre))
             {
                 ModelState.AddModelError(
@@ -84,11 +100,11 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-
+                // Verificar si ya existe el rol
                 string sqlExiste = @"
-            SELECT COUNT(*)
-            FROM ROL
-            WHERE LOWER(nombre) = LOWER(@nombre)";
+                    SELECT COUNT(*)
+                    FROM ROL
+                    WHERE LOWER(nombre) = LOWER(@nombre)";
 
                 using (SqlCommand cmdExiste =
                        new SqlCommand(sqlExiste, con))
@@ -112,11 +128,12 @@ namespace EscuelaCopalchi.UI.Controllers
                     }
                 }
 
+                // Insertar nuevo rol
                 string sqlInsertar = @"
-            INSERT INTO ROL
-                (nombre, descripcion, estado)
-            VALUES
-                (@nombre, @descripcion, @estado)";
+                    INSERT INTO ROL
+                        (nombre, descripcion, estado)
+                    VALUES
+                        (@nombre, @descripcion, @estado)";
 
                 using (SqlCommand cmd =
                        new SqlCommand(sqlInsertar, con))
@@ -147,8 +164,9 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
+        // =========================================================
         // EDITAR ROL - MOSTRAR
-
+        // =========================================================
         [HttpGet]
         public ActionResult Editar(int? id)
         {
@@ -162,9 +180,9 @@ namespace EscuelaCopalchi.UI.Controllers
             using (SqlConnection con = new SqlConnection(conexion))
             {
                 string sql = @"
-            SELECT id_rol, nombre, descripcion, estado
-            FROM ROL
-            WHERE id_rol = @id";
+                    SELECT id_rol, nombre, descripcion, estado
+                    FROM ROL
+                    WHERE id_rol = @id";
 
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {
@@ -178,13 +196,16 @@ namespace EscuelaCopalchi.UI.Controllers
                         {
                             modelo = new Rol
                             {
-                                IdRol = Convert.ToInt32(reader["id_rol"]),
-                                Nombre = reader["nombre"].ToString(),
+                                IdRol =
+                                    Convert.ToInt32(reader["id_rol"]),
+
+                                Nombre =
+                                    reader["nombre"].ToString(),
 
                                 Descripcion =
                                     reader["descripcion"] == DBNull.Value
-                                    ? ""
-                                    : reader["descripcion"].ToString(),
+                                        ? ""
+                                        : reader["descripcion"].ToString(),
 
                                 Estado =
                                     Convert.ToBoolean(reader["estado"])
@@ -203,8 +224,9 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
+        // =========================================================
         // EDITAR ROL - GUARDAR
-
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Editar(Rol modelo)
@@ -234,12 +256,12 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-                // Verificar que no exista OTRO rol con ese nombre
+                // Verificar que no exista otro rol con ese nombre
                 string sqlExiste = @"
-            SELECT COUNT(*)
-            FROM ROL
-            WHERE LOWER(nombre) = LOWER(@nombre)
-              AND id_rol <> @id";
+                    SELECT COUNT(*)
+                    FROM ROL
+                    WHERE LOWER(nombre) = LOWER(@nombre)
+                    AND id_rol <> @id";
 
                 using (SqlCommand cmdExiste =
                        new SqlCommand(sqlExiste, con))
@@ -268,13 +290,12 @@ namespace EscuelaCopalchi.UI.Controllers
                     }
                 }
 
-
                 string sqlActualizar = @"
-            UPDATE ROL
-            SET nombre = @nombre,
-                descripcion = @descripcion,
-                estado = @estado
-            WHERE id_rol = @id";
+                    UPDATE ROL
+                    SET nombre = @nombre,
+                        descripcion = @descripcion,
+                        estado = @estado
+                    WHERE id_rol = @id";
 
                 using (SqlCommand cmd =
                        new SqlCommand(sqlActualizar, con))
@@ -310,84 +331,156 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
-        
-
+        // =========================================================
         // ELIMINAR ROL
-
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Eliminar(int id)
         {
-            string[] rolesDelSistema = { "Administrador", "Director", "Docente", "Apoyo", "Evaluación" };
+            string[] rolesDelSistema =
+            {
+                "Administrador",
+                "Director",
+                "Docente",
+                "Apoyo",
+                "Evaluación"
+            };
 
             try
             {
-                using (SqlConnection con = new SqlConnection(conexion))
+                using (SqlConnection con =
+                       new SqlConnection(conexion))
                 {
                     con.Open();
 
                     string nombre;
-                    using (SqlCommand cmd = new SqlCommand("SELECT nombre FROM ROL WHERE id_rol = @id", con))
+
+                    using (SqlCommand cmd =
+                           new SqlCommand(
+                               "SELECT nombre FROM ROL WHERE id_rol = @id",
+                               con))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
+
                         nombre = cmd.ExecuteScalar() as string;
                     }
 
                     if (nombre == null)
                     {
-                        TempData["Error"] = "El rol no existe.";
+                        TempData["Error"] =
+                            "El rol no existe.";
+
                         return RedirectToAction("Index");
                     }
 
+                    // No permitir eliminar roles base
                     if (rolesDelSistema.Contains(nombre))
                     {
-                        TempData["Error"] = "El rol " + nombre + " es un rol base del sistema y no se puede eliminar. Puede desactivarlo.";
-                        return RedirectToAction("Editar", new { id });
+                        TempData["Error"] =
+                            "El rol " + nombre +
+                            " es un rol base del sistema y no se puede eliminar. Puede desactivarlo.";
+
+                        return RedirectToAction(
+                            "Editar",
+                            new { id }
+                        );
                     }
 
-                    // Cualquier usuario (activo o inactivo) impide borrar el rol por la llave FK_USUARIO_ROL
-                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM USUARIO WHERE id_rol = @id", con))
+                    // Verificar usuarios asociados
+                    using (SqlCommand cmd =
+                           new SqlCommand(
+                               @"SELECT COUNT(*)
+                                 FROM USUARIO
+                                 WHERE id_rol = @id",
+                               con))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
 
-                        if (Convert.ToInt32(cmd.ExecuteScalar()) > 0)
+                        int usuarios =
+                            Convert.ToInt32(
+                                cmd.ExecuteScalar()
+                            );
+
+                        if (usuarios > 0)
                         {
-                            TempData["Error"] = "No se puede eliminar el rol porque tiene usuarios asociados (activos o inactivos). Debe cambiarles el rol primero.";
-                            return RedirectToAction("Editar", new { id });
+                            TempData["Error"] =
+                                "No se puede eliminar el rol porque tiene usuarios asociados (activos o inactivos). Debe cambiarles el rol primero.";
+
+                            return RedirectToAction(
+                                "Editar",
+                                new { id }
+                            );
                         }
                     }
 
-                    using (SqlTransaction tx = con.BeginTransaction())
+                    // Eliminar dentro de una transacción
+                    using (SqlTransaction tx =
+                           con.BeginTransaction())
                     {
-                        // Primero sus permisos: ROL_PERMISO tiene llave foránea a ROL
-                        using (SqlCommand cmd = new SqlCommand("DELETE FROM ROL_PERMISO WHERE id_rol = @id", con, tx))
+                        try
                         {
-                            cmd.Parameters.AddWithValue("@id", id);
-                            cmd.ExecuteNonQuery();
-                        }
+                            // Primero eliminar permisos
+                            using (SqlCommand cmd =
+                                   new SqlCommand(
+                                       @"DELETE FROM ROL_PERMISO
+                                         WHERE id_rol = @id",
+                                       con,
+                                       tx))
+                            {
+                                cmd.Parameters.AddWithValue(
+                                    "@id",
+                                    id
+                                );
 
-                        using (SqlCommand cmd = new SqlCommand("DELETE FROM ROL WHERE id_rol = @id", con, tx))
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            // Luego eliminar rol
+                            using (SqlCommand cmd =
+                                   new SqlCommand(
+                                       @"DELETE FROM ROL
+                                         WHERE id_rol = @id",
+                                       con,
+                                       tx))
+                            {
+                                cmd.Parameters.AddWithValue(
+                                    "@id",
+                                    id
+                                );
+
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            tx.Commit();
+                        }
+                        catch
                         {
-                            cmd.Parameters.AddWithValue("@id", id);
-                            cmd.ExecuteNonQuery();
+                            tx.Rollback();
+                            throw;
                         }
-
-                        tx.Commit();
                     }
                 }
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "No se pudo eliminar el rol: " + ex.Message;
+                TempData["Error"] =
+                    "No se pudo eliminar el rol: " +
+                    ex.Message;
+
                 return RedirectToAction("Index");
             }
 
-            TempData["Exito"] = "El rol se eliminó correctamente.";
+            TempData["Exito"] =
+                "El rol se eliminó correctamente.";
+
             return RedirectToAction("Index");
         }
 
-        // ASIGNAR ROL - MOSTRAR DOCENTES
 
+        // =========================================================
+        // ASIGNAR ROL - MOSTRAR DOCENTES
+        // =========================================================
         [HttpGet]
         public ActionResult Asignar(int? id)
         {
@@ -396,53 +489,66 @@ namespace EscuelaCopalchi.UI.Controllers
                 return RedirectToAction("Index");
             }
 
-            AsignarRolViewModel modelo = new AsignarRolViewModel();
+            AsignarRolViewModel modelo =
+                new AsignarRolViewModel();
 
-            using (SqlConnection con = new SqlConnection(conexion))
+            using (SqlConnection con =
+                   new SqlConnection(conexion))
             {
                 con.Open();
 
-
+                // Obtener información del rol
                 string sqlRol = @"
-            SELECT id_rol, nombre, descripcion
-            FROM ROL
-            WHERE id_rol = @id";
+                    SELECT id_rol, nombre, descripcion
+                    FROM ROL
+                    WHERE id_rol = @id";
 
-                using (SqlCommand cmdRol = new SqlCommand(sqlRol, con))
+                using (SqlCommand cmdRol =
+                       new SqlCommand(sqlRol, con))
                 {
-                    cmdRol.Parameters.AddWithValue("@id", id.Value);
+                    cmdRol.Parameters.AddWithValue(
+                        "@id",
+                        id.Value
+                    );
 
-                    using (SqlDataReader reader = cmdRol.ExecuteReader())
+                    using (SqlDataReader reader =
+                           cmdRol.ExecuteReader())
                     {
                         if (!reader.Read())
                         {
                             return HttpNotFound();
                         }
 
-                        modelo.IdRol = Convert.ToInt32(reader["id_rol"]);
-                        modelo.NombreRol = reader["nombre"].ToString();
+                        modelo.IdRol =
+                            Convert.ToInt32(
+                                reader["id_rol"]
+                            );
+
+                        modelo.NombreRol =
+                            reader["nombre"].ToString();
 
                         modelo.DescripcionRol =
                             reader["descripcion"] == DBNull.Value
-                            ? ""
-                            : reader["descripcion"].ToString();
+                                ? ""
+                                : reader["descripcion"].ToString();
                     }
                 }
 
+                // Obtener docentes activos
                 string sqlUsuarios = @"
-            SELECT
-                u.id_usuario,
-                u.nombre,
-                u.apellido1,
-                u.apellido2,
-                u.correo,
-                u.id_rol
-            FROM USUARIO u
-            INNER JOIN DOCENTE d
-                ON d.id_usuario = u.id_usuario
-            WHERE u.estado = 1
-              AND d.estado = 1
-            ORDER BY u.nombre, u.apellido1";
+                    SELECT
+                        u.id_usuario,
+                        u.nombre,
+                        u.apellido1,
+                        u.apellido2,
+                        u.correo,
+                        u.id_rol
+                    FROM USUARIO u
+                    INNER JOIN DOCENTE d
+                        ON d.id_usuario = u.id_usuario
+                    WHERE u.estado = 1
+                    AND d.estado = 1
+                    ORDER BY u.nombre, u.apellido1";
 
                 using (SqlCommand cmdUsuarios =
                        new SqlCommand(sqlUsuarios, con))
@@ -454,8 +560,8 @@ namespace EscuelaCopalchi.UI.Controllers
                         {
                             string apellido2 =
                                 reader["apellido2"] == DBNull.Value
-                                ? ""
-                                : reader["apellido2"].ToString();
+                                    ? ""
+                                    : reader["apellido2"].ToString();
 
                             modelo.Usuarios.Add(
                                 new UsuarioAsignacionViewModel
@@ -490,14 +596,16 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
-
+        // =========================================================
         // ASIGNAR ROL - GUARDAR
-
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Asignar(AsignarRolViewModel modelo)
+        public ActionResult Asignar(
+            AsignarRolViewModel modelo)
         {
-            if (modelo == null || modelo.IdRol <= 0)
+            if (modelo == null ||
+                modelo.IdRol <= 0)
             {
                 TempData["Error"] =
                     "No fue posible identificar el rol seleccionado.";
@@ -505,7 +613,8 @@ namespace EscuelaCopalchi.UI.Controllers
                 return RedirectToAction("Index");
             }
 
-            List<int> seleccionados = new List<int>();
+            List<int> seleccionados =
+                new List<int>();
 
             if (modelo.Usuarios != null)
             {
@@ -513,20 +622,23 @@ namespace EscuelaCopalchi.UI.Controllers
                 {
                     if (usuario.Seleccionado)
                     {
-                        seleccionados.Add(usuario.IdUsuario);
+                        seleccionados.Add(
+                            usuario.IdUsuario
+                        );
                     }
                 }
             }
 
-            using (SqlConnection con = new SqlConnection(conexion))
+            using (SqlConnection con =
+                   new SqlConnection(conexion))
             {
                 con.Open();
 
-
+                // Verificar que exista el rol
                 string sqlRol = @"
-            SELECT COUNT(*)
-            FROM ROL
-            WHERE id_rol = @idRol";
+                    SELECT COUNT(*)
+                    FROM ROL
+                    WHERE id_rol = @idRol";
 
                 using (SqlCommand cmdRol =
                        new SqlCommand(sqlRol, con))
@@ -537,7 +649,9 @@ namespace EscuelaCopalchi.UI.Controllers
                     );
 
                     int existe =
-                        Convert.ToInt32(cmdRol.ExecuteScalar());
+                        Convert.ToInt32(
+                            cmdRol.ExecuteScalar()
+                        );
 
                     if (existe == 0)
                     {
@@ -548,21 +662,23 @@ namespace EscuelaCopalchi.UI.Controllers
                     }
                 }
 
-
+                // Asignar rol a usuarios seleccionados
                 foreach (int idUsuario in seleccionados)
                 {
                     string sqlActualizar = @"
-                UPDATE u
-                SET u.id_rol = @idRol
-                FROM USUARIO u
-                INNER JOIN DOCENTE d
-                    ON d.id_usuario = u.id_usuario
-                WHERE u.id_usuario = @idUsuario
-                  AND u.estado = 1
-                  AND d.estado = 1";
+                        UPDATE u
+                        SET u.id_rol = @idRol
+                        FROM USUARIO u
+                        INNER JOIN DOCENTE d
+                            ON d.id_usuario = u.id_usuario
+                        WHERE u.id_usuario = @idUsuario
+                        AND u.estado = 1
+                        AND d.estado = 1";
 
                     using (SqlCommand cmd =
-                           new SqlCommand(sqlActualizar, con))
+                           new SqlCommand(
+                               sqlActualizar,
+                               con))
                     {
                         cmd.Parameters.AddWithValue(
                             "@idRol",
@@ -586,10 +702,9 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
-
-
-        // PERMISOS
-
+        // =========================================================
+        // PERMISOS - MOSTRAR
+        // =========================================================
         [HttpGet]
         public ActionResult Permisos(int? id)
         {
@@ -606,11 +721,11 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 con.Open();
 
-
+                // Obtener información del rol
                 string sqlRol = @"
-            SELECT id_rol, nombre, descripcion
-            FROM ROL
-            WHERE id_rol = @id";
+                    SELECT id_rol, nombre, descripcion
+                    FROM ROL
+                    WHERE id_rol = @id";
 
                 using (SqlCommand cmd =
                        new SqlCommand(sqlRol, con))
@@ -638,36 +753,39 @@ namespace EscuelaCopalchi.UI.Controllers
 
                         modelo.DescripcionRol =
                             reader["descripcion"] == DBNull.Value
-                            ? ""
-                            : reader["descripcion"].ToString();
+                                ? ""
+                                : reader["descripcion"].ToString();
                     }
                 }
 
+                // Obtener permisos
                 string sqlPermisos = @"
-            SELECT
-                p.id_permiso,
-                p.nombre,
-                p.descripcion,
-                p.modulo,
+                    SELECT
+                        p.id_permiso,
+                        p.nombre,
+                        p.descripcion,
+                        p.modulo,
 
-                CASE
-                    WHEN rp.id_permiso IS NULL
-                    THEN 0
-                    ELSE 1
-                END AS seleccionado
+                        CASE
+                            WHEN rp.id_permiso IS NULL
+                            THEN 0
+                            ELSE 1
+                        END AS seleccionado
 
-            FROM PERMISO p
+                    FROM PERMISO p
 
-            LEFT JOIN ROL_PERMISO rp
-                ON p.id_permiso = rp.id_permiso
-                AND rp.id_rol = @idRol
+                    LEFT JOIN ROL_PERMISO rp
+                        ON p.id_permiso = rp.id_permiso
+                        AND rp.id_rol = @idRol
 
-            WHERE p.estado = 1
+                    WHERE p.estado = 1
 
-            ORDER BY p.modulo, p.nombre";
+                    ORDER BY p.modulo, p.nombre";
 
                 using (SqlCommand cmd =
-                       new SqlCommand(sqlPermisos, con))
+                       new SqlCommand(
+                           sqlPermisos,
+                           con))
                 {
                     cmd.Parameters.AddWithValue(
                         "@idRol",
@@ -693,8 +811,8 @@ namespace EscuelaCopalchi.UI.Controllers
                                     Descripcion =
                                         reader["descripcion"]
                                         == DBNull.Value
-                                        ? ""
-                                        : reader["descripcion"]
+                                            ? ""
+                                            : reader["descripcion"]
                                                 .ToString(),
 
                                     Modulo =
@@ -715,12 +833,16 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
 
+        // =========================================================
+        // PERMISOS - GUARDAR
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Permisos(
             RolPermisosViewModel modelo)
         {
-            if (modelo == null || modelo.IdRol <= 0)
+            if (modelo == null ||
+                modelo.IdRol <= 0)
             {
                 TempData["Error"] =
                     "No fue posible identificar el rol.";
@@ -738,10 +860,10 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 try
                 {
-
+                    // Eliminar permisos actuales
                     string sqlEliminar = @"
-                DELETE FROM ROL_PERMISO
-                WHERE id_rol = @idRol";
+                        DELETE FROM ROL_PERMISO
+                        WHERE id_rol = @idRol";
 
                     using (SqlCommand cmd =
                            new SqlCommand(
@@ -757,7 +879,7 @@ namespace EscuelaCopalchi.UI.Controllers
                         cmd.ExecuteNonQuery();
                     }
 
-
+                    // Insertar permisos seleccionados
                     if (modelo.Permisos != null)
                     {
                         foreach (var permiso
@@ -769,10 +891,10 @@ namespace EscuelaCopalchi.UI.Controllers
                             }
 
                             string sqlInsertar = @"
-                        INSERT INTO ROL_PERMISO
-                            (id_rol, id_permiso)
-                        VALUES
-                            (@idRol, @idPermiso)";
+                                INSERT INTO ROL_PERMISO
+                                    (id_rol, id_permiso)
+                                VALUES
+                                    (@idRol, @idPermiso)";
 
                             using (SqlCommand cmd =
                                    new SqlCommand(
@@ -806,7 +928,10 @@ namespace EscuelaCopalchi.UI.Controllers
 
                     return RedirectToAction(
                         "Permisos",
-                        new { id = modelo.IdRol }
+                        new
+                        {
+                            id = modelo.IdRol
+                        }
                     );
                 }
             }
