@@ -1,0 +1,30 @@
+.gn-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin:28px 0 20px}
+.gn-title{font-weight:700;color:#133C55;margin-bottom:2px}
+.gn-sub{color:#6c757d;margin:0}
+.gn-btn{background:#133C55;border-color:#133C55;color:#fff;font-weight:600}
+.gn-btn:hover{background:#386FA4;border-color:#386FA4;color:#fff}
+.gn-btn-out{border:1px solid #133C55;color:#133C55;font-weight:600;background:#fff}
+.gn-btn-out:hover{background:#133C55;color:#fff}
+.gn-stat{background:#fff;border:1px solid #e3e8ee;border-radius:10px;padding:18px 20px;display:flex;flex-direction:column}
+.gn-stat-label{font-size:.8rem;color:#6c757d;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.gn-stat-value{font-size:1.8rem;font-weight:700;color:#133C55}
+.gn-stat-alert{color:#dc3545}
+.gn-card{background:#fff;border:1px solid #e3e8ee;border-radius:10px;padding:16px;margin-bottom:20px}
+.gn-filters{background:#fff;border:1px solid #e3e8ee;border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.gn-table-wrap{background:#fff;border:1px solid #e3e8ee;border-radius:10px;padding:4px 8px;margin-bottom:40px}
+.gn-table thead th{color:#6c757d;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid #e3e8ee;font-weight:600;white-space:nowrap}
+.gn-table td{border-bottom:1px solid #f0f2f5}
+.gn-link{color:#133C55;font-weight:600;font-size:.85rem;text-decoration:none}
+.gn-link:hover{text-decoration:underline}
+.gn-input{width:84px;text-align:center}
+.gn-input.is-low{border-color:#dc3545;background:#fdeceb}
+.gn-final{font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block}
+.gn-final.ok{background:#E6F7EC;color:#198754}
+.gn-final.bad{background:#fdeceb;color:#dc3545}
+.gn-final.none{background:#f0f2f5;color:#6c757d}
+.gn-badge{font-weight:600}
+.gn-badge-ok{background:#E6F7EC;color:#198754}
+.gn-badge-warn{background:#fff6e5;color:#b8860b}
+.gn-badge-off{background:#f0f2f5;color:#6c757d}
+.gn-badge-ext{background:#e8f0fa;color:#386FA4}
+.gn-pct{font-size:.75rem;color:#6c757d;font-weight:400;display:block}

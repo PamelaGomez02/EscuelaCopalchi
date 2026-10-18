@@ -1,338 +1,144 @@
-﻿@{
-    ViewBag.Title = "Registrar calificaciones";
+@model EscuelaCopalchi.UI.Models.GestionNotas.RegistrarNotasViewModel
+@{
+    ViewBag.Title = "Registrar notas";
+    var ci = System.Globalization.CultureInfo.InvariantCulture;
+    int k = 0;
 }
-
-<main>
-
-    <section class="grades-header">
-
-        <div class="container">
-
-            <div class="grades-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-
-                <a href="@Url.Action("Index", "GestionNotas")">
-                    Gestión de notas
-                </a>
-
-                <i class="bi bi-chevron-right"></i>
-
-                <span>Registrar</span>
-            </div>
-
-            <h1 class="grades-title">
-                <i class="bi bi-pencil-square me-2"></i>
-                Registrar calificaciones
-            </h1>
-
-            <p class="grades-subtitle">
-                Ingresa las calificaciones de los estudiantes del grupo seleccionado.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <section class="container pb-5">
-
-        <div class="grades-card">
-
-            <div class="filters">
-
-                <div>
-                    <label class="form-label">Grupo</label>
-
-                    <select class="form-select">
-                        <option selected>Primer grado A</option>
-                        <option>Segundo grado A</option>
-                    </select>
-                </div>
-
-
-                <div>
-                    <label class="form-label">Asignatura</label>
-
-                    <select class="form-select">
-                        <option selected>Matemáticas</option>
-                        <option>Español</option>
-                        <option>Ciencias</option>
-                    </select>
-                </div>
-
-
-                <div>
-                    <label class="form-label">Periodo</label>
-
-                    <select class="form-select">
-                        <option selected>I Trimestre</option>
-                        <option>II Trimestre</option>
-                        <option>III Trimestre</option>
-                    </select>
-                </div>
-
-            </div>
-
-
-            <div class="table-responsive">
-
-                <table class="table grades-table align-middle">
-
-                    <thead>
-                        <tr>
-                            <th>Estudiante</th>
-                            <th>Tarea 1</th>
-                            <th>Trabajo</th>
-                            <th>Examen</th>
-                            <th>Nota final</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>
-                                <strong>María González</strong>
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="90" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="85" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="92" />
-                            </td>
-
-                            <td>
-                                <strong class="final-grade approved">
-                                    89
-                                </strong>
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                <strong>Juan Pérez</strong>
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="60" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="62" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       class="form-control grade-input"
-                                       min="0"
-                                       max="100"
-                                       value="58" />
-                            </td>
-
-                            <td>
-                                <strong class="final-grade failed">
-                                    60
-                                </strong>
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "GestionNotas")"
-                   class="btn btn-light">
-                    Cancelar
-                </a>
-
-                <button type="button"
-                        class="btn btn-cop-primary">
-
-                    <i class="bi bi-save me-1"></i>
-                    Guardar calificaciones
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
 @section styles {
+    <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+}
+<main>
+    <a href="@Url.Action("Index")" class="cop-back-link"><i class="bi bi-arrow-left"></i> Volver a mis grupos</a>
 
-    <style>
+    <div class="gn-header">
+        <div>
+            <h2 class="gn-title">Registrar notas</h2>
+            <p class="gn-sub">Solo el docente de cada grupo puede ingresar o modificar calificaciones.</p>
+        </div>
+        <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i> Importar Excel</a>
+    </div>
 
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
-        }
+    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
 
-        body {
-            background: var(--cop-page-bg);
-        }
+    @if (Model.Grupos.Count > 0)
+    {
+        <form method="get" class="gn-filters">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <select name="grupo" class="form-select" onchange="this.form.submit()">
+                        @foreach (var g in Model.Grupos)
+                        {
+                            <option value="@g.IdGrupo" @(g.IdGrupo == Model.IdGrupo ? "selected" : "")>@g.Grupo (@g.Anio)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <select name="asignatura" class="form-select" onchange="this.form.submit()">
+                        @foreach (var a in Model.Asignaturas)
+                        {
+                            <option @(a == Model.Asignatura ? "selected" : "")>@a</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="trimestre" class="form-select" onchange="this.form.submit()">
+                        @for (int t = 1; t <= 3; t++)
+                        {
+                            <option value="@t" @(t == Model.Trimestre ? "selected" : "")>Trimestre @t</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
 
-        .grades-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
-        }
-
-        .grades-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
-
-            .grades-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
-
-        .grades-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .grades-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-        .grades-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .filters {
-            display: flex;
-            gap: 20px;
-            padding: 20px 22px;
-            background: #f8fafc;
-            border-bottom: 1px solid #edf0f3;
-        }
-
-            .filters > div {
-                width: 220px;
-            }
-
-        .form-label {
-            font-size: .85rem;
-            font-weight: 600;
-            color: #344054;
-        }
-
-        .grades-table {
-            margin: 0;
-        }
-
-            .grades-table th {
-                background: #f8fafc;
-                color: #53616d;
-                text-transform: uppercase;
-                font-size: .8rem;
-                padding: 13px 17px;
-            }
-
-            .grades-table td {
-                padding: 14px 17px;
-            }
-
-        .grade-input {
-            max-width: 100px;
-        }
-
-        .final-grade {
-            display: inline-block;
-            min-width: 42px;
-            text-align: center;
-            padding: 5px 8px;
-            border-radius: 7px;
-        }
-
-            .final-grade.approved {
-                background: #d1e7dd;
-                color: #0f5132;
-            }
-
-            .final-grade.failed {
-                background: #f8d7da;
-                color: #842029;
-            }
-
-        .form-actions {
-            padding: 20px 22px;
-            border-top: 1px solid #edf0f3;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .btn-cop-primary {
-            background: var(--cop-primary);
-            color: white;
-            border-color: var(--cop-primary);
-        }
-
-        @@media(max-width:768px) {
-
-            .filters {
-                flex-direction: column;
-            }
-
-                .filters > div {
-                    width: 100%;
+        <div class="gn-card">
+            <a class="gn-link" data-bs-toggle="collapse" href="#gnNuevaEval" role="button"><i class="bi bi-plus-circle me-1"></i> Crear evaluación (porcentaje usado: @Model.PorcentajeTotal.ToString("0.##", ci)%)</a>
+            <div class="collapse mt-3" id="gnNuevaEval">
+                @using (Html.BeginForm("CrearEvaluacion", "GestionNotas", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idGrupo" value="@Model.IdGrupo" />
+                    <input type="hidden" name="asignatura" value="@Model.Asignatura" />
+                    <input type="hidden" name="trimestre" value="@Model.Trimestre" />
+                    <div class="row g-2">
+                        <div class="col-md-4"><input name="nombre" class="form-control" placeholder="Nombre (ej. Examen 1)" required maxlength="100" /></div>
+                        <div class="col-md-2"><input name="porcentaje" class="form-control" placeholder="% valor" required /></div>
+                        <div class="col-md-2"><input name="notaMaxima" class="form-control" value="100" placeholder="Nota máx." /></div>
+                        <div class="col-md-2"><input type="date" name="fecha" class="form-control" /></div>
+                        <div class="col-md-2"><button class="btn gn-btn w-100">Crear</button></div>
+                    </div>
                 }
-        }
-    </style>
+            </div>
+        </div>
 
+        if (Model.Evaluaciones.Count == 0)
+        {
+            <div class="alert alert-info">Este grupo no tiene evaluaciones para la asignatura y trimestre seleccionados. Cree una arriba.</div>
+        }
+        else
+        {
+            using (Html.BeginForm("Registrar", "GestionNotas", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idGrupo" value="@Model.IdGrupo" />
+                <input type="hidden" name="asignatura" value="@Model.Asignatura" />
+                <input type="hidden" name="trimestre" value="@Model.Trimestre" />
+                <div class="table-responsive gn-table-wrap">
+                    <table class="table align-middle gn-table">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                @foreach (var e in Model.Evaluaciones)
+                                {
+                                    <th class="text-center">@e.Nombre<span class="gn-pct">@e.Porcentaje.ToString("0.##", ci)% · máx @e.NotaMaxima.ToString("0.##", ci)</span></th>
+                                }
+                                <th class="text-center">Nota final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var est in Model.Estudiantes)
+                            {
+                                var nf = est.NotaFinal;
+                                <tr>
+                                    <td><strong>@est.NombreCompleto</strong><span class="gn-pct">@est.Identificacion</span></td>
+                                    @foreach (var n in est.Notas)
+                                    {
+                                        <td class="text-center">
+                                            <input type="hidden" name="notas[@k].IdEvaluacion" value="@n.IdEvaluacion" />
+                                            <input type="hidden" name="notas[@k].IdEstudiante" value="@est.IdEstudiante" />
+                                            <input type="text" inputmode="decimal" name="notas[@k].Nota" class="form-control form-control-sm gn-input d-inline-block"
+                                                   value="@(n.Nota.HasValue ? n.Nota.Value.ToString("0.##", ci) : "")" data-max="@n.NotaMaxima.ToString("0.##", ci)" />
+                                        </td>
+                                        k++;
+                                    }
+                                    <td class="text-center">
+                                        <span class="gn-final @(nf == null ? "none" : nf >= 70 ? "ok" : "bad")">@(nf == null ? "—" : nf.Value.ToString("0.#", ci))</span>
+                                    </td>
+                                </tr>
+                            }
+                            @if (Model.Estudiantes.Count == 0)
+                            {
+                                <tr><td colspan="@(Model.Evaluaciones.Count + 2)" class="text-center text-muted py-4">El grupo no tiene estudiantes matriculados.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end mb-5">
+                    <button class="btn gn-btn" @(Model.Estudiantes.Count == 0 ? "disabled" : "")><i class="bi bi-save me-1"></i> Guardar notas</button>
+                </div>
+            }
+        }
+    }
+</main>
+@section scripts {
+    <script>
+        document.querySelectorAll('.gn-input').forEach(function (i) {
+            i.addEventListener('input', function () {
+                var v = parseFloat(this.value.replace(',', '.')), m = parseFloat(this.dataset.max);
+                this.classList.toggle('is-low', !isNaN(v) && (v < 0 || v > m));
+            });
+        });
+    </script>
 }
