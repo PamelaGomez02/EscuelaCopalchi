@@ -39,6 +39,9 @@ namespace EscuelaCopalchi.UI.Models.Estudiantes
 
         public DateTime? FechaBaja{ get; set; }
 
+        public bool EsValido { get; set; }
+
+        public string EstadoImportacion { get; set; }
 
         public bool Estado { get; set; }
 

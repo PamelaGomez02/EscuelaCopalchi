@@ -13,35 +13,43 @@ namespace EscuelaCopalchi.UI.Controllers
     // Entra quien tenga REGISTRAR_NOTAS (docente) o VER_TODAS_NOTAS (director / administrador).
     // Registrar, crear evaluaciones y editar exigen REGISTRAR_NOTAS y además que el usuario
     // sea el docente del grupo (el procedimiento almacenado lo vuelve a validar).
-    [PermisoRequerido("REGISTRAR_NOTAS", "VER_TODAS_NOTAS")]
+    [NotasAcceso]
     public class GestionNotasController : Controller
     {
         private readonly NotasRepository repo = new NotasRepository();
-        private int? idDocenteCache;
 
         // ---------------------------------------------------------------
-        // Utilidades de sesión
+        // Utilidades de sesión (sesión propia de Gestión de notas)
         // ---------------------------------------------------------------
+        private NotasSesion Sesion
+        {
+            get { return NotasSesion.Obtener(Session); }
+        }
+
         private int IdUsuario()
         {
-            var s = SesionUsuario.Obtener(Session);
+            var s = Sesion;
             return s == null ? 0 : s.IdUsuario;
         }
 
         private bool Tiene(string permiso)
         {
-            var s = SesionUsuario.Obtener(Session);
-            return s != null && s.Permisos != null && s.Permisos.Contains(permiso);
+            var s = Sesion;
+            if (s == null) return false;
+            if (permiso == "REGISTRAR_NOTAS") return s.PuedeRegistrar;
+            if (permiso == "VER_TODAS_NOTAS") return s.VeTodo;
+            return false;
         }
 
-        // Id de DOCENTE del usuario actual (0 si no es docente)
+        // Alcance para escribir (registrar, importar, modificar):
+        // > 0 = solo los grupos de ese docente, 0 = todos los grupos (Director), -1 = no puede escribir.
         private int IdDocente()
         {
-            if (!idDocenteCache.HasValue)
-            {
-                idDocenteCache = repo.ObtenerIdDocente(IdUsuario());
-            }
-            return idDocenteCache.Value;
+            var s = Sesion;
+            if (s == null) return -1;
+            if (s.EsDirector) return 0;
+            if (s.EsDocente) return s.IdDocente > 0 ? s.IdDocente : -1;
+            return -1;
         }
 
         // Alcance para consultar: 0 = todos los grupos (VER_TODAS_NOTAS),
@@ -64,6 +72,50 @@ namespace EscuelaCopalchi.UI.Controllers
         private ActionResult VolverARegistrar(int idGrupo, string asignatura, int trimestre)
         {
             return RedirectToAction("Registrar", new { grupo = idGrupo, asignatura = asignatura, trimestre = trimestre });
+        }
+
+        // ---------------------------------------------------------------
+        // ACCESO: elegir usuario e ingresar contraseña
+        // ---------------------------------------------------------------
+        [HttpGet]
+        public ActionResult Acceso()
+        {
+            var lista = new List<UsuarioAccesoItem>();
+
+            try { lista = repo.ListarUsuariosAcceso(); }
+            catch (Exception ex) { ViewBag.Error = ex.Message; }
+
+            return View(lista);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Acceso(int idUsuario = 0, string contrasena = "")
+        {
+            try
+            {
+                var usuario = idUsuario > 0 ? repo.ObtenerUsuarioAcceso(idUsuario) : null;
+
+                if (usuario == null || !repo.VerificarContrasena(idUsuario, contrasena))
+                {
+                    TempData["Error"] = "Usuario o contraseña incorrectos.";
+                    return RedirectToAction("Acceso");
+                }
+
+                NotasSesion.Guardar(Session, usuario);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Acceso");
+            }
+        }
+
+        public ActionResult Salir()
+        {
+            NotasSesion.Cerrar(Session);
+            return RedirectToAction("Acceso");
         }
 
         // ---------------------------------------------------------------
@@ -101,14 +153,14 @@ namespace EscuelaCopalchi.UI.Controllers
         // REGISTRAR notas
         // ---------------------------------------------------------------
         [HttpGet]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult Registrar(int? grupo, string asignatura, int trimestre = 1)
         {
             int idDocente = IdDocente();
 
-            if (idDocente <= 0)
+            if (idDocente < 0)
             {
-                TempData["Error"] = "Su usuario no tiene un registro de docente.";
+                TempData["Error"] = "Su usuario no tiene un registro de docente ni permiso para registrar notas.";
                 return RedirectToAction("Index");
             }
 
@@ -147,14 +199,14 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult Registrar(int idGrupo, string asignatura, int trimestre, List<NotaInput> notas)
         {
             int idDocente = IdDocente();
 
-            if (idDocente <= 0)
+            if (idDocente < 0)
             {
-                TempData["Error"] = "Su usuario no tiene un registro de docente.";
+                TempData["Error"] = "Su usuario no tiene un registro de docente ni permiso para registrar notas.";
                 return RedirectToAction("Index");
             }
 
@@ -204,16 +256,16 @@ namespace EscuelaCopalchi.UI.Controllers
         // ---------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult CrearEvaluacion(
             int idGrupo, string asignatura, int trimestre, string nombre,
             string porcentaje, string fecha, string notaMaxima)
         {
             int idDocente = IdDocente();
 
-            if (idDocente <= 0)
+            if (idDocente < 0)
             {
-                TempData["Error"] = "Su usuario no tiene un registro de docente.";
+                TempData["Error"] = "Su usuario no tiene un registro de docente ni permiso para registrar notas.";
                 return RedirectToAction("Index");
             }
 
@@ -264,16 +316,71 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         // ---------------------------------------------------------------
+        // EDITAR / ELIMINAR EVALUACIÓN (desde la pantalla Registrar)
+        // ---------------------------------------------------------------
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NotasAcceso(SoloDocente = true)]
+        public ActionResult EditarEvaluacion(
+            int idEvaluacion, int idGrupo, string asignatura, int trimestre, string nombre,
+            string porcentaje, string fecha, string notaMaxima)
+        {
+            nombre = (nombre ?? "").Trim();
+
+            decimal pct, max = 100m;
+            if (nombre == "" || !TryParseNumero(porcentaje, out pct))
+            {
+                TempData["Error"] = "El nombre y el porcentaje son obligatorios y deben ser válidos.";
+                return VolverARegistrar(idGrupo, asignatura, trimestre);
+            }
+
+            if (!string.IsNullOrWhiteSpace(notaMaxima) && !TryParseNumero(notaMaxima, out max))
+            {
+                TempData["Error"] = "La nota máxima no es válida.";
+                return VolverARegistrar(idGrupo, asignatura, trimestre);
+            }
+
+            DateTime? fechaEval = null;
+            DateTime f;
+            if (!string.IsNullOrWhiteSpace(fecha)
+                && DateTime.TryParse(fecha, CultureInfo.InvariantCulture, DateTimeStyles.None, out f))
+            {
+                fechaEval = f;
+            }
+
+            string resultado = repo.ActualizarEvaluacion(
+                idEvaluacion, nombre, pct, fechaEval, max, IdUsuario(), IdDocente());
+
+            if (resultado == NotasRepository.Ok) TempData["Success"] = "Evaluación actualizada correctamente.";
+            else TempData["Error"] = resultado;
+
+            return VolverARegistrar(idGrupo, asignatura, trimestre);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NotasAcceso(SoloDocente = true)]
+        public ActionResult EliminarEvaluacion(int idEvaluacion, int idGrupo, string asignatura, int trimestre)
+        {
+            string resultado = repo.EliminarEvaluacion(idEvaluacion, IdUsuario(), IdDocente());
+
+            if (resultado == NotasRepository.Ok) TempData["Success"] = "Evaluación eliminada correctamente.";
+            else TempData["Error"] = resultado;
+
+            return VolverARegistrar(idGrupo, asignatura, trimestre);
+        }
+
+        // ---------------------------------------------------------------
         // EDITAR una nota (se llega desde el historial)
         // ---------------------------------------------------------------
         private bool EsDelDocente(CalificacionDetalle d)
         {
             int doc = IdDocente();
-            return doc > 0 && d.IdDocente.HasValue && d.IdDocente.Value == doc;
+            return doc == 0 || (doc > 0 && d.IdDocente.HasValue && d.IdDocente.Value == doc);
         }
 
         [HttpGet]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult Editar(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Historial");
@@ -286,7 +393,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 if (!EsDelDocente(detalle))
                 {
-                    TempData["Error"] = "Solo el docente del grupo puede modificar esta calificación.";
+                    TempData["Error"] = "Solo el docente del grupo (o el director) puede modificar esta calificación.";
                     return RedirectToAction("Historial");
                 }
 
@@ -301,7 +408,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult Editar(int idCalificacion, string nota, string observacion)
         {
             try
@@ -312,7 +419,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 if (!EsDelDocente(detalle))
                 {
-                    TempData["Error"] = "Solo el docente del grupo puede modificar esta calificación.";
+                    TempData["Error"] = "Solo el docente del grupo (o el director) puede modificar esta calificación.";
                     return RedirectToAction("Historial");
                 }
 
@@ -402,6 +509,73 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         // ---------------------------------------------------------------
+        // EXPORTAR a Excel
+        // ---------------------------------------------------------------
+        private const string TipoXlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        // Todos los estudiantes del grupo: hoja resumen + una hoja por estudiante
+        public ActionResult ExportarGrupo(int grupo = 0)
+        {
+            try
+            {
+                int alcance = AlcanceLectura();
+
+                if (alcance < 0 || grupo <= 0)
+                {
+                    TempData["Error"] = "Seleccione un grupo para exportar.";
+                    return RedirectToAction("Historial");
+                }
+
+                var filas = ReporteNotas.Obtener(alcance, grupo, 0);
+
+                if (filas.Count == 0)
+                {
+                    TempData["Error"] = "No hay estudiantes matriculados en el grupo (o no tiene acceso a él).";
+                    return RedirectToAction("Historial", new { grupo = grupo });
+                }
+
+                string nombre = "Notas_" + ReporteNotas.NombreArchivo(filas[0].Grupo) + "_" + filas[0].Anio + ".xlsx";
+                return File(ReporteNotas.LibroGrupo(filas), TipoXlsx, nombre);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "No se pudo exportar: " + ex.Message;
+                return RedirectToAction("Historial", new { grupo = grupo });
+            }
+        }
+
+        // Un estudiante: sus datos, nota final de cada materia por trimestre y el detalle de evaluaciones
+        public ActionResult ExportarEstudiante(int grupo = 0, int estudiante = 0)
+        {
+            try
+            {
+                int alcance = AlcanceLectura();
+
+                if (alcance < 0 || grupo <= 0 || estudiante <= 0)
+                {
+                    TempData["Error"] = "Seleccione un grupo y un estudiante para exportar.";
+                    return RedirectToAction("Historial", new { grupo = grupo });
+                }
+
+                var filas = ReporteNotas.Obtener(alcance, grupo, estudiante);
+
+                if (filas.Count == 0)
+                {
+                    TempData["Error"] = "No se encontró al estudiante en el grupo (o no tiene acceso a él).";
+                    return RedirectToAction("Historial", new { grupo = grupo });
+                }
+
+                string nombre = "Notas_" + ReporteNotas.NombreArchivo(filas[0].Estudiante) + ".xlsx";
+                return File(ReporteNotas.LibroEstudiante(filas), TipoXlsx, nombre);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "No se pudo exportar: " + ex.Message;
+                return RedirectToAction("Historial", new { grupo = grupo });
+            }
+        }
+
+        // ---------------------------------------------------------------
         // IMPORTAR EXCEL
         // ---------------------------------------------------------------
         private static string Celda(object v)
@@ -462,12 +636,12 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpGet]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarExcel(int? grupo, string asignatura, int trimestre = 1)
         {
-            if (IdDocente() <= 0)
+            if (IdDocente() < 0)
             {
-                TempData["Error"] = "Su usuario no tiene un registro de docente.";
+                TempData["Error"] = "Su usuario no tiene un registro de docente ni permiso para registrar notas.";
                 return RedirectToAction("Index");
             }
 
@@ -482,7 +656,7 @@ namespace EscuelaCopalchi.UI.Controllers
         // Plantilla: Identificacion | <una columna por evaluación del grupo, con el nombre exacto>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarEscuela(int idGrupo, string asignatura, int trimestre, HttpPostedFileBase archivo)
         {
             int idDocente = IdDocente();
@@ -492,7 +666,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 vm = CargarImportar(idGrupo, asignatura, trimestre);
 
-                if (idDocente <= 0 || archivo == null || archivo.ContentLength == 0)
+                if (idDocente < 0 || archivo == null || archivo.ContentLength == 0)
                 {
                     vm.Errores.Add("Seleccione un archivo .xlsx.");
                     return View("ImportarExcel", vm);
@@ -581,7 +755,7 @@ namespace EscuelaCopalchi.UI.Controllers
         // Plantilla: Identificacion | Escuela | Asignatura | Periodo | Anio | Nota   (estudiantes que vienen de otra escuela)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido("REGISTRAR_NOTAS")]
+        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarExterna(HttpPostedFileBase archivo)
         {
             int idDocente = IdDocente();
@@ -591,7 +765,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 vm = CargarImportar(null, null, 1);
 
-                if (idDocente <= 0 || archivo == null || archivo.ContentLength == 0)
+                if (idDocente < 0 || archivo == null || archivo.ContentLength == 0)
                 {
                     vm.Errores.Add("Seleccione un archivo .xlsx.");
                     return View("ImportarExcel", vm);

@@ -1,4 +1,4 @@
-@model List<EscuelaCopalchi.UI.Models.GestionNotas.GrupoNotasItem>
+﻿@model List<EscuelaCopalchi.UI.Models.GestionNotas.GrupoNotasItem>
 @{
     ViewBag.Title = "Gestión de notas";
     bool veTodo = ViewBag.VeTodo == true;
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
 }
 <main>
-    <a href="@Url.Action("Index", "Home")" class="cop-back-link"><i class="bi bi-arrow-left"></i> Volver al inicio</a>
+    @Html.Partial("_BarraNotas")
 
     <div class="gn-header">
         <div>
@@ -63,11 +63,12 @@
                             <span class="badge gn-badge @(g.Estado == "Completo" ? "gn-badge-ok" : g.Estado == "En proceso" ? "gn-badge-warn" : "gn-badge-off")">@g.Estado</span>
                         </td>
                         <td class="text-nowrap">
-                            @if (puedeRegistrar && !veTodo)
+                            @if (puedeRegistrar)
                             {
                                 <a class="gn-link me-2" href="@Url.Action("Registrar", new { grupo = g.IdGrupo })">Registrar</a>
                             }
                             <a class="gn-link" href="@Url.Action("Historial", new { grupo = g.IdGrupo })">Ver notas</a>
+                            <a class="gn-link ms-2" href="@Url.Action("ExportarGrupo", new { grupo = g.IdGrupo })"><i class="bi bi-file-earmark-excel"></i> Exportar</a>
                         </td>
                     </tr>
                 }
@@ -77,6 +78,9 @@
                 }
             </tbody>
         </table>
+    </div>
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index", "Home")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver al inicio</a>
     </div>
 </main>
 @section scripts {

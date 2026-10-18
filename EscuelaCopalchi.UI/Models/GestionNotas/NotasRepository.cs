@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -50,6 +50,52 @@ namespace EscuelaCopalchi.UI.Models.GestionNotas
         private static DateTime? FechaN(DataRow r, string col)
         {
             return r[col] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(r[col]);
+        }
+
+        // ---------- acceso (sesión propia del módulo) ----------
+        public List<UsuarioAccesoItem> ListarUsuariosAcceso()
+        {
+            return MapearAcceso(db.ejecutarProcedimiento(
+                "SP_GN_Acceso_Usuarios", new[] { "@id_usuario" }, new[] { "0" }));
+        }
+
+        public UsuarioAccesoItem ObtenerUsuarioAcceso(int idUsuario)
+        {
+            var l = MapearAcceso(db.ejecutarProcedimiento(
+                "SP_GN_Acceso_Usuarios", new[] { "@id_usuario" }, new[] { S(idUsuario) }));
+            return l.Count == 0 ? null : l[0];
+        }
+
+        private static List<UsuarioAccesoItem> MapearAcceso(DataTable dt)
+        {
+            var l = new List<UsuarioAccesoItem>();
+            if (dt == null) return l;
+
+            foreach (DataRow r in dt.Rows)
+            {
+                l.Add(new UsuarioAccesoItem
+                {
+                    IdUsuario = Int(r, "id_usuario"),
+                    NombreCompleto = Txt(r, "nombre_completo"),
+                    Identificacion = Txt(r, "identificacion"),
+                    Rol = Txt(r, "rol"),
+                    IdDocente = Int(r, "id_docente")
+                });
+            }
+            return l;
+        }
+
+        public bool VerificarContrasena(int idUsuario, string contrasena)
+        {
+            if (string.IsNullOrEmpty(contrasena)) return false;
+
+            DataTable dt = db.ejecutarProcedimiento(
+                "SP_ObtenerHashUsuario", new[] { "@id_usuario" }, new[] { S(idUsuario) });
+
+            if (dt == null || dt.Rows.Count == 0) return false;
+
+            try { return BCrypt.Net.BCrypt.Verify(contrasena, Txt(dt.Rows[0], "contrasena_hash")); }
+            catch (Exception) { return false; }
         }
 
         // ---------- docente ----------
@@ -189,6 +235,38 @@ namespace EscuelaCopalchi.UI.Models.GestionNotas
 
             return db.ejecutarProcedimiento_Save(
                 "SP_GN_Evaluacion_Insertar", nombres.ToArray(), valores.ToArray());
+        }
+
+        public string ActualizarEvaluacion(
+            int idEvaluacion, string nombre, decimal porcentaje, DateTime? fecha,
+            decimal notaMaxima, int idUsuario, int idDocente)
+        {
+            var nombres = new List<string>
+            {
+                "@id_evaluacion", "@nombre", "@porcentaje", "@nota_maxima", "@id_usuario", "@id_docente"
+            };
+
+            var valores = new List<string>
+            {
+                S(idEvaluacion), nombre, S(porcentaje), S(notaMaxima), S(idUsuario), S(idDocente)
+            };
+
+            if (fecha.HasValue)
+            {
+                nombres.Add("@fecha");
+                valores.Add(fecha.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+            }
+
+            return db.ejecutarProcedimiento_Save(
+                "SP_GN_Evaluacion_Actualizar", nombres.ToArray(), valores.ToArray());
+        }
+
+        public string EliminarEvaluacion(int idEvaluacion, int idUsuario, int idDocente)
+        {
+            return db.ejecutarProcedimiento_Save(
+                "SP_GN_Evaluacion_Eliminar",
+                new[] { "@id_evaluacion", "@id_usuario", "@id_docente" },
+                new[] { S(idEvaluacion), S(idUsuario), S(idDocente) });
         }
 
         // ---------- calificaciones ----------
@@ -333,7 +411,7 @@ namespace EscuelaCopalchi.UI.Models.GestionNotas
 
             return lista;
         }
-
+    
         // ---------- importación Excel ----------
         // Devuelve identificación (solo letras y dígitos) -> id_estudiante
         public Dictionary<string, int> BuscarEstudiantes(int idGrupo)

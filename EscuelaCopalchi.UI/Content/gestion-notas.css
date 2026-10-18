@@ -28,3 +28,8 @@
 .gn-badge-off{background:#f0f2f5;color:#6c757d}
 .gn-badge-ext{background:#e8f0fa;color:#386FA4}
 .gn-pct{font-size:.75rem;color:#6c757d;font-weight:400;display:block}
+.gn-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#fff;border:1px solid #e3e8ee;border-radius:10px;padding:10px 16px;margin:16px 0 0}
+.gn-btn-accent{background:#2E9E6B;border-color:#2E9E6B;color:#fff;font-weight:600}
+.gn-btn-accent:hover{background:#238a5a;border-color:#238a5a;color:#fff}
+.gn-detalle{background:#f7f9fc;border-top:1px solid #e3e8ee;border-bottom:1px solid #e3e8ee;padding:8px 16px 12px}
+.gn-detalle .table{background:transparent}

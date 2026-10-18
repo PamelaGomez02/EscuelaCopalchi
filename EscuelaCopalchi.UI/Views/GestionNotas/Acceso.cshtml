@@ -1,0 +1,69 @@
+﻿@model List<EscuelaCopalchi.UI.Models.GestionNotas.UsuarioAccesoItem>
+@{
+    ViewBag.Title = "Acceso a Gestión de notas";
+}
+@section styles {
+    <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+}
+<main>
+
+    <div class="gn-header">
+        <div>
+            <h2 class="gn-title">Gestión de notas</h2>
+            <p class="gn-sub">Seleccione su usuario e ingrese su contraseña para continuar.</p>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+
+    <div class="gn-card" style="max-width:520px">
+        @using (Html.BeginForm("Acceso", "GestionNotas", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Usuario</label>
+                <select name="idUsuario" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un usuario</option>
+                    @foreach (var grupo in Model.GroupBy(u => u.Rol))
+                    {
+                        <optgroup label="@grupo.Key">
+                            @foreach (var u in grupo)
+                            {
+                                <option value="@u.IdUsuario">@u.NombreCompleto · @u.Identificacion</option>
+                            }
+                        </optgroup>
+                    }
+                </select>
+                @if (!Model.Any())
+                {
+                    <div class="form-text text-danger">No hay usuarios activos con rol Director, Docente o Evaluación.</div>
+                }
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Contraseña</label>
+                <div class="input-group">
+                    <input type="password" id="gnPass" name="contrasena" class="form-control" required autocomplete="off" />
+                    <button type="button" class="btn btn-outline-secondary" id="gnVer" title="Mostrar u ocultar contraseña"><i class="bi bi-eye"></i></button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn gn-btn w-100"><i class="bi bi-box-arrow-in-right me-1"></i> Ingresar</button>
+        }
+    </div>
+
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index", "Home")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver al inicio</a>
+    </div>
+
+    <script>
+        document.getElementById('gnVer').addEventListener('click', function () {
+            var i = document.getElementById('gnPass'), ic = this.querySelector('i');
+            var ver = i.type === 'password';
+            i.type = ver ? 'text' : 'password';
+            ic.className = ver ? 'bi bi-eye-slash' : 'bi bi-eye';
+        });
+    </script>
+</main>

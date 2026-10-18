@@ -127,7 +127,31 @@ namespace EscuelaCopalchi.UI.Controllers
         {
             try
             {
+                bool cambiaPass = !string.IsNullOrEmpty(usuario.Contrasena)
+                                  || !string.IsNullOrEmpty(usuario.ConfirmarContrasena);
+
+                string errorPass = null;
+                if (cambiaPass)
+                {
+                    if (usuario.Contrasena == null || usuario.Contrasena.Length < 8)
+                        errorPass = "La contraseña debe tener al menos 8 caracteres.";
+                    else if (usuario.Contrasena != usuario.ConfirmarContrasena)
+                        errorPass = "Las contraseñas no coinciden.";
+                }
+
+                if (errorPass != null)
+                {
+                    ViewBag.Error = errorPass;
+                    ViewBag.Roles = rolRepository.ObtenerTodos();
+                    return View("~/Views/Usuarios/Editar.cshtml", usuario);
+                }
+
                 string resultado = repository.Actualizar(usuario);
+
+                if (resultado == "Se ha guardado correctamente" && cambiaPass)
+                {
+                    resultado = repository.CambiarContrasena(usuario.IdUsuario, usuario.Contrasena);
+                }
 
                 if (resultado == "Se ha guardado correctamente")
                 {

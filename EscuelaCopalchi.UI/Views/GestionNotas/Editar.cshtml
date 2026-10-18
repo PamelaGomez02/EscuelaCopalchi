@@ -1,4 +1,4 @@
-@model EscuelaCopalchi.UI.Models.GestionNotas.CalificacionDetalle
+﻿@model EscuelaCopalchi.UI.Models.GestionNotas.CalificacionDetalle
 @{
     ViewBag.Title = "Modificar calificación";
     var ci = System.Globalization.CultureInfo.InvariantCulture;
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
 }
 <main>
-    <a href="@Url.Action("Historial", new { grupo = Model.IdGrupo })" class="cop-back-link"><i class="bi bi-arrow-left"></i> Volver al historial</a>
+    @Html.Partial("_BarraNotas")
     <div class="gn-header">
         <div>
             <h2 class="gn-title">Modificar calificación</h2>

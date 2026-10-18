@@ -122,6 +122,37 @@ namespace EscuelaCopalchi.UI.Models.Usuarios
                 "SP_CambiarEstadoUsuario", parametros, valores);
         }
 
+        // Cambiar contraseña (se hashea aquí)
+        public string CambiarContrasena(int idUsuario, string contrasena)
+        {
+            string hash = BCrypt.Net.BCrypt.HashPassword(contrasena);
+
+            return db.ejecutarProcedimiento_Save(
+                "SP_CambiarContrasenaUsuario",
+                new[] { "@id_usuario", "@contrasena_hash" },
+                new[] { idUsuario.ToString(), hash });
+        }
+        // Verifica la contraseña contra el hash guardado
+        public bool VerificarContrasena(int idUsuario, string contrasena)
+        {
+            if (string.IsNullOrEmpty(contrasena)) return false;
+
+            DataTable dt = db.ejecutarProcedimiento(
+                "SP_ObtenerHashUsuario",
+                new[] { "@id_usuario" },
+                new[] { idUsuario.ToString() });
+
+            if (dt == null || dt.Rows.Count == 0) return false;
+
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(contrasena, dt.Rows[0]["contrasena_hash"].ToString());
+            }
+            catch (Exception)
+            {
+                return false;   // hash inválido (por ejemplo, usuarios de prueba sin contraseña real)
+            }
+        }
         private Usuario MapearFila(DataRow row)
         {
             return new Usuario

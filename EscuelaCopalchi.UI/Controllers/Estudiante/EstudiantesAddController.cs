@@ -480,110 +480,132 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult ImportarExcel(
-    HttpPostedFileBase archivoExcel,
-    string accion)
+        public ActionResult ImportarExcel(HttpPostedFileBase archivoExcel, string accion)
         {
-            if (archivoExcel == null)
-            {
-                TempData["Error"] =
-                    "Seleccione un archivo Excel.";
-
-                return View(
-                    "~/Views/Estudiantes/ImportarExcel.cshtml");
-            }
-
-            List<Estudiante> preview =
-                new List<Estudiante>();
-
-            using (var stream =
-                archivoExcel.InputStream)
-            {
-                using (var reader =
-                    ExcelDataReader.ExcelReaderFactory
-                    .CreateReader(stream))
-                {
-                    DataSet ds =
-                        reader.AsDataSet();
-
-                    DataTable tabla =
-                        ds.Tables[0];
-
-                    for (int fila = 1;
-                         fila < tabla.Rows.Count;
-                         fila++)
-                    {
-                        DataRow row =
-                            tabla.Rows[fila];
-
-                        Estudiante estudiante =
-                            new Estudiante();
-
-                        estudiante.Nombre =
-                            row[0].ToString();
-
-                        estudiante.Apellido1 =
-                            row[1].ToString();
-
-                        estudiante.Apellido2 =
-                            row[2].ToString();
-
-                        estudiante.Identificacion =
-                            row[3].ToString();
-
-                        estudiante.FechaNacimiento =
-                            Convert.ToDateTime(row[4]);
-
-                        estudiante.NombreEncargado =
-                            row[5].ToString();
-
-                        estudiante.Parentesco =
-                            row[6].ToString();
-
-                        estudiante.TelefonoEncargado =
-                            row[7].ToString();
-
-                        estudiante.CorreoEncargado =
-                            row[8].ToString();
-
-                        estudiante.Direccion =
-                            row[9].ToString();
-
-                        preview.Add(estudiante);
-                    }
-                }
-            }
-
             if (accion == "Cargar")
             {
-                Session["EstudiantesPreview"] =
-                    preview;
+                if (archivoExcel == null)
+                {
+                    TempData["Error"] = "Seleccione un archivo Excel.";
 
-                ViewBag.Preview =
-                    preview;
+                    return View("~/Views/Estudiantes/ImportarExcel.cshtml");
+                }
 
-                return View(
-                    "~/Views/Estudiantes/ImportarExcel.cshtml");
+                List<Estudiante> preview = new List<Estudiante>();
+
+                using (var stream = archivoExcel.InputStream)
+                {
+                    using (var reader =
+                        ExcelDataReader.ExcelReaderFactory.CreateReader(stream))
+                    {
+                        DataSet ds = reader.AsDataSet();
+
+                        DataTable tabla = ds.Tables[0];
+
+                        for (int fila = 1; fila < tabla.Rows.Count; fila++)
+                        {
+                            DataRow row = tabla.Rows[fila];
+
+                            Estudiante estudiante = new Estudiante();
+
+                            estudiante.Nombre = row[0].ToString();
+                            estudiante.Apellido1 = row[1].ToString();
+                            estudiante.Apellido2 = row[2].ToString();
+                            estudiante.Identificacion = row[3].ToString();
+                            estudiante.FechaNacimiento = Convert.ToDateTime(row[4]);
+                            estudiante.NombreEncargado = row[5].ToString();
+                            estudiante.Parentesco = row[6].ToString();
+                            estudiante.TelefonoEncargado = row[7].ToString();
+                            estudiante.CorreoEncargado = row[8].ToString();
+                            estudiante.Direccion = row[9].ToString();
+                            estudiante.Estado = true;
+
+                            string errores = "";
+
+                            if (string.IsNullOrWhiteSpace(estudiante.Identificacion))
+                            {
+                                errores += "Identificación requerida. ";
+                            }
+
+                            if (repository.ExisteIdentificacion(estudiante.Identificacion))
+                            {
+                                errores += "El estudiante ya existe en el sistema. ";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(estudiante.Nombre))
+                            {
+                                errores += "Nombre requerido. ";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(estudiante.Apellido1))
+                            {
+                                errores += "Primer apellido requerido. ";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(estudiante.NombreEncargado))
+                            {
+                                errores += "Encargado requerido. ";
+                            }
+
+                            if (string.IsNullOrWhiteSpace(estudiante.TelefonoEncargado))
+                            {
+                                errores += "Teléfono requerido. ";
+                            }
+
+                            if (string.IsNullOrEmpty(errores))
+                            {
+                                estudiante.EsValido = true;
+                                estudiante.EstadoImportacion = "Válido";
+                            }
+                            else
+                            {
+                                estudiante.EsValido = false;
+                                estudiante.EstadoImportacion = errores;
+                            }
+
+                            preview.Add(estudiante);
+                        }
+                    }
+                }
+
+                Session["EstudiantesPreview"] = preview;
+
+                ViewBag.Preview = preview;
+
+                return View("~/Views/Estudiantes/ImportarExcel.cshtml");
             }
+
             if (accion == "Importar")
             {
                 var estudiantes =
-                    Session["EstudiantesPreview"]
-                    as List<Estudiante>;
+                    Session["EstudiantesPreview"] as List<Estudiante>;
+
+                if (estudiantes == null || estudiantes.Count == 0)
+                {
+                    TempData["Error"] =
+                        "Debe cargar un archivo Excel y visualizar los datos antes de importarlos.";
+
+                    return RedirectToAction(
+                        "ImportarExcel");
+                }
 
                 if (estudiantes == null)
                 {
                     TempData["Error"] =
                         "Debe cargar un archivo antes de importar.";
 
-                    return RedirectToAction(
-                        "ImportarExcel");
+                    return RedirectToAction("ImportarExcel");
                 }
 
                 int guardados = 0;
 
                 foreach (var estudiante in estudiantes)
                 {
+                    if (!estudiante.EsValido)
+                    {
+                        continue;
+                    }
+
                     if (repository.ExisteIdentificacion(
                         estudiante.Identificacion))
                     {
@@ -591,32 +613,62 @@ namespace EscuelaCopalchi.UI.Controllers
                     }
 
                     string resultado =
-                        repository.Guardar(
-                            estudiante);
+                        repository.Guardar(estudiante);
 
-                    if (resultado ==
-                        "Se ha guardado correctamente")
+                    guardados++;
+                }
+
+                Session.Remove("EstudiantesPreview");
+
+                TempData["Success"] =
+                    guardados + " estudiantes importados correctamente.";
+
+                return RedirectToAction("Index");
+            }
+
+            return View("~/Views/Estudiantes/ImportarExcel.cshtml");
+        }
+
+        [HttpPost]
+        public ActionResult GuardarImportacion()
+        {
+            try
+            {
+                var lista = Session["EstudiantesPreview"]
+                    as List<Estudiante>;
+
+                if (lista == null || !lista.Any())
+                {
+                    TempData["Error"] =
+                        "No hay estudiantes para importar.";
+
+                    return RedirectToAction("ImportarExcel");
+                }
+
+                int guardados = 0;
+
+                foreach (var estudiante in lista)
+                {
+                    string resultado = repository.Guardar(estudiante);
+
+                    if (resultado == "Se ha guardado correctamente")
                     {
                         guardados++;
                     }
                 }
 
-                Session.Remove(
-                    "EstudiantesPreview");
+                Session.Remove("EstudiantesPreview");
 
                 TempData["Success"] =
-                    guardados +
-                    " estudiantes importados correctamente.";
+                    $"{guardados} estudiantes fueron importados correctamente.";
 
-                return RedirectToAction(
-                    "Index");
+                return RedirectToAction("Index");
             }
-
-            TempData["Success"] =
-                preview.Count +
-                " estudiantes importados correctamente.";
-
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("ImportarExcel");
+            }
         }
     }
 }

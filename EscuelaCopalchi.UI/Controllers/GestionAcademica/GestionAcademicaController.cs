@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
+using EscuelaCopalchi.UI.Models.Usuarios;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
@@ -92,7 +93,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CambiarUsuario(int idUsuario = 0)
+        public ActionResult CambiarUsuario(int idUsuario = 0, string contrasena = "")
         {
             if (idUsuario <= 0)
             {
@@ -107,6 +108,12 @@ namespace EscuelaCopalchi.UI.Controllers
                 if (usuario == null || !usuario.Estado || !usuario.UsaModulo)
                 {
                     TempData["Error"] = "El usuario no existe, está inactivo o su rol no tiene permisos de Gestión Académica.";
+                    return RedirectToAction("Index");
+                }
+
+                if (!new global::EscuelaCopalchi.UI.Models.Usuarios.UsuarioRepository().VerificarContrasena(idUsuario, contrasena))
+                {
+                    TempData["Error"] = "Contraseña incorrecta.";
                     return RedirectToAction("Index");
                 }
 

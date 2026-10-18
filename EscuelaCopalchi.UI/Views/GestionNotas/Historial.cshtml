@@ -1,4 +1,4 @@
-@model EscuelaCopalchi.UI.Models.GestionNotas.HistorialViewModel
+﻿@model EscuelaCopalchi.UI.Models.GestionNotas.HistorialViewModel
 @{
     ViewBag.Title = "Historial de notas";
     var ci = System.Globalization.CultureInfo.InvariantCulture;
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
 }
 <main>
-    <a href="@Url.Action("Index")" class="cop-back-link"><i class="bi bi-arrow-left"></i> Volver a mis grupos</a>
+    @Html.Partial("_BarraNotas")
     <div class="gn-header">
         <div>
             <h2 class="gn-title">Historial de notas</h2>
@@ -53,37 +53,143 @@
         </div>
     </form>
 
+    @if (Model.Grupo > 0)
+    {
+        <div class="d-flex justify-content-end flex-wrap gap-2 mb-3">
+            <a class="btn gn-btn-accent" href="@Url.Action("ExportarGrupo", new { grupo = Model.Grupo })">
+                <i class="bi bi-file-earmark-excel me-1"></i> Exportar grupo a Excel
+            </a>
+            @if (Model.Estudiante > 0)
+            {
+                <a class="btn gn-btn-accent" href="@Url.Action("ExportarEstudiante", new { grupo = Model.Grupo, estudiante = Model.Estudiante })">
+                    <i class="bi bi-file-earmark-person me-1"></i> Exportar estudiante a Excel
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted small">Seleccione un grupo para poder exportar sus notas a Excel.</p>
+    }
+
+    @{
+        var porEstudiante = Model.Items
+            .GroupBy(h => h.IdEstudiante)
+            .Select(g => g.ToList())
+            .OrderBy(l => l[0].Estudiante)
+            .ToList();
+        bool abierto = Model.Estudiante > 0;
+    }
+
+    <div class="gn-filters">
+        <input type="text" id="gnBuscarEst" class="form-control" placeholder="Buscar estudiante...">
+    </div>
+
     <div class="table-responsive gn-table-wrap">
-        <table class="table align-middle gn-table">
+        <table class="table align-middle gn-table" id="gnTablaEst">
             <thead>
-                <tr><th>Estudiante</th><th>Grupo / Escuela</th><th>Asignatura</th><th>Periodo</th><th>Evaluación</th><th>Nota</th><th>Fecha</th><th>Origen</th><th></th></tr>
+                <tr>
+                    <th>Estudiante</th>
+                    <th class="text-center">Evaluaciones</th>
+                    <th class="text-center">Escuela anterior</th>
+                    <th class="text-center">Promedio</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-                @foreach (var h in Model.Items)
+                @foreach (var lista in porEstudiante)
                 {
-                    bool ext = h.Origen != "Escuela";
-                    <tr>
-                        <td>@h.Estudiante</td>
-                        <td>@(ext ? h.EscuelaProcedencia : h.Grupo)</td>
-                        <td>@h.Asignatura</td>
-                        <td>@h.Periodo @h.Anio</td>
-                        <td>@(ext ? "—" : h.Evaluacion)</td>
-                        <td><span class="gn-final @(h.Porcentaje >= 70 ? "ok" : "bad")">@h.Nota.ToString("0.##", ci)@(ext ? "" : " / " + h.NotaMaxima.ToString("0.##", ci))</span></td>
-                        <td>@h.Fecha.ToString("dd/MM/yyyy")</td>
-                        <td><span class="badge gn-badge @(ext ? "gn-badge-ext" : "gn-badge-ok")">@h.Origen</span></td>
-                        <td>
-                            @if (!ext && Model.PuedeEditar && h.IdCalificacion.HasValue && h.IdDocente == Model.IdDocenteActual)
+                    var propias = lista.Where(h => h.Origen == "Escuela").ToList();
+                    var externas = lista.Where(h => h.Origen != "Escuela").ToList();
+                    decimal? prom = propias.Count == 0 ? (decimal?)null : Math.Round(propias.Average(h => h.Porcentaje), 1);
+                    string idc = "est" + lista[0].IdEstudiante;
+
+                    <tr class="gn-est-fila">
+                        <td><strong>@lista[0].Estudiante</strong></td>
+                        <td class="text-center">@propias.Count</td>
+                        <td class="text-center">@(externas.Count == 0 ? "-" : externas.Count.ToString())</td>
+                        <td class="text-center">
+                            @if (prom.HasValue)
                             {
-                                <a class="gn-link" href="@Url.Action("Editar", new { id = h.IdCalificacion })">Editar</a>
+                                <span class="gn-final @(prom >= 70 ? "ok" : "bad")">@prom.Value.ToString("0.#", ci)</span>
+                            }
+                            else
+                            {
+                                <span class="gn-final none">-</span>
+                            }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a class="gn-link" data-bs-toggle="collapse" href="#@idc" role="button"><i class="bi bi-chevron-down me-1"></i>Ver notas</a>
+                            @if (Model.Grupo > 0)
+                            {
+                                <a class="gn-link ms-3" href="@Url.Action("ExportarEstudiante", new { grupo = Model.Grupo, estudiante = lista[0].IdEstudiante })"><i class="bi bi-file-earmark-excel"></i> Exportar</a>
                             }
                         </td>
                     </tr>
+                    <tr class="gn-est-detalle">
+                        <td colspan="5" class="p-0 border-0">
+                            <div class="collapse @(abierto ? "show" : "")" id="@idc">
+                                <div class="gn-detalle">
+                                    <table class="table table-sm align-middle mb-0">
+                                        <thead>
+                                            <tr><th>Asignatura</th><th>Periodo</th><th>Evaluación</th><th>Nota</th><th>Fecha</th><th></th></tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var h in lista)
+                                            {
+                                                bool ext = h.Origen != "Escuela";
+                                                <tr>
+                                                    <td>@h.Asignatura</td>
+                                                    <td>@h.Periodo @h.Anio</td>
+                                                    <td>
+                                                        @if (ext)
+                                                        {
+                                                            <span class="badge gn-badge gn-badge-ext">Escuela anterior</span> <span class="text-muted small">@h.EscuelaProcedencia</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @h.Evaluacion
+                                                        }
+                                                    </td>
+                                                    <td><span class="gn-final @(h.Porcentaje >= 70 ? "ok" : "bad")">@h.Nota.ToString("0.##", ci)@(ext ? "" : " / " + h.NotaMaxima.ToString("0.##", ci))</span></td>
+                                                    <td>@h.Fecha.ToString("dd/MM/yyyy")</td>
+                                                    <td>
+                                                        @if (!ext && Model.PuedeEditar && h.IdCalificacion.HasValue && (Model.IdDocenteActual == 0 || h.IdDocente == Model.IdDocenteActual))
+                                                        {
+                                                            <a class="gn-link" href="@Url.Action("Editar", new { id = h.IdCalificacion })">Editar</a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                 }
-                @if (Model.Items.Count == 0)
+                @if (porEstudiante.Count == 0)
                 {
-                    <tr><td colspan="9" class="text-center text-muted py-4">No hay calificaciones para los filtros seleccionados.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4">No hay calificaciones para los filtros seleccionados.</td></tr>
                 }
             </tbody>
         </table>
     </div>
+
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver a mis grupos</a>
+    </div>
 </main>
+@section scripts {
+    <script>
+        document.getElementById('gnBuscarEst').addEventListener('input', function () {
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('#gnTablaEst tbody tr.gn-est-fila').forEach(function (tr) {
+                var visible = tr.innerText.toLowerCase().indexOf(q) > -1;
+                tr.style.display = visible ? '' : 'none';
+                var det = tr.nextElementSibling;
+                if (det && det.classList.contains('gn-est-detalle')) det.style.display = visible ? '' : 'none';
+            });
+        });
+    </script>
+}

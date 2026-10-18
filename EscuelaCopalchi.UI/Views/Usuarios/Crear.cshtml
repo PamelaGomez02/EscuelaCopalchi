@@ -4,7 +4,7 @@
 }
 
 <main>
-     <div class="cop-page-header">
+    <div class="cop-page-header">
         <div>
             <h2 class="cop-page-title">Nuevo usuario</h2>
             <p class="cop-page-subtitle">Registra los datos personales y de acceso del docente o personal.</p>
@@ -24,50 +24,79 @@
         @using (Html.BeginForm("Registrar", "Usuarios", FormMethod.Post))
         {
             <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Nombre</label>
-                    <input type="text" name="Nombre" class="form-control" placeholder="Ej. María Fernanda">
+                    <input type="text" name="Nombre" class="form-control" placeholder="Ej. María Fernanda"
+                           value="@(Model?.Nombre)" data-solo-letras required>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Primer apellido</label>
-                    <input type="text" name="Apellido1" class="form-control" placeholder="Ej. Rodríguez">
+                    <input type="text" name="Apellido1" class="form-control" placeholder="Ej. Rodríguez"
+                           value="@(Model?.Apellido1)" data-solo-letras required>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Segundo apellido</label>
-                    <input type="text" name="Apellido2" class="form-control" placeholder="Ej. Solano">
+                    <input type="text" name="Apellido2" class="form-control" placeholder="Ej. Solano"
+                           value="@(Model?.Apellido2)" data-solo-letras>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Identificación</label>
-                    <input type="text" name="Identificacion" class="form-control" placeholder="Cédula o DIMEX">
+                    <input type="text" name="Identificacion" class="form-control" placeholder="1-1111-1111"
+                           value="@(Model?.Identificacion)" data-formato="cedula" maxlength="11" inputmode="numeric" required>
+                    <div class="form-text" id="ayudaIdentificacion">Solo números. Formato: 1-1111-1111</div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="EsExtranjero">
+                        <label class="form-check-label" for="EsExtranjero">Es extranjero (DIMEX)</label>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label">Teléfono</label>
+                    <input type="text" name="Telefono" class="form-control" placeholder="8888-8888"
+                           value="@(Model?.Telefono)" data-formato="telefono" maxlength="9" inputmode="numeric">
+                    <div class="form-text">Solo números. Formato: 8888-8888</div>
+                </div>
+                <div class="col-md-4">
                     <label class="form-label">Correo institucional</label>
-                    <input type="email" name="Correo" class="form-control" placeholder="nombre@copalchi.edu">
+                    <input type="email" name="Correo" class="form-control" placeholder="nombre@copalchi.edu"
+                           value="@(Model?.Correo)" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Teléfono</label>
-                    <input type="tel" name="Telefono" class="form-control" placeholder="8888-8888">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" id="Contrasena" name="Contrasena" class="form-control"
+                               placeholder="Mínimo 8 caracteres" minlength="8" required>
+                        <button type="button" class="btn btn-outline-secondary" data-toggle-password="Contrasena" title="Mostrar u ocultar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Rol</label>
-                    <select name="IdRol" class="form-select">
-                        <option selected disabled value="">Selecciona un rol</option>
+                    <select name="IdRol" class="form-select" required>
+                        <option value="" disabled @(Model == null || Model.IdRol == 0 ? "selected" : "")>Selecciona un rol</option>
                         @foreach (var rol in ViewBag.Roles as List<EscuelaCopalchi.UI.Models.Usuarios.RolDropdownItem>)
                         {
-                            <option value="@rol.IdRol">@rol.Nombre</option>
+                            <option value="@rol.IdRol" @(Model != null && Model.IdRol == rol.IdRol ? "selected" : "")>@rol.Nombre</option>
                         }
                     </select>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" name="Contrasena" class="form-control" placeholder="Mínimo 8 caracteres">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <div class="input-group">
+                        <input type="password" id="ConfirmarContrasena" name="ConfirmarContrasena" class="form-control"
+                               placeholder="Repite la contraseña" required>
+                        <button type="button" class="btn btn-outline-secondary" data-toggle-password="ConfirmarContrasena" title="Mostrar u ocultar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div id="avisoConfirmacion" class="text-danger small mt-1" style="display:none;">Las contraseñas no coinciden.</div>
                 </div>
-                <div class="col-md-6 d-flex align-items-end">
+                <div class="col-md-6 d-flex align-items-center">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="Estado" value="true" checked>
+                        <input class="form-check-input" type="checkbox" name="Estado" value="true" @(Model == null || Model.Estado ? "checked" : "")>
                         <label class="form-check-label">Usuario activo</label>
                     </div>
                 </div>
@@ -82,6 +111,10 @@
         }
     </div>
 </main>
+
+@section scripts {
+    <script src="~/Scripts/usuarios-validaciones.js"></script>
+}
 
 @section styles {
     <style>
@@ -125,6 +158,12 @@
                     border-color: #59A5D8;
                     box-shadow: 0 0 0 3px rgba(89, 165, 216, 0.2);
                 }
+
+            .cop-form-card .input-group .btn {
+                border: 1px solid #dfe4ea;
+                border-radius: 0 8px 8px 0;
+                color: #386FA4;
+            }
 
         .cop-btn-primary {
             background-color: #133C55;

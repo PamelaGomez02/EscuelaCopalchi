@@ -1,4 +1,4 @@
-@model EscuelaCopalchi.UI.Models.GestionNotas.RegistrarNotasViewModel
+﻿@model EscuelaCopalchi.UI.Models.GestionNotas.RegistrarNotasViewModel
 @{
     ViewBag.Title = "Registrar notas";
     var ci = System.Globalization.CultureInfo.InvariantCulture;
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
 }
 <main>
-    <a href="@Url.Action("Index")" class="cop-back-link"><i class="bi bi-arrow-left"></i> Volver a mis grupos</a>
+    @Html.Partial("_BarraNotas")
 
     <div class="gn-header">
         <div>
@@ -54,7 +54,10 @@
         </form>
 
         <div class="gn-card">
-            <a class="gn-link" data-bs-toggle="collapse" href="#gnNuevaEval" role="button"><i class="bi bi-plus-circle me-1"></i> Crear evaluación (porcentaje usado: @Model.PorcentajeTotal.ToString("0.##", ci)%)</a>
+            <div class="d-flex align-items-center flex-wrap gap-3">
+                <button type="button" class="btn gn-btn-accent" style="background:#2E9E6B;border-color:#2E9E6B;color:#fff;font-weight:600" data-bs-toggle="collapse" data-bs-target="#gnNuevaEval"><i class="bi bi-plus-circle me-1"></i> Crear evaluación</button>
+                <span class="text-muted small">Porcentaje usado: <strong>@Model.PorcentajeTotal.ToString("0.##", ci)%</strong> de 100%</span>
+            </div>
             <div class="collapse mt-3" id="gnNuevaEval">
                 @using (Html.BeginForm("CrearEvaluacion", "GestionNotas", FormMethod.Post))
                 {
@@ -92,7 +95,14 @@
                                 <th>Estudiante</th>
                                 @foreach (var e in Model.Evaluaciones)
                                 {
-                                    <th class="text-center">@e.Nombre<span class="gn-pct">@e.Porcentaje.ToString("0.##", ci)% · máx @e.NotaMaxima.ToString("0.##", ci)</span></th>
+                                    <th class="text-center">
+                                        @e.Nombre
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1 gn-ev-edit" title="Editar evaluación"
+                                                data-id="@e.IdEvaluacion" data-nombre="@e.Nombre" data-pct="@e.Porcentaje.ToString("0.##", ci)"
+                                                data-max="@e.NotaMaxima.ToString("0.##", ci)" data-fecha="@(e.Fecha.HasValue ? e.Fecha.Value.ToString("yyyy-MM-dd") : "")"><i class="bi bi-pencil"></i></button>
+                                        <button type="button" class="btn btn-link btn-sm p-0 gn-ev-del text-danger" title="Eliminar evaluación"
+                                                data-id="@e.IdEvaluacion" data-nombre="@e.Nombre"><i class="bi bi-trash"></i></button>
+                                        <span class="gn-pct">@e.Porcentaje.ToString("0.##", ci)% · máx @e.NotaMaxima.ToString("0.##", ci)</span></th>
                                 }
                                 <th class="text-center">Nota final</th>
                             </tr>
@@ -131,6 +141,49 @@
             }
         }
     }
+
+    @if (Model.Evaluaciones.Count > 0)
+    {
+        <form id="gnFormEliminar" method="post" action="@Url.Action("EliminarEvaluacion", "GestionNotas")">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="idEvaluacion" id="gnDelId" />
+            <input type="hidden" name="idGrupo" value="@Model.IdGrupo" />
+            <input type="hidden" name="asignatura" value="@Model.Asignatura" />
+            <input type="hidden" name="trimestre" value="@Model.Trimestre" />
+        </form>
+
+        <div class="modal fade" id="gnModalEval" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" method="post" action="@Url.Action("EditarEvaluacion", "GestionNotas")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idEvaluacion" id="gnEdId" />
+                    <input type="hidden" name="idGrupo" value="@Model.IdGrupo" />
+                    <input type="hidden" name="asignatura" value="@Model.Asignatura" />
+                    <input type="hidden" name="trimestre" value="@Model.Trimestre" />
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar evaluación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label">Nombre</label><input name="nombre" id="gnEdNombre" class="form-control" required maxlength="100" /></div>
+                        <div class="row g-2">
+                            <div class="col-4"><label class="form-label">% valor</label><input name="porcentaje" id="gnEdPct" class="form-control" required /></div>
+                            <div class="col-4"><label class="form-label">Nota máx.</label><input name="notaMaxima" id="gnEdMax" class="form-control" /></div>
+                            <div class="col-4"><label class="form-label">Fecha</label><input type="date" name="fecha" id="gnEdFecha" class="form-control" /></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn gn-btn-out" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn gn-btn">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver a mis grupos</a>
+    </div>
 </main>
 @section scripts {
     <script>
@@ -138,6 +191,24 @@
             i.addEventListener('input', function () {
                 var v = parseFloat(this.value.replace(',', '.')), m = parseFloat(this.dataset.max);
                 this.classList.toggle('is-low', !isNaN(v) && (v < 0 || v > m));
+            });
+        });
+        document.querySelectorAll('.gn-ev-edit').forEach(function (b) {
+            b.addEventListener('click', function () {
+                document.getElementById('gnEdId').value = b.dataset.id;
+                document.getElementById('gnEdNombre').value = b.dataset.nombre;
+                document.getElementById('gnEdPct').value = b.dataset.pct;
+                document.getElementById('gnEdMax').value = b.dataset.max;
+                document.getElementById('gnEdFecha').value = b.dataset.fecha;
+                new bootstrap.Modal(document.getElementById('gnModalEval')).show();
+            });
+        });
+        document.querySelectorAll('.gn-ev-del').forEach(function (b) {
+            b.addEventListener('click', function () {
+                if (confirm('¿Eliminar la evaluación "' + b.dataset.nombre + '"? Sus notas dejarán de mostrarse y de contar en la nota final.')) {
+                    document.getElementById('gnDelId').value = b.dataset.id;
+                    document.getElementById('gnFormEliminar').submit();
+                }
             });
         });
     </script>
