@@ -1,25 +1,31 @@
-﻿@model EscuelaCopalchi.UI.Models.AsignarRolViewModel
+﻿
+@model EscuelaCopalchi.UI.Models.AsignarRolViewModel
+@using System
+@using System.Linq
 
 @{
     ViewBag.Title = "Asignar rol";
+
+    bool rolUnico =
+        string.Equals(Model.NombreRol, "Director",
+            StringComparison.OrdinalIgnoreCase)
+        ||
+        string.Equals(Model.NombreRol, "Administrador",
+            StringComparison.OrdinalIgnoreCase);
 }
 
 <main>
 
+    <!-- ENCABEZADO -->
     <section class="roles-header">
-
         <div class="container">
 
             <div class="roles-breadcrumb">
-
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-
                 <a href="@Url.Action("Index", "Roles")">Roles</a>
                 <i class="bi bi-chevron-right"></i>
-
                 <span>Asignar rol</span>
-
             </div>
 
             <h1 class="roles-title">
@@ -28,18 +34,39 @@
             </h1>
 
             <p class="roles-subtitle">
-                Asigna el rol seleccionado a uno o varios docentes.
+                Asigna el rol seleccionado a los usuarios del sistema.
             </p>
 
         </div>
-
     </section>
 
-
+    <!-- CONTENIDO -->
     <section class="container pb-5">
 
         <div class="assign-card">
 
+            <!-- MENSAJES -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    @TempData["Exito"]
+                </div>
+            }
+
+            @Html.ValidationSummary(
+                false, "",
+                new { @class = "text-danger" })
+
+            <!-- ROL SELECCIONADO -->
             <div class="selected-role">
 
                 <div class="role-icon">
@@ -60,7 +87,18 @@
 
             </div>
 
+            <!-- ADVERTENCIA PARA ROLES ÚNICOS -->
+            @if (rolUnico)
+            {
+                <div class="alert alert-info small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Este rol solo puede tener un usuario activo.
+                    Para asignarlo a otra persona, primero debe
+                    cambiar el rol del usuario actual.
+                </div>
+            }
 
+            <!-- BUSCADOR -->
             <div class="search-box mb-3">
 
                 <i class="bi bi-search"></i>
@@ -68,89 +106,69 @@
                 <input type="text"
                        id="buscarUsuario"
                        class="form-control"
-                       placeholder="Buscar docente..." />
+                       placeholder="Buscar usuario..." />
 
             </div>
 
-
-            @using (Html.BeginForm("Asignar", "Roles", FormMethod.Post))
+            <!-- FORMULARIO -->
+            @using (Html.BeginForm(
+                "Asignar",
+                "Roles",
+                FormMethod.Post,
+                new { id = "formAsignar" }))
             {
                 @Html.AntiForgeryToken()
 
                 @Html.HiddenFor(m => m.IdRol)
-
 
                 <div class="user-list" id="listaUsuarios">
 
                     @if (Model.Usuarios != null &&
                          Model.Usuarios.Count > 0)
                     {
-                        for (int i = 0;
-                             i < Model.Usuarios.Count;
-                             i++)
+                        for (int i = 0; i < Model.Usuarios.Count; i++)
                         {
+                            var usuario = Model.Usuarios[i];
+
                             <label class="user-item">
 
                                 @Html.HiddenFor(
-                                    m => m.Usuarios[i].IdUsuario
-                                )
+                                    m => m.Usuarios[i].IdUsuario)
 
                                 <div class="user-info">
 
                                     <div class="user-avatar">
-
-                                        @{
-                                            string iniciales = "";
-
-                                            if (!string.IsNullOrWhiteSpace(
-                                                Model.Usuarios[i].NombreCompleto))
-                                            {
-                                                var partes =
-                                                    Model.Usuarios[i]
-                                                         .NombreCompleto
-                                                         .Split(' ');
-
-                                                iniciales =
-                                                    partes[0]
-                                                    .Substring(0, 1)
-                                                    .ToUpper();
-
-                                                if (partes.Length > 1)
-                                                {
-                                                    iniciales +=
-                                                        partes[1]
-                                                        .Substring(0, 1)
-                                                        .ToUpper();
-                                                }
-                                            }
-                                        }
-
-                                        @iniciales
-
+                                        @(string.Join("",
+                                            (usuario.NombreCompleto ?? "")
+                                            .Split(
+                                                new[] { ' ' },
+                                                StringSplitOptions.RemoveEmptyEntries)
+                                            .Take(2)
+                                            .Select(p =>
+                                                p.Substring(0, 1).ToUpper())
+                                        ))
                                     </div>
 
-                                    <div>
+                                    <div class="user-details">
 
                                         <strong>
-                                            @Model.Usuarios[i].NombreCompleto
+                                            @usuario.NombreCompleto
                                         </strong>
 
                                         <small>
-                                            @Model.Usuarios[i].Correo
+                                            @usuario.Correo
                                         </small>
 
                                     </div>
 
                                 </div>
 
-
                                 @Html.CheckBoxFor(
                                     m => m.Usuarios[i].Seleccionado,
                                     new
                                     {
-                                        @class = "form-check-input"
-                                    }
-                                )
+                                        @class = "form-check-input usuario-check"
+                                    })
 
                             </label>
                         }
@@ -161,14 +179,14 @@
 
                             <i class="bi bi-info-circle me-1"></i>
 
-                            No existen docentes activos registrados.
+                            No existen usuarios activos registrados.
 
                         </div>
                     }
 
                 </div>
 
-
+                <!-- BOTONES -->
                 <div class="form-actions">
 
                     <a href="@Url.Action("Index", "Roles")"
@@ -177,7 +195,9 @@
                     </a>
 
                     <button type="submit"
-                            class="btn btn-cop-primary">
+                            id="btnGuardar"
+                            class="btn btn-cop-primary"
+                            @(Model.Usuarios == null || Model.Usuarios.Count == 0 ? "disabled=\"disabled\"" : "")>
 
                         <i class="bi bi-person-check me-1"></i>
                         Guardar asignación
@@ -270,6 +290,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .selected-role span {
@@ -305,6 +326,11 @@
                 padding-left: 34px;
             }
 
+        .user-list {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
         .user-item {
             display: flex;
             justify-content: space-between;
@@ -312,12 +338,18 @@
             padding: 14px;
             border-bottom: 1px solid #edf0f3;
             cursor: pointer;
+            gap: 12px;
         }
+
+            .user-item:hover {
+                background: #f8fafc;
+            }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
+            min-width: 0;
         }
 
         .user-avatar {
@@ -331,16 +363,32 @@
             justify-content: center;
             font-size: .78rem;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .user-info strong,
-        .user-info small {
-            display: block;
+        .user-details {
+            min-width: 0;
         }
 
-        .user-info small {
-            color: var(--cop-muted);
-            font-size: .76rem;
+            .user-details strong,
+            .user-details small {
+                display: block;
+                overflow-wrap: anywhere;
+            }
+
+            .user-details strong {
+                color: #133C55;
+                font-size: .88rem;
+            }
+
+            .user-details small {
+                color: var(--cop-muted);
+                font-size: .76rem;
+            }
+
+        .usuario-check {
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
         .form-actions {
@@ -362,7 +410,13 @@
                 background: var(--cop-secondary);
                 color: white;
             }
+
+            .btn-cop-primary:disabled {
+                opacity: .65;
+                cursor: not-allowed;
+            }
     </style>
+
 }
 
 
@@ -370,18 +424,38 @@
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-            const buscador =
-                document.getElementById("buscarUsuario");
+        const buscador =
+            document.getElementById("buscarUsuario");
 
-            buscador.addEventListener("keyup", function () {
+        const usuarios =
+            document.querySelectorAll(".user-item");
 
-                const texto =
-                    this.value.toLowerCase();
+        const checks =
+            document.querySelectorAll(".usuario-check");
 
-                const usuarios =
-                    document.querySelectorAll(".user-item");
+        const formulario =
+            document.getElementById("formAsignar");
+
+        const botonGuardar =
+            document.getElementById("btnGuardar");
+
+        const esRolUnico =
+            @(rolUnico ? "true" : "false");
+
+
+        // =====================================
+        // BUSCAR USUARIOS
+        // =====================================
+
+        if (buscador) {
+
+            buscador.addEventListener("input", function () {
+
+                const texto = this.value
+                    .toLowerCase()
+                    .trim();
 
                 usuarios.forEach(function (usuario) {
 
@@ -390,14 +464,98 @@
 
                     usuario.style.display =
                         contenido.includes(texto)
-                        ? ""
-                        : "none";
+                            ? ""
+                            : "none";
 
                 });
 
             });
 
-        });
+        }
+
+
+        // =====================================
+        // VALIDAR ROLES ÚNICOS
+        // =====================================
+
+        if (esRolUnico) {
+
+            checks.forEach(function (check) {
+
+                check.addEventListener("change", function () {
+
+                    if (this.checked) {
+
+                        checks.forEach(function (otro) {
+
+                            if (otro !== check) {
+                                otro.checked = false;
+                            }
+
+                        });
+
+                    }
+
+                });
+
+            });
+
+        }
+
+
+        // =====================================
+        // GUARDAR ASIGNACIÓN
+        // =====================================
+
+        if (formulario) {
+
+            formulario.addEventListener("submit", function (e) {
+
+                const seleccionados =
+                    Array.from(checks)
+                        .filter(function (check) {
+                            return check.checked;
+                        });
+
+                if (seleccionados.length === 0) {
+
+                    e.preventDefault();
+
+                    alert(
+                        "Debe seleccionar al menos un usuario."
+                    );
+
+                    return;
+                }
+
+                if (esRolUnico &&
+                    seleccionados.length > 1) {
+
+                    e.preventDefault();
+
+                    alert(
+                        "Este rol solo puede tener un usuario activo."
+                    );
+
+                    return;
+                }
+
+                if (botonGuardar) {
+
+                    botonGuardar.disabled = true;
+
+                    botonGuardar.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                        'Guardando...';
+
+                }
+
+            });
+
+        }
+
+    });
 
     </script>
+
 }

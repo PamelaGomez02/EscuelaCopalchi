@@ -159,6 +159,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
     <Compile Include="Controllers\Estudiante\EstudiantesAddController.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Asignaciones.cs" />
@@ -218,9 +219,12 @@
     <Compile Include="Models\GestionNotas\NotasRepository.cs" />
     <Compile Include="Models\GestionNotas\NotasSesion.cs" />
     <Compile Include="Models\GestionNotas\ReporteNotas.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\Roles\AsignacionRolRepository.cs" />
     <Compile Include="Models\Roles\AsignarRolViewModel.cs" />
     <Compile Include="Models\Roles\Rol.cs" />
     <Compile Include="Models\Roles\RolPermisosViewModel.cs" />
+    <Compile Include="Models\Seguridad\PasswordHelper.cs" />
     <Compile Include="Models\Usuarios\RolDropdownItem.cs" />
     <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
     <Compile Include="Models\Usuarios\Usuario.cs" />
@@ -340,6 +344,7 @@
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Index.cshtml" />
     <Content Include="Views\Usuarios\Detalle.cshtml" />
+    <Content Include="Views\Login\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

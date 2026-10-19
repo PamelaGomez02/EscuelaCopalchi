@@ -8,10 +8,15 @@ namespace EscuelaCopalchi.UI.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
+            ViewBag.UsuarioActual =
+                User.Identity.Name;
+
             return View();
         }
+  
 
         public ActionResult About()
         {

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿
+using System.Collections.Generic;
 
 namespace EscuelaCopalchi.UI.Models
 {
@@ -11,11 +11,12 @@ namespace EscuelaCopalchi.UI.Models
 
         public string DescripcionRol { get; set; }
 
-        public List<UsuarioAsignacionViewModel> Usuarios { get; set; }
-            = new List<UsuarioAsignacionViewModel>();
+        public List<UsuarioAsignableViewModel> Usuarios
+        { get; set; } =
+            new List<UsuarioAsignableViewModel>();
     }
 
-    public class UsuarioAsignacionViewModel
+    public class UsuarioAsignableViewModel
     {
         public int IdUsuario { get; set; }
 

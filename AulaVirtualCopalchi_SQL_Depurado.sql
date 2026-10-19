@@ -450,3 +450,347 @@ LEFT JOIN dbo.ROL r
 ORDER BY u.nombre;
 
 EXEC dbo.SP_Rol_UsuariosAsignables @id_rol = 1;
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+-- ==========================================
+-- MOSTRAR TODOS LOS USUARIOS ACTIVOS
+-- ==========================================
+CREATE OR ALTER PROCEDURE dbo.SP_Rol_UsuariosAsignables
+    @id_rol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        u.id_usuario,
+        u.nombre,
+        u.apellido1,
+        u.apellido2,
+        u.correo,
+        CASE
+            WHEN u.id_rol = @id_rol THEN 1
+            ELSE 0
+        END AS seleccionado
+    FROM dbo.USUARIO u
+    WHERE u.estado = 1
+    ORDER BY
+        u.nombre,
+        u.apellido1,
+        u.apellido2;
+END;
+GO
+
+-- ==========================================
+-- ASIGNAR ROL A USUARIOS
+-- ==========================================
+CREATE OR ALTER PROCEDURE dbo.SP_Rol_AsignarUsuarios
+    @id_rol INT,
+    @ids_json NVARCHAR(MAX)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    IF ISJSON(@ids_json) <> 1
+        THROW 50017,
+            N'La lista de usuarios no es JSON válido.', 1;
+
+    IF LEFT(LTRIM(@ids_json), 1) <> '['
+        THROW 50018,
+            N'Se esperaba un arreglo JSON de usuarios.', 1;
+
+    DECLARE @Seleccionados TABLE
+    (
+        id_usuario INT PRIMARY KEY
+    );
+
+    IF EXISTS (
+        SELECT 1
+        FROM OPENJSON(@ids_json)
+        WHERE [type] <> 2
+           OR TRY_CONVERT(INT, [value]) IS NULL
+           OR TRY_CONVERT(INT, [value]) <= 0
+           OR TRY_CONVERT(DECIMAL(20,4), [value])
+                <> TRY_CONVERT(INT, [value])
+    )
+        THROW 50019,
+            N'La lista contiene IDs inválidos.', 1;
+
+    INSERT INTO @Seleccionados (id_usuario)
+    SELECT DISTINCT TRY_CONVERT(INT, [value])
+    FROM OPENJSON(@ids_json);
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @bloqueo INT;
+
+        EXEC @bloqueo = sys.sp_getapplock
+            @Resource = N'AulaVirtualCopalchi_Roles',
+            @LockMode = 'Exclusive',
+            @LockOwner = 'Transaction',
+            @LockTimeout = 10000;
+
+        IF @bloqueo < 0
+            THROW 50020,
+                N'No se pudo bloquear la asignación.', 1;
+
+        IF NOT EXISTS (
+            SELECT 1
+            FROM dbo.ROL WITH (UPDLOCK, HOLDLOCK)
+            WHERE id_rol = @id_rol
+              AND estado = 1
+        )
+            THROW 50015,
+                N'El rol no existe o está inactivo.', 1;
+
+        IF EXISTS (
+            SELECT 1
+            FROM @Seleccionados s
+            LEFT JOIN dbo.USUARIO u WITH (UPDLOCK, HOLDLOCK)
+                ON u.id_usuario = s.id_usuario
+            WHERE u.id_usuario IS NULL
+               OR u.estado = 0
+        )
+            THROW 50021,
+                N'Hay usuarios inexistentes o inactivos.', 1;
+
+        -- Director y Administrador son roles únicos.
+        IF dbo.FN_RolEsUnico(@id_rol) = 1
+        BEGIN
+            IF (
+                SELECT COUNT(*)
+                FROM dbo.USUARIO u WITH (UPDLOCK, HOLDLOCK)
+                WHERE u.estado = 1
+                  AND (
+                      u.id_rol = @id_rol
+                      OR u.id_usuario IN (
+                          SELECT id_usuario
+                          FROM @Seleccionados
+                      )
+                  )
+            ) > 1
+                THROW 50016,
+                    N'Este rol solo admite un usuario activo. Cambie primero el rol del usuario actual.',
+                    1;
+        END;
+
+        UPDATE u
+        SET u.id_rol = @id_rol
+        FROM dbo.USUARIO u
+        INNER JOIN @Seleccionados s
+            ON s.id_usuario = u.id_usuario
+        WHERE u.estado = 1
+          AND (u.id_rol IS NULL OR u.id_rol <> @id_rol);
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        THROW;
+    END CATCH
+END;
+GO
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    c.name AS Columna,
+    TYPE_NAME(c.user_type_id) AS TipoDato,
+    c.max_length AS Longitud,
+    c.is_nullable AS PermiteNulos
+FROM sys.columns c
+WHERE c.object_id = OBJECT_ID('dbo.USUARIO')
+ORDER BY c.column_id;
+
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    COLUMN_NAME,
+    DATA_TYPE,
+    CHARACTER_MAXIMUM_LENGTH,
+    IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'USUARIO'
+ORDER BY ORDINAL_POSITION;
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT id_rol, nombre, estado
+FROM dbo.ROL
+WHERE nombre = 'Administrador';
+
+
+USE AulaVirtualCopalchi;
+GO
+
+DECLARE @IdRol INT;
+
+SELECT @IdRol = id_rol
+FROM dbo.ROL
+WHERE nombre = N'Administrador'
+  AND estado = 1;
+
+IF @IdRol IS NULL
+    THROW 50001,
+        N'No existe un rol Administrador activo.', 1;
+
+DECLARE @Correo NVARCHAR(150) =
+    N'admin@copalchi.ed.cr';
+
+DECLARE @Hash NVARCHAR(255) =
+    N'PEGAR_AQUI_EL_HASH_GENERADO';
+
+IF @Hash NOT LIKE N'PBKDF2-SHA256$%'
+    THROW 50002,
+        N'Debe generar primero el hash de la contraseña.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.USUARIO
+    WHERE correo = @Correo
+)
+    THROW 50003,
+        N'Ya existe un usuario con ese correo.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.USUARIO
+    WHERE id_rol = @IdRol
+      AND estado = 1
+)
+    THROW 50004,
+        N'Ya existe un Administrador activo.', 1;
+
+INSERT INTO dbo.USUARIO
+(
+    id_rol,
+    identificacion,
+    nombre,
+    apellido1,
+    apellido2,
+    correo,
+    telefono,
+    contrasena_hash,
+    estado,
+    ultimo_acceso,
+    fecha_creacion
+)
+VALUES
+(
+    @IdRol,
+    N'IDENTIFICACION_REAL',
+    N'Administrador',
+    N'Sistema',
+    NULL,
+    @Correo,
+    NULL,
+    @Hash,
+    1,
+    NULL,
+    SYSDATETIME()
+);
+
+SELECT
+    id_usuario,
+    nombre,
+    apellido1,
+    correo,
+    id_rol,
+    estado
+FROM dbo.USUARIO
+WHERE correo = @Correo;
+GO
+
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+DECLARE @IdRol INT;
+
+SELECT @IdRol = id_rol
+FROM dbo.ROL
+WHERE nombre = N'Administrador'
+  AND estado = 1;
+
+IF @IdRol IS NULL
+    THROW 50001,
+        N'No existe un rol Administrador activo.', 1;
+
+DECLARE @Correo NVARCHAR(150) =
+    N'admin@copalchi.ed.cr';
+
+DECLARE @Hash NVARCHAR(255) =
+    N'PBKDF2-SHA256$120000$gU6GkSiqid+2DQUXquq0Og==$nD/uvsSFzJvvQRxgRoRqM60/l2t4yF0nFR28FllVhtE=';
+
+IF @Hash NOT LIKE N'PBKDF2-SHA256$%'
+    THROW 50002,
+        N'Debe generar primero el hash de la contraseña.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.USUARIO
+    WHERE correo = @Correo
+)
+    THROW 50003,
+        N'Ya existe un usuario con ese correo.', 1;
+
+IF EXISTS (
+    SELECT 1 FROM dbo.USUARIO
+    WHERE id_rol = @IdRol
+      AND estado = 1
+)
+    THROW 50004,
+        N'Ya existe un Administrador activo.', 1;
+
+INSERT INTO dbo.USUARIO
+(
+    id_rol,
+    identificacion,
+    nombre,
+    apellido1,
+    apellido2,
+    correo,
+    telefono,
+    contrasena_hash,
+    estado,
+    ultimo_acceso,
+    fecha_creacion
+)
+VALUES
+(
+    @IdRol,
+    N'IDENTIFICACION_REAL',
+    N'Administrador',
+    N'Sistema',
+    NULL,
+    @Correo,
+    NULL,
+    @Hash,
+    1,
+    NULL,
+    SYSDATETIME()
+);
+
+SELECT
+    id_usuario,
+    nombre,
+    apellido1,
+    correo,
+    id_rol,
+    estado
+FROM dbo.USUARIO
+WHERE correo = @Correo;
+GO
