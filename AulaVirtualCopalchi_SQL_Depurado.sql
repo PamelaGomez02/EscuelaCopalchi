@@ -1093,3 +1093,26 @@ WHERE id_permiso = @IdPermiso;
 
 COMMIT TRANSACTION;
 GO
+
+SELECT
+    u.id_usuario,
+    u.correo,
+    r.id_rol,
+    r.nombre AS Rol,
+    p.id_permiso,
+    p.nombre AS Permiso
+FROM dbo.USUARIO u
+INNER JOIN dbo.ROL r
+    ON u.id_rol = r.id_rol
+LEFT JOIN dbo.ROL_PERMISO rp
+    ON r.id_rol = rp.id_rol
+LEFT JOIN dbo.PERMISO p
+    ON rp.id_permiso = p.id_permiso
+WHERE u.correo = 'admin@copalchi.ed.cr'
+ORDER BY p.nombre;
+
+
+SELECT COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'USUARIO'
+ORDER BY ORDINAL_POSITION;
