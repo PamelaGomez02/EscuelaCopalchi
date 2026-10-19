@@ -107,11 +107,43 @@
                                         <span class="status status-inactive">Inactivo</span>
                                     }
                                 </td>
+
                                 <td class="text-end">
-                                    <a href="@Url.Action("Detalle", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Ver usuario"><i class="bi bi-eye"></i></a>
-                                    <a href="@Url.Action("Editar", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Editar usuario"><i class="bi bi-pencil"></i></a>
-                                    <a href="@Url.Action("CambiarEstado", "Usuarios", new { id = u.IdUsuario })" class="btn btn-action" title="Cambiar estado"><i class="bi bi-power"></i></a>
+                                    <div class="d-inline-flex align-items-center gap-1">
+
+                                        <!-- Ver usuario -->
+                                        <a href="@Url.Action("Detalle", "Usuarios", new { id = u.IdUsuario })"
+                                           class="btn btn-action"
+                                           title="Ver usuario">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <!-- Editar usuario -->
+                                        <a href="@Url.Action("Editar", "Usuarios", new { id = u.IdUsuario })"
+                                           class="btn btn-action"
+                                           title="Editar usuario">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <!-- Activar o desactivar usuario -->
+                                        @using (Html.BeginForm("CambiarEstado", "Usuarios",
+                                            new { id = u.IdUsuario }, FormMethod.Post,
+                                            new { @class = "d-inline m-0" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-action"
+                                                    title="@(u.Estado ? "Desactivar usuario" : "Activar usuario")"
+                                                    onclick="return confirm('@(u.Estado ? "¿Desea desactivar este usuario?" : "¿Desea activar este usuario?")');">
+
+                                                <i class="bi bi-power"></i>
+                                            </button>
+                                        }
+
+                                    </div>
                                 </td>
+
                             </tr>
                         }
                     </tbody>

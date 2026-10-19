@@ -1,0 +1,482 @@
+
+@model EscuelaCopalchi.UI.Models.RepositorioMaterialViewModel
+
+@using System
+
+@{
+    bool esEdicion = Model.IdMaterial > 0;
+
+    bool puedeCargarMaterial =
+        Convert.ToBoolean(ViewBag.PuedeCargarMaterial ?? false);
+
+    bool puedeCargarInstitucional =
+        Convert.ToBoolean(
+            ViewBag.PuedeCargarDocumentoInstitucional ?? false);
+
+    string[] categorias = {
+        "Matemáticas",
+        "Español",
+        "Ciencias",
+        "Estudios Sociales",
+        "Inglés",
+        "Institucional"
+    };
+
+    string[] grados = {
+        "No aplica",
+        "Primer grado",
+        "Segundo grado",
+        "Tercer grado",
+        "Cuarto grado",
+        "Quinto grado",
+        "Sexto grado"
+    };
+}
+
+@Html.HiddenFor(m => m.IdMaterial)
+
+<div class="row g-3">
+
+    <!-- TIPO DE MATERIAL -->
+    <div class="col-md-6">
+        <label for="TipoMaterial" class="form-label">
+            Tipo de material <span class="text-danger">*</span>
+        </label>
+
+        @if (esEdicion)
+        {
+            <input type="text"
+                   id="TipoMaterial"
+                   class="form-control"
+                   value="@Model.TipoMaterial"
+                   readonly />
+
+            @Html.HiddenFor(m => m.TipoMaterial)
+
+            <small class="text-muted">
+                El tipo de material no puede modificarse.
+            </small>
+        }
+        else
+        {
+            <select class="form-select"
+                    id="TipoMaterial"
+                    name="TipoMaterial"
+                    required>
+                <option value="">Seleccione...</option>
+
+                @if (puedeCargarMaterial)
+                {
+                    <option value="Material didáctico"
+                            selected="@(Model.TipoMaterial == "Material didáctico" ? "selected" : null)">
+                        Material didáctico
+                    </option>
+                }
+
+                @if (puedeCargarInstitucional)
+                {
+                    <option value="Documento institucional"
+                            selected="@(Model.TipoMaterial == "Documento institucional" ? "selected" : null)">
+                        Documento institucional
+                    </option>
+                }
+            </select>
+        }
+
+        @Html.ValidationMessageFor(
+            m => m.TipoMaterial,
+            "",
+            new { @class = "text-danger small" })
+    </div>
+
+    <!-- CATEGORÍA -->
+    <div class="col-md-6">
+        <label for="Categoria" class="form-label">
+            Categoría <span class="text-danger">*</span>
+        </label>
+
+        <select class="form-select"
+                id="Categoria"
+                name="Categoria"
+                required>
+            <option value="">Seleccione...</option>
+
+            @foreach (var c in categorias)
+            {
+                <option value="@c"
+                        selected="@(Model.Categoria == c ? "selected" : null)">
+                    @c
+                </option>
+            }
+        </select>
+
+        @Html.ValidationMessageFor(
+            m => m.Categoria,
+            "",
+            new { @class = "text-danger small" })
+    </div>
+
+    <!-- TÍTULO -->
+    <div class="col-md-6">
+        <label for="Titulo" class="form-label">
+            Título <span class="text-danger">*</span>
+        </label>
+
+        @Html.TextBoxFor(
+            m => m.Titulo,
+            new
+            {
+                @class = "form-control",
+                placeholder = "Ingrese el título del material",
+                maxlength = "200",
+                required = "required"
+            })
+
+        @Html.ValidationMessageFor(
+            m => m.Titulo,
+            "",
+            new { @class = "text-danger small" })
+    </div>
+
+    <!-- GRADO -->
+    <div class="col-md-6">
+        <label for="Grado" class="form-label">
+            Grado <span class="text-danger">*</span>
+        </label>
+
+        <select class="form-select"
+                id="Grado"
+                name="Grado"
+                required>
+            @foreach (var g in grados)
+            {
+                <option value="@g"
+                        selected="@(Model.Grado == g ? "selected" : null)">
+                    @g
+                </option>
+            }
+        </select>
+
+        @Html.ValidationMessageFor(
+            m => m.Grado,
+            "",
+            new { @class = "text-danger small" })
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <div class="col-12">
+        <label for="Descripcion" class="form-label">
+            Descripción
+        </label>
+
+        @Html.TextAreaFor(
+            m => m.Descripcion,
+            new
+            {
+                @class = "form-control",
+                rows = "4",
+                maxlength = "1000",
+                placeholder = "Describa el contenido del material..."
+            })
+
+        @Html.ValidationMessageFor(
+            m => m.Descripcion,
+            "",
+            new { @class = "text-danger small" })
+
+        <small class="text-muted">
+            Máximo 1000 caracteres.
+        </small>
+    </div>
+
+
+    <!-- ARCHIVO -->
+    <div class="col-12">
+        <label class="form-label" for="Archivo">
+            Archivo
+            @if (esEdicion)
+            {
+                <span class="text-muted">(opcional)</span>
+            }
+            else
+            {
+                <span class="text-danger">*</span>
+            }
+        </label>
+
+        <div class="upload-box" id="zonaCarga"
+             role="button" tabindex="0"
+             aria-label="Seleccionar archivo para cargar">
+
+            <div class="upload-icon">
+                <i class="bi bi-cloud-arrow-up"></i>
+            </div>
+
+            <h6 class="mt-2 mb-2">
+                Seleccioná o arrastrá tu archivo aquí
+            </h6>
+
+            <p class="small text-muted mb-3">
+                PDF, Word, PowerPoint, Excel o imágenes.
+                Tamaño máximo: 50 MB.
+            </p>
+
+            <button type="button"
+                    id="btnSeleccionarArchivo"
+                    class="btn btn-cop-primary upload-button">
+                <i class="bi bi-folder2-open me-2"></i>
+                Seleccionar archivo
+            </button>
+
+            <input type="file"
+                   id="Archivo"
+                   name="Archivo"
+                   class="upload-input"
+                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"
+                   aria-label="Archivo"
+                   @(esEdicion ? "" : "required") />
+
+            <p id="nombreArchivoSeleccionado"
+               class="small text-muted mt-3 mb-0">
+                Ningún archivo seleccionado
+            </p>
+
+            <!-- VISTA PREVIA -->
+            <div id="vistaPreviaNueva" class="mt-4 d-none">
+                <div class="border-top pt-3">
+                    <h6 class="text-start mb-3">
+                        <i class="bi bi-eye me-1"></i>
+                        Vista previa del archivo seleccionado
+                    </h6>
+
+                    <div id="contenidoVistaPrevia"
+                         class="text-center"></div>
+
+                    <p id="informacionArchivo"
+                       class="small text-muted mt-3 mb-0"></p>
+                </div>
+            </div>
+        </div>
+
+        @Html.ValidationMessageFor(
+            m => m.Archivo,
+            "",
+            new { @class = "text-danger small" })
+
+        @if (esEdicion)
+        {
+            <small class="text-muted d-block mt-2">
+                Si no seleccionás otro archivo,
+                se conservará el actual.
+            </small>
+        }
+    </div>
+
+</div>
+
+<!-- BOTONES -->
+<div class="d-flex justify-content-end gap-2 mt-4">
+    <a class="btn btn-light"
+       href="@Url.Action("Index", "RepositorioMaterial")">
+        <i class="bi bi-x-circle me-1"></i>
+        Cancelar
+    </a>
+
+    <button class="btn btn-cop-primary"
+            type="submit">
+        <i class="bi bi-save me-1"></i>
+        @(esEdicion ? "Guardar cambios" : "Guardar material")
+    </button>
+</div>
+
+<!-- CONTROL DE TIPO, CATEGORÍA Y GRADO -->
+<script>
+(function () {
+            var tipo = document.getElementById("TipoMaterial");
+            var categoria = document.getElementById("Categoria");
+            var grado = document.getElementById("Grado");
+
+            if (!tipo || !categoria || !grado) {
+                return;
+            }
+
+            function actualizarCampos() {
+                if (tipo.value === "Documento institucional") {
+                    categoria.value = "Institucional";
+                    grado.value = "No aplica";
+
+                    categoria.disabled = true;
+                    grado.disabled = true;
+                } else {
+                    categoria.disabled = false;
+                    grado.disabled = false;
+                }
+            }
+
+            tipo.addEventListener("change", actualizarCampos);
+            actualizarCampos();
+
+            var formulario = tipo.closest("form");
+
+            if (formulario) {
+                formulario.addEventListener("submit", function () {
+                    categoria.disabled = false;
+                    grado.disabled = false;
+                });
+            }
+})();
+</script>
+
+<!-- VISTA PREVIA DE ARCHIVOS -->
+
+<script>
+(function () {
+        const zona = document.getElementById("zonaCarga");
+        const boton = document.getElementById("btnSeleccionarArchivo");
+        const input = document.getElementById("Archivo");
+        const nombre = document.getElementById("nombreArchivoSeleccionado");
+        const contenedor = document.getElementById("vistaPreviaNueva");
+        const contenido = document.getElementById("contenidoVistaPrevia");
+        const informacion = document.getElementById("informacionArchivo");
+
+        if (!zona || !boton || !input ||
+            !nombre || !contenedor || !contenido || !informacion) {
+            return;
+        }
+
+        let urlActual = null;
+
+        function abrirSelector() {
+            input.click();
+        }
+
+        zona.addEventListener("click", function (e) {
+            if (e.target.closest("#vistaPreviaNueva")) return;
+            if (e.target.closest("#btnSeleccionarArchivo")) return;
+            abrirSelector();
+        });
+
+        boton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            abrirSelector();
+        });
+
+        zona.addEventListener("keydown", function (e) {
+            if (e.target === zona &&
+                (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                abrirSelector();
+            }
+        });
+
+        ["dragenter", "dragover"].forEach(function (evento) {
+            zona.addEventListener(evento, function (e) {
+                e.preventDefault();
+                zona.classList.add("drag-over");
+            });
+        });
+
+        ["dragleave", "drop"].forEach(function (evento) {
+            zona.addEventListener(evento, function (e) {
+                e.preventDefault();
+                zona.classList.remove("drag-over");
+            });
+        });
+
+        zona.addEventListener("drop", function (e) {
+            const archivos = e.dataTransfer.files;
+
+            if (archivos.length > 0) {
+                input.files = archivos;
+                input.dispatchEvent(new Event("change"));
+            }
+        });
+
+        function limpiarVista() {
+            contenido.replaceChildren();
+            informacion.textContent = "";
+            contenedor.classList.add("d-none");
+
+            if (urlActual) {
+                URL.revokeObjectURL(urlActual);
+                urlActual = null;
+            }
+        }
+
+        input.addEventListener("change", function () {
+            limpiarVista();
+
+            const archivo = input.files[0];
+
+            if (!archivo) {
+                nombre.textContent = "Ningún archivo seleccionado";
+                return;
+            }
+
+            const extension = archivo.name.split(".").pop().toLowerCase();
+            const permitidas = [
+                "pdf", "doc", "docx", "ppt", "pptx",
+                "xls", "xlsx", "jpg", "jpeg", "png"
+            ];
+
+            if (!permitidas.includes(extension) ||
+                archivo.size > 50 * 1024 * 1024) {
+                alert("Seleccioná un archivo permitido de máximo 50 MB.");
+                input.value = "";
+                nombre.textContent = "Ningún archivo seleccionado";
+                return;
+            }
+
+            nombre.textContent = archivo.name;
+            contenedor.classList.remove("d-none");
+
+            informacion.textContent =
+                archivo.name + " · " +
+                (archivo.size / (1024 * 1024)).toFixed(2) + " MB";
+
+            if (["jpg", "jpeg", "png"].includes(extension)) {
+                urlActual = URL.createObjectURL(archivo);
+
+                const imagen = document.createElement("img");
+                imagen.src = urlActual;
+                imagen.alt = "Vista previa del archivo";
+                imagen.className = "img-fluid rounded border";
+                imagen.style.maxHeight = "350px";
+                imagen.style.objectFit = "contain";
+
+                contenido.appendChild(imagen);
+            }
+            else if (extension === "pdf") {
+                urlActual = URL.createObjectURL(archivo);
+
+                const visor = document.createElement("iframe");
+                visor.src = urlActual;
+                visor.title = "Vista previa del PDF";
+                visor.style.width = "100%";
+                visor.style.height = "450px";
+                visor.style.border = "1px solid #dee2e6";
+                visor.style.borderRadius = "8px";
+
+                contenido.appendChild(visor);
+            }
+            else {
+                const icono = document.createElement("i");
+                icono.className = "bi bi-file-earmark-text";
+                icono.style.fontSize = "50px";
+                icono.style.color = "#133c55";
+
+                const mensaje = document.createElement("p");
+                mensaje.className = "text-muted mt-2";
+                mensaje.textContent =
+                    "Vista previa no disponible para este formato.";
+
+                contenido.appendChild(icono);
+                contenido.appendChild(mensaje);
+            }
+        });
+
+        window.addEventListener("pagehide", function () {
+            if (urlActual) URL.revokeObjectURL(urlActual);
+        });
+})();
+</script>

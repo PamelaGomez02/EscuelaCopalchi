@@ -1,251 +1,205 @@
-﻿@{
+@model EscuelaCopalchi.UI.Models.RepositorioMaterialViewModel
+
+@{
     ViewBag.Title = "Detalle del material";
+    bool tieneArchivo = !string.IsNullOrWhiteSpace(Model.NombreArchivo);
+    string extensionArchivo = System.IO.Path.GetExtension(Model.NombreArchivo ?? "").ToLowerInvariant();
+    string urlVistaPrevia = Url.Action("VistaPrevia", "RepositorioMaterial", new { id = Model.IdMaterial });
 }
 
-<main>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="repo-title"><i class="bi bi-file-earmark-text me-2"></i>@Model.Titulo</h2>
+            <p class="text-muted mb-0">@Model.TipoMaterial <span class="mx-1">·</span> @Model.Grado</p>
+        </div>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "RepositorioMaterial")">
+            <i class="bi bi-arrow-left me-1"></i> Volver al repositorio
+        </a>
+    </div>
 
-    <section class="repo-header">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" role="alert">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
+    }
 
-        <div class="container">
-
-            <div class="repo-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "RepositorioMaterial")">Repositorio</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Detalle</span>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="repo-card p-4">
+                <h5 class="repo-section-title mb-3"><i class="bi bi-info-circle me-2"></i>Información del material</h5>
+                <div class="row g-4">
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Título</small><strong>@Model.Titulo</strong></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Categoría</small><strong>@(string.IsNullOrWhiteSpace(Model.Categoria) ? "Sin categoría" : Model.Categoria)</strong></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Grado</small><strong>@(string.IsNullOrWhiteSpace(Model.Grado) ? "No aplica" : Model.Grado)</strong></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Formato del archivo</small><span class="badge bg-light text-dark border">@(string.IsNullOrWhiteSpace(Model.Tipo) ? "No especificado" : Model.Tipo.ToUpperInvariant())</span></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Tipo de material</small><strong>@Model.TipoMaterial</strong></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Fecha de carga</small><strong>@Model.FechaCarga.ToString("dd/MM/yyyy HH:mm")</strong></div>
+                    <div class="col-md-6"><small class="text-muted d-block mb-1">Subido por</small><strong>@(string.IsNullOrWhiteSpace(Model.NombreUsuarioCreador) ? "No registrado" : Model.NombreUsuarioCreador)</strong></div>
+                </div>
             </div>
 
-            <h1 class="repo-title">
-                Guía de Matemáticas
-            </h1>
+            <div class="repo-card p-4 mt-3">
+                <h5 class="repo-section-title mb-3"><i class="bi bi-card-text me-2"></i>Descripción</h5>
+                @if (!string.IsNullOrWhiteSpace(Model.Descripcion))
+                {
+                    <p class="repo-description mb-0">@Model.Descripcion</p>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Este material no tiene una descripción registrada.</p>
+                }
+            </div>
 
-            <p class="repo-subtitle">
-                Material didáctico · Primer grado
-            </p>
-
+            @if (tieneArchivo)
+            {
+                <div class="repo-card p-4 mt-3">
+                    <h5 class="repo-section-title mb-3"><i class="bi bi-eye me-2"></i>Vista previa del material</h5>
+                    @if (extensionArchivo == ".pdf")
+                    {
+                        <iframe src="@urlVistaPrevia" title="Vista previa de @Model.Titulo" class="repo-pdf-viewer"></iframe>
+                    }
+                    else if (extensionArchivo == ".jpg" || extensionArchivo == ".jpeg" || extensionArchivo == ".png")
+                    {
+                        <div class="text-center bg-light p-3 rounded">
+                            <img src="@urlVistaPrevia" alt="Vista previa de @Model.Titulo" class="img-fluid rounded repo-image-preview" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">La vista previa no está disponible para este formato. Si tenés permiso, podés descargar el archivo.</p>
+                    }
+                </div>
+            }
         </div>
 
-    </section>
+        <div class="col-lg-4">
+            <div class="repo-card p-4 text-center">
+                <div class="repo-file-icon mx-auto mb-3"><i class="bi bi-file-earmark-text"></i></div>
+                <h6>Archivo asociado</h6>
+                @if (tieneArchivo)
+                {
+                    <p class="text-muted small repo-filename">@Model.NombreArchivo</p>
+                }
+                else
+                {
+                    <p class="text-muted small">No hay un archivo asociado a este material.</p>
+                }
 
-
-    <section class="container pb-5">
-
-        <div class="row g-4">
-
-            <div class="col-lg-8">
-
-                <div class="detail-card">
-
-                    <h2 class="section-title">
-                        Información del material
-                    </h2>
-
-                    <div class="row g-4">
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Título</span>
-                            <strong>Guía de Matemáticas</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Categoría</span>
-                            <strong>Matemáticas</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Grado</span>
-                            <strong>Primer grado</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Tipo</span>
-                            <strong>PDF</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Autor</span>
-                            <strong>María González</strong>
-                        </div>
-
-                        <div class="col-md-6">
-                            <span class="detail-label">Fecha de carga</span>
-                            <strong>08/08/2026</strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail-card mt-4">
-
-                    <h2 class="section-title">
-                        Descripción
-                    </h2>
-
-                    <p class="description">
-                        Guía de ejercicios para reforzar sumas, restas y
-                        resolución de problemas básicos.
-                    </p>
-
-                </div>
-
+                @if (Model.PuedeDescargar && tieneArchivo)
+                {
+                    <a class="btn btn-cop-primary w-100" href="@Url.Action("Descargar", "RepositorioMaterial", new { id = Model.IdMaterial })">
+                        <i class="bi bi-download me-1"></i> Descargar material
+                    </a>
+                }
+                else if (tieneArchivo && !Model.PuedeDescargar)
+                {
+                    <div class="alert alert-secondary small mb-0"><i class="bi bi-lock me-1"></i>No tenés permiso para descargar este archivo.</div>
+                }
             </div>
 
-
-            <div class="col-lg-4">
-
-                <div class="detail-card text-center">
-
-                    <div class="document-icon">
-                        <i class="bi bi-file-earmark-pdf"></i>
-                    </div>
-
-                    <h3>Guia_Matematicas.pdf</h3>
-
-                    <p class="text-muted">
-                        Documento PDF
-                    </p>
-
-                    <button class="btn btn-cop-primary w-100">
-                        <i class="bi bi-download me-1"></i>
-                        Descargar material
-                    </button>
-
-                </div>
-
-
-                <div class="d-grid gap-2 mt-3">
-
-                    <a href="@Url.Action("Editar", "RepositorioMaterial", new { id = 1 })"
-                       class="btn btn-outline-cop">
-                        <i class="bi bi-pencil me-1"></i>
-                        Editar
+            <div class="d-grid gap-2 mt-3">
+                @if (Model.PuedeEditar)
+                {
+                    <a class="btn btn-outline-primary" href="@Url.Action("Editar", "RepositorioMaterial", new { id = Model.IdMaterial })">
+                        <i class="bi bi-pencil-square me-1"></i>Editar material
                     </a>
-
-                    <button class="btn btn-outline-danger">
-                        <i class="bi bi-trash me-1"></i>
-                        Eliminar
-                    </button>
-
-                    <a href="@Url.Action("Index", "RepositorioMaterial")"
-                       class="btn btn-light">
-                        Volver
-                    </a>
-
-                </div>
-
+                }
+                @if (Model.PuedeEliminar)
+                {
+                    using (Html.BeginForm("Eliminar", "RepositorioMaterial", new { id = Model.IdMaterial }, FormMethod.Post, new { onsubmit = "return confirm('¿Está seguro de eliminar este material?');" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger w-100"><i class="bi bi-trash me-1"></i>Eliminar material</button>
+                    }
+                }
+                <a class="btn btn-light" href="@Url.Action("Index", "RepositorioMaterial")"><i class="bi bi-arrow-left me-1"></i>Volver</a>
             </div>
-
         </div>
-
-    </section>
-
-</main>
-
+    </div>
+</div>
 
 @section styles {
-
     <style>
-
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
-        }
-
         body {
-            background: var(--cop-page-bg);
+            background: #f4f7fa;
         }
-
-        .repo-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
-        }
-
-        .repo-breadcrumb {
-            display: flex;
-            gap: 7px;
-            align-items: center;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
-
-            .repo-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
 
         .repo-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
+            color: #133c55;
             font-weight: 700;
         }
 
-        .repo-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-        .detail-card {
-            background: white;
+        .repo-card {
+            background: #fff;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
-            padding: 22px;
         }
 
-        .section-title {
-            color: var(--cop-primary);
-            font-size: 1.1rem;
+        .repo-section-title {
+            color: #133c55;
             font-weight: 600;
-            margin-bottom: 20px;
         }
 
-        .detail-label {
-            display: block;
-            color: var(--cop-muted);
-            font-size: .8rem;
-            margin-bottom: 3px;
+        .repo-description {
+            color: #334155;
+            line-height: 1.7;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
         }
 
-        .description {
-            color: #495057;
-            margin: 0;
-        }
-
-        .document-icon {
+        .repo-file-icon {
             width: 75px;
             height: 75px;
-            border-radius: 14px;
-            background: #f8d7da;
-            color: #842029;
+            border-radius: 15px;
+            background: #e8f0f7;
+            color: #133c55;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin: 0 auto 15px;
-            font-size: 2.2rem;
+            justify-content: center;
+            font-size: 38px;
         }
 
-        .detail-card h3 {
-            font-size: 1rem;
-            color: var(--cop-primary);
+        .repo-filename {
+            overflow-wrap: anywhere;
+        }
+
+        .repo-pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        .repo-image-preview {
+            max-height: 550px;
+            object-fit: contain;
         }
 
         .btn-cop-primary {
-            background: var(--cop-primary);
-            color: white;
-            border-color: var(--cop-primary);
+            background: #133c55;
+            color: #fff;
+            border-color: #133c55;
         }
 
-        .btn-outline-cop {
-            border: 1px solid var(--cop-secondary);
-            color: var(--cop-secondary);
+            .btn-cop-primary:hover {
+                background: #386fa4;
+                color: #fff;
+                border-color: #386fa4;
+            }
+
+        .btn-outline-primary {
+            color: #133c55;
+            border-color: #133c55;
         }
+
+            .btn-outline-primary:hover {
+                background: #133c55;
+                border-color: #133c55;
+                color: #fff;
+            }
     </style>
-
 }

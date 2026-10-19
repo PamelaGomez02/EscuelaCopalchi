@@ -794,3 +794,302 @@ SELECT
 FROM dbo.USUARIO
 WHERE correo = @Correo;
 GO
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    COLUMN_NAME AS Columna,
+    DATA_TYPE AS TipoDato,
+    CHARACTER_MAXIMUM_LENGTH AS Longitud,
+    IS_NULLABLE AS PermiteNulos
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'MATERIAL_DIDACTICO'
+ORDER BY ORDINAL_POSITION;
+
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    fk.name AS NombreRelacion,
+    COL_NAME(fkc.parent_object_id,
+             fkc.parent_column_id) AS Columna,
+    OBJECT_NAME(fk.referenced_object_id) AS TablaRelacionada,
+    COL_NAME(fkc.referenced_object_id,
+             fkc.referenced_column_id) AS ColumnaRelacionada
+FROM sys.foreign_keys fk
+INNER JOIN sys.foreign_key_columns fkc
+    ON fk.object_id = fkc.constraint_object_id
+WHERE fk.parent_object_id =
+    OBJECT_ID('dbo.MATERIAL_DIDACTICO');
+
+
+    USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    TABLE_NAME AS Tabla,
+    COLUMN_NAME AS Columna,
+    DATA_TYPE AS TipoDato,
+    IS_NULLABLE AS PermiteNulos
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME IN (
+    'USUARIO',
+    'DOCENTE',
+    'ROL',
+    'ROL_PERMISO',
+    'PERMISO'
+)
+AND TABLE_SCHEMA = 'dbo'
+ORDER BY TABLE_NAME, ORDINAL_POSITION;
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+-- Agregar usuario responsable del material
+IF COL_LENGTH('dbo.MATERIAL_DIDACTICO',
+              'id_usuario_carga') IS NULL
+BEGIN
+    ALTER TABLE dbo.MATERIAL_DIDACTICO
+    ADD id_usuario_carga INT NULL;
+END;
+GO
+
+-- Crear relación con USUARIO
+IF NOT EXISTS (
+    SELECT 1
+    FROM sys.foreign_keys
+    WHERE name = 'FK_MATERIAL_USUARIO_CARGA'
+      AND parent_object_id =
+          OBJECT_ID('dbo.MATERIAL_DIDACTICO')
+)
+BEGIN
+    ALTER TABLE dbo.MATERIAL_DIDACTICO
+    ADD CONSTRAINT FK_MATERIAL_USUARIO_CARGA
+    FOREIGN KEY (id_usuario_carga)
+    REFERENCES dbo.USUARIO(id_usuario);
+END;
+GO
+
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    r.id_rol,
+    r.nombre AS Rol,
+    p.id_permiso,
+    p.nombre AS Permiso,
+    p.modulo AS Modulo
+FROM dbo.ROL r
+INNER JOIN dbo.ROL_PERMISO rp
+    ON r.id_rol = rp.id_rol
+INNER JOIN dbo.PERMISO p
+    ON rp.id_permiso = p.id_permiso
+ORDER BY r.nombre, p.modulo, p.nombre;
+
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+BEGIN TRANSACTION;
+
+DECLARE @IdPermiso INT;
+
+SELECT @IdPermiso = id_permiso
+FROM dbo.PERMISO
+WHERE nombre = 'GESTIONAR_MATERIAL'
+  AND estado = 1;
+
+IF @IdPermiso IS NULL
+BEGIN
+    ROLLBACK TRANSACTION;
+    THROW 50001,
+        'No existe el permiso GESTIONAR_MATERIAL activo.',
+        1;
+END;
+
+INSERT INTO dbo.ROL_PERMISO (id_rol, id_permiso)
+SELECT r.id_rol, @IdPermiso
+FROM dbo.ROL r
+WHERE r.nombre IN ('Administrador', 'Docente')
+  AND r.estado = 1
+  AND NOT EXISTS (
+      SELECT 1
+      FROM dbo.ROL_PERMISO rp
+      WHERE rp.id_rol = r.id_rol
+        AND rp.id_permiso = @IdPermiso
+  );
+
+COMMIT TRANSACTION;
+GO
+
+-- Verificar permisos
+SELECT
+    r.nombre AS Rol,
+    p.nombre AS Permiso
+FROM dbo.ROL_PERMISO rp
+INNER JOIN dbo.ROL r
+    ON rp.id_rol = r.id_rol
+INNER JOIN dbo.PERMISO p
+    ON rp.id_permiso = p.id_permiso
+WHERE p.nombre = 'GESTIONAR_MATERIAL';
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+SELECT
+    COLUMN_NAME AS Columna,
+    DATA_TYPE AS TipoDato,
+    IS_NULLABLE AS PermiteNulos
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'MATERIAL_DIDACTICO'
+  AND COLUMN_NAME IN ('id_docente', 'id_usuario_carga');
+ 
+ 
+ 
+ USE AulaVirtualCopalchi;
+GO
+
+ALTER TABLE dbo.MATERIAL_DIDACTICO
+ALTER COLUMN id_docente INT NULL;
+GO
+
+SELECT
+    COLUMN_NAME,
+    DATA_TYPE,
+    IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'MATERIAL_DIDACTICO'
+  AND COLUMN_NAME IN ('id_docente', 'id_usuario_carga');
+
+
+
+  
+USE AulaVirtualCopalchi;
+GO
+
+-- Categoría del material
+IF COL_LENGTH('dbo.MATERIAL_DIDACTICO', 'categoria') IS NULL
+BEGIN
+    ALTER TABLE dbo.MATERIAL_DIDACTICO
+    ADD categoria NVARCHAR(100) NULL;
+END;
+GO
+
+-- Grado académico
+IF COL_LENGTH('dbo.MATERIAL_DIDACTICO', 'grado') IS NULL
+BEGIN
+    ALTER TABLE dbo.MATERIAL_DIDACTICO
+    ADD grado NVARCHAR(50) NULL;
+END;
+GO
+
+-- Clasificación general del documento
+IF COL_LENGTH('dbo.MATERIAL_DIDACTICO', 'tipo_material') IS NULL
+BEGIN
+    ALTER TABLE dbo.MATERIAL_DIDACTICO
+    ADD tipo_material NVARCHAR(50) NULL;
+END;
+GO
+
+-- Verificar las columnas
+SELECT
+    COLUMN_NAME AS Columna,
+    DATA_TYPE AS TipoDato,
+    IS_NULLABLE AS PermiteNulos
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'MATERIAL_DIDACTICO'
+ORDER BY ORDINAL_POSITION;
+
+
+
+USE AulaVirtualCopalchi;
+GO
+
+BEGIN TRANSACTION;
+
+INSERT INTO dbo.PERMISO
+    (nombre, descripcion, modulo, estado)
+SELECT
+    p.nombre,
+    p.descripcion,
+    'Material Didáctico',
+    1
+FROM
+(
+    VALUES
+    ('VER_MATERIAL',
+     'Consultar y buscar materiales'),
+
+    ('DESCARGAR_MATERIAL',
+     'Descargar archivos del repositorio'),
+
+    ('CARGAR_MATERIAL',
+     'Cargar material didáctico'),
+
+    ('CARGAR_DOCUMENTO_INSTITUCIONAL',
+     'Cargar documentos institucionales'),
+
+    ('EDITAR_MATERIAL',
+     'Editar materiales propios'),
+
+    ('ELIMINAR_MATERIAL',
+     'Eliminar materiales propios'),
+
+    ('ADMINISTRAR_TODO_MATERIAL',
+     'Editar y eliminar materiales de otros usuarios')
+) AS p(nombre, descripcion)
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM dbo.PERMISO existente
+    WHERE existente.nombre = p.nombre
+);
+
+COMMIT TRANSACTION;
+GO
+
+SELECT
+    id_permiso,
+    nombre,
+    descripcion,
+    modulo,
+    estado
+FROM dbo.PERMISO
+WHERE modulo = 'Material Didáctico'
+ORDER BY id_permiso;
+
+
+USE AulaVirtualCopalchi;
+GO
+
+BEGIN TRANSACTION;
+
+DECLARE @IdPermiso INT;
+
+SELECT @IdPermiso = id_permiso
+FROM dbo.PERMISO
+WHERE nombre = 'GESTIONAR_MATERIAL';
+
+-- Eliminar asignaciones del permiso anterior
+DELETE FROM dbo.ROL_PERMISO
+WHERE id_permiso = @IdPermiso;
+
+-- Eliminar permiso anterior
+DELETE FROM dbo.PERMISO
+WHERE id_permiso = @IdPermiso;
+
+COMMIT TRANSACTION;
+GO
