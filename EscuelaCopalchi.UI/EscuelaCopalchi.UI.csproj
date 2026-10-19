@@ -344,7 +344,6 @@
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Index.cshtml" />
     <Content Include="Views\Usuarios\Detalle.cshtml" />
-    <Content Include="Views\Login\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
