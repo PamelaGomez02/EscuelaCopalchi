@@ -1,7 +1,7 @@
-﻿using System;
+﻿using EscuelaCopalchi.UI.Models.GestionAcademica;
+using System;
 using System.Linq;
 using System.Web.Mvc;
-using EscuelaCopalchi.UI.Models.GestionAcademica;
 
 namespace EscuelaCopalchi.UI.Controllers
 {

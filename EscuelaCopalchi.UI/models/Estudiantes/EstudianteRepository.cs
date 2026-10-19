@@ -1,12 +1,11 @@
 ﻿
+using EscuelaCopalchi.UI.Models.Estudiantes;
 using System;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using EscuelaCopalchi.UI.Models.Estudiantes;
-using EscuelaCopalchi.UI.Models.Estudiantes;
 
 
 namespace EscuelaCopalchi.UI.Models
@@ -234,9 +233,9 @@ namespace EscuelaCopalchi.UI.Models
 
         public string GuardarAdecuacion(
             AdecuacionAcademica adecuacion)
+        {
+            string[] parametros =
             {
-                string[] parametros =
-                {
                     "@id_estudiante",
                     "@id_usuario_registro",
                     "@tipo_adecuacion",
@@ -247,8 +246,8 @@ namespace EscuelaCopalchi.UI.Models
                     "@estado"
                 };
 
-                string[] valores =
-                {
+            string[] valores =
+            {
                     adecuacion.IdEstudiante.ToString(),
                     adecuacion.IdUsuarioRegistro.ToString(),
                     adecuacion.TipoAdecuacion.ToString(),
@@ -261,11 +260,11 @@ namespace EscuelaCopalchi.UI.Models
                     adecuacion.Estado
                 };
 
-                return db.ejecutarProcedimiento_Save(
-                    "SP_GUARDAR_ADECUACION_ACADEMICA",
-                    parametros,
-                    valores);
-            }
+            return db.ejecutarProcedimiento_Save(
+                "SP_GUARDAR_ADECUACION_ACADEMICA",
+                parametros,
+                valores);
+        }
 
 
         public List<TipoAdecuacion> ObtenerTiposAdecuacion()
@@ -307,26 +306,26 @@ namespace EscuelaCopalchi.UI.Models
             return lista;
         }
 
-    public List<AdecuacionAcademica> ObtenerAdecuaciones(
-        int idEstudiante)
+        public List<AdecuacionAcademica> ObtenerAdecuaciones(
+            int idEstudiante)
         {
-        string[] parametros =
-        {
+            string[] parametros =
+            {
             "@id_estudiante"
         };
 
-        string[] valores =
-        {
+            string[] valores =
+            {
             idEstudiante.ToString()
         };
 
             String NombreTipoAdecuacion = "drec";
 
-        DataTable dt =
-        db.ejecutarProcedimiento(
-            "SP_OBTENER_ADECUACIONES_ESTUDIANTE",
-            parametros,
-            valores);
+            DataTable dt =
+            db.ejecutarProcedimiento(
+                "SP_OBTENER_ADECUACIONES_ESTUDIANTE",
+                parametros,
+                valores);
 
             List<AdecuacionAcademica> lista =
                 new List<AdecuacionAcademica>();
@@ -388,8 +387,8 @@ namespace EscuelaCopalchi.UI.Models
                 "@estado"
             };
 
-             string[] valores =
-             {
+            string[] valores =
+            {
                 adecuacion.IdAdecuacion.ToString(),
                 adecuacion.TipoAdecuacion.ToString(),
                 adecuacion.Descripcion,
@@ -401,10 +400,10 @@ namespace EscuelaCopalchi.UI.Models
                 adecuacion.Estado
             };
 
-                return db.ejecutarProcedimiento_Save(
-                    "SP_ACTUALIZAR_ADECUACION_ACADEMICA",
-                    parametros,
-                    valores);
+            return db.ejecutarProcedimiento_Save(
+                "SP_ACTUALIZAR_ADECUACION_ACADEMICA",
+                parametros,
+                valores);
         }
 
 
@@ -460,16 +459,16 @@ namespace EscuelaCopalchi.UI.Models
 
         public string GuardarAlergia(
         Alergia alergia)
+        {
+            string[] parametros =
             {
-                string[] parametros =
-                {
                     "@id_estudiante",
                     "@alergia",
                     "@descripcion"
                 };
 
-                string[] valores =
-                {
+            string[] valores =
+            {
                     alergia.IdEstudiante.ToString(),
                     alergia.NombreAlergia,
                     alergia.Descripcion
@@ -640,7 +639,7 @@ namespace EscuelaCopalchi.UI.Models
         }
 
 
-        public List<Estudiante>ObtenerHistorialBajas()
+        public List<Estudiante> ObtenerHistorialBajas()
         {
             DataTable dt =
                 db.ejecutarProcedimiento(

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using EscuelaCopalchi.UI.Datos.GestionAcademica;
+using EscuelaCopalchi.UI.Models.GestionAcademica;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using EscuelaCopalchi.UI.Datos.GestionAcademica;
-using EscuelaCopalchi.UI.Models.GestionAcademica;
 
 namespace EscuelaCopalchi.UI.Logica.GestionAcademica
 {

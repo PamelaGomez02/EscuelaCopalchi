@@ -35,9 +35,9 @@ namespace EscuelaCopalchi.UI.Models.Estudiantes
         [Required]
         public string CorreoEncargado { get; set; }
 
-        public string ObservacionBaja{ get; set; }
+        public string ObservacionBaja { get; set; }
 
-        public DateTime? FechaBaja{ get; set; }
+        public DateTime? FechaBaja { get; set; }
 
         public bool EsValido { get; set; }
 
@@ -45,6 +45,6 @@ namespace EscuelaCopalchi.UI.Models.Estudiantes
 
         public bool Estado { get; set; }
 
-       // public DateTime FechaRegistro { get; set; }
+        // public DateTime FechaRegistro { get; set; }
     }
 }

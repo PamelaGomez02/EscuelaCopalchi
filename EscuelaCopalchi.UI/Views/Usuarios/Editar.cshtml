@@ -1,121 +1,258 @@
-﻿@model EscuelaCopalchi.UI.Models.Usuarios.Usuario
+﻿
+@model EscuelaCopalchi.UI.Models.Usuarios.Usuario
+@using System.Collections.Generic
+@using EscuelaCopalchi.UI.Models.Usuarios
+
 @{
     ViewBag.Title = "Editar usuario";
+
+    var roles = ViewBag.Roles as List<RolDropdownItem>
+                ?? new List<RolDropdownItem>();
 }
 
 <main>
     <div class="cop-page-header">
         <div>
             <h2 class="cop-page-title">Editar usuario</h2>
-            <p class="cop-page-subtitle">Actualiza la información de @Model.Nombre @Model.Apellido1.</p>
+            <p class="cop-page-subtitle">
+                Actualiza la información de
+                @Model.Nombre @Model.Apellido1.
+            </p>
         </div>
     </div>
 
     @if (ViewBag.Error != null)
     {
-        <div class="alert alert-danger">@Html.Raw(ViewBag.Error)</div>
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
     }
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="cop-form-card">
         @using (Html.BeginForm("Editar", "Usuarios", FormMethod.Post))
         {
+            @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.IdUsuario)
 
             <div class="d-flex justify-content-between align-items-center mb-4 cop-status-row">
                 <div>
-                    <span class="fw-semibold">Estado de la cuenta</span>
-                    <p class="cop-page-subtitle mb-0">Este cambio también se puede hacer desde el listado.</p>
+                    <span class="fw-semibold">
+                        Estado de la cuenta
+                    </span>
+                    <p class="cop-page-subtitle mb-0">
+                        Este cambio también se puede hacer desde el listado.
+                    </p>
                 </div>
+
                 <span class="status @(Model.Estado ? "status-ok" : "status-inactive")">
                     @(Model.Estado ? "Activo" : "Inactivo")
                 </span>
             </div>
 
             <div class="row g-3">
+
                 <div class="col-md-6">
                     <label class="form-label">Nombre</label>
-                    <input type="text" name="Nombre" class="form-control" value="@Model.Nombre" data-solo-letras required>
+                    @Html.TextBoxFor(m => m.Nombre,
+                        new
+                             {
+                            @class = "form-control",
+                            data_solo_letras = "",
+                            required = "required"
+                        })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                 </div>
+
                 <div class="col-md-3">
                     <label class="form-label">Primer apellido</label>
-                    <input type="text" name="Apellido1" class="form-control" value="@Model.Apellido1" data-solo-letras required>
+                    @Html.TextBoxFor(m => m.Apellido1,
+                        new
+                             {
+                            @class = "form-control",
+                            data_solo_letras = "",
+                            required = "required"
+                        })
+                    @Html.ValidationMessageFor(m => m.Apellido1, "", new { @class = "text-danger" })
                 </div>
+
                 <div class="col-md-3">
                     <label class="form-label">Segundo apellido</label>
-                    <input type="text" name="Apellido2" class="form-control" value="@Model.Apellido2" data-solo-letras>
+                    @Html.TextBoxFor(m => m.Apellido2,
+                        new
+                             {
+                            @class = "form-control",
+                            data_solo_letras = ""
+                        })
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Identificación</label>
-                    <input type="text" name="Identificacion" class="form-control" value="@Model.Identificacion"
-                           placeholder="1-1111-1111" data-formato="cedula" maxlength="11" inputmode="numeric" required>
-                    <div class="form-text" id="ayudaIdentificacion">Solo números. Formato: 1-1111-1111</div>
+                    @Html.TextBoxFor(m => m.Identificacion,
+                        new
+                             {
+                            @class = "form-control",
+                            placeholder = "1-1111-1111",
+                            data_formato = "cedula",
+                            maxlength = "11",
+                            inputmode = "numeric",
+                            required = "required"
+                        })
+
+                    <div class="form-text" id="ayudaIdentificacion">
+                        Solo números. Formato: 1-1111-1111
+                    </div>
+
                     <div class="form-check mt-2">
-                        <input class="form-check-input" type="checkbox" id="EsExtranjero">
-                        <label class="form-check-label" for="EsExtranjero">Es extranjero (DIMEX)</label>
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="EsExtranjero">
+                        <label class="form-check-label" for="EsExtranjero">
+                            Es extranjero (DIMEX)
+                        </label>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <label class="form-label">Correo institucional</label>
-                    <input type="email" name="Correo" class="form-control" value="@Model.Correo" required>
+                    @Html.TextBoxFor(m => m.Correo,
+                        new
+                             {
+                            @class = "form-control",
+                            type = "email",
+                            required = "required"
+                        })
+                    @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Teléfono</label>
-                    <input type="text" name="Telefono" class="form-control" value="@Model.Telefono"
-                           placeholder="8888-8888" data-formato="telefono" maxlength="9" inputmode="numeric">
-                    <div class="form-text">Solo números. Formato: 8888-8888</div>
+                    @Html.TextBoxFor(m => m.Telefono,
+                        new
+                             {
+                            @class = "form-control",
+                            placeholder = "8888-8888",
+                            data_formato = "telefono",
+                            maxlength = "9",
+                            inputmode = "numeric"
+                        })
+                    <div class="form-text">
+                        Solo números. Formato: 8888-8888
+                    </div>
                 </div>
+
+                <!-- TODOS LOS ROLES -->
                 <div class="col-md-6">
-                    <label class="form-label">Rol</label>
-                    <select name="IdRol" class="form-select" required>
-                        @foreach (var rol in ViewBag.Roles as List<EscuelaCopalchi.UI.Models.Usuarios.RolDropdownItem>)
+                    <label for="IdRol" class="form-label">
+                        Rol del usuario
+                    </label>
+
+                    <select id="IdRol"
+                            name="IdRol"
+                            class="form-select"
+                            required>
+
+                        <option value="">Seleccione un rol</option>
+
+                        @foreach (var rol in roles)
                         {
-                            if (rol.IdRol == Model.IdRol)
-                            {
-                                <option value="@rol.IdRol" selected>@rol.Nombre</option>
-                            }
-                            else
-                            {
-                                <option value="@rol.IdRol">@rol.Nombre</option>
-                            }
+                            <option value="@rol.IdRol"
+                                    @(rol.IdRol == Model.IdRol ? "selected" : "")>
+                                @rol.Nombre
+                            </option>
                         }
                     </select>
+
+                    @Html.ValidationMessageFor(
+                        m => m.IdRol,
+                        "",
+                        new { @class = "text-danger" })
+
+                    @if (roles.Count == 0)
+                    {
+                        <div class="text-danger small mt-1">
+                            No se encontraron roles disponibles.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-text">
+                            Selecciona el rol que tendrá el usuario.
+                        </div>
+                    }
                 </div>
 
                 <div class="col-12">
                     <hr class="my-2">
-                    <span class="fw-semibold">Cambiar contraseña</span>
-                    <p class="cop-page-subtitle mb-0">Opcional. Déjalo vacío si no quieres cambiarla.</p>
+                    <span class="fw-semibold">
+                        Cambiar contraseña
+                    </span>
+                    <p class="cop-page-subtitle mb-0">
+                        Opcional. Déjalo vacío si no quieres cambiarla.
+                    </p>
                 </div>
+
                 <div class="col-md-6">
                     <label class="form-label">Nueva contraseña</label>
                     <div class="input-group">
-                        <input type="password" id="Contrasena" name="Contrasena" class="form-control"
-                               placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password">
-                        <button type="button" class="btn btn-outline-secondary" data-toggle-password="Contrasena" title="Mostrar u ocultar contraseña">
+                        <input type="password"
+                               id="Contrasena"
+                               name="Contrasena"
+                               class="form-control"
+                               placeholder="Mínimo 8 caracteres"
+                               minlength="8"
+                               autocomplete="new-password">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-toggle-password="Contrasena"
+                                title="Mostrar u ocultar contraseña">
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <label class="form-label">Confirmar nueva contraseña</label>
                     <div class="input-group">
-                        <input type="password" id="ConfirmarContrasena" name="ConfirmarContrasena" class="form-control"
-                               placeholder="Repite la contraseña" autocomplete="new-password">
-                        <button type="button" class="btn btn-outline-secondary" data-toggle-password="ConfirmarContrasena" title="Mostrar u ocultar contraseña">
+                        <input type="password"
+                               id="ConfirmarContrasena"
+                               name="ConfirmarContrasena"
+                               class="form-control"
+                               placeholder="Repite la contraseña"
+                               autocomplete="new-password">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-toggle-password="ConfirmarContrasena"
+                                title="Mostrar u ocultar contraseña">
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
-                    <div id="avisoConfirmacion" class="text-danger small mt-1" style="display:none;">Las contraseñas no coinciden.</div>
+
+                    <div id="avisoConfirmacion"
+                         class="text-danger small mt-1"
+                         style="display:none;">
+                        Las contraseñas no coinciden.
+                    </div>
                 </div>
             </div>
 
             <hr class="my-4">
 
             <div class="d-flex justify-content-end gap-2">
-                <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary">Cancelar</a>
-                <button type="submit" class="btn cop-btn-primary">Guardar cambios</button>
+                <a href="@Url.Action("Index", "Usuarios")"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn cop-btn-primary"
+                        @(roles.Count == 0 ? "disabled" : "")>
+                    <i class="bi bi-check-lg me-1"></i>
+                    Guardar cambios
+                </button>
             </div>
         }
     </div>
@@ -127,22 +264,82 @@
 
 @section styles {
     <style>
-        .cop-page-header { margin: 28px 0 20px; }
-        .cop-page-title { font-weight: 700; color: #133C55; margin-bottom: 2px; }
-        .cop-page-subtitle { color: #6c757d; margin-bottom: 0; }
+        .cop-page-header {
+            margin: 28px 0 20px;
+        }
 
-        .cop-form-card { background-color: #fff; border: 1px solid #e3e8ee; border-radius: 10px; padding: 28px 26px; margin-bottom: 40px; }
-        .cop-form-card .form-label { font-weight: 600; font-size: 0.85rem; color: #133C55; }
-        .cop-form-card .form-control, .cop-form-card .form-select { border-radius: 8px; border: 1px solid #dfe4ea; }
-        .cop-form-card .form-control:focus, .cop-form-card .form-select:focus { border-color: #59A5D8; box-shadow: 0 0 0 3px rgba(89, 165, 216, 0.2); }
+        .cop-page-title {
+            font-weight: 700;
+            color: #133C55;
+            margin-bottom: 2px;
+        }
 
-        .cop-status-row { background-color: #F4F7FA; border-radius: 8px; padding: 14px 18px; }
+        .cop-page-subtitle {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
 
-        .status { display: inline-block; padding: 5px 10px; border-radius: 20px; font-size: .8rem; font-weight: 600; }
-        .status-ok { background: #d1e7dd; color: #0f5132; }
-        .status-inactive { background: #f8d7da; color: #842029; }
+        .cop-form-card {
+            background-color: #fff;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            padding: 28px 26px;
+            margin-bottom: 40px;
+        }
 
-        .cop-btn-primary { background-color: #133C55; border-color: #133C55; color: #fff; font-weight: 600; }
-        .cop-btn-primary:hover { background-color: #386FA4; border-color: #386FA4; color: #fff; }
+            .cop-form-card .form-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #133C55;
+            }
+
+            .cop-form-card .form-control,
+            .cop-form-card .form-select {
+                border-radius: 8px;
+                border: 1px solid #dfe4ea;
+            }
+
+                .cop-form-card .form-control:focus,
+                .cop-form-card .form-select:focus {
+                    border-color: #59A5D8;
+                    box-shadow: 0 0 0 3px rgba(89, 165, 216, 0.2);
+                }
+
+        .cop-status-row {
+            background-color: #F4F7FA;
+            border-radius: 8px;
+            padding: 14px 18px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .cop-btn-primary {
+            background-color: #133C55;
+            border-color: #133C55;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .cop-btn-primary:hover {
+                background-color: #386FA4;
+                border-color: #386FA4;
+                color: #fff;
+            }
     </style>
 }

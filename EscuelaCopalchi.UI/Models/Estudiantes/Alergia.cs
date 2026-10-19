@@ -16,5 +16,5 @@ namespace EscuelaCopalchi.UI.Models.Estudiantes
         public string Descripcion { get; set; }
 
         public DateTime FechaRegistro { get; set; }
-    } 
+    }
 }

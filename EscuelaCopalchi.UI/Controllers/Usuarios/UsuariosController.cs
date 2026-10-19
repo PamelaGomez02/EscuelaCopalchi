@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-
+﻿
 using EscuelaCopalchi.UI.Models;
 using EscuelaCopalchi.UI.Models.Usuarios;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
@@ -15,63 +12,86 @@ namespace EscuelaCopalchi.UI.Controllers
         private readonly UsuarioRepository repository;
         private readonly RolDropdownRepository rolRepository;
 
+        private const string MensajeOk =
+            "Se ha guardado correctamente";
+
         public UsuariosController()
         {
             repository = new UsuarioRepository();
             rolRepository = new RolDropdownRepository();
         }
 
-        // ---------------------------------------------------
-        // REGISTRAR
-        // ---------------------------------------------------
+        // -------------------------------------------
+        // CARGAR ROLES
+        // -------------------------------------------
+        private void CargarRoles()
+        {
+            ViewBag.Roles = rolRepository.ObtenerTodos();
+        }
+
+        // -------------------------------------------
+        // REGISTRAR - GET
+        // -------------------------------------------
         [HttpGet]
         public ActionResult Registrar()
         {
-            ViewBag.Roles = rolRepository.ObtenerTodos();
+            CargarRoles();
+
             return View("~/Views/Usuarios/Crear.cshtml");
         }
 
+        // -------------------------------------------
+        // REGISTRAR - POST
+        // -------------------------------------------
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Registrar(Usuario usuario)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    var errores = string.Join(
-                        "<br>",
+                    ViewBag.Error = string.Join(
+                        " ",
                         ModelState.Values
-                                  .SelectMany(v => v.Errors)
-                                  .Select(e => e.ErrorMessage));
+                            .SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage));
 
-                    ViewBag.Error = errores;
-                    ViewBag.Roles = rolRepository.ObtenerTodos();
-                    return View("~/Views/Usuarios/Crear.cshtml", usuario);
+                    CargarRoles();
+
+                    return View(
+                        "~/Views/Usuarios/Crear.cshtml",
+                        usuario);
                 }
 
                 string resultado = repository.Guardar(usuario);
 
-                if (resultado == "Se ha guardado correctamente")
+                if (resultado == MensajeOk)
                 {
-                    TempData["Success"] = "Usuario registrado correctamente.";
-                    return RedirectToAction("Registrar");
+                    TempData["Success"] =
+                        "Usuario registrado correctamente.";
+
+                    return RedirectToAction("Index");
                 }
 
                 ViewBag.Error = resultado;
-                ViewBag.Roles = rolRepository.ObtenerTodos();
-                return View("~/Views/Usuarios/Crear.cshtml", usuario);
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
-                ViewBag.Roles = rolRepository.ObtenerTodos();
-                return View("~/Views/Usuarios/Crear.cshtml", usuario);
             }
+
+            CargarRoles();
+
+            return View(
+                "~/Views/Usuarios/Crear.cshtml",
+                usuario);
         }
 
-        // ---------------------------------------------------
-        // INDEX
-        // ---------------------------------------------------
+        // -------------------------------------------
+        // LISTADO DE USUARIOS
+        // -------------------------------------------
+        [HttpGet]
         public ActionResult Index(
             string filtroEstado = "Todos",
             string busqueda = "")
@@ -80,133 +100,258 @@ namespace EscuelaCopalchi.UI.Controllers
 
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
-                usuarios = usuarios
-                    .Where(x =>
-                        (x.Nombre + " " + x.Apellido1 + " " + x.Apellido2)
-                        .ToLower().Contains(busqueda.ToLower())
-                        || x.Identificacion.ToLower().Contains(busqueda.ToLower())
-                        || x.Correo.ToLower().Contains(busqueda.ToLower()))
-                    .ToList();
+                string texto = busqueda.Trim();
+
+                usuarios = usuarios.Where(x =>
+                    ((x.Nombre ?? "") + " " +
+                     (x.Apellido1 ?? "") + " " +
+                     (x.Apellido2 ?? ""))
+                        .IndexOf(texto,
+                            StringComparison.OrdinalIgnoreCase) >= 0
+
+                    || (x.Identificacion ?? "")
+                        .IndexOf(texto,
+                            StringComparison.OrdinalIgnoreCase) >= 0
+
+                    || (x.Correo ?? "")
+                        .IndexOf(texto,
+                            StringComparison.OrdinalIgnoreCase) >= 0
+                ).ToList();
             }
 
             if (filtroEstado == "Activos")
             {
-                usuarios = usuarios.Where(x => x.Estado).ToList();
+                usuarios = usuarios
+                    .Where(x => x.Estado)
+                    .ToList();
             }
             else if (filtroEstado == "Inactivos")
             {
-                usuarios = usuarios.Where(x => !x.Estado).ToList();
+                usuarios = usuarios
+                    .Where(x => !x.Estado)
+                    .ToList();
             }
 
             ViewBag.FiltroEstado = filtroEstado;
             ViewBag.Busqueda = busqueda;
 
-            return View("~/Views/Usuarios/Index.cshtml", usuarios);
+            return View(
+                "~/Views/Usuarios/Index.cshtml",
+                usuarios);
         }
 
-        // ---------------------------------------------------
-        // EDITAR
-        // ---------------------------------------------------
+        // -------------------------------------------
+        // EDITAR - GET
+        // -------------------------------------------
         [HttpGet]
-        public ActionResult Editar(int id)
+        public ActionResult Editar(int? id)
         {
-            var usuario = repository.ObtenerPorId(id);
-
-            if (usuario == null)
+            if (!id.HasValue || id.Value <= 0)
             {
-                TempData["Error"] = "Usuario no encontrado.";
+                TempData["Error"] =
+                    "Debe seleccionar un usuario para editar.";
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Roles = rolRepository.ObtenerTodos();
-            return View("~/Views/Usuarios/Editar.cshtml", usuario);
+            var usuario = repository.ObtenerPorId(id.Value);
+
+            if (usuario == null)
+            {
+                TempData["Error"] =
+                    "Usuario no encontrado.";
+
+                return RedirectToAction("Index");
+            }
+
+            CargarRoles();
+
+            return View(
+                "~/Views/Usuarios/Editar.cshtml",
+                usuario);
         }
 
+        // -------------------------------------------
+        // EDITAR - POST
+        // -------------------------------------------
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Editar(Usuario usuario)
         {
+            if (usuario == null || usuario.IdUsuario <= 0)
+            {
+                TempData["Error"] =
+                    "No se pudo identificar el usuario.";
+
+                return RedirectToAction("Index");
+            }
+
             try
             {
-                bool cambiaPass = !string.IsNullOrEmpty(usuario.Contrasena)
-                                  || !string.IsNullOrEmpty(usuario.ConfirmarContrasena);
+                var usuarioActual =
+                    repository.ObtenerPorId(usuario.IdUsuario);
 
-                string errorPass = null;
+                if (usuarioActual == null)
+                {
+                    TempData["Error"] =
+                        "Usuario no encontrado.";
+
+                    return RedirectToAction("Index");
+                }
+
+                bool cambiaPass =
+                    !string.IsNullOrEmpty(usuario.Contrasena)
+                    || !string.IsNullOrEmpty(
+                        usuario.ConfirmarContrasena);
+
                 if (cambiaPass)
                 {
-                    if (usuario.Contrasena == null || usuario.Contrasena.Length < 8)
-                        errorPass = "La contraseña debe tener al menos 8 caracteres.";
-                    else if (usuario.Contrasena != usuario.ConfirmarContrasena)
-                        errorPass = "Las contraseñas no coinciden.";
+                    if (string.IsNullOrEmpty(usuario.Contrasena)
+                        || usuario.Contrasena.Length < 8)
+                    {
+                        ViewBag.Error =
+                            "La contraseña debe tener al menos 8 caracteres.";
+
+                        CargarRoles();
+
+                        return View(
+                            "~/Views/Usuarios/Editar.cshtml",
+                            usuario);
+                    }
+
+                    if (usuario.Contrasena !=
+                        usuario.ConfirmarContrasena)
+                    {
+                        ViewBag.Error =
+                            "Las contraseñas no coinciden.";
+
+                        CargarRoles();
+
+                        return View(
+                            "~/Views/Usuarios/Editar.cshtml",
+                            usuario);
+                    }
                 }
 
-                if (errorPass != null)
+                // La contraseña es opcional al editar.
+                // No exigirla cuando no se está cambiando.
+                ModelState.Remove("Contrasena");
+                ModelState.Remove("ConfirmarContrasena");
+
+                if (!ModelState.IsValid)
                 {
-                    ViewBag.Error = errorPass;
-                    ViewBag.Roles = rolRepository.ObtenerTodos();
-                    return View("~/Views/Usuarios/Editar.cshtml", usuario);
+                    ViewBag.Error =
+                        "Revise los datos ingresados.";
+
+                    CargarRoles();
+
+                    return View(
+                        "~/Views/Usuarios/Editar.cshtml",
+                        usuario);
                 }
 
-                string resultado = repository.Actualizar(usuario);
+                // Actualizar información y rol.
+                string resultado =
+                    repository.Actualizar(usuario);
 
-                if (resultado == "Se ha guardado correctamente" && cambiaPass)
+                // Cambiar contraseña solo si se indicó.
+                if (resultado == MensajeOk && cambiaPass)
                 {
-                    resultado = repository.CambiarContrasena(usuario.IdUsuario, usuario.Contrasena);
+                    resultado =
+                        repository.CambiarContrasena(
+                            usuario.IdUsuario,
+                            usuario.Contrasena);
                 }
 
-                if (resultado == "Se ha guardado correctamente")
+                if (resultado == MensajeOk)
                 {
-                    TempData["Success"] = "Usuario actualizado correctamente.";
+                    TempData["Success"] =
+                        "Usuario actualizado correctamente.";
+
                     return RedirectToAction("Index");
                 }
 
                 ViewBag.Error = resultado;
-                ViewBag.Roles = rolRepository.ObtenerTodos();
-                return View("~/Views/Usuarios/Editar.cshtml", usuario);
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
-                ViewBag.Roles = rolRepository.ObtenerTodos();
-                return View("~/Views/Usuarios/Editar.cshtml", usuario);
             }
+
+            CargarRoles();
+
+            return View(
+                "~/Views/Usuarios/Editar.cshtml",
+                usuario);
         }
 
-        // ---------------------------------------------------
+        // -------------------------------------------
         // DETALLE
-        // ---------------------------------------------------
+        // -------------------------------------------
         [HttpGet]
-        public ActionResult Detalle(int id)
+        public ActionResult Detalle(int? id)
         {
-            var usuario = repository.ObtenerPorId(id);
-
-            if (usuario == null)
+            if (!id.HasValue || id.Value <= 0)
             {
-                TempData["Error"] = "Usuario no encontrado.";
+                TempData["Error"] =
+                    "Debe seleccionar un usuario.";
+
                 return RedirectToAction("Index");
             }
 
-            return View("~/Views/Usuarios/Detalle.cshtml", usuario);
+            var usuario = repository.ObtenerPorId(id.Value);
+
+            if (usuario == null)
+            {
+                TempData["Error"] =
+                    "Usuario no encontrado.";
+
+                return RedirectToAction("Index");
+            }
+
+            return View(
+                "~/Views/Usuarios/Detalle.cshtml",
+                usuario);
         }
 
-        // ---------------------------------------------------
+        // -------------------------------------------
         // CAMBIAR ESTADO
-        // ---------------------------------------------------
-        [HttpGet]
-        public ActionResult CambiarEstado(int id)
+        // -------------------------------------------
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CambiarEstado(int? id)
         {
-            var usuario = repository.ObtenerPorId(id);
-
-            if (usuario == null)
+            if (!id.HasValue || id.Value <= 0)
             {
-                TempData["Error"] = "Usuario no encontrado.";
+                TempData["Error"] =
+                    "No se recibió el ID del usuario.";
+
                 return RedirectToAction("Index");
             }
 
-            string resultado = repository.CambiarEstado(id, !usuario.Estado);
+            var usuario = repository.ObtenerPorId(id.Value);
 
-            TempData["Success"] = resultado == "Se ha guardado correctamente"
-                ? "Estado actualizado correctamente."
-                : resultado;
+            if (usuario == null)
+            {
+                TempData["Error"] =
+                    "Usuario no encontrado.";
+
+                return RedirectToAction("Index");
+            }
+
+            string resultado = repository.CambiarEstado(
+                id.Value,
+                !usuario.Estado);
+
+            if (resultado == MensajeOk)
+            {
+                TempData["Success"] =
+                    "Estado actualizado correctamente.";
+            }
+            else
+            {
+                TempData["Error"] = resultado;
+            }
 
             return RedirectToAction("Index");
         }

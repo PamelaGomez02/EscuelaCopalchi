@@ -1,13 +1,13 @@
-﻿using System;
+﻿using EscuelaCopalchi.UI.Models;
+using EscuelaCopalchi.UI.Models.Estudiantes;
+using ExcelDataReader;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using EscuelaCopalchi.UI.Models;
-using EscuelaCopalchi.UI.Models.Estudiantes;
-using ExcelDataReader;
-using System.Data;
-using System.IO;
 
 namespace EscuelaCopalchi.UI.Controllers
 {

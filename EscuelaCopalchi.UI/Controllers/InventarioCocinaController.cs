@@ -9,7 +9,7 @@ namespace EscuelaCopalchi.UI.Controllers
     public class InventarioCocinaController : Controller
     {
         // GET: InventarioCocina
-        public ActionResult Index() {return View();}
-        public ActionResult Create() {return View();}
+        public ActionResult Index() { return View(); }
+        public ActionResult Create() { return View(); }
     }
 }

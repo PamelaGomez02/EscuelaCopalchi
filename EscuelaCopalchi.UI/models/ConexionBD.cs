@@ -15,7 +15,7 @@ namespace EscuelaCopalchi.UI.Models
 
         public ConexionBD()
         {
-            this.connString = connString_Adrian;
+            this.connString = connString_Fran;
 
             this.DataSet = new DataSet();
         }

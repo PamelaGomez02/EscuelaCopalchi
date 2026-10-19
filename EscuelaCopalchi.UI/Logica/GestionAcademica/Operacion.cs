@@ -1,7 +1,7 @@
-﻿using System;
+﻿using EscuelaCopalchi.UI.Models.GestionAcademica;
+using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using EscuelaCopalchi.UI.Models.GestionAcademica;
 
 namespace EscuelaCopalchi.UI.Logica.GestionAcademica
 {

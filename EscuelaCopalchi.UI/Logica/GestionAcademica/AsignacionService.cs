@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using EscuelaCopalchi.UI.Datos.GestionAcademica;
+﻿using EscuelaCopalchi.UI.Datos.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
+using System.Collections.Generic;
 
 namespace EscuelaCopalchi.UI.Logica.GestionAcademica
 {

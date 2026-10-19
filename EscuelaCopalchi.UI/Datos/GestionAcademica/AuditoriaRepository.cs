@@ -1,8 +1,8 @@
-﻿using System;
+﻿using EscuelaCopalchi.UI.Models.GestionAcademica;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using EscuelaCopalchi.UI.Models.GestionAcademica;
 using static EscuelaCopalchi.UI.Datos.GestionAcademica.Comando;
 
 namespace EscuelaCopalchi.UI.Datos.GestionAcademica
