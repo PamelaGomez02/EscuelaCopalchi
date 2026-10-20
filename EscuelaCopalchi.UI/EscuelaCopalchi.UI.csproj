@@ -179,7 +179,6 @@
     <Compile Include="Controllers\NotificacionesController.cs" />
     <Compile Include="Controllers\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController.cs" />
-    <Compile Include="Controllers\GestionNotasController.cs" />
     <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\Usuarios\UsuariosController.cs" />
