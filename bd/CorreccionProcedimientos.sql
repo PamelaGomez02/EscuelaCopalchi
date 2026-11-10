@@ -379,3 +379,104 @@ BEGIN
     WHERE id_asistencia = @id_asistencia;
 END;
 GO
+
+
+USE AulaVirtualCopalchi;
+GO
+
+EXEC dbo.SP_AS_Asistencia_Porcentaje
+    @id_grupo = 1,
+    @id_estudiante = NULL,
+    @desde = '2026-11-09',
+    @hasta = '2026-11-09';
+
+
+    
+USE AulaVirtualCopalchi;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.SP_AS_Asistencia_Porcentaje
+    @id_grupo INT,
+    @id_estudiante INT = NULL,
+    @desde DATE = NULL,
+    @hasta DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        e.id_estudiante,
+        e.identificacion,
+        CONCAT(
+            e.nombre, ' ',
+            e.apellido1, ' ',
+            ISNULL(e.apellido2, '')
+        ) AS estudiante,
+
+        COUNT(a.id_asistencia) AS total_registros,
+
+        SUM(CASE
+            WHEN a.estado IN ('Presente', 'P')
+            THEN 1 ELSE 0
+        END) AS presentes,
+
+        SUM(CASE
+            WHEN a.estado IN ('Ausente', 'A')
+            THEN 1 ELSE 0
+        END) AS ausentes,
+
+        SUM(CASE
+            WHEN a.estado IN ('Tardanza', 'T')
+            THEN 1 ELSE 0
+        END) AS tardanzas,
+
+        SUM(CASE
+            WHEN a.estado IN ('Justificado', 'J')
+            THEN 1 ELSE 0
+        END) AS justificados,
+
+        CAST(
+            CASE
+                WHEN COUNT(a.id_asistencia) = 0 THEN NULL
+                ELSE
+                    100.0 * SUM(
+                        CASE
+                            WHEN a.estado IN
+                                ('Presente', 'P', 'Tardanza', 'T')
+                            THEN 1 ELSE 0
+                        END
+                    ) / COUNT(a.id_asistencia)
+            END AS DECIMAL(5,2)
+        ) AS porcentaje
+
+    FROM dbo.MATRICULA m
+
+    INNER JOIN dbo.ESTUDIANTE e
+        ON e.id_estudiante = m.id_estudiante
+
+    LEFT JOIN dbo.ASISTENCIA a
+        ON a.id_estudiante = e.id_estudiante
+       AND a.id_grupo = m.id_grupo
+       AND (@desde IS NULL OR a.fecha >= @desde)
+       AND (@hasta IS NULL OR a.fecha <= @hasta)
+
+    WHERE m.id_grupo = @id_grupo
+      AND e.estado = 1
+      AND (
+          @id_estudiante IS NULL
+          OR @id_estudiante = 0
+          OR e.id_estudiante = @id_estudiante
+      )
+
+    GROUP BY
+        e.id_estudiante,
+        e.identificacion,
+        e.nombre,
+        e.apellido1,
+        e.apellido2
+
+    ORDER BY
+        e.apellido1,
+        e.nombre;
+END;
+GO
