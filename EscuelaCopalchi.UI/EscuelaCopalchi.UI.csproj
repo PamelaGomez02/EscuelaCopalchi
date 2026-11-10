@@ -249,7 +249,6 @@
     <Compile Include="Models\Roles\Rol.cs" />
     <Compile Include="Models\Roles\RolPermisosViewModel.cs" />
     <Compile Include="Models\Seguridad\PasswordHelper.cs" />
-    <Compile Include="Models\Seguridad\PermisoAuthorizeAttribute.cs" />
     <Compile Include="Models\Usuarios\RolDropdownItem.cs" />
     <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
     <Compile Include="Models\Usuarios\Usuario.cs" />

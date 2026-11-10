@@ -4,6 +4,9 @@ using EscuelaCopalchi.UI.Models.GestionAcademica;
 using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
@@ -36,12 +39,58 @@ namespace EscuelaCopalchi.UI.Controllers
                 DateTimeStyles.None,
                 out fecha);
         }
-        // Los permisos provienen del login general y de Roles -> Asignar.
-        // No se utiliza el permiso general como sustituto de los individuales.
+        // Los permisos se consultan desde las asignaciones reales del rol en SQL Server.
+        // No se utiliza una copia posiblemente desactualizada de los permisos de sesión.
+        private HashSet<string> ObtenerPermisosActuales()
+        {
+            const string claveCache = "Asistencia.PermisosActuales";
+            var cache = HttpContext.Items[claveCache] as HashSet<string>;
+            if (cache != null) return cache;
+
+            var permisos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            int idUsuario = IdUsuarioActual;
+            if (idUsuario <= 0) return permisos;
+
+            var conexion = ConfigurationManager.ConnectionStrings["AulaVirtualCopalchi"];
+            if (conexion == null)
+                throw new ConfigurationErrorsException(
+                    "No existe la cadena de conexión 'AulaVirtualCopalchi' en Web.config. " +
+                    "Utilice aquí el nombre real de la conexión del proyecto.");
+
+            const string sql = @"
+                SELECT p.nombre
+                FROM dbo.USUARIO AS u
+                INNER JOIN dbo.ROL AS r ON r.id_rol = u.id_rol
+                INNER JOIN dbo.ROL_PERMISO AS rp ON rp.id_rol = r.id_rol
+                INNER JOIN dbo.PERMISO AS p ON p.id_permiso = rp.id_permiso
+                WHERE u.id_usuario = @IdUsuario
+                  AND u.estado = 1
+                  AND r.estado = 1
+                  AND p.estado = 1";
+
+            using (var cn = new SqlConnection(conexion.ConnectionString))
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                cmd.Parameters.Add("@IdUsuario", SqlDbType.Int).Value = idUsuario;
+                cn.Open();
+                using (var lector = cmd.ExecuteReader())
+                {
+                    while (lector.Read())
+                    {
+                        if (!lector.IsDBNull(0))
+                            permisos.Add(lector.GetString(0).Trim());
+                    }
+                }
+            }
+
+            HttpContext.Items[claveCache] = permisos;
+            return permisos;
+        }
+
         private bool TienePermiso(string nombre)
         {
-            var usuario = SesionUsuario.Obtener(Session);
-            return usuario != null && usuario.TienePermiso(nombre);
+            if (string.IsNullOrWhiteSpace(nombre)) return false;
+            return ObtenerPermisosActuales().Contains(nombre.Trim());
         }
 
         private ActionResult SinPermiso()
@@ -52,7 +101,12 @@ namespace EscuelaCopalchi.UI.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-            PermisosVista();
+            if (filterContext.Result != null) return;
+            try { PermisosVista(); }
+            catch (Exception)
+            {
+                filterContext.Result = new HttpStatusCodeResult(500, "No se pudieron consultar los permisos de Asistencia.");
+            }
         }
 
         private void PermisosVista()
@@ -62,6 +116,7 @@ namespace EscuelaCopalchi.UI.Controllers
             ViewBag.PuedeEditarAsistencia = TienePermiso(PermisosAsistencia.Editar);
             ViewBag.PuedeVerHistorialAsistencia = TienePermiso(PermisosAsistencia.Historial);
             ViewBag.PuedeVerPorcentajeAsistencia = TienePermiso(PermisosAsistencia.Porcentaje);
+            ViewBag.PuedeGestionarAsistencia = TienePermiso("GESTIONAR_ASISTENCIA");
         }
 
         // Identificador del usuario autenticado por el sistema general.
@@ -117,6 +172,9 @@ namespace EscuelaCopalchi.UI.Controllers
 
             return permisos.Any(p => TienePermiso(p));
         }
+
+
+
         // =============================================
         // CONSULTAR ASISTENCIA
         // =============================================
