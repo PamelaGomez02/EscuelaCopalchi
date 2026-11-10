@@ -2,9 +2,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=utf-8" />
-
     <meta charset="utf-8" />
 
     <meta name="viewport"
@@ -21,36 +18,56 @@
     @RenderSection("styles", required: false)
 
     <style>
+        /* ======================================
+           BARRA DE NAVEGACIÓN
+        ====================================== */
+
         .cop-navbar {
             background-color: #133C55;
         }
 
             .cop-navbar .navbar-brand {
                 font-weight: 700;
+                color: white;
             }
 
-            .cop-navbar .nav-link:hover,
-            .cop-navbar .dropdown-toggle:hover {
-                color: #91E5F6 !important;
+            .cop-navbar .nav-link {
+                color: rgba(255,255,255,.85);
             }
+
+                .cop-navbar .nav-link:hover {
+                    color: #91E5F6 !important;
+                }
+
+        /* ======================================
+           MENÚS
+        ====================================== */
 
         .dropdown-menu {
             border: 1px solid #e3e8ee;
             border-radius: 9px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.10);
         }
 
-        .dropdown-item:hover {
-            background-color: #E6F1FB;
-            color: #133C55;
+        .dropdown-item {
+            padding: 9px 16px;
+            font-size: 14px;
         }
 
-        .cop-footer {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
+            .dropdown-item:hover {
+                background-color: #E6F1FB;
+                color: #133C55;
+            }
+
+        /* ======================================
+           USUARIO
+        ====================================== */
 
         .cop-user-menu {
             margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .cop-user-button {
@@ -59,9 +76,12 @@
             font-size: 13px;
             font-weight: 500;
             white-space: nowrap;
+            padding: 9px 13px;
+            color: white;
         }
 
-            .cop-user-button:hover {
+            .cop-user-button:hover,
+            .cop-user-button:focus {
                 background-color: rgba(255,255,255,.12);
                 color: white;
             }
@@ -79,9 +99,159 @@
                 margin: 0;
             }
 
+        /* ======================================
+           CAMPANA
+        ====================================== */
+
+        .cop-notification-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 23px;
+            cursor: pointer;
+            transition: background-color .2s;
+        }
+
+            .cop-notification-button:hover,
+            .cop-notification-button:focus {
+                background: rgba(255,255,255,.12);
+                color: #91E5F6;
+            }
+
+        /* ======================================
+           CONTADOR ROJO
+        ====================================== */
+
+        .cop-notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #dc3545;
+            color: white;
+            min-width: 19px;
+            height: 19px;
+            border-radius: 20px;
+            padding: 0 4px;
+            font-size: 10px;
+            font-weight: 700;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #133C55;
+            line-height: 1;
+        }
+
+        /* ======================================
+           VENTANA DE NOTIFICACIONES
+        ====================================== */
+
+        .cop-notification-dropdown {
+            width: 370px;
+            max-width: calc(100vw - 24px);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 8px 28px rgba(0,0,0,.15);
+        }
+
+        .cop-notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .cop-notification-header strong {
+                color: #133C55;
+            }
+
+        .cop-notification-actions {
+            padding: 8px 14px;
+            text-align: right;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .cop-notification-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .cop-notification-item {
+            padding: 13px 16px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .cop-notification-item.no-leida {
+                background: #eef6ff;
+            }
+
+            .cop-notification-item strong {
+                display: block;
+                color: #133C55;
+                font-size: 14px;
+            }
+
+            .cop-notification-item p {
+                margin: 4px 0;
+                color: #536575;
+                font-size: 13px;
+                overflow-wrap: anywhere;
+            }
+
+            .cop-notification-item small {
+                color: #778899;
+            }
+
+            .cop-notification-item .btn-link {
+                color: #386FA4;
+                font-size: 12px;
+            }
+
+        .cop-notification-footer {
+            padding: 13px;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+            .cop-notification-footer a {
+                color: #386FA4;
+                font-weight: 600;
+                text-decoration: none;
+                font-size: 13px;
+            }
+
+                .cop-notification-footer a:hover {
+                    text-decoration: underline;
+                }
+
+        /* ======================================
+           PIE DE PÁGINA
+        ====================================== */
+
+        .cop-footer {
+            color: #6c757d;
+            font-size: .9rem;
+        }
+
+        /* ======================================
+           RESPONSIVO
+        ====================================== */
+
         @@media (max-width: 991px) {
+
             .cop-user-menu {
                 margin: 12px 0;
+                justify-content: flex-start;
+            }
+
+            .cop-user-dropdown {
+                min-width: 220px;
             }
         }
     </style>
@@ -89,15 +259,20 @@
 
 <body>
 
+    <!-- ======================================
+         BARRA PRINCIPAL
+    ====================================== -->
+
     <nav class="navbar navbar-expand-lg navbar-dark cop-navbar">
+
         <div class="container">
 
             @Html.ActionLink(
-                "Escuela Copalchí",
-                "Index",
-                "Home",
-                new { area = "" },
-                new { @class = "navbar-brand" })
+                     "Escuela Copalchí",
+                     "Index",
+                     "Home",
+                     new { area = "" },
+                     new { @class = "navbar-brand" })
 
             <button class="navbar-toggler"
                     type="button"
@@ -108,235 +283,222 @@
                     aria-label="Alternar navegación">
 
                 <span class="navbar-toggler-icon"></span>
+
             </button>
 
             <div class="collapse navbar-collapse"
                  id="navbarPrincipal">
 
                 <!-- MENÚ PRINCIPAL -->
+
                 <ul class="navbar-nav me-auto">
 
                     <li class="nav-item">
                         @Html.ActionLink(
-                            "Inicio",
-                            "Index",
-                            "Home",
-                            new { area = "" },
-                            new { @class = "nav-link" })
-                    </li>
-
-                    <li class="nav-item dropdown">
-
-                        <a class="nav-link dropdown-toggle"
-                           href="#"
-                           id="modulosDropdown"
-                           role="button"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Módulos
-                        </a>
-
-                        <ul class="dropdown-menu"
-                            aria-labelledby="modulosDropdown">
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Roles")">
-                                    <i class="bi bi-shield-lock me-2"></i>
-                                    Roles
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Usuarios")">
-                                    <i class="bi bi-person-badge me-2"></i>
-                                    Usuarios
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Estudiantes")">
-                                    <i class="bi bi-mortarboard me-2"></i>
-                                    Estudiantes
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "GestionAcademica")">
-                                    <i class="bi bi-diagram-3 me-2"></i>
-                                    Gestión académica
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "PlanesEstudio")">
-                                    <i class="bi bi-journal-text me-2"></i>
-                                    Planes de estudio
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "MaterialDidactico")">
-                                    <i class="bi bi-folder2-open me-2"></i>
-                                    Material didáctico
-                                </a>
-                            </li>
-
-                            <li>
-                            <a class="dropdown-item" 
-                               href="@Url.Action("Index", "Asistencia")">
-                                <i class="bi bi-calendar-check me-2"></i>
-                                Asistencia</a></li>
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Notas")">
-                                    <i class="bi bi-clipboard-data me-2"></i>
-                                    Gestión de notas
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Notificaciones")">
-                                    <i class="bi bi-bell me-2"></i>
-                                    Notificaciones
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Monitoreo")">
-                                    <i class="bi bi-graph-up me-2"></i>
-                                    Monitoreo académico
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Reportes")">
-                                    <i class="bi bi-file-earmark-bar-graph me-2"></i>
-                                    Reportes
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "Home")">
-                                    <i class="bi bi-speedometer2 me-2"></i>
-                                    Panel principal
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "AuditoriaSistema")">
-                                    <i class="bi bi-journal-check me-2"></i>
-                                    Auditoría
-                                </a>
-                            </li>
-
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "InventarioLimpieza")">
-                                    <i class="bi bi-bucket me-2"></i>
-                                    Inventario de limpieza
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item"
-                                   href="@Url.Action("Index", "InventarioCocina")">
-                                    <i class="bi bi-basket me-2"></i>
-                                    Inventario de cocina
-                                </a>
-                            </li>
-
-                        </ul>
+                                 "Inicio",
+                                 "Index",
+                                 "Home",
+                                 new { area = "" },
+                                 new { @class = "nav-link" })
                     </li>
 
                     <li class="nav-item">
                         @Html.ActionLink(
-                            "Acerca de",
-                            "About",
-                            "Home",
-                            new { area = "" },
-                            new { @class = "nav-link" })
+                                 "Acerca de",
+                                 "About",
+                                 "Home",
+                                 new { area = "" },
+                                 new { @class = "nav-link" })
                     </li>
 
                     <li class="nav-item">
                         @Html.ActionLink(
-                            "Contacto",
-                            "Contact",
-                            "Home",
-                            new { area = "" },
-                            new { @class = "nav-link" })
+                                 "Contacto",
+                                 "Contact",
+                                 "Home",
+                                 new { area = "" },
+                                 new { @class = "nav-link" })
                     </li>
 
                 </ul>
 
-                <!-- USUARIO CONECTADO -->
+                <!-- ======================================
+                     USUARIO AUTENTICADO
+                ====================================== -->
+
                 @if (Request.IsAuthenticated)
                 {
-                    <div class="dropdown cop-user-menu">
+                    <div class="cop-user-menu">
 
-                        <button class="btn btn-outline-light dropdown-toggle cop-user-button"
-                                type="button"
-                                id="usuarioDropdown"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                        <!-- CAMPANA -->
 
-                            <i class="bi bi-person-circle me-2"></i>
+                        <div class="dropdown cop-notification-menu">
 
-                            @(Session["NombreUsuario"] ?? User.Identity.Name)
-                        </button>
+                            <button type="button"
+                                    class="cop-notification-button"
+                                    id="notificacionesDropdown"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    aria-expanded="false"
+                                    aria-label="Abrir notificaciones">
 
-                        <ul class="dropdown-menu dropdown-menu-end cop-user-dropdown"
-                            aria-labelledby="usuarioDropdown">
+                                <i id="iconoNotificaciones"
+                                   class="bi bi-bell"></i>
 
-                            <li class="dropdown-header">
+                                <span id="contadorNotificaciones"
+                                      class="cop-notification-badge"
+                                      style="display:none;"></span>
 
-                                <strong class="d-block text-dark">
-                                    @(Session["NombreUsuario"] ?? User.Identity.Name)
-                                </strong>
+                            </button>
 
-                                <span class="small text-muted">
-                                    <i class="bi bi-shield-check me-1"></i>
-                                    @(Session["RolUsuario"] ?? "Usuario")
-                                </span>
+                            <!-- VENTANA PREVIA -->
 
-                            </li>
+                            <div class="dropdown-menu dropdown-menu-end cop-notification-dropdown"
+                                 aria-labelledby="notificacionesDropdown">
 
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
+                                <!-- ENCABEZADO -->
 
-                            <li>
-                                @using (Html.BeginForm(
-                                    "Logout",
-                                    "Account",
-                                    FormMethod.Post))
-                                {
-                                    @Html.AntiForgeryToken()
+                                <div class="cop-notification-header">
 
-                                    <button type="submit"
-                                            class="dropdown-item text-danger">
+                                    <strong>
+                                        <i class="bi bi-bell me-2"></i>
+                                        Notificaciones
+                                    </strong>
 
-                                        <i class="bi bi-box-arrow-right me-2"></i>
-                                        Cerrar sesión
+                                    <small id="textoPendientes"
+                                           class="text-muted"></small>
+
+                                </div>
+
+                                <!-- MARCAR TODAS -->
+
+                                <div class="cop-notification-actions">
+
+                                    <button type="button"
+                                            id="btnMarcarTodas"
+                                            class="btn btn-link btn-sm text-decoration-none">
+
+                                        <i class="bi bi-check2-all me-1"></i>
+                                        Marcar todas como leídas
+
                                     </button>
-                                }
-                            </li>
 
-                        </ul>
+                                </div>
+
+                                <!-- LISTA -->
+
+                                <div id="listaNotificaciones"
+                                     class="cop-notification-list">
+
+                                    <div class="text-center text-muted p-4">
+                                        Cargando notificaciones...
+                                    </div>
+
+                                </div>
+
+                                <!-- VER TODAS -->
+
+                                <div class="cop-notification-footer">
+
+                                    <a href="@Url.Action("Index", "Notificaciones")">
+
+                                        Ver todas las notificaciones
+
+                                        <i class="bi bi-arrow-right ms-1"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ======================================
+                             MENÚ DE USUARIO
+                        ====================================== -->
+
+                        <div class="dropdown">
+
+                            <button class="btn btn-outline-light dropdown-toggle cop-user-button"
+                                    type="button"
+                                    id="usuarioDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+
+                                <i class="bi bi-person-circle me-2"></i>
+
+                                @(Session["NombreUsuario"] ?? User.Identity.Name)
+
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end cop-user-dropdown"
+                                aria-labelledby="usuarioDropdown">
+
+                                <li class="dropdown-header">
+
+                                    <strong class="d-block text-dark">
+                                        @(Session["NombreUsuario"] ?? User.Identity.Name)
+                                    </strong>
+
+                                    <span class="small text-muted">
+
+                                        <i class="bi bi-shield-check me-1"></i>
+
+                                        @(Session["RolUsuario"] ?? "Usuario")
+
+                                    </span>
+
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+                                <!-- EDITAR PERFIL -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="@Url.Action("EditarPerfil", "Usuarios")">
+
+                                        <i class="bi bi-person-gear me-2"></i>
+                                        Editar mi perfil
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+                                <!-- CERRAR SESIÓN -->
+
+                                <li>
+
+                                    @using (Html.BeginForm(
+                                        "Logout",
+                                        "Account",
+                                        FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="dropdown-item text-danger">
+
+                                            <i class="bi bi-box-arrow-right me-2"></i>
+                                            Cerrar sesión
+
+                                        </button>
+                                    }
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
                     </div>
                 }
                 else
@@ -346,6 +508,7 @@
 
                         <i class="bi bi-box-arrow-in-right me-1"></i>
                         Iniciar sesión
+
                     </a>
                 }
 
@@ -353,7 +516,21 @@
         </div>
     </nav>
 
-    <!-- CONTENIDO -->
+    <!-- ======================================
+         TOKEN DE SEGURIDAD
+    ====================================== -->
+
+    @if (Request.IsAuthenticated)
+    {
+        <div id="tokenNotificaciones" style="display:none;">
+            @Html.AntiForgeryToken()
+        </div>
+    }
+
+    <!-- ======================================
+         CONTENIDO PRINCIPAL
+    ====================================== -->
+
     <div class="container body-content">
 
         @RenderBody()
@@ -361,12 +538,18 @@
         <hr />
 
         <footer class="cop-footer">
+
             <p>
                 &copy; @DateTime.Now.Year - Aula Virtual Copalchí
             </p>
+
         </footer>
 
     </div>
+
+    <!-- ======================================
+         SCRIPTS
+    ====================================== -->
 
     @Scripts.Render("~/bundles/jquery")
 
@@ -374,6 +557,392 @@
 
     @RenderSection("scripts", required: false)
 
+    <script>
+        (function () {
+
+            // =====================================
+            // URLS
+            // =====================================
+
+            const urlResumen =
+                '@Url.Action("Resumen", "Notificaciones")';
+
+            const urlMarcar =
+                '@Url.Action("MarcarLeida", "Notificaciones")';
+
+            const urlTodas =
+                '@Url.Action("MarcarTodasLeidas", "Notificaciones")';
+
+            // =====================================
+            // ELEMENTOS
+            // =====================================
+
+            const boton =
+                document.getElementById("notificacionesDropdown");
+
+            const contador =
+                document.getElementById("contadorNotificaciones");
+
+            const icono =
+                document.getElementById("iconoNotificaciones");
+
+            const lista =
+                document.getElementById("listaNotificaciones");
+
+            const texto =
+                document.getElementById("textoPendientes");
+
+            const btnTodas =
+                document.getElementById("btnMarcarTodas");
+
+            if (!boton || !contador || !icono ||
+                !lista || !texto) {
+                return;
+            }
+
+            const token = document.querySelector(
+                '#tokenNotificaciones input[name="__RequestVerificationToken"]'
+            );
+
+            // =====================================
+            // CREAR ELEMENTOS SEGUROS
+            // =====================================
+
+            function elemento(etiqueta, clase, contenido) {
+
+                const el = document.createElement(etiqueta);
+
+                if (clase) {
+                    el.className = clase;
+                }
+
+                if (contenido != null) {
+                    el.textContent = contenido;
+                }
+
+                return el;
+            }
+
+            // =====================================
+            // ENVIAR POST
+            // =====================================
+
+            async function enviarPost(url, id) {
+
+                if (!token) {
+                    throw new Error(
+                        "No se encontró el token de seguridad."
+                    );
+                }
+
+                const datos = new URLSearchParams();
+
+                datos.append(
+                    "__RequestVerificationToken",
+                    token.value
+                );
+
+                if (id != null) {
+                    datos.append("id", id);
+                }
+
+                const respuesta = await fetch(url, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Accept": "application/json"
+                    },
+                    body: datos.toString()
+                });
+
+                const contenido = await respuesta.text();
+
+                if (!respuesta.ok) {
+                    throw new Error(
+                        "HTTP " + respuesta.status +
+                        " - " + contenido.substring(0, 250)
+                    );
+                }
+
+                let resultado;
+
+                try {
+                    resultado = JSON.parse(contenido);
+                } catch (error) {
+                    throw new Error(
+                        "El servidor no devolvió un JSON válido."
+                    );
+                }
+
+                if (resultado.ok !== true) {
+                    throw new Error(
+                        resultado.mensaje ||
+                        "La base de datos no confirmó la actualización."
+                    );
+                }
+
+                return resultado;
+            }
+
+            // =====================================
+            // CARGAR NOTIFICACIONES
+            // =====================================
+
+            async function cargarNotificaciones() {
+
+                try {
+
+                    const respuesta = await fetch(urlResumen, {
+                        credentials: "same-origin",
+                        cache: "no-store",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    });
+
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            "HTTP " + respuesta.status
+                        );
+                    }
+
+                    const datos = await respuesta.json();
+
+                    const pendientes =
+                        Number(datos.pendientes) || 0;
+
+                    const items =
+                        Array.isArray(datos.notificaciones)
+                            ? datos.notificaciones
+                            : [];
+
+                    // CONTADOR
+
+                    contador.style.display =
+                        pendientes > 0 ? "flex" : "none";
+
+                    contador.textContent =
+                        pendientes > 99
+                            ? "99+"
+                            : pendientes;
+
+                    // ICONO
+
+                    icono.className =
+                        pendientes > 0
+                            ? "bi bi-bell-fill"
+                            : "bi bi-bell";
+
+                    // TEXTO
+
+                    texto.textContent =
+                        pendientes === 1
+                            ? "1 sin leer"
+                            : pendientes + " sin leer";
+
+                    // BOTÓN TODAS
+
+                    if (btnTodas) {
+                        btnTodas.disabled = pendientes === 0;
+                    }
+
+                    // LIMPIAR LISTA
+
+                    lista.replaceChildren();
+
+                    if (!items.length) {
+
+                        lista.appendChild(
+                            elemento(
+                                "div",
+                                "text-center text-muted p-4",
+                                "No tienes notificaciones"
+                            )
+                        );
+
+                        return;
+                    }
+
+                    // =====================================
+                    // MOSTRAR NOTIFICACIONES
+                    // =====================================
+
+                    items.forEach(function (n) {
+
+                        const item = elemento(
+                            "div",
+                            "cop-notification-item" +
+                            (n.leida ? "" : " no-leida")
+                        );
+
+                        // TÍTULO
+
+                        item.appendChild(
+                            elemento(
+                                "strong",
+                                "",
+                                n.titulo || "Notificación"
+                            )
+                        );
+
+                        // MENSAJE
+
+                        item.appendChild(
+                            elemento(
+                                "p",
+                                "",
+                                n.mensaje || ""
+                            )
+                        );
+
+                        // FECHA Y ESTADO
+
+                        item.appendChild(
+                            elemento(
+                                "small",
+                                "",
+                                (n.fecha || "") +
+                                (n.leida
+                                    ? " · Leída"
+                                    : " · Sin leer")
+                            )
+                        );
+
+                        // =====================================
+                        // MARCAR COMO LEÍDA
+                        // =====================================
+
+                        if (!n.leida) {
+
+                            const marcar = elemento(
+                                "button",
+                                "btn btn-sm btn-link p-0 mt-2",
+                                "Marcar como leída"
+                            );
+
+                            marcar.type = "button";
+
+                            marcar.addEventListener(
+                                "click",
+                                async function () {
+
+                                    marcar.disabled = true;
+
+                                    try {
+
+                                        const resultado =
+                                            await enviarPost(
+                                                urlMarcar,
+                                                n.id
+                                            );
+
+                                        if (!resultado.ok) {
+                                            throw new Error(
+                                                "No se pudo actualizar."
+                                            );
+                                        }
+
+                                        await cargarNotificaciones();
+
+                                    } catch (error) {
+
+                                        marcar.disabled = false;
+
+                                        alert(
+                                            "Error al marcar como leída: " +
+                                            error.message
+                                        );
+
+                                        console.error(
+                                            "Error de notificaciones:",
+                                            error
+                                        );
+                                    }
+                                }
+                            );
+
+                            item.appendChild(marcar);
+                        }
+
+                        lista.appendChild(item);
+                    });
+
+                } catch (error) {
+
+                    console.error(
+                        "Error al cargar notificaciones:",
+                        error
+                    );
+
+                    lista.replaceChildren(
+                        elemento(
+                            "div",
+                            "text-center text-danger p-4",
+                            "No se pudieron cargar las notificaciones."
+                        )
+                    );
+                }
+            }
+
+            // =====================================
+            // MARCAR TODAS COMO LEÍDAS
+            // =====================================
+
+            if (btnTodas) {
+
+                btnTodas.addEventListener(
+                    "click",
+                    async function () {
+
+                        btnTodas.disabled = true;
+
+                        try {
+
+                            await enviarPost(urlTodas);
+
+                            await cargarNotificaciones();
+
+                        } catch (error) {
+
+                            btnTodas.disabled = false;
+
+                            alert(
+                                "Error al marcar todas como leídas: " +
+                                error.message
+                            );
+
+                            console.error(
+                                "Error de notificaciones:",
+                                error
+                            );
+                        }
+                    }
+                );
+            }
+
+            // =====================================
+            // EVENTOS
+            // =====================================
+
+            boton.addEventListener(
+                "show.bs.dropdown",
+                cargarNotificaciones
+            );
+
+            // CARGA INICIAL
+
+            cargarNotificaciones();
+
+            // ACTUALIZACIÓN CADA 60 SEGUNDOS
+
+            setInterval(
+                cargarNotificaciones,
+                60000
+            );
+
+        })();
+    </script>
 
 </body>
 </html>

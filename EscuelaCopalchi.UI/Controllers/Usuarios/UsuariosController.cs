@@ -86,6 +86,13 @@ namespace EscuelaCopalchi.UI.Controllers
         // -------------------------------------------
 
         [HttpGet]
+        [Authorize]
+        public ActionResult EditarPerfil()
+        {
+            return RedirectToAction("Index", "Usuarios");
+        }
+
+        [HttpGet]
         public ActionResult Registrar()
         {
             CargarRoles();

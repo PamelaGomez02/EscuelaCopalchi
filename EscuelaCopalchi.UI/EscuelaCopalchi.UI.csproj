@@ -173,7 +173,6 @@
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
-    <Compile Include="Controllers\PanelPrincipalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\PlanesEstudio\PlanesEstudioController.cs" />

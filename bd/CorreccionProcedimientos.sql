@@ -480,3 +480,50 @@ BEGIN
         e.nombre;
 END;
 GO
+
+
+
+
+CREATE OR ALTER PROCEDURE dbo.SP_GA_Notificacion_MarcarLeida
+    @id_notificacion INT,
+    @id_usuario INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.GA_Notificacion
+    SET leida = 1
+    WHERE id_notificacion = @id_notificacion
+      AND id_usuario = @id_usuario;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.SP_GA_Notificacion_MarcarTodasLeidas
+    @id_usuario INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.GA_Notificacion
+    SET leida = 1
+    WHERE id_usuario = @id_usuario
+      AND leida = 0;
+END;
+GO
+
+SELECT
+    name
+FROM sys.procedures
+WHERE name IN (
+    'SP_GA_Notificacion_MarcarLeida',
+    'SP_GA_Notificacion_MarcarTodasLeidas'
+);
+
+SELECT
+    OBJECT_SCHEMA_NAME(object_id) AS Esquema,
+    name AS Procedimiento
+FROM sys.procedures
+WHERE name LIKE '%Notificacion%';
+
+
+EXEC sp_helptext 'SP_GA_Notificacion_MarcarTodasLeidas';

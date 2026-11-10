@@ -139,6 +139,46 @@ namespace EscuelaCopalchi.UI.Models.Notificaciones
             return lista;
         }
 
+        public string MarcarComoLeida(
+            int idNotificacion,
+            int idUsuario)
+        {
+            string[] parametros =
+            {
+        "@id_notificacion",
+        "@id_usuario"
+    };
+
+            string[] valores =
+            {
+        idNotificacion.ToString(),
+        idUsuario.ToString()
+    };
+
+            return db.ejecutarProcedimiento_Save(
+                "SP_GA_Notificacion_MarcarLeida",
+                parametros,
+                valores);
+        }
+
+        public string MarcarTodasComoLeidas(int idUsuario)
+        {
+            string[] parametros =
+            {
+        "@id_usuario"
+    };
+
+            string[] valores =
+            {
+        idUsuario.ToString()
+    };
+
+            return db.ejecutarProcedimiento_Save(
+                "SP_GA_Notificacion_MarcarTodasLeidas",
+                parametros,
+                valores);
+        }
+
 
     }
 }

@@ -3,7 +3,7 @@
 <div class="cop-dashboard">
   <section class="cop-hero"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">ESCUELA COPALCHÍ · ADMINISTRACIÓN</div><h1>Panel institucional</h1><p>Bienvenido, @Model.Nombre. Supervisa la actividad de la institución.</p></div><div class="cop-hero-badge"><i class="bi bi-shield-check"></i> @Model.Rol</div></div></div></section>
   <div class="container py-4">
-    <div class="cop-heading"><h2>Resumen general</h2><span>Información actualizada desde SQL Server</span></div>
+    <div class="cop-heading"><h2>Resumen general</h2><span>Información actualizada</span></div>
     <div class="row g-3 mb-4">
       @if (Model.Estudiantes.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Estudiantes activos</span><strong>@Model.Estudiantes</strong><small>Registros institucionales</small></div></div></div> }
       @if (Model.Usuarios.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-people"></i><div><span>Usuarios activos</span><strong>@Model.Usuarios</strong><small>Cuentas habilitadas</small></div></div></div> }
