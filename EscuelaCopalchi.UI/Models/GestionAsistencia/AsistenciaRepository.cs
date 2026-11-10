@@ -26,12 +26,12 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
 
         private static string Txt(DataRow r, string col)
         {
-            return r[col] == DBNull.Value ? "" : Convert.ToString(r[col]);
+            return !r.Table.Columns.Contains(col) || r[col] == DBNull.Value ? "" : Convert.ToString(r[col]);
         }
 
         private static int Int(DataRow r, string col)
         {
-            return r[col] == DBNull.Value ? 0 : Convert.ToInt32(r[col]);
+            return !r.Table.Columns.Contains(col) || r[col] == DBNull.Value ? 0 : Convert.ToInt32(r[col]);
         }
 
         // Arma los parámetros. Los opcionales (fechas) solo se agregan si traen valor:
@@ -85,7 +85,7 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
                 l.Add(new GrupoAsistenciaItem
                 {
                     IdGrupo = Int(r, "id_grupo"),
-                    Grupo = Txt(r, "grupo"),
+                    Grupo = r.Table.Columns.Contains("grupo") ? Txt(r, "grupo") : Txt(r, "nombre_grupo"),
                     Nivel = Txt(r, "nivel"),
                     Anio = Int(r, "anio"),
                     Periodo = Txt(r, "periodo"),
@@ -100,7 +100,7 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
         // Todos los estudiantes activos del grupo, con su registro del día si ya existe.
         public List<AsistenciaItem> ListaClase(int idGrupo, DateTime fecha, int idDocente)
         {
-            DataTable dt = Consultar("SP_AS_Asistencia_Lista", new Parametros()
+            DataTable dt = Consultar("SP_AS_Clase_Estudiantes", new Parametros()
                 .Add("@id_grupo", idGrupo).Add("@fecha", fecha).Add("@id_docente", idDocente));
 
             return MapearFilas(dt, idGrupo, fecha);
@@ -175,33 +175,70 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
             return MapearFilas(dt, idGrupo, null);
         }
 
-        public List<PorcentajeItem> Porcentaje(int idGrupo, int idEstudiante,
-                                               DateTime? desde, DateTime? hasta, int idDocente)
+
+        public List<PorcentajeItem> Porcentaje(
+            int idGrupo,
+            int idEstudiante,
+            DateTime? desde,
+            DateTime? hasta,
+            int idDocente)
         {
-            DataTable dt = Consultar("SP_AS_Asistencia_Porcentaje", new Parametros()
+            var parametros = new Parametros()
                 .Add("@id_grupo", idGrupo)
                 .Add("@id_estudiante", idEstudiante)
                 .AddSiHay("@desde", desde)
-                .AddSiHay("@hasta", hasta)
-                .Add("@id_docente", idDocente));
+                .AddSiHay("@hasta", hasta);
 
-            var l = new List<PorcentajeItem>();
+            DataTable dt = Consultar(
+                "SP_AS_Asistencia_Porcentaje",
+                parametros
+            );
+
+            var lista = new List<PorcentajeItem>();
+
+            if (dt == null || dt.Rows.Count == 0)
+                return lista;
+
             foreach (DataRow r in dt.Rows)
             {
-                l.Add(new PorcentajeItem
+                decimal? porcentaje = null;
+
+                if (dt.Columns.Contains("porcentaje_asistencia")
+                    && r["porcentaje_asistencia"] != DBNull.Value)
+                {
+                    porcentaje = Convert.ToDecimal(
+                        r["porcentaje_asistencia"]
+                    );
+                }
+                else if (dt.Columns.Contains("porcentaje")
+                         && r["porcentaje"] != DBNull.Value)
+                {
+                    porcentaje = Convert.ToDecimal(
+                        r["porcentaje"]
+                    );
+                }
+
+                lista.Add(new PorcentajeItem
                 {
                     IdEstudiante = Int(r, "id_estudiante"),
-                    Estudiante = Txt(r, "estudiante"),
+
+                    Estudiante = !string.IsNullOrWhiteSpace(
+                        Txt(r, "nombre_completo"))
+                        ? Txt(r, "nombre_completo")
+                        : Txt(r, "estudiante"),
+
                     TotalRegistros = Int(r, "total_registros"),
                     Presentes = Int(r, "presentes"),
+                    Ausentes = Int(r, "ausentes"),
                     Tardanzas = Int(r, "tardanzas"),
                     Justificados = Int(r, "justificados"),
-                    Ausentes = Int(r, "ausentes"),
-                    Porcentaje = r["porcentaje"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(r["porcentaje"])
+                    Porcentaje = porcentaje
                 });
             }
-            return l;
+
+            return lista;
         }
+
 
         // ---------- mapeo común ----------
         // Los procedimientos devuelven las columnas que existan; las que no vienen quedan vacías.
@@ -217,7 +254,7 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
                     IdGrupo = dt.Columns.Contains("id_grupo") ? Int(r, "id_grupo") : idGrupoPorDefecto,
                     Grupo = dt.Columns.Contains("grupo") ? Txt(r, "grupo") : "",
                     IdEstudiante = Int(r, "id_estudiante"),
-                    Estudiante = Txt(r, "estudiante"),
+                    Estudiante = Txt(r, "estudiante") != "" ? Txt(r, "estudiante") : Txt(r, "nombre_completo"),
                     Estado = dt.Columns.Contains("estado") ? Txt(r, "estado") : "",
                     HoraLlegada = dt.Columns.Contains("hora_llegada") ? Txt(r, "hora_llegada") : "",
                     Observacion = dt.Columns.Contains("observacion") ? Txt(r, "observacion") : ""

@@ -85,11 +85,17 @@
 
             @if (Model.Cargada && Model.YaRegistrada)
             {
-                <div class="alert alert-warning m-3">
-                    Este grupo ya tiene asistencia registrada para el @Model.Fecha.ToString("dd/MM/yyyy").
-                    <a href="@Url.Action("Index", "Asistencia", new { grupo = Model.IdGrupo, fecha = Model.Fecha.ToString("yyyy-MM-dd") })">
-                        Consultarla o modificarla
-                    </a>
+                <div class="alert alert-warning m-3 p-3" role="status">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-calendar-check fs-4"></i>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-2">Asistencia ya registrada</h5>
+                            <p class="mb-3">El grupo seleccionado ya tiene asistencia registrada para el <strong>@Model.Fecha.ToString("dd/MM/yyyy")</strong>. Puedes consultar los registros y editarlos desde la lista de asistencia.</p>
+                            <a class="btn btn-cop-primary" href="@Url.Action("Index", "Asistencia", new { grupo = Model.IdGrupo, fecha = Model.Fecha.ToString("yyyy-MM-dd") })">
+                                <i class="bi bi-pencil-square me-1"></i> Ver y modificar asistencia
+                            </a>
+                        </div>
+                    </div>
                 </div>
             }
             else if (Model.Cargada && !Model.Filas.Any())
@@ -347,37 +353,37 @@
 
 @section scripts {
     <script>
-                            (function () {
-                                // Ausente y Justificado no llevan hora; Tardanza la necesita; Justificado pide observación.
-                                function ajustar(fila) {
-                                    var estado = fila.querySelector('.js-estado').value;
-                                    var hora = fila.querySelector('.js-hora');
-                                    var obs = fila.querySelector('.js-obs');
-                                    var sinHora = (estado === 'Ausente' || estado === 'Justificado');
+                                    (function () {
+                                        // Ausente y Justificado no llevan hora; Tardanza la necesita; Justificado pide observación.
+                                        function ajustar(fila) {
+                                            var estado = fila.querySelector('.js-estado').value;
+                                            var hora = fila.querySelector('.js-hora');
+                                            var obs = fila.querySelector('.js-obs');
+                                            var sinHora = (estado === 'Ausente' || estado === 'Justificado');
 
-                                    hora.disabled = sinHora;
-                                    if (sinHora) hora.value = '';
+                                            hora.disabled = sinHora;
+                                            if (sinHora) hora.value = '';
 
-                                    obs.placeholder = (estado === 'Justificado')
-                                        ? 'Motivo de la justificación (obligatorio)'
-                                        : 'Observación opcional';
-                                }
+                                            obs.placeholder = (estado === 'Justificado')
+                                                ? 'Motivo de la justificación (obligatorio)'
+                                                : 'Observación opcional';
+                                        }
 
-                                document.querySelectorAll('tr[data-fila]').forEach(function (fila) {
-                                    ajustar(fila);
-                                    fila.querySelector('.js-estado').addEventListener('change', function () { ajustar(fila); });
-                                });
-
-                                var btn = document.getElementById('btnTodosPresentes');
-                                if (btn) {
-                                    btn.addEventListener('click', function () {
-                                        document.querySelectorAll('.js-estado').forEach(function (s) {
-                                            s.value = 'Presente';
-                                            s.dispatchEvent(new Event('change'));
+                                        document.querySelectorAll('tr[data-fila]').forEach(function (fila) {
+                                            ajustar(fila);
+                                            fila.querySelector('.js-estado').addEventListener('change', function () { ajustar(fila); });
                                         });
-                                    });
-                                }
-                            })();
+
+                                        var btn = document.getElementById('btnTodosPresentes');
+                                        if (btn) {
+                                            btn.addEventListener('click', function () {
+                                                document.querySelectorAll('.js-estado').forEach(function (s) {
+                                                    s.value = 'Presente';
+                                                    s.dispatchEvent(new Event('change'));
+                                                });
+                                            });
+                                        }
+                                    })();
     </script>
 }
 
