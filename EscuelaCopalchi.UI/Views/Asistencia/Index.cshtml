@@ -56,7 +56,7 @@
                     </p>
                 </div>
 
-                @if (Model.PuedeEditar)
+                @if (ViewBag.PuedeRegistrarAsistencia == true)
                 {
                     <a href="@Url.Action("Registrar", "Asistencia")" class="btn btn-cop-primary">
                         <i class="bi bi-plus-lg me-1"></i>
@@ -141,15 +141,21 @@
 
             <div class="attendance-toolbar">
                 <div class="d-flex gap-2">
+                    @if (ViewBag.PuedeVerPorcentajeAsistencia == true)
+                    {
                     <a href="@Url.Action("Porcentaje", "Asistencia")" class="btn btn-outline-cop">
                         <i class="bi bi-percent me-1"></i>
                         Ver porcentajes
                     </a>
+                    }
 
+                    @if (ViewBag.PuedeVerHistorialAsistencia == true)
+                    {
                     <a href="@Url.Action("Historial", "Asistencia")" class="btn btn-outline-cop">
                         <i class="bi bi-clock-history me-1"></i>
                         Ver historial
                     </a>
+                    }
                 </div>
             </div>
 
@@ -187,7 +193,7 @@
             {
                 <p class="text-muted p-4 mb-0">
                     No hay asistencia registrada para este grupo en esa fecha.
-                    @if (Model.PuedeEditar)
+                    @if (ViewBag.PuedeRegistrarAsistencia == true)
                     {
                         <a href="@Url.Action("Registrar", "Asistencia", new { grupo = Model.IdGrupo, fecha = Model.Fecha.ToString("yyyy-MM-dd") })">Registrarla ahora</a>
                     }

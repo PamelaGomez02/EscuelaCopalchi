@@ -1,5 +1,7 @@
 ﻿
 using EscuelaCopalchi.UI.Models.GestionAsistencia;
+using EscuelaCopalchi.UI.Models.GestionAcademica;
+using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,48 +10,130 @@ using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
+    [Authorize]
     public class AsistenciaController : Controller
     {
         private readonly AsistenciaRepository repo =
             new AsistenciaRepository();
-
-        // Contexto académico del usuario actual.
-        // No realiza comprobaciones de roles aquí.
-        private AsistenciaSesion Sesion
+        private static bool TryFecha(string texto, out DateTime fecha)
         {
-            get
+            fecha = DateTime.MinValue;
+
+            if (string.IsNullOrWhiteSpace(texto))
+                return false;
+
+            string[] formatos =
             {
-                return AsistenciaSesion.Actual(HttpContext);
-            }
-        }
+        "yyyy-MM-dd",
+        "dd/MM/yyyy",
+        "d/M/yyyy"
+    };
 
-        private static bool TryFecha(
-            string texto,
-            out DateTime fecha)
-        {
             return DateTime.TryParseExact(
-                (texto ?? "").Trim(),
-                "yyyy-MM-dd",
+                texto.Trim(),
+                formatos,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out fecha);
         }
+        // Los permisos provienen del login general y de Roles -> Asignar.
+        // No se utiliza el permiso general como sustituto de los individuales.
+        private bool TienePermiso(string nombre)
+        {
+            var usuario = SesionUsuario.Obtener(Session);
+            return usuario != null && usuario.TienePermiso(nombre);
+        }
 
+        private ActionResult SinPermiso()
+        {
+            return RedirectToAction("AccesoDenegado", "Error");
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            PermisosVista();
+        }
+
+        private void PermisosVista()
+        {
+            ViewBag.PuedeConsultarAsistencia = TienePermiso(PermisosAsistencia.Consultar);
+            ViewBag.PuedeRegistrarAsistencia = TienePermiso(PermisosAsistencia.Registrar);
+            ViewBag.PuedeEditarAsistencia = TienePermiso(PermisosAsistencia.Editar);
+            ViewBag.PuedeVerHistorialAsistencia = TienePermiso(PermisosAsistencia.Historial);
+            ViewBag.PuedeVerPorcentajeAsistencia = TienePermiso(PermisosAsistencia.Porcentaje);
+        }
+
+        // Identificador del usuario autenticado por el sistema general.
+        private int IdUsuarioActual
+        {
+            get
+            {
+                var usuario = SesionUsuario.Obtener(Session);
+                return usuario == null ? 0 : usuario.IdUsuario;
+            }
+        }
+
+        // 0 significa todos los grupos en el repositorio existente.
+        // Si la cuenta tiene docente asociado, se restringe a ese docente.
+        // El permiso de la acción sigue validándose por separado.
+        private int AlcanceLectura
+        {
+            get { return ObtenerAlcanceDocente(); }
+        }
+
+        private int AlcanceEscritura
+        {
+            get { return ObtenerAlcanceDocente(); }
+        }
+
+        private int ObtenerAlcanceDocente()
+        {
+            if (IdUsuarioActual <= 0)
+                throw new UnauthorizedAccessException("La sesión no es válida.");
+
+            var servicio = new UsuarioService();
+            var usuario = servicio.Obtener(IdUsuarioActual);
+            if (usuario == null || !usuario.Estado)
+                throw new UnauthorizedAccessException("El usuario no está activo.");
+
+            return usuario.IdDocente > 0 ? usuario.IdDocente : 0;
+        }
+
+        // Sesión general y docente asociado, sin AsistenciaSesion.
+
+
+        private bool PuedeAccederAsistencia()
+        {
+            string[] permisos =
+            {
+        "CONSULTAR_ASISTENCIA",
+        "REGISTRAR_ASISTENCIA",
+        "EDITAR_ASISTENCIA",
+        "VER_HISTORIAL_ASISTENCIA",
+        "VER_PORCENTAJE_ASISTENCIA",
+        "GESTIONAR_ASISTENCIA"
+    };
+
+            return permisos.Any(p => TienePermiso(p));
+        }
         // =============================================
         // CONSULTAR ASISTENCIA
         // =============================================
         public ActionResult Index(int? grupo, string fecha)
         {
+            if (!PuedeAccederAsistencia())
+                return SinPermiso();
             var vm = new AsistenciaIndexVM
             {
                 Fecha = DateTime.Today,
-                PuedeEditar = Sesion.PuedeRegistrar
+                PuedeEditar = TienePermiso(PermisosAsistencia.Editar)
             };
 
             try
             {
                 vm.Grupos = repo.ListarGrupos(
-                    Sesion.AlcanceLectura);
+                    AlcanceLectura);
             }
             catch (Exception ex)
             {
@@ -91,7 +175,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 vm.Filas = repo.Consultar(
                     grupo.Value,
                     f,
-                    Sesion.AlcanceLectura);
+                    AlcanceLectura);
 
                 vm.Resumen =
                     ResumenAsistencia.De(vm.Filas);
@@ -121,6 +205,7 @@ namespace EscuelaCopalchi.UI.Controllers
             int? grupo,
             string fecha)
         {
+            if (!TienePermiso(PermisosAsistencia.Registrar)) return SinPermiso();
             return FormularioRegistrar(
                 grupo,
                 fecha,
@@ -138,6 +223,7 @@ namespace EscuelaCopalchi.UI.Controllers
             string fecha,
             List<AsistenciaGuardarItem> filas)
         {
+            if (!TienePermiso(PermisosAsistencia.Registrar)) return SinPermiso();
             DateTime f;
 
             if (!grupo.HasValue ||
@@ -156,8 +242,8 @@ namespace EscuelaCopalchi.UI.Controllers
             try
             {
                 resultado = repo.Registrar(
-                    Sesion.IdUsuario,
-                    Sesion.AlcanceEscritura,
+                    IdUsuarioActual,
+                    AlcanceEscritura,
                     grupo.Value,
                     f,
                     filas);
@@ -215,7 +301,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 Fecha = DateTime.Today
             };
 
-            int docente = Sesion.AlcanceEscritura;
+            int docente = AlcanceEscritura;
 
             try
             {
@@ -300,6 +386,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Editar(int? id)
         {
+            if (!TienePermiso(PermisosAsistencia.Editar)) return SinPermiso();
             if (!id.HasValue || id.Value <= 0)
             {
                 TempData["Error"] =
@@ -312,7 +399,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 AsistenciaItem item = repo.Obtener(
                     id.Value,
-                    Sesion.AlcanceEscritura);
+                    AlcanceEscritura);
 
                 if (item == null)
                 {
@@ -344,6 +431,7 @@ namespace EscuelaCopalchi.UI.Controllers
             string hora,
             string observacion)
         {
+            if (!TienePermiso(PermisosAsistencia.Editar)) return SinPermiso();
             if (!id.HasValue || id.Value <= 0)
             {
                 TempData["Error"] =
@@ -358,7 +446,7 @@ namespace EscuelaCopalchi.UI.Controllers
             {
                 item = repo.Obtener(
                     id.Value,
-                    Sesion.AlcanceEscritura);
+                    AlcanceEscritura);
             }
             catch (Exception ex)
             {
@@ -381,8 +469,8 @@ namespace EscuelaCopalchi.UI.Controllers
             try
             {
                 resultado = repo.Modificar(
-                    Sesion.IdUsuario,
-                    Sesion.AlcanceEscritura,
+                    IdUsuarioActual,
+                    AlcanceEscritura,
                     id.Value,
                     estado,
                     hora,
@@ -429,13 +517,14 @@ namespace EscuelaCopalchi.UI.Controllers
             string desde,
             string hasta)
         {
+            if (!TienePermiso(PermisosAsistencia.Historial)) return SinPermiso();
             var vm = new AsistenciaHistorialVM
             {
                 IdGrupo = grupo ?? 0,
                 IdEstudiante = estudiante ?? 0
             };
 
-            int alcance = Sesion.AlcanceLectura;
+            int alcance = AlcanceLectura;
 
             try
             {
@@ -540,6 +629,64 @@ namespace EscuelaCopalchi.UI.Controllers
                     AsistenciaRepository.Mensaje(ex);
             }
 
+            return View(vm);
+        }
+
+        // PORCENTAJE DE ASISTENCIA
+        [HttpGet]
+        public ActionResult Porcentaje(int? grupo, int? estudiante, string desde, string hasta)
+        {
+            if (!TienePermiso(PermisosAsistencia.Porcentaje)) return SinPermiso();
+
+            var vm = new AsistenciaPorcentajeVM { IdGrupo = grupo ?? 0 };
+            int alcance = AlcanceLectura;
+
+            try
+            {
+                vm.Grupos = repo.ListarGrupos(alcance);
+                DateTime fecha;
+                if (!string.IsNullOrWhiteSpace(desde))
+                {
+                    if (!TryFecha(desde, out fecha))
+                    {
+                        ViewBag.Error = "La fecha inicial no es válida.";
+                        return View(vm);
+                    }
+                    vm.Desde = fecha;
+                }
+                if (!string.IsNullOrWhiteSpace(hasta))
+                {
+                    if (!TryFecha(hasta, out fecha))
+                    {
+                        ViewBag.Error = "La fecha final no es válida.";
+                        return View(vm);
+                    }
+                    vm.Hasta = fecha;
+                }
+
+                if (Request.QueryString.Count == 0) return View(vm);
+                if (vm.IdGrupo <= 0)
+                {
+                    ViewBag.Error = "Debe seleccionar un grupo.";
+                    return View(vm);
+                }
+                if (vm.Desde.HasValue && vm.Hasta.HasValue && vm.Desde > vm.Hasta)
+                {
+                    ViewBag.Error = "La fecha inicial no puede superar la final.";
+                    return View(vm);
+                }
+
+                vm.Filas = repo.Porcentaje(vm.IdGrupo, estudiante ?? 0,
+                    vm.Desde, vm.Hasta, alcance);
+                vm.Resumen = ResumenAsistencia.De(vm.Filas);
+                var seleccionado = vm.Grupos.FirstOrDefault(g => g.IdGrupo == vm.IdGrupo);
+                vm.NombreGrupo = seleccionado == null ? "" : seleccionado.Grupo;
+                vm.Consultado = true;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = AsistenciaRepository.Mensaje(ex);
+            }
             return View(vm);
         }
     }

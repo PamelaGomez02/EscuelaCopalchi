@@ -7,7 +7,11 @@ namespace EscuelaCopalchi.UI.Models.GestionAsistencia
     public static class PermisosAsistencia
     {
         public const string Registrar = "REGISTRAR_ASISTENCIA";
-        public const string VerTodo = "VER_TODA_ASISTENCIA";
+        public const string VerTodo = "VER_TODA_ASISTENCIA"; // legado, no concede permisos individuales
+        public const string Consultar = "CONSULTAR_ASISTENCIA";
+        public const string Editar = "EDITAR_ASISTENCIA";
+        public const string Historial = "VER_HISTORIAL_ASISTENCIA";
+        public const string Porcentaje = "VER_PORCENTAJE_ASISTENCIA";
     }
 
     public static class EstadosAsistencia

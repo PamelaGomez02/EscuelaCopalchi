@@ -161,25 +161,25 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
-    <Compile Include="Controllers\Estudiante\EstudiantesAddController.cs" />
+    <Compile Include="Controllers\ErrorController\ErrorController.cs" />
+    <Compile Include="Controllers\Estudiante\EstudiantesController.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Asignaciones.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Grupo.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Importacion.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.MiGrupo.cs" />
-    <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Notificaciones.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Reportes.cs" />
     <Compile Include="Controllers\GestionNotas\GestionNotasController.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
+    <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
     <Compile Include="Controllers\PanelPrincipalController.cs" />
-    <Compile Include="Controllers\PlanesEstudioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
-    <Compile Include="Controllers\NotificacionesController.cs" />
+    <Compile Include="Controllers\PlanesEstudio\PlanesEstudioController.cs" />
+    <Compile Include="Controllers\Reportes\ReportesController.cs" />
     <Compile Include="Controllers\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController.cs" />
-    <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\Usuarios\UsuariosController.cs" />
     <Compile Include="Datos\GestionAcademica\AccesoDatos.cs" />
@@ -214,17 +214,42 @@
     <Compile Include="Models\Estudiantes\TipoAdecuacion.cs" />
     <Compile Include="Models\Gestion Academica\Modelos.cs" />
     <Compile Include="Models\Gestion Academica\ViewModels.cs" />
+    <Compile Include="Models\GestionAsistencia\AsistenciaModelos.cs" />
+    <Compile Include="Models\GestionAsistencia\AsistenciaRepository.cs" />
     <Compile Include="Models\GestionNotas\NotasModelos.cs" />
     <Compile Include="Models\GestionNotas\NotasRepository.cs" />
     <Compile Include="Models\GestionNotas\NotasSesion.cs" />
     <Compile Include="Models\GestionNotas\ReporteNotas.cs" />
+    <Compile Include="Models\Home\HomeDashboardViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Gestion Material\RepositorioMaterialViewModel.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoAcceso.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoCalculo.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoModelos.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoReporte.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoRepository.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoVistas.cs" />
+    <Compile Include="Models\Notificaciones\EstudianteRiesgo.cs" />
+    <Compile Include="Models\Notificaciones\Notificacion.cs" />
+    <Compile Include="Models\Notificaciones\NotificacionRepository.cs" />
+    <Compile Include="Models\PanelPrincipal\PanelPrincipalViewModel.cs" />
+    <Compile Include="Models\PlanesEstudio\PlanEstudio.cs" />
+    <Compile Include="Models\PlanesEstudio\PlanEstudioRepository.cs" />
+    <Compile Include="Models\Reportes\CartaDocx.cs" />
+    <Compile Include="Models\Reportes\CartaModelos.cs" />
+    <Compile Include="Models\Reportes\FichaModelos.cs" />
+    <Compile Include="Models\Reportes\FichaPdf.cs" />
+    <Compile Include="Models\Reportes\PdfDocumento.cs" />
+    <Compile Include="Models\Reportes\RendimientoXlsx.cs" />
+    <Compile Include="Models\Reportes\ReportesModelos.cs" />
+    <Compile Include="Models\Reportes\ReportesRepository.cs" />
+    <Compile Include="Models\Reportes\ReportesSesion.cs" />
     <Compile Include="Models\Roles\AsignacionRolRepository.cs" />
     <Compile Include="Models\Roles\AsignarRolViewModel.cs" />
     <Compile Include="Models\Roles\Rol.cs" />
     <Compile Include="Models\Roles\RolPermisosViewModel.cs" />
     <Compile Include="Models\Seguridad\PasswordHelper.cs" />
+    <Compile Include="Models\Seguridad\PermisoAuthorizeAttribute.cs" />
     <Compile Include="Models\Usuarios\RolDropdownItem.cs" />
     <Compile Include="Models\Usuarios\RolDropdownRepository.cs" />
     <Compile Include="Models\Usuarios\Usuario.cs" />
@@ -300,10 +325,6 @@
     <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
     <Content Include="Views\PlanesEstudio\Editar.cshtml" />
     <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
-    <Content Include="Views\Asistencia\Historial.cshtml" />
-    <Content Include="Views\Asistencia\Editar.cshtml" />
-    <Content Include="Views\Asistencia\Registrar.cshtml" />
-    <Content Include="Views\Asistencia\Index.cshtml" />
     <Content Include="Views\GestionNotas\ImportarExcel.cshtml" />
     <Content Include="Views\GestionNotas\Historial.cshtml" />
     <Content Include="Views\GestionNotas\Index.cshtml" />
@@ -345,6 +366,21 @@
     <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
     <Content Include="Views\RepositorioMaterial\Index.cshtml" />
     <Content Include="Views\RepositorioMaterial\_Formulario.cshtml" />
+    <Content Include="Views\Error\AccesoDenegado.cshtml" />
+    <Content Include="Views\Login\Login.cshtml" />
+    <Content Include="Views\Reportes\Index.cshtml" />
+    <Content Include="Views\Reportes\Traslado.cshtml" />
+    <Content Include="Views\Monitoreo\_EstilosMonitoreo.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardEstilos.cshtml" />
+    <Content Include="Views\Home\IndexAdmin.cshtml" />
+    <Content Include="Views\Home\IndexUsuario.cshtml" />
+    <Content Include="Views\Monitoreo\Reporte.cshtml" />
+    <Content Include="Views\Asistencia\Editar.cshtml" />
+    <Content Include="Views\Asistencia\Historial.cshtml" />
+    <Content Include="Views\Asistencia\Index.cshtml" />
+    <Content Include="Views\Asistencia\Porcentaje.cshtml" />
+    <Content Include="Views\Asistencia\Registrar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -411,13 +447,13 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
     <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
   <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
 </Project>
