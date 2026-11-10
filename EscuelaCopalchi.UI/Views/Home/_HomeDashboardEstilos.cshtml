@@ -1,0 +1,288 @@
+<style>
+    .cop-dashboard {
+        background: #f4f7fb;
+        min-height: 100vh;
+        color: #17354b
+    }
+
+    .cop-hero {
+        background: linear-gradient(110deg,#123c56,#286c98);
+        padding: 36px 0;
+        color: #fff
+    }
+
+    .cop-hero-user {
+        background: linear-gradient(110deg,#245b83,#478db5)
+    }
+
+    .cop-eyebrow {
+        font-size: 11px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        opacity: .8
+    }
+
+    .cop-hero h1 {
+        font-size: 2rem;
+        font-weight: 750;
+        margin: 8px 0
+    }
+
+    .cop-hero p {
+        margin: 0;
+        color: #dceaf4
+    }
+
+    .cop-hero-badge {
+        background: #ffffff24;
+        border: 1px solid #ffffff45;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 600
+    }
+
+    .cop-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 17px
+    }
+
+        .cop-heading h2 {
+            font-size: 1.18rem;
+            font-weight: 750;
+            margin: 0
+        }
+
+        .cop-heading span {
+            font-size: .8rem;
+            color: #7b8c9b
+        }
+
+    .cop-kpi {
+        height: 100%;
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e1e9f0;
+        border-radius: 13px;
+        padding: 19px;
+        box-shadow: 0 3px 14px #17354b08
+    }
+
+        .cop-kpi > i {
+            display: grid;
+            place-items: center;
+            width: 49px;
+            height: 49px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #e5f1fb;
+            color: #286c98;
+            font-size: 1.35rem
+        }
+
+        .cop-kpi span, .cop-kpi small {
+            display: block;
+            color: #6e7e8c;
+            font-size: .75rem
+        }
+
+        .cop-kpi strong {
+            display: block;
+            font-size: 1.65rem;
+            color: #133c55;
+            line-height: 1.25
+        }
+
+    .cop-panel {
+        background: #fff;
+        border: 1px solid #e1e9f0;
+        border-radius: 13px;
+        padding: 22px;
+        box-shadow: 0 3px 14px #17354b08
+    }
+
+    .cop-panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap
+    }
+
+        .cop-panel-head h3 {
+            font-size: 1rem;
+            font-weight: 750;
+            margin: 0
+        }
+
+            .cop-panel-head h3 i {
+                color: #397dab;
+                margin-right: 6px
+            }
+
+        .cop-panel-head small, .cop-panel-head a {
+            font-size: .75rem;
+            color: #7b8c9b
+        }
+
+    .cop-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+        font-size: .78rem
+    }
+
+        .cop-bar-row span {
+            width: 95px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0
+        }
+
+        .cop-bar-row b {
+            width: 45px;
+            text-align: right;
+            flex-shrink: 0
+        }
+
+    .cop-track {
+        height: 11px;
+        border-radius: 10px;
+        background: #edf3f8;
+        flex: 1;
+        overflow: hidden
+    }
+
+    .cop-fill {
+        height: 100%;
+        border-radius: 10px;
+        background: #3c89b8
+    }
+
+    .cop-fill-green {
+        background: #35a38c
+    }
+
+    .cop-module {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        height: 100%;
+        min-height: 100px;
+        padding: 18px;
+        border: 1px solid #e1e9f0;
+        background: #fff;
+        border-radius: 13px;
+        text-decoration: none;
+        box-shadow: 0 3px 14px #17354b08;
+        transition: .15s
+    }
+
+        .cop-module:hover {
+            border-color: #73b0d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px #17354b12
+        }
+
+    .cop-module-icon {
+        display: grid;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: #e5f1fb;
+        color: #286c98;
+        font-size: 1.25rem
+    }
+
+    .cop-module strong {
+        display: block;
+        color: #17354b;
+        font-size: .9rem
+    }
+
+    .cop-module span {
+        display: block;
+        color: #7b8c9b;
+        font-size: .76rem
+    }
+
+    .cop-arrow {
+        margin-left: auto;
+        color: #8ea6b7
+    }
+
+    .cop-activity, .cop-notice {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 13px 0;
+        border-top: 1px solid #edf1f5
+    }
+
+    .cop-activity {
+        justify-content: space-between
+    }
+
+        .cop-activity strong, .cop-notice strong {
+            display: block;
+            font-size: .84rem;
+            color: #17354b
+        }
+
+        .cop-activity span, .cop-notice span {
+            display: block;
+            font-size: .76rem;
+            color: #7b8c9b
+        }
+
+        .cop-activity small {
+            color: #8b9ca8;
+            font-size: .72rem;
+            white-space: nowrap
+        }
+
+    .cop-notice > i {
+        color: #3c89b8;
+        font-size: 1.25rem
+    }
+
+    .cop-muted, .cop-empty {
+        color: #718495;
+        font-size: .87rem
+    }
+
+    .cop-empty {
+        padding: 24px;
+        background: #fff;
+        border: 1px dashed #c7d5e1;
+        border-radius: 12px
+    }
+
+    @@media (max-width: 767px) {
+        .cop-hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .cop-hero {
+            padding: 27px 0;
+        }
+
+        .cop-panel {
+            padding: 16px;
+        }
+
+        .cop-bar-row span {
+            width: 76px;
+        }
+    }
+</style>

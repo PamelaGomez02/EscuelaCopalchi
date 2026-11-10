@@ -11,25 +11,63 @@ using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
-    public class EstudiantesAddController : Controller
+    public class EstudiantesController : Controller
     {
         private readonly EstudianteRepository repository;
 
-        public EstudiantesAddController()
+        public EstudiantesController()
         {
             repository = new EstudianteRepository();
         }
 
 
+
+        // Permisos administrados desde Roles -> Asignar permisos.
+        // El identificador se obtiene de la sesión, nunca del navegador.
+        private bool TienePermiso(string permiso)
+        {
+            var sesion = SesionUsuario.Obtener(Session);
+            if (sesion == null || sesion.IdUsuario <= 0) return false;
+            var db = new ConexionBD();
+            int id = sesion.IdUsuario;
+            string nombre = permiso.Replace("'", "''");
+            var ds = db.EjecutarConsulta(@"SELECT TOP (1) 1 AS permitido
+                FROM dbo.USUARIO u
+                INNER JOIN dbo.ROL_PERMISO rp ON rp.id_rol = u.id_rol
+                INNER JOIN dbo.PERMISO p ON p.id_permiso = rp.id_permiso
+                WHERE u.id_usuario = " + id + @"
+                  AND p.nombre = '" + nombre + @"' AND p.estado = 1");
+            return ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0;
+        }
+
+        private ActionResult SinPermiso()
+        {
+            return RedirectToAction("AccesoDenegado", "Error");
+        }
+
+        private void PermisosVista()
+        {
+            ViewBag.PuedeVer = TienePermiso("VER_ESTUDIANTES");
+            ViewBag.PuedeCrear = TienePermiso("CREAR_ESTUDIANTES");
+            ViewBag.PuedeEditar = TienePermiso("EDITAR_ESTUDIANTES");
+            ViewBag.PuedeImportar = TienePermiso("IMPORTAR_ESTUDIANTES");
+            ViewBag.PuedeExpediente = TienePermiso("VER_EXPEDIENTE_ESTUDIANTES");
+            ViewBag.PuedeBajas = TienePermiso("GESTIONAR_BAJAS_ESTUDIANTES");
+            ViewBag.PuedeGestionarExpediente = TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES");
+        }
+
         [HttpGet]
         public ActionResult Registrar()
         {
+            if (!TienePermiso("CREAR_ESTUDIANTES")) return SinPermiso();
             return View("~/Views/Estudiantes/Crear.cshtml");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Registrar(Estudiante estudiante)
         {
+            if (!TienePermiso("CREAR_ESTUDIANTES")) return SinPermiso();
             try
             {
                 if (!ModelState.IsValid)
@@ -71,6 +109,8 @@ namespace EscuelaCopalchi.UI.Controllers
             string filtroEstado = "Activos",
             string busqueda = "")
         {
+            if (!TienePermiso("VER_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             var estudiantes = repository.ObtenerTodos();
 
             if (!string.IsNullOrWhiteSpace(busqueda))
@@ -113,6 +153,8 @@ namespace EscuelaCopalchi.UI.Controllers
 
         public ActionResult Detalle(int id)
         {
+            if (!TienePermiso("VER_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             Estudiante estudiante =
                 repository.ObtenerPorId(id);
 
@@ -129,6 +171,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Editar(int id)
         {
+            if (!TienePermiso("EDITAR_ESTUDIANTES")) return SinPermiso();
             Estudiante estudiante =
                 repository.ObtenerPorId(id);
 
@@ -143,8 +186,10 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Editar(Estudiante estudiante)
         {
+            if (!TienePermiso("EDITAR_ESTUDIANTES")) return SinPermiso();
             try
             {
                 if (!ModelState.IsValid)
@@ -182,8 +227,10 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DarBaja(int id, string observacionBaja)
         {
+            if (!TienePermiso("GESTIONAR_BAJAS_ESTUDIANTES")) return SinPermiso();
             string resultado = repository.DarBaja(id, observacionBaja);
 
             if (resultado == "Se ha guardado correctamente")
@@ -201,9 +248,11 @@ namespace EscuelaCopalchi.UI.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RegistrarAdecuacion(
         AdecuacionAcademica adecuacion)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             try
             {
                 string resultado =
@@ -247,6 +296,8 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Expediente(int id)
         {
+            if (!TienePermiso("VER_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             Estudiante estudiante =
                 repository.ObtenerPorId(id);
 
@@ -273,9 +324,11 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarAdecuacion(
     AdecuacionAcademica adecuacion)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             string resultado =
                 repository.ActualizarAdecuacion(
                     adecuacion);
@@ -302,9 +355,11 @@ namespace EscuelaCopalchi.UI.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RegistrarAlergia(
         Alergia alergia)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             string resultado =
                 repository.GuardarAlergia(
                     alergia);
@@ -329,8 +384,10 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarAlergia(Alergia alergia)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             string resultado =
                 repository.ActualizarAlergia(alergia);
 
@@ -346,8 +403,10 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EliminarAlergia(int idAlergia, int idEstudiante)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             repository.EliminarAlergia(idAlergia);
 
             TempData["Success"] =
@@ -364,8 +423,10 @@ namespace EscuelaCopalchi.UI.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RegistrarObservacion()
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             Observaciones observacion =
                 new Observaciones();
 
@@ -395,9 +456,11 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarObservacion(
     FormCollection form)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             Observaciones observacion =
                 new Observaciones();
 
@@ -431,10 +494,12 @@ namespace EscuelaCopalchi.UI.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EliminarObservacion(
         int idObservacion,
         int idEstudiante)
         {
+            if (!TienePermiso("EDITAR_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
             repository.EliminarObservacion(
                 idObservacion);
 
@@ -452,6 +517,8 @@ namespace EscuelaCopalchi.UI.Controllers
 
         public ActionResult HistorialBajas()
         {
+            if (!TienePermiso("GESTIONAR_BAJAS_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             var lista =
                 repository.ObtenerHistorialBajas();
 
@@ -472,6 +539,8 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult ImportarExcel()
         {
+            if (!TienePermiso("IMPORTAR_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             ViewBag.Preview =
                 Session["EstudiantesPreview"];
 
@@ -480,8 +549,11 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ImportarExcel(HttpPostedFileBase archivoExcel, string accion)
         {
+            if (!TienePermiso("IMPORTAR_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
             if (accion == "Cargar")
             {
                 if (archivoExcel == null)
@@ -612,10 +684,8 @@ namespace EscuelaCopalchi.UI.Controllers
                         continue;
                     }
 
-                    string resultado =
-                        repository.Guardar(estudiante);
-
-                    guardados++;
+                    string resultado = repository.Guardar(estudiante);
+                    if (resultado == "Se ha guardado correctamente") guardados++;
                 }
 
                 Session.Remove("EstudiantesPreview");
@@ -630,8 +700,10 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GuardarImportacion()
         {
+            if (!TienePermiso("IMPORTAR_ESTUDIANTES")) return SinPermiso();
             try
             {
                 var lista = Session["EstudiantesPreview"]
@@ -649,6 +721,8 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 foreach (var estudiante in lista)
                 {
+                    if (!estudiante.EsValido || repository.ExisteIdentificacion(estudiante.Identificacion))
+                        continue;
                     string resultado = repository.Guardar(estudiante);
 
                     if (resultado == "Se ha guardado correctamente")

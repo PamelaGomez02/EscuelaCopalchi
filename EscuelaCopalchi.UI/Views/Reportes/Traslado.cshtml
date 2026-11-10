@@ -1,0 +1,189 @@
+﻿@model EscuelaCopalchi.UI.Models.Reportes.TrasladoViewModel
+@{
+    ViewBag.Title = "Cartas de traslado";
+    var ses = ViewBag.ReportesSesion as EscuelaCopalchi.UI.Models.Reportes.ReportesSesion;
+}
+@section styles {
+    <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+}
+<main>
+    @if (ses != null)
+    {
+        <div class="gn-bar">
+            <span><i class="bi bi-person-circle me-1"></i> <strong>@ses.Nombre</strong> <span class="badge gn-badge gn-badge-ext ms-1">@ses.Rol</span></span>
+        </div>
+    }
+
+    <div class="gn-header">
+        <div>
+            <h2 class="gn-title">Cartas de traslado</h2>
+            <p class="gn-sub">Genere la carta oficial con el historial académico o cargue una carta ya elaborada.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+
+    <form method="get" class="gn-filters">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label">Buscar estudiante</label>
+                <input type="text" name="buscar" value="@Model.Buscar" class="form-control" placeholder="Nombre o identificación">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn gn-btn w-100"><i class="bi bi-search me-1"></i> Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive gn-table-wrap mb-4">
+        <table class="table align-middle gn-table">
+            <thead>
+                <tr><th>Estudiante</th><th>Grupo</th><th class="text-end">Carta</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Estudiantes)
+                {
+                    <tr>
+                        <td><strong>@e.Estudiante</strong><div class="text-muted small">@e.Identificacion</div></td>
+                        <td>@e.Grupo</td>
+                        <td class="text-end text-nowrap">
+                            <button type="button" class="btn btn-sm gn-btn" data-bs-toggle="modal" data-bs-target="#mdGenerar"
+                                    data-id="@e.IdEstudiante" data-nombre="@e.Estudiante">
+                                <i class="bi bi-file-earmark-word me-1"></i> Generar
+                            </button>
+                            <button type="button" class="btn btn-sm gn-btn-out" data-bs-toggle="modal" data-bs-target="#mdCargar"
+                                    data-id="@e.IdEstudiante" data-nombre="@e.Estudiante">
+                                <i class="bi bi-upload me-1"></i> Cargar
+                            </button>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Estudiantes.Count == 0)
+                {
+                    <tr><td colspan="3" class="text-center text-muted py-4">No se encontraron estudiantes matriculados.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h5 class="mb-3" style="color:#133C55;font-weight:700">Cartas registradas</h5>
+    <div class="table-responsive gn-table-wrap mb-4">
+        <table class="table align-middle gn-table">
+            <thead>
+                <tr><th>Fecha</th><th>Estudiante</th><th>Tipo</th><th>Destino</th><th>Registrada por</th><th class="text-end">Archivo</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Cartas)
+                {
+                    <tr>
+                        <td>@c.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@c.Estudiante</td>
+                        <td><span class="badge gn-badge @(c.Tipo == "Generada" ? "gn-badge-ext" : "")">@c.Tipo</span></td>
+                        <td>@(string.IsNullOrEmpty(c.Destino) ? "-" : c.Destino)</td>
+                        <td>@c.Usuario</td>
+                        <td class="text-end">
+                            <a class="gn-link" href="@Url.Action("DescargarCarta", new { id = c.IdCarta })"><i class="bi bi-download me-1"></i>@c.Archivo</a>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Cartas.Count == 0)
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">Aún no hay cartas registradas.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver a reportes</a>
+    </div>
+</main>
+
+<!-- Generar carta -->
+<div class="modal fade" id="mdGenerar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        @using (Html.BeginForm("GenerarCarta", "Reportes", FormMethod.Post, new { @class = "modal-content", id = "fGenerar" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="idEstudiante" id="gId" />
+            <div class="modal-header">
+                <h5 class="modal-title">Generar carta de traslado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Estudiante: <strong id="gNombre"></strong></p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Escuela o institución de destino</label>
+                    <input type="text" name="destino" class="form-control" maxlength="150" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Motivo del traslado <span class="text-muted fw-normal">(opcional)</span></label>
+                    <textarea name="motivo" class="form-control" rows="2" maxlength="500"></textarea>
+                </div>
+                <div class="mb-1">
+                    <label class="form-label fw-semibold">Lugar de emisión</label>
+                    <input type="text" name="lugar" class="form-control" value="Cartago" maxlength="60" />
+                </div>
+                <div class="form-text">La carta se descarga en Word, incluye el historial académico y firma a nombre de @Model.Director. Queda guardada en "Cartas registradas".</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn gn-btn-out" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn gn-btn"><i class="bi bi-file-earmark-word me-1"></i> Generar y descargar</button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cargar carta -->
+<div class="modal fade" id="mdCargar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        @using (Html.BeginForm("CargarCarta", "Reportes", FormMethod.Post, new { @class = "modal-content", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="idEstudiante" id="cId" />
+            <div class="modal-header">
+                <h5 class="modal-title">Cargar carta de traslado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Estudiante: <strong id="cNombre"></strong></p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Escuela o institución de destino <span class="text-muted fw-normal">(opcional)</span></label>
+                    <input type="text" name="destino" class="form-control" maxlength="150" />
+                </div>
+                <div class="mb-1">
+                    <label class="form-label fw-semibold">Archivo de la carta</label>
+                    <input type="file" name="archivo" class="form-control" accept=".docx,.doc,.pdf" required />
+                </div>
+                <div class="form-text">Word (.docx, .doc) o PDF, máximo 4 MB.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn gn-btn-out" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn gn-btn"><i class="bi bi-upload me-1"></i> Cargar carta</button>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            function enlazar(idModal, idCampo, idNombre) {
+                document.getElementById(idModal).addEventListener('show.bs.modal', function (ev) {
+                    var b = ev.relatedTarget;
+                    document.getElementById(idCampo).value = b.getAttribute('data-id');
+                    document.getElementById(idNombre).textContent = b.getAttribute('data-nombre');
+                });
+            }
+            enlazar('mdGenerar', 'gId', 'gNombre');
+            enlazar('mdCargar', 'cId', 'cNombre');
+
+            // la carta generada se descarga; luego se recarga la página para ver el registro
+            document.getElementById('fGenerar').addEventListener('submit', function () {
+                setTimeout(function () { window.location.reload(); }, 2500);
+            });
+        })();
+    </script>
+}

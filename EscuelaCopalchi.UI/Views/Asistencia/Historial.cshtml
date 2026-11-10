@@ -1,26 +1,34 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAsistencia.AsistenciaHistorialVM
+@using EscuelaCopalchi.UI.Models.GestionAsistencia
+@{
     ViewBag.Title = "Historial de asistencia";
+    var r = Model.Resumen ?? new ResumenAsistencia();
+    bool unEstudiante = Model.IdEstudiante > 0;
+}
+@functions {
+    static string Clase(string estado)
+    {
+        switch (estado)
+        {
+            case "Presente": return "status-present";
+            case "Ausente": return "status-absent";
+            case "Tardanza": return "status-late";
+            default: return "status-justified";
+        }
+    }
 }
 
 <main>
 
     <section class="attendance-header">
-
         <div class="container">
 
             <div class="attendance-breadcrumb">
-
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-
-                <a href="@Url.Action("Index", "Asistencia")">
-                    Asistencia
-                </a>
-
+                <a href="@Url.Action("Index", "Asistencia")">Asistencia</a>
                 <i class="bi bi-chevron-right"></i>
-
                 <span>Historial</span>
-
             </div>
 
             <h1 class="attendance-title">
@@ -33,148 +41,160 @@
             </p>
 
         </div>
-
     </section>
 
 
     <section class="container pb-5">
 
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error
+            </div>
+        }
+
         <div class="history-card">
 
-            <div class="filters">
-
-                <select class="form-select">
-                    <option>Primer grado A</option>
-                    <option>Segundo grado A</option>
-                </select>
-
-                <select class="form-select">
-                    <option>Todos los estudiantes</option>
-                    <option>María González</option>
-                    <option>Juan Pérez</option>
-                    <option>Andrea Solano</option>
-                </select>
-
-                <input type="date"
-                       class="form-control" />
-
-                <input type="date"
-                       class="form-control" />
-
-                <button class="btn btn-cop-primary">
-                    <i class="bi bi-search"></i>
-                    Consultar
-                </button>
-
-            </div>
-
-
-            <div class="student-summary">
+            <!-- FILTROS -->
+            <form method="get" action="@Url.Action("Historial", "Asistencia")" class="filters">
 
                 <div>
-
-                    <span>Estudiante</span>
-                    <strong>María González</strong>
-
+                    <small class="text-muted d-block">Grupo</small>
+                    <select name="grupo" id="grupo" class="form-select">
+                        <option value="">Seleccione un grupo</option>
+                        @foreach (var g in Model.Grupos)
+                        {
+                            <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">
+                                @g.Grupo (@g.Anio)
+                            </option>
+                        }
+                    </select>
                 </div>
 
                 <div>
-
-                    <span>Presentes</span>
-                    <strong>18</strong>
-
+                    <small class="text-muted d-block">Estudiante</small>
+                    <select name="estudiante" id="estudiante" class="form-select">
+                        <option value="">Todos los estudiantes</option>
+                        @foreach (var e in Model.Estudiantes)
+                        {
+                            <option value="@e.IdEstudiante" selected="@(e.IdEstudiante == Model.IdEstudiante ? "selected" : null)">
+                                @e.Estudiante
+                            </option>
+                        }
+                    </select>
                 </div>
 
                 <div>
-
-                    <span>Ausencias</span>
-                    <strong>1</strong>
-
+                    <small class="text-muted d-block">Desde</small>
+                    <input type="date" name="desde" class="form-control"
+                           value="@(Model.Desde.HasValue ? Model.Desde.Value.ToString("yyyy-MM-dd") : "")" />
                 </div>
 
                 <div>
-
-                    <span>Tardanzas</span>
-                    <strong>1</strong>
-
+                    <small class="text-muted d-block">Hasta</small>
+                    <input type="date" name="hasta" class="form-control"
+                           value="@(Model.Hasta.HasValue ? Model.Hasta.Value.ToString("yyyy-MM-dd") : "")" />
                 </div>
 
-                <div class="percentage-box">
-
-                    <span>Porcentaje</span>
-                    <strong>90%</strong>
-
+                <div class="d-flex align-items-end">
+                    <button type="submit" class="btn btn-cop-primary">
+                        <i class="bi bi-search me-1"></i>
+                        Consultar
+                    </button>
                 </div>
 
-            </div>
+            </form>
 
 
-            <div class="table-responsive">
+            @if (!Model.Consultado)
+            {
+                <p class="text-muted p-4 mb-0">
+                    Seleccione un grupo (y, si desea, un estudiante y un rango de fechas) para ver el historial.
+                </p>
+            }
+            else
+            {
+                <!-- RESUMEN -->
+                <div class="student-summary">
+                    <div>
+                        <span>@(unEstudiante ? "Estudiante" : "Grupo")</span>
+                        <strong>@(unEstudiante ? Model.NombreEstudiante : Model.NombreGrupo)</strong>
+                    </div>
+                    <div>
+                        <span>Presentes</span>
+                        <strong>@r.Presentes</strong>
+                    </div>
+                    <div>
+                        <span>Ausencias</span>
+                        <strong>@r.Ausentes</strong>
+                    </div>
+                    <div>
+                        <span>Justificadas</span>
+                        <strong>@r.Justificados</strong>
+                    </div>
+                    <div>
+                        <span>Tardanzas</span>
+                        <strong>@r.Tardanzas</strong>
+                    </div>
+                    <div class="percentage-box">
+                        <span>Porcentaje</span>
+                        <strong>@(r.Porcentaje.HasValue ? r.Porcentaje.Value.ToString("0.##") + "%" : "—")</strong>
+                    </div>
+                </div>
 
-                <table class="table history-table align-middle">
+                if (Model.Truncado)
+                {
+                    <div class="alert alert-warning m-3 mb-0">
+                        Se muestran los primeros @AsistenciaHistorialVM.MaxFilas de @Model.TotalFilas registros.
+                        El resumen y el porcentaje consideran todos. Acote el rango de fechas para ver el resto.
+                    </div>
+                }
 
-                    <thead>
+                if (!Model.Filas.Any())
+                {
+                    <p class="text-muted p-4 mb-0">No hay registros de asistencia con los filtros seleccionados.</p>
+                }
+                else
+                {
+                    <!-- TABLA -->
+                    <div class="table-responsive">
+                        <table class="table history-table align-middle">
 
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Estado</th>
-                            <th>Hora</th>
-                            <th>Observación</th>
-                        </tr>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    @if (!unEstudiante)
+                                    {
+                                        <th>Estudiante</th>
+                                    }
+                                    <th>Estado</th>
+                                    <th>Hora</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </thead>
 
-                    </thead>
+                            <tbody>
+                                @foreach (var f in Model.Filas)
+                                {
+                                    <tr>
+                                        <td>@(f.Fecha.HasValue ? f.Fecha.Value.ToString("dd/MM/yyyy") : "—")</td>
+                                        @if (!unEstudiante)
+                                        {
+                                            <td>@f.Estudiante</td>
+                                        }
+                                        <td>
+                                            <span class="status @Clase(f.Estado)">@f.Estado</span>
+                                        </td>
+                                        <td>@(string.IsNullOrEmpty(f.HoraLlegada) ? "—" : f.HoraLlegada)</td>
+                                        <td>@(string.IsNullOrEmpty(f.Observacion) ? "—" : f.Observacion)</td>
+                                    </tr>
+                                }
+                            </tbody>
 
-                    <tbody>
-
-                        <tr>
-                            <td>10/08/2026</td>
-
-                            <td>
-                                <span class="status status-present">
-                                    Presente
-                                </span>
-                            </td>
-
-                            <td>7:00 a. m.</td>
-
-                            <td>—</td>
-                        </tr>
-
-
-                        <tr>
-                            <td>07/08/2026</td>
-
-                            <td>
-                                <span class="status status-late">
-                                    Tardanza
-                                </span>
-                            </td>
-
-                            <td>7:15 a. m.</td>
-
-                            <td>Transporte</td>
-                        </tr>
-
-
-                        <tr>
-                            <td>06/08/2026</td>
-
-                            <td>
-                                <span class="status status-absent">
-                                    Ausente
-                                </span>
-                            </td>
-
-                            <td>—</td>
-
-                            <td>Justificación pendiente</td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
+                        </table>
+                    </div>
+                }
+            }
 
         </div>
 
@@ -241,6 +261,7 @@
             padding: 18px;
             background: #f8fafc;
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             border-bottom: 1px solid #edf0f3;
         }
@@ -253,7 +274,7 @@
         .student-summary {
             padding: 20px;
             display: grid;
-            grid-template-columns: 2fr repeat(4, 1fr);
+            grid-template-columns: 2fr repeat(5, 1fr);
             gap: 15px;
             border-bottom: 1px solid #edf0f3;
         }
@@ -310,6 +331,10 @@
         .status-late {
             background: #fff3cd;
             color: #856404;
+        }
+        .status-justified {
+            background: #cfe2ff;
+            color: #084298;
         }
 
         .btn-cop-primary {

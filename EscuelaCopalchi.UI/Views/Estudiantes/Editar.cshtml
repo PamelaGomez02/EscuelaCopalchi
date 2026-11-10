@@ -13,7 +13,7 @@
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "EstudiantesAdd")">
+                <a href="@Url.Action("Index", "Estudiantes")">
                     Estudiantes
                 </a>
 
@@ -82,10 +82,11 @@
 
             @using (Html.BeginForm(
          "Editar",
-         "EstudiantesAdd",
+         "Estudiantes",
          FormMethod.Post,
          new { id = "formEditarEstudiante" }))
             {
+                @Html.AntiForgeryToken()
                 @Html.HiddenFor(x => x.IdEstudiante)
 
                 @Html.HiddenFor(x => x.IdEstudiante)
@@ -395,7 +396,7 @@
 
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Index", "EstudiantesAdd")" class="btn btn-light">
+                    <a href="@Url.Action("Index", "Estudiantes")" class="btn btn-light">
 
                         Cancelar
 

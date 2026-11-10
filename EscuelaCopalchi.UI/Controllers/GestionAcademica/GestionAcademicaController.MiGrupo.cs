@@ -1,4 +1,4 @@
-﻿using EscuelaCopalchi.UI.Models.GestionAcademica;
+using EscuelaCopalchi.UI.Models.GestionAcademica;
 using System;
 using System.Linq;
 using System.Web.Mvc;

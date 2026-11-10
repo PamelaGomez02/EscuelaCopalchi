@@ -10,6 +10,7 @@ namespace EscuelaCopalchi.UI.Models.Seguridad
         private const int TamanoSal = 16;
         private const int TamanoHash = 32;
 
+        // CREAR CONTRASEÑA CON PBKDF2-SHA256
         public static string CrearHash(string contrasena)
         {
             if (string.IsNullOrEmpty(contrasena))
@@ -35,11 +36,12 @@ namespace EscuelaCopalchi.UI.Models.Seguridad
             }
 
             return "PBKDF2-SHA256$" +
-                Iteraciones + "$" +
-                Convert.ToBase64String(sal) + "$" +
-                Convert.ToBase64String(hash);
+                   Iteraciones + "$" +
+                   Convert.ToBase64String(sal) + "$" +
+                   Convert.ToBase64String(hash);
         }
 
+        // VERIFICAR CONTRASEÑAS ANTIGUAS Y NUEVAS
         public static bool Verificar(
             string contrasena,
             string hashGuardado)
@@ -48,6 +50,23 @@ namespace EscuelaCopalchi.UI.Models.Seguridad
                 string.IsNullOrEmpty(hashGuardado))
                 return false;
 
+            // Compatibilidad con contraseñas BCrypt
+            if (hashGuardado.StartsWith("$2a$") ||
+                hashGuardado.StartsWith("$2b$") ||
+                hashGuardado.StartsWith("$2y$"))
+            {
+                try
+                {
+                    return BCrypt.Net.BCrypt.Verify(
+                        contrasena, hashGuardado);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            // Verificación PBKDF2-SHA256
             string[] partes = hashGuardado.Split('$');
 
             if (partes.Length != 4 ||

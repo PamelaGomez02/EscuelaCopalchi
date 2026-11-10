@@ -15,7 +15,7 @@
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
 
-                <a href="@Url.Action("Index", "EstudiantesAdd")">
+                <a href="@Url.Action("Index", "Estudiantes")">
                     Estudiantes
                 </a>
 
@@ -57,8 +57,9 @@
                 </div>
             }
 
-            @using (Html.BeginForm("Registrar", "EstudiantesAdd", FormMethod.Post))
+            @using (Html.BeginForm("Registrar", "Estudiantes", FormMethod.Post))
             {
+                @Html.AntiForgeryToken()
                 <h2 class="section-title">
                     <i class="bi bi-person me-2"></i>
                     Datos del estudiante
@@ -268,7 +269,7 @@
 
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Index", "EstudiantesAdd")"
+                    <a href="@Url.Action("Index", "Estudiantes")"
                        class="btn btn-light">
                         Cancelar
                     </a>

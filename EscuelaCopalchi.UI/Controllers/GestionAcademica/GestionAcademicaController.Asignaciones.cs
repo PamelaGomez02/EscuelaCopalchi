@@ -1,4 +1,4 @@
-﻿using EscuelaCopalchi.UI.Logica.GestionAcademica;
+using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
 using System;
 using System.Web.Mvc;
@@ -12,7 +12,7 @@ namespace EscuelaCopalchi.UI.Controllers
     {
         private readonly AsignacionService asignaciones = new AsignacionService();
 
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.AsignarEstudiantesGrupos)]
         public ActionResult Asignaciones(int grupo = 0, string busqueda = "")
         {
             var modelo = new AsignacionesViewModel { FiltroGrupo = grupo, Busqueda = busqueda ?? "" };
@@ -33,7 +33,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// <summary>Escenarios 1 a 5: reasignar, validar capacidad, cambiar de grupo, notificar y registrar en bitácora.</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.AsignarEstudiantesGrupos)]
         public ActionResult AsignarEstudiante(int idEstudiante, int idGrupo, string motivo = "",
                                               int filtroGrupo = 0, string busqueda = "")
         {
@@ -47,7 +47,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.AsignarEstudiantesGrupos)]
         public ActionResult RetirarEstudiante(int idEstudiante, string motivo = "", int filtroGrupo = 0, string busqueda = "")
         {
             MostrarResultado(asignaciones.Retirar(idEstudiante, motivo, IdUsuarioActual));

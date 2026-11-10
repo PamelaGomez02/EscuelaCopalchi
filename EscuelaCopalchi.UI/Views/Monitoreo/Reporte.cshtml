@@ -1,0 +1,358 @@
+﻿@model EscuelaCopalchi.UI.Models.Monitoreo.MonitoreoReporteVM
+@using EscuelaCopalchi.UI.Models.Monitoreo
+@{
+    ViewBag.Title = "Generar reporte académico";
+    var u = Model.Umbrales ?? UmbralesRendimiento.Actual();
+}
+
+<main>
+
+    @* ENCABEZADO *@
+    <section class="monitor-header">
+        <div class="container">
+
+            <div class="monitor-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "Monitoreo")">Monitoreo académico</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Reporte</span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h1 class="monitor-title">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i>
+                        Reporte académico
+                    </h1>
+                    <p class="monitor-subtitle">
+                        Analice el rendimiento de un grupo completo o de una materia.
+                    </p>
+                </div>
+
+                <a href="@Url.Action("Index", "Monitoreo")" class="btn btn-cop-outline">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Volver al rendimiento
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    @* CONTENIDO *@
+    <section class="container pb-5">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @TempData["Error"]
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @Model.Error
+            </div>
+        }
+
+        @if (Model.SinGrupos)
+        {
+            <div class="monitor-card">
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h3>@EstadosRendimiento.MensajeSinInformacion</h3>
+                    <p class="mb-0">Todavía no tiene grupos asignados para generar reportes.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            @* FILTROS *@
+            <div class="monitor-card no-print">
+                @using (Html.BeginForm("Reporte", "Monitoreo", FormMethod.Get))
+                {
+                    <input type="hidden" id="generar" name="generar" value="false" />
+
+                    <div class="monitor-toolbar">
+                        <div>
+                            <h2>Parámetros del reporte</h2>
+                            <p>Elija el grupo. Si además elige una materia, verá el rendimiento de esa materia.</p>
+                        </div>
+                    </div>
+
+                    <div class="monitor-filters">
+
+                        <div>
+                            <label class="filter-label">Año</label>
+                            <select name="anio" class="form-select" onchange="monCambiaGrupo(this.form)">
+                                @foreach (var a in Model.Anios)
+                                {
+                                    <option value="@a" selected="@(a == Model.Anio)">@a</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Grupo</label>
+                            <select name="grupo" class="form-select" onchange="monCambiaGrupo(this.form)">
+                                @if (Model.IdGrupo == 0)
+                                {
+                                    <option value="">Seleccione un grupo...</option>
+                                }
+                                @foreach (var g in Model.Grupos)
+                                {
+                                    <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo)">@g.Grupo</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Materia</label>
+                            <select name="materia" class="form-select" onchange="monGenerar(this.form)" disabled="@(Model.IdGrupo == 0)">
+                                <option value="">Todas (reporte del grupo)</option>
+                                @foreach (var m in Model.Materias)
+                                {
+                                    <option value="@m" selected="@(m == Model.Materia)">@m</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Período</label>
+                            <select name="trimestre" class="form-select" onchange="monGenerar(this.form)">
+                                <option value="0" selected="@(Model.Trimestre == 0)">Todos los trimestres</option>
+                                <option value="1" selected="@(Model.Trimestre == 1)">I Trimestre</option>
+                                <option value="2" selected="@(Model.Trimestre == 2)">II Trimestre</option>
+                                <option value="3" selected="@(Model.Trimestre == 3)">III Trimestre</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-actions">
+                            <button type="submit" class="btn btn-cop-primary" onclick="document.getElementById('generar').value = 'true'">
+                                <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                                Generar reporte
+                            </button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+
+            if (Model.IdGrupo == 0 && !Model.Generado)
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Seleccione un grupo y presione <strong>Generar reporte</strong>.
+                </div>
+            }
+            else if (!Model.Generado && !string.IsNullOrEmpty(Model.MensajeVacio))
+            {
+                <div class="monitor-card">
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <h3>@Model.MensajeVacio</h3>
+                        <p class="mb-0">
+                            @(string.IsNullOrEmpty(Model.Materia)
+                                ? "El grupo no tiene estudiantes registrados."
+                                : "Todavía no hay calificaciones registradas en " + Model.Materia + " para este período.")
+                        </p>
+                    </div>
+                </div>
+            }
+            else if (!Model.Generado && Model.IdGrupo > 0)
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Presione <strong>Generar reporte</strong> para ver el resultado.
+                </div>
+            }
+
+            if (Model.Generado)
+            {
+                var rep = Model.Reporte;
+                var s = rep.Resumen;
+
+                @* RESUMEN *@
+                <div class="row g-3 mb-4">
+
+                    <div class="col-6 col-lg-3">
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="bi bi-bar-chart"></i></div>
+                            <div>
+                                <span>@(rep.Tipo == "Materia" ? "Promedio de la materia" : "Promedio del grupo")</span>
+                                <h2>@MonitoreoUI.Fmt(s.Promedio)</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="summary-card">
+                            <div class="summary-icon summary-icon-success"><i class="bi bi-check-circle"></i></div>
+                            <div>
+                                <span>Aprobados</span>
+                                <h2 class="success-value">@s.Aprobados</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="summary-card">
+                            <div class="summary-icon summary-icon-warning"><i class="bi bi-exclamation-triangle"></i></div>
+                            <div>
+                                <span>En riesgo</span>
+                                <h2 class="warning-value">@s.EnRiesgo</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3">
+                        <div class="summary-card">
+                            <div class="summary-icon summary-icon-danger"><i class="bi bi-x-circle"></i></div>
+                            <div>
+                                <span>Reprobados</span>
+                                <h2 class="text-danger">@s.Reprobados</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                @* REPORTE *@
+                <div class="monitor-card">
+
+                    <div class="monitor-toolbar">
+                        <div>
+                            <h2>@rep.Titulo</h2>
+                            <p>Generado el @rep.Generado.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap no-print">
+                            <a class="btn btn-cop-outline btn-sm"
+                               href="@Url.Action("ExportarReporte", "Monitoreo", new { anio = Model.Anio, grupo = Model.IdGrupo, materia = Model.Materia, trimestre = Model.Trimestre, formato = "xlsx" })">
+                                <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                            </a>
+                            <a class="btn btn-cop-outline btn-sm"
+                               href="@Url.Action("ExportarReporte", "Monitoreo", new { anio = Model.Anio, grupo = Model.IdGrupo, materia = Model.Materia, trimestre = Model.Trimestre, formato = "pdf" })">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                            </a>
+                            <button type="button" class="btn btn-cop-outline btn-sm" onclick="window.print()">
+                                <i class="bi bi-printer me-1"></i> Imprimir
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="report-meta" style="border-top:1px solid #edf0f3;">
+                        <div><span>Grupo</span><strong>@rep.Grupo</strong></div>
+                        <div><span>Año</span><strong>@rep.Anio</strong></div>
+                        <div><span>Período</span><strong>@MonitoreoUI.Trimestre(rep.Trimestre)</strong></div>
+                        <div><span>Materia</span><strong>@(string.IsNullOrEmpty(rep.Materia) ? "Todas" : rep.Materia)</strong></div>
+                        <div><span>Docente</span><strong>@(string.IsNullOrEmpty(rep.Docente) ? "-" : rep.Docente)</strong></div>
+                        <div><span>Estudiantes</span><strong>@s.Total</strong></div>
+                        <div>
+                            <span>% de aprobación</span>
+                            <strong>@(s.PorcentajeAprobacion.HasValue ? MonitoreoUI.Fmt(s.PorcentajeAprobacion) + " %" : "-")</strong>
+                        </div>
+                    </div>
+
+                    @* DISTRIBUCIÓN *@
+                    <div class="dist-bar" title="Distribución de estudiantes por estado">
+                        <div class="bar-ok" style="width:@MonitoreoUI.Pct(s.Aprobados, s.Total)%"></div>
+                        <div class="bar-warning" style="width:@MonitoreoUI.Pct(s.EnRiesgo, s.Total)%"></div>
+                        <div class="bar-danger" style="width:@MonitoreoUI.Pct(s.Reprobados, s.Total)%"></div>
+                        <div class="bar-muted" style="width:@MonitoreoUI.Pct(s.SinNotas, s.Total)%"></div>
+                    </div>
+
+                    <div class="legend">
+                        <span><span class="dot dot-ok"></span>Aprobado (@MonitoreoUI.Fmt(u.NotaAprobado) o más)</span>
+                        <span><span class="dot dot-warning"></span>En Riesgo (@MonitoreoUI.Fmt(u.NotaMinima) a menos de @MonitoreoUI.Fmt(u.NotaAprobado))</span>
+                        <span><span class="dot dot-danger"></span>Reprobado (menos de @MonitoreoUI.Fmt(u.NotaMinima))</span>
+                        @if (s.SinNotas > 0)
+                        {
+                            <span><span class="dot" style="background:#b6c0c8"></span>Sin calificaciones (@s.SinNotas)</span>
+                        }
+                    </div>
+
+                    @* TABLA *@
+                    <div class="table-responsive">
+                        <table class="table monitor-table align-middle">
+                            <thead>
+                                <tr>
+                                    @foreach (var c in rep.Columnas)
+                                    {
+                                        <th>@c</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var fila in rep.Filas)
+                                {
+                                    string estado = fila[fila.Length - 1];
+
+                                    <tr>
+                                        @for (int i = 0; i < fila.Length; i++)
+                                        {
+                                            if (i == 0)
+                                            {
+                                                <td><strong>@(fila[i])</strong></td>
+                                            }
+                                            else if (i == fila.Length - 1)
+                                            {
+                                                <td>
+                                                    <span class="status @MonitoreoUI.ClaseEstado(estado)">
+                                                        <i class="bi @MonitoreoUI.IconoEstado(estado)"></i>
+                                                        @(fila[i])
+                                                    </span>
+                                                </td>
+                                            }
+                                            else if (i == fila.Length - 2)
+                                            {
+                                                <td class="text-center"><span class="grade-value @MonitoreoUI.ClaseNota(estado)">@(fila[i])</span></td>
+                                            }
+                                            else if (i == 1)
+                                            {
+                                                <td class="text-muted">@(fila[i])</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center">@(fila[i])</td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-foot">
+                        Promedio por estudiante: promedio de las notas finales por materia y trimestre
+                        (cada nota final pondera sus evaluaciones con nota). El guion (-) indica que aún no hay calificaciones.
+                    </div>
+
+                </div>
+            }
+        }
+
+    </section>
+
+</main>
+
+@section styles {
+    @Html.Partial("_EstilosMonitoreo")
+}
+
+@section scripts {
+    <script>
+        // Cambiar año o grupo: recarga los filtros (las materias dependen del grupo) sin generar todavía
+        function monCambiaGrupo(form) {
+            document.getElementById('generar').value = 'false';
+            if (form.materia) { form.materia.value = ''; }
+            form.submit();
+        }
+
+        // Cambiar materia o período: genera el reporte de inmediato
+        function monGenerar(form) {
+            document.getElementById('generar').value = 'true';
+            form.submit();
+        }
+    </script>
+}

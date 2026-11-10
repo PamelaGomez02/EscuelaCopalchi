@@ -1,83 +1,162 @@
-﻿using EscuelaCopalchi.UI.Logica.GestionAcademica;
+
+using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
 using EscuelaCopalchi.UI.Models.Usuarios;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
-    /// <summary>
-    /// Módulo de Gestión Académica. El controlador está dividido en archivos parciales,
-    /// uno por historia de usuario (carpeta Controllers/GestionAcademica):
-    ///   GestionAcademicaController.cs                → inicio y usuario actual
-    ///   GestionAcademicaController.Grupos.cs         → aulas, grupos, horarios y docentes
-    ///   GestionAcademicaController.Asignaciones.cs   → asignación y traslado de estudiantes
-    ///   GestionAcademicaController.MiGrupo.cs        → grupos del docente
-    ///   GestionAcademicaController.Notificaciones.cs → notificaciones y bitácora
-    ///   GestionAcademicaController.Reportes.cs       → reportes y exportación
-    ///   GestionAcademicaController.Importacion.cs    → importación desde Excel
-    /// Solo recibe los datos de la pantalla y llama a la capa lógica (Logica/GestionAcademica).
-    /// </summary>
+    [Authorize]
     public partial class GestionAcademicaController : Controller
     {
-        private readonly UsuarioService usuarios = new UsuarioService();
-        private readonly GrupoService grupos = new GrupoService();
-        private readonly NotificacionService notificaciones = new NotificacionService();
+        private readonly UsuarioService usuarios =
+            new UsuarioService();
+
+        private readonly GrupoService grupos =
+            new GrupoService();
+
+        private readonly NotificacionService notificaciones =
+            new NotificacionService();
+
+        // =====================================================
+        // USUARIO AUTENTICADO
+        // =====================================================
 
         private UsuarioSesion UsuarioActual
         {
-            get { return SesionUsuario.Obtener(Session); }
+            get
+            {
+                return SesionUsuario.Obtener(Session);
+            }
         }
 
         private int IdUsuarioActual
         {
-            get { return UsuarioActual == null ? 0 : UsuarioActual.IdUsuario; }
+            get
+            {
+                return UsuarioActual == null
+                    ? 0
+                    : UsuarioActual.IdUsuario;
+            }
         }
 
-        /// <summary>Datos de la barra de usuario (_BarraUsuario) para todas las vistas del módulo.</summary>
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        // =====================================================
+        // VALIDACIÓN GENERAL DE ACCESO
+        // =====================================================
+
+        protected override void OnActionExecuting(
+            ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
 
-            UsuarioSesion usuario = UsuarioActual;
-            ViewBag.UsuarioActual = usuario;
-            ViewBag.NotificacionesNoLeidas = 0;
+            // Obtener el usuario desde la sesión general.
+            UsuarioSesion sesion =
+                SesionUsuario.Obtener(Session);
 
-            if (usuario != null)
+            if (sesion == null || sesion.IdUsuario <= 0)
             {
-                try { ViewBag.NotificacionesNoLeidas = notificaciones.ContarNoLeidas(usuario.IdUsuario); }
-                catch (Exception) { /* si falla la base, cada vista muestra su propio error */ }
-            }
-        }
+                filterContext.Result = RedirectToAction(
+                    "Login", "Account");
 
-        /// <summary>Muestra el resultado de una operación y entrega las notificaciones que generó.</summary>
-        private void MostrarResultado(ResultadoOperacion resultado)
-        {
-            if (!resultado.Exito)
-            {
-                TempData["Error"] = resultado.Mensaje;
                 return;
             }
 
-            TempData["Exito"] = resultado.Mensaje;
-
-            if (notificaciones.ProcesarPendientes() > 0)
-                TempData["Advertencia"] = "La operación se guardó, pero algunas notificaciones no se pudieron enviar por correo. " +
-                                          "El incidente quedó registrado en la bitácora.";
-        }
-
-        // ================================================================
-        // INICIO
-        // ================================================================
-
-        public ActionResult Index()
-        {
-            var modelo = new GestionAcademicaIndexViewModel();
+            int idUsuario = sesion.IdUsuario;
 
             try
             {
-                modelo.Resumen = grupos.ObtenerResumen();
-                modelo.Usuarios = usuarios.ListarUsuariosDelModulo();
+                // Consultar los datos y permisos actuales.
+                UsuarioSistema usuario =
+                    usuarios.Obtener(idUsuario);
+
+                if (usuario == null || !usuario.Estado)
+                {
+                    SesionUsuario.Cerrar(Session);
+
+                    filterContext.Result = RedirectToAction(
+                        "AccesoDenegado", "Error");
+
+                    return;
+                }
+
+                // Actualizar los permisos de la sesión.
+                SesionUsuario.Guardar(Session, usuario);
+
+                UsuarioSesion usuarioSesion =
+                    SesionUsuario.Obtener(Session);
+
+                if (usuarioSesion == null ||
+                    usuarioSesion.IdUsuario != idUsuario)
+                {
+                    filterContext.Result = RedirectToAction(
+                        "AccesoDenegado", "Error");
+
+                    return;
+                }
+
+                // =================================================
+                // PERMISOS DE GESTIÓN ACADÉMICA
+                // =================================================
+
+                // Permitir el acceso al panel si el usuario
+                // tiene al menos un permiso del módulo.
+
+                bool tieneAcceso =
+                    Permisos.DelModulo.Any(
+                        permiso => usuarioSesion.TienePermiso(
+                            permiso));
+
+                if (!tieneAcceso)
+                {
+                    filterContext.Result = RedirectToAction(
+                        "AccesoDenegado", "Error");
+
+                    return;
+                }
+
+                // Datos utilizados por las vistas.
+                ViewBag.UsuarioActual = usuarioSesion;
+
+                ViewBag.NotificacionesNoLeidas = 0;
+
+                try
+                {
+                    ViewBag.NotificacionesNoLeidas =
+                        notificaciones.ContarNoLeidas(
+                            idUsuario);
+                }
+                catch (Exception)
+                {
+                    // Un error en las notificaciones
+                    // no debe bloquear el módulo.
+                }
+            }
+            catch (Exception)
+            {
+                filterContext.Result =
+                    new HttpStatusCodeResult(
+                        500,
+                        "No se pudieron verificar los permisos");
+
+                return;
+            }
+        }
+
+        // =====================================================
+        // INICIO DE GESTIÓN ACADÉMICA
+        // =====================================================
+
+        public ActionResult Index()
+        {
+            var modelo =
+                new GestionAcademicaIndexViewModel();
+
+            try
+            {
+                modelo.Resumen =
+                    grupos.ObtenerResumen();
             }
             catch (Exception ex)
             {
@@ -87,53 +166,59 @@ namespace EscuelaCopalchi.UI.Controllers
             return View(modelo);
         }
 
-        /// <summary>
-        /// Selecciona con qué usuario se trabaja (temporal hasta que exista el login).
-        /// idUsuario = 0 cierra la sesión.
-        /// </summary>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CambiarUsuario(int idUsuario = 0, string contrasena = "")
+        // =====================================================
+        // RESULTADOS DE OPERACIONES
+        // =====================================================
+
+        private void MostrarResultado(
+            ResultadoOperacion resultado)
         {
-            if (idUsuario <= 0)
+            if (!resultado.Exito)
             {
-                SesionUsuario.Cerrar(Session);
-                return RedirectToAction("Index");
+                TempData["Error"] =
+                    resultado.Mensaje;
+
+                return;
             }
+
+            TempData["Exito"] =
+                resultado.Mensaje;
 
             try
             {
-                UsuarioSistema usuario = usuarios.Obtener(idUsuario);
-
-                if (usuario == null || !usuario.Estado || !usuario.UsaModulo)
+                if (notificaciones.ProcesarPendientes() > 0)
                 {
-                    TempData["Error"] = "El usuario no existe, está inactivo o su rol no tiene permisos de Gestión Académica.";
-                    return RedirectToAction("Index");
+                    TempData["Advertencia"] =
+                        "La operación se guardó, pero algunas " +
+                        "notificaciones no se pudieron enviar " +
+                        "por correo. El incidente quedó " +
+                        "registrado en la bitácora.";
                 }
-
-                if (!new global::EscuelaCopalchi.UI.Models.Usuarios.UsuarioRepository().VerificarContrasena(idUsuario, contrasena))
-                {
-                    TempData["Error"] = "Contraseña incorrecta.";
-                    return RedirectToAction("Index");
-                }
-
-                SesionUsuario.Guardar(Session, usuario);
-                TempData["Exito"] = "Ahora está trabajando como " + usuario.NombreCompleto + " (" + usuario.Rol + ").";
-
-                bool soloDocente = usuario.TienePermiso(Permisos.VerMiGrupo) && !usuario.TienePermiso(Permisos.GestionarAcademica);
-                return soloDocente ? RedirectToAction("MiGrupo") : RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
+                TempData["Advertencia"] =
+                    "La operación se guardó, pero no fue " +
+                    "posible procesar las notificaciones.";
             }
         }
 
-        /// <summary>Maqueta: no forma parte de las historias de usuario.</summary>
+        // =====================================================
+        // DISTRIBUCIÓN AUTOMÁTICA
+        // =====================================================
+
+        // Se conserva para no afectar las referencias
+        // existentes, aunque ya no aparezca en el menú.
+
         public ActionResult Distribucion()
         {
-            return View();
+            // Esta funcionalidad todavía es una maqueta.
+            // No se permite acceder directamente hasta
+            // que se implemente.
+
+            return RedirectToAction(
+                "Index",
+                "GestionAcademica");
         }
     }
 }

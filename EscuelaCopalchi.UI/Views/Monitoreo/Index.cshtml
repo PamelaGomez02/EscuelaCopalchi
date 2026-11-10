@@ -1,12 +1,15 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.Monitoreo.MonitoreoIndexVM
+@using EscuelaCopalchi.UI.Models.Monitoreo
+@{
     ViewBag.Title = "Monitoreo académico";
+    var r = Model.Resumen ?? new ResumenRendimiento();
+    var u = Model.Umbrales ?? UmbralesRendimiento.Actual();
 }
 
 <main>
 
-    <!-- ENCABEZADO -->
+    @* ENCABEZADO *@
     <section class="monitor-header">
-
         <div class="container">
 
             <div class="monitor-breadcrumb">
@@ -16,943 +19,331 @@
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-
                 <div>
-
                     <h1 class="monitor-title">
                         <i class="bi bi-graph-up me-2"></i>
                         Monitoreo académico
                     </h1>
-
                     <p class="monitor-subtitle">
-                        Seguimiento del rendimiento y asistencia de los estudiantes durante el período lectivo.
+                        Seguimiento del rendimiento de sus estudiantes durante el período lectivo.
                     </p>
-
                 </div>
 
-
-                <a href="#"
-                   class="btn btn-cop-primary">
-
-                    <i class="bi bi-file-earmark-bar-graph me-1"></i>
-                    Generar reporte
-
-                </a>
-
+                @if (!Model.SinInformacion)
+                {
+                    <a href="@Url.Action("Reporte", "Monitoreo", new { anio = Model.Anio, grupo = (Model.IdGrupo > 0 ? (int?)Model.IdGrupo : null), materia = Model.Materia, trimestre = Model.Trimestre, generar = true })"
+                       class="btn btn-cop-primary">
+                        <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                        Generar reporte
+                    </a>
+                }
             </div>
 
         </div>
-
     </section>
 
-
-    <!-- CONTENIDO -->
+    @* CONTENIDO *@
     <section class="container pb-5">
 
-        <!-- RESUMEN -->
-        <div class="row g-3 mb-4">
+        @if (TempData["Exito"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle me-1"></i> @TempData["Exito"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @TempData["Error"]
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @Model.Error
+            </div>
+        }
 
-            <div class="col-md-4">
+        @if (Model.SinInformacion)
+        {
+            <div class="monitor-card">
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h3>@EstadosRendimiento.MensajeSinInformacion</h3>
+                    <p class="mb-0">Todavía no tiene grupos asignados con estudiantes para monitorear.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            @* RESUMEN *@
+            <div class="row g-3 mb-4">
 
-                <div class="summary-card">
-
-                    <div class="summary-icon">
-                        <i class="bi bi-bar-chart"></i>
+                <div class="col-6 col-lg-3">
+                    <div class="summary-card">
+                        <div class="summary-icon"><i class="bi bi-bar-chart"></i></div>
+                        <div>
+                            <span>Promedio general</span>
+                            <h2>@MonitoreoUI.Fmt(r.Promedio)</h2>
+                        </div>
                     </div>
+                </div>
 
-                    <div>
-                        <span>Promedio general</span>
-                        <h2>82.4</h2>
+                <div class="col-6 col-lg-3">
+                    <div class="summary-card">
+                        <div class="summary-icon summary-icon-success"><i class="bi bi-check-circle"></i></div>
+                        <div>
+                            <span>Aprobados</span>
+                            <h2 class="success-value">@r.Aprobados</h2>
+                        </div>
                     </div>
+                </div>
 
+                <div class="col-6 col-lg-3">
+                    <div class="summary-card">
+                        <div class="summary-icon summary-icon-warning"><i class="bi bi-exclamation-triangle"></i></div>
+                        <div>
+                            <span>En riesgo</span>
+                            <h2 class="warning-value">@r.EnRiesgo</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="summary-card">
+                        <div class="summary-icon summary-icon-danger"><i class="bi bi-x-circle"></i></div>
+                        <div>
+                            <span>Reprobados</span>
+                            <h2 class="text-danger">@r.Reprobados</h2>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
+            if (r.SinNotas > 0)
+            {
+                <div class="alert alert-secondary py-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    @r.SinNotas @(r.SinNotas == 1
+                        ? "estudiante aún no tiene calificaciones registradas y no se incluye"
+                        : "estudiantes aún no tienen calificaciones registradas y no se incluyen") en el promedio general.
+                </div>
+            }
 
-            <div class="col-md-4">
+            @* CONTENEDOR PRINCIPAL *@
+            <div class="monitor-card">
 
-                <div class="summary-card">
+                @using (Html.BeginForm("Index", "Monitoreo", FormMethod.Get))
+                {
+                    @* TOOLBAR *@
+                    <div class="monitor-toolbar">
+                        <div>
+                            <h2>Rendimiento estudiantil</h2>
+                            <p>Promedio y estado académico de cada estudiante.</p>
+                        </div>
 
-                    <div class="summary-icon summary-icon-success">
-                        <i class="bi bi-calendar-check"></i>
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" name="q" value="@Model.Buscar" class="form-control" placeholder="Buscar estudiante..." />
+                        </div>
                     </div>
 
-                    <div>
-                        <span>Asistencia promedio</span>
-                        <h2 class="success-value">94%</h2>
+                    @* FILTROS *@
+                    <div class="monitor-filters">
+
+                        <div>
+                            <label class="filter-label">Año</label>
+                            <select name="anio" class="form-select" onchange="this.form.submit()">
+                                @foreach (var a in Model.Anios)
+                                {
+                                    <option value="@a" selected="@(a == Model.Anio)">@a</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Grupo</label>
+                            <select name="grupo" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todos mis grupos</option>
+                                @foreach (var g in Model.Grupos)
+                                {
+                                    <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo)">@g.Grupo</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Materia</label>
+                            <select name="materia" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todas las materias</option>
+                                @foreach (var m in Model.Materias)
+                                {
+                                    <option value="@m" selected="@(m == Model.Materia)">@m</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Período</label>
+                            <select name="trimestre" class="form-select" onchange="this.form.submit()">
+                                <option value="0" selected="@(Model.Trimestre == 0)">Todos los trimestres</option>
+                                <option value="1" selected="@(Model.Trimestre == 1)">I Trimestre</option>
+                                <option value="2" selected="@(Model.Trimestre == 2)">II Trimestre</option>
+                                <option value="3" selected="@(Model.Trimestre == 3)">III Trimestre</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="filter-label">Estado</label>
+                            <select name="estado" class="form-select" onchange="this.form.submit()">
+                                <option value="">Todos los estados</option>
+                                <option value="@EstadosRendimiento.Aprobado" selected="@(Model.Estado == EstadosRendimiento.Aprobado)">Aprobado</option>
+                                <option value="@EstadosRendimiento.EnRiesgo" selected="@(Model.Estado == EstadosRendimiento.EnRiesgo)">En Riesgo</option>
+                                <option value="@EstadosRendimiento.Reprobado" selected="@(Model.Estado == EstadosRendimiento.Reprobado)">Reprobado</option>
+                                <option value="@EstadosRendimiento.SinNotas" selected="@(Model.Estado == EstadosRendimiento.SinNotas)">Sin calificaciones</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-actions">
+                            <button type="submit" class="btn btn-cop-primary btn-sm">Buscar</button>
+                            <a href="@Url.Action("Index", "Monitoreo")" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+                        </div>
+
                     </div>
+                }
 
+                @* LEYENDA *@
+                <div class="legend">
+                    <span><span class="dot dot-ok"></span>Aprobado: promedio de @MonitoreoUI.Fmt(u.NotaAprobado) o más</span>
+                    <span><span class="dot dot-warning"></span>En Riesgo: de @MonitoreoUI.Fmt(u.NotaMinima) a menos de @MonitoreoUI.Fmt(u.NotaAprobado)</span>
+                    <span><span class="dot dot-danger"></span>Reprobado: menos de @MonitoreoUI.Fmt(u.NotaMinima)</span>
                 </div>
 
-            </div>
-
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon summary-icon-danger">
-                        <i class="bi bi-exclamation-triangle"></i>
+                @* TABLA *@
+                @if (Model.Estudiantes.Count == 0)
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h3>@(r.Total == 0 ? EstadosRendimiento.MensajeSinInformacion : "Ningún estudiante coincide con los filtros.")</h3>
+                        <p class="mb-0">@(r.Total == 0 ? "No hay estudiantes registrados para esta selección." : "Pruebe con otro estado o limpie la búsqueda.")</p>
                     </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table monitor-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Grupo</th>
+                                    <th>Promedio</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var e in Model.Estudiantes)
+                                {
+                                    var detalle = MonitoreoCalculo.PorAsignatura(e.Detalle);
 
-                    <div>
-                        <span>Estudiantes en riesgo</span>
-                        <h2 class="text-danger">3</h2>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <div class="student-avatar">@e.Iniciales</div>
+                                                <div>
+                                                    <strong>@e.Estudiante</strong>
+                                                    <small>@e.Identificacion</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>@e.Grupo</td>
+
+                                        <td>
+                                            @if (e.TieneNotas)
+                                            {
+                                                <span class="grade-value @MonitoreoUI.ClaseNota(e.Estado)">@MonitoreoUI.Fmt(e.Promedio)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="no-grades"><i class="bi bi-info-circle me-1"></i>@e.Mensaje</span>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <span class="status @MonitoreoUI.ClaseEstado(e.Estado)">
+                                                <i class="bi @MonitoreoUI.IconoEstado(e.Estado)"></i>
+                                                @e.Estado
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-action" title="Ver detalle por materia" onclick="monDetalle(this)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="detail-row d-none">
+                                        <td colspan="5">
+                                            @if (!e.TieneNotas)
+                                            {
+                                                <span class="text-muted"><i class="bi bi-info-circle me-1"></i>@e.Mensaje</span>
+                                            }
+                                            else
+                                            {
+                                                <div class="detail-box">
+                                                    <table class="table table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Materia</th>
+                                                                <th class="text-center">I Trim.</th>
+                                                                <th class="text-center">II Trim.</th>
+                                                                <th class="text-center">III Trim.</th>
+                                                                <th class="text-center">Promedio</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var d in detalle)
+                                                            {
+                                                                <tr>
+                                                                    <td>@d.Asignatura</td>
+                                                                    <td class="text-center">@MonitoreoUI.Fmt(d.T1)</td>
+                                                                    <td class="text-center">@MonitoreoUI.Fmt(d.T2)</td>
+                                                                    <td class="text-center">@MonitoreoUI.Fmt(d.T3)</td>
+                                                                    <td class="text-center"><strong>@MonitoreoUI.Fmt(d.Promedio)</strong></td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CONTENEDOR PRINCIPAL -->
-        <div class="monitor-card">
-
-            <!-- TOOLBAR -->
-            <div class="monitor-toolbar">
-
-                <div>
-
-                    <h2>
-                        Rendimiento estudiantil
-                    </h2>
-
-                    <p>
-                        Consulta el promedio, asistencia y estado académico de los estudiantes.
-                    </p>
-
-                </div>
-
-
-                <div class="search-box">
-
-                    <i class="bi bi-search"></i>
-
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Buscar estudiante..." />
-
-                </div>
+                }
 
             </div>
-
-
-            <!-- FILTROS -->
-            <div class="monitor-filters">
-
-                <div>
-
-                    <label class="filter-label">
-                        Grupo
-                    </label>
-
-                    <select class="form-select">
-
-                        <option selected>
-                            Todos los grupos
-                        </option>
-
-                        <option>
-                            7-A
-                        </option>
-
-                        <option>
-                            8-B
-                        </option>
-
-                        <option>
-                            9-C
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div>
-
-                    <label class="filter-label">
-                        Estado
-                    </label>
-
-                    <select class="form-select">
-
-                        <option selected>
-                            Todos los estados
-                        </option>
-
-                        <option>
-                            Al día
-                        </option>
-
-                        <option>
-                            En riesgo
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div>
-
-                    <label class="filter-label">
-                        Período
-                    </label>
-
-                    <select class="form-select">
-
-                        <option selected>
-                            I Trimestre
-                        </option>
-
-                        <option>
-                            II Trimestre
-                        </option>
-
-                        <option>
-                            III Trimestre
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <!-- TABLA -->
-            <div class="table-responsive">
-
-                <table class="table monitor-table align-middle">
-
-                    <thead>
-
-                        <tr>
-                            <th>Estudiante</th>
-                            <th>Grupo</th>
-                            <th>Promedio</th>
-                            <th>Asistencia</th>
-                            <th>Estado</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <!-- ANDRÉS -->
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        AS
-                                    </div>
-
-                                    <div>
-                                        <strong>
-                                            Andrés Solís
-                                        </strong>
-
-                                        <small>
-                                            Estudiante
-                                        </small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                8-B
-                            </td>
-
-
-                            <td>
-
-                                <span class="grade-value grade-danger">
-                                    61
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="attendance-value">
-
-                                    <span>
-                                        90%
-                                    </span>
-
-                                    <div class="progress">
-
-                                        <div class="progress-bar progress-warning"
-                                             role="progressbar"
-                                             style="width: 90%;"
-                                             aria-valuenow="90"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100">
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-danger">
-                                    <i class="bi bi-exclamation-circle"></i>
-                                    En riesgo
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Ver estudiante">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- FABIANA -->
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        FR
-                                    </div>
-
-                                    <div>
-                                        <strong>
-                                            Fabiana Rojas
-                                        </strong>
-
-                                        <small>
-                                            Estudiante
-                                        </small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                8-B
-                            </td>
-
-
-                            <td>
-
-                                <span class="grade-value grade-success">
-                                    88
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="attendance-value">
-
-                                    <span>
-                                        97%
-                                    </span>
-
-                                    <div class="progress">
-
-                                        <div class="progress-bar progress-success"
-                                             role="progressbar"
-                                             style="width: 97%;"
-                                             aria-valuenow="97"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100">
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-ok">
-                                    <i class="bi bi-check-circle"></i>
-                                    Al día
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Ver estudiante">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- MARCO -->
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        MV
-                                    </div>
-
-                                    <div>
-                                        <strong>
-                                            Marco Vindas
-                                        </strong>
-
-                                        <small>
-                                            Estudiante
-                                        </small>
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                7-A
-                            </td>
-
-
-                            <td>
-
-                                <span class="grade-value grade-danger">
-                                    61
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="attendance-value">
-
-                                    <span>
-                                        93%
-                                    </span>
-
-                                    <div class="progress">
-
-                                        <div class="progress-bar progress-normal"
-                                             role="progressbar"
-                                             style="width: 93%;"
-                                             aria-valuenow="93"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100">
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-danger">
-                                    <i class="bi bi-exclamation-circle"></i>
-                                    En riesgo
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Ver estudiante">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
+        }
 
     </section>
 
 </main>
 
-
 @section styles {
+    @Html.Partial("_EstilosMonitoreo")
+}
 
-    <style>
-
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-accent: #59A5D8;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
+@section scripts {
+    <script>
+        // Muestra u oculta la fila de detalle de un estudiante
+        function monDetalle(boton) {
+            var fila = boton.closest('tr').nextElementSibling;
+            if (fila) { fila.classList.toggle('d-none'); }
         }
-
-
-        body {
-            background: var(--cop-page-bg);
-        }
-
-
-        /* ENCABEZADO */
-
-        .monitor-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
-        }
-
-
-        .monitor-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
-
-
-            .monitor-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
-
-
-                .monitor-breadcrumb a:hover {
-                    text-decoration: underline;
-                }
-
-
-        .monitor-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-
-        .monitor-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-
-        /* BOTÓN */
-
-        .btn-cop-primary {
-            background: var(--cop-primary);
-            border-color: var(--cop-primary);
-            color: white;
-            font-weight: 500;
-        }
-
-
-            .btn-cop-primary:hover {
-                background: var(--cop-secondary);
-                border-color: var(--cop-secondary);
-                color: white;
-            }
-
-
-        /* RESUMEN */
-
-        .summary-card {
-            height: 100%;
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 17px;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-
-        .summary-icon {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            border-radius: 9px;
-            background: #e6f1fb;
-            color: var(--cop-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-
-        .summary-icon-success {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-
-        .summary-icon-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .summary-card span {
-            display: block;
-            color: var(--cop-muted);
-            font-size: .8rem;
-        }
-
-
-        .summary-card h2 {
-            color: var(--cop-primary);
-            margin: 0;
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-
-        .success-value {
-            color: #198754 !important;
-        }
-
-
-        /* CONTENEDOR */
-
-        .monitor-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-
-        /* TOOLBAR */
-
-        .monitor-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 22px;
-        }
-
-
-            .monitor-toolbar h2 {
-                color: var(--cop-primary);
-                font-size: 1.15rem;
-                font-weight: 600;
-                margin-bottom: 4px;
-            }
-
-
-            .monitor-toolbar p {
-                color: var(--cop-muted);
-                font-size: .85rem;
-                margin: 0;
-            }
-
-
-        /* BUSCADOR */
-
-        .search-box {
-            position: relative;
-            width: 260px;
-        }
-
-
-            .search-box i {
-                position: absolute;
-                left: 11px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--cop-muted);
-            }
-
-
-            .search-box input {
-                padding-left: 34px;
-            }
-
-
-        /* FILTROS */
-
-        .monitor-filters {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 15px 22px;
-            background: #f8fafc;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-        }
-
-
-        .filter-label {
-            display: block;
-            color: #53616d;
-            font-size: .78rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-
-        /* TABLA */
-
-        .monitor-table {
-            margin: 0;
-        }
-
-
-            .monitor-table th {
-                background: #f8fafc;
-                color: #53616d;
-                font-size: .8rem;
-                text-transform: uppercase;
-                padding: 13px 17px;
-                font-weight: 600;
-            }
-
-
-            .monitor-table td {
-                padding: 15px 17px;
-                font-size: .9rem;
-                border-color: #edf0f3;
-            }
-
-
-            .monitor-table tbody tr:hover {
-                background: #fafcfd;
-            }
-
-
-        /* ESTUDIANTE */
-
-        .student-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-
-        .student-avatar {
-            width: 38px;
-            height: 38px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: #e6f1fb;
-            color: var(--cop-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: .78rem;
-            font-weight: 700;
-        }
-
-
-        .student-info strong {
-            display: block;
-            color: #212529;
-            font-size: .88rem;
-        }
-
-
-        .student-info small {
-            display: block;
-            color: var(--cop-muted);
-            font-size: .75rem;
-        }
-
-
-        /* NOTA */
-
-        .grade-value {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 42px;
-            padding: 5px 8px;
-            border-radius: 7px;
-            font-size: .88rem;
-            font-weight: 700;
-        }
-
-
-        .grade-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .grade-success {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-
-        /* ASISTENCIA */
-
-        .attendance-value {
-            min-width: 120px;
-        }
-
-
-            .attendance-value > span {
-                display: block;
-                font-size: .82rem;
-                color: #343a40;
-                font-weight: 600;
-                margin-bottom: 5px;
-            }
-
-
-        .progress {
-            height: 6px;
-            background: #edf0f3;
-        }
-
-
-        .progress-success {
-            background: #198754;
-        }
-
-
-        .progress-warning {
-            background: #b8860b;
-        }
-
-
-        .progress-normal {
-            background: var(--cop-secondary);
-        }
-
-
-        /* ESTADOS */
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: .77rem;
-            font-weight: 600;
-        }
-
-
-        .status-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .status-ok {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-
-        /* ACCIONES */
-
-        .btn-action {
-            background: white;
-            border: 1px solid #dce2e7;
-            color: var(--cop-secondary);
-            padding: 5px 9px;
-        }
-
-
-            .btn-action:hover {
-                background: #e6f1fb;
-                border-color: var(--cop-accent);
-                color: var(--cop-primary);
-            }
-
-
-        /* INPUTS */
-
-        .form-control,
-        .form-select {
-            border-color: #dfe4e8;
-        }
-
-
-            .form-control:focus,
-            .form-select:focus {
-                border-color: var(--cop-accent);
-                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
-            }
-
-
-        /* RESPONSIVE */
-
-        @@media (max-width: 768px) {
-
-            .monitor-toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-
-            .search-box {
-                width: 100%;
-            }
-
-
-            .monitor-filters {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-
+    </script>
 }

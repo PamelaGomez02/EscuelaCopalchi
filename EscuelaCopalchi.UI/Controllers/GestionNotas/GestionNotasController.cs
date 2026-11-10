@@ -75,50 +75,6 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         // ---------------------------------------------------------------
-        // ACCESO: elegir usuario e ingresar contraseña
-        // ---------------------------------------------------------------
-        [HttpGet]
-        public ActionResult Acceso()
-        {
-            var lista = new List<UsuarioAccesoItem>();
-
-            try { lista = repo.ListarUsuariosAcceso(); }
-            catch (Exception ex) { ViewBag.Error = ex.Message; }
-
-            return View(lista);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Acceso(int idUsuario = 0, string contrasena = "")
-        {
-            try
-            {
-                var usuario = idUsuario > 0 ? repo.ObtenerUsuarioAcceso(idUsuario) : null;
-
-                if (usuario == null || !repo.VerificarContrasena(idUsuario, contrasena))
-                {
-                    TempData["Error"] = "Usuario o contraseña incorrectos.";
-                    return RedirectToAction("Acceso");
-                }
-
-                NotasSesion.Guardar(Session, usuario);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Acceso");
-            }
-        }
-
-        public ActionResult Salir()
-        {
-            NotasSesion.Cerrar(Session);
-            return RedirectToAction("Acceso");
-        }
-
-        // ---------------------------------------------------------------
         // INDEX: mis grupos
         // ---------------------------------------------------------------
         public ActionResult Index()

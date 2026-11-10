@@ -1,0 +1,46 @@
+@model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
+@if (Model.AsistenciaMensual.Any() || Model.NotasPorGrupo.Any())
+{
+  <div class="cop-heading"><h2>Estadísticas académicas</h2><span>Indicadores calculados con datos registrados</span></div>
+  <div class="row g-3 mb-4">
+    @if (Model.AsistenciaMensual.Any())
+    {
+      <div class="col-lg-6"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-graph-up-arrow"></i> Asistencia mensual</h3><small>Presente + tardanza / registros</small></div>
+      @foreach (var p in Model.AsistenciaMensual) { <div class="cop-bar-row"><span>@p.Mes</span><div class="cop-track"><div class="cop-fill" style="width:@(p.Valor.ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div><b>@p.Valor.ToString("0.#")%</b></div> }
+      </section></div>
+    }
+    @if (Model.NotasPorGrupo.Any())
+    {
+      <div class="col-lg-6"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-bar-chart"></i> Promedio por grupo</h3><small>Nota / nota máxima</small></div>
+      @foreach (var p in Model.NotasPorGrupo) { <div class="cop-bar-row"><span title="@p.Grupo">@p.Grupo</span><div class="cop-track"><div class="cop-fill cop-fill-green" style="width:@(p.Valor.ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div><b>@p.Valor.ToString("0.#")%</b></div> }
+      </section></div>
+    }
+  </div>
+}
+<div class="cop-heading"><h2>@(Model.EsAdministrador ? "Módulos del sistema" : "Mis herramientas")</h2><span>Solo se muestran los accesos permitidos</span></div>
+@if (Model.Modulos.Any())
+{
+  <div class="row g-3 mb-4">
+  @foreach (var m in Model.Modulos)
+  {
+    <div class="col-sm-6 col-lg-4"><a class="cop-module" href="@Url.Action(m.Accion,m.Controlador)"><div class="cop-module-icon"><i class="bi @m.Icono"></i></div><div><strong>@m.Titulo</strong><span>@m.Descripcion</span></div><i class="bi bi-chevron-right cop-arrow"></i></a></div>
+  }
+  </div>
+}
+else
+{
+  <div class="cop-empty mb-4">Tu rol todavía no tiene módulos habilitados. Contacta al administrador.</div>
+}
+<div class="row g-3 mb-5">
+  @if (Model.Puede("VER_AUDITORIA"))
+  {
+    <div class="col-lg-7"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-clock-history"></i> Actividad reciente</h3><a href="@Url.Action("Index","AuditoriaSistema")">Ver auditoría</a></div>
+    @if (Model.Actividad.Any()) { foreach (var a in Model.Actividad) { <div class="cop-activity"><div><strong>@a.Accion</strong><span>@a.Descripcion</span></div><small>@a.Fecha.ToString("dd/MM/yyyy HH:mm")</small></div> } }
+    else { <p class="cop-muted">No hay movimientos recientes disponibles.</p> }
+    </section></div>
+  }
+  <div class="@(Model.Puede("VER_AUDITORIA") ? "col-lg-5" : "col-12")"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-bell"></i> Mi centro de avisos</h3></div><div class="cop-notice"><i class="bi bi-envelope-paper"></i><div><strong>@Model.Notificaciones notificaciones sin leer</strong><span>Revisa tus avisos desde el módulo de notificaciones, si está disponible para tu cuenta.</span></div></div>
+  @if (Model.Alertas.HasValue) { <div class="cop-notice"><i class="bi bi-exclamation-triangle"></i><div><strong>@Model.Alertas alertas académicas</strong><span>Situaciones pendientes de atención.</span></div></div> }
+  @if (Model.StockBajo.HasValue) { <div class="cop-notice"><i class="bi bi-box-seam"></i><div><strong>@Model.StockBajo productos con stock bajo</strong><span>Existencias inferiores al mínimo configurado.</span></div></div> }
+  </section></div>
+</div>

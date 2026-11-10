@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace EscuelaCopalchi.UI.Models.GestionNotas
 {
@@ -411,7 +411,7 @@ namespace EscuelaCopalchi.UI.Models.GestionNotas
 
             return lista;
         }
-    
+
         // ---------- importación Excel ----------
         // Devuelve identificación (solo letras y dígitos) -> id_estudiante
         public Dictionary<string, int> BuscarEstudiantes(int idGrupo)

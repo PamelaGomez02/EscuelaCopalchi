@@ -62,7 +62,7 @@
 
                     <div>
                         <span>Notificaciones</span>
-                        <h2>18</h2>
+                        <h2>@ViewBag.Total</h2>
                     </div>
 
                 </div>
@@ -80,7 +80,10 @@
 
                     <div>
                         <span>Prioridad alta</span>
-                        <h2 class="text-danger">3</h2>
+                        <h2 class="text-danger">
+                            @ViewBag.Alta
+                        </h2>
+
                     </div>
 
                 </div>
@@ -98,7 +101,9 @@
 
                     <div>
                         <span>Pendientes de revisión</span>
-                        <h2 class="warning-value">5</h2>
+                        <h2 class="warning-value">
+                            @ViewBag.Pendientes
+                        </h2>
                     </div>
 
                 </div>
@@ -132,6 +137,7 @@
                     <i class="bi bi-search"></i>
 
                     <input type="text"
+                           id="buscarNotificacion"
                            class="form-control"
                            placeholder="Buscar estudiante..." />
 
@@ -149,21 +155,22 @@
                         Tipo de alerta
                     </label>
 
-                    <select class="form-select">
+                    <select id="filtroTipo"
+                            class="form-select">
 
-                        <option selected>
+                        <option value="">
                             Todos los tipos
                         </option>
 
-                        <option>
+                        <option value="Bajo rendimiento">
                             Bajo rendimiento
                         </option>
 
-                        <option>
+                        <option value="Inasistencia">
                             Inasistencia
                         </option>
 
-                        <option>
+                        <option value="Riesgo académico">
                             Riesgo académico
                         </option>
 
@@ -178,15 +185,16 @@
                         Grupo
                     </label>
 
-                    <select class="form-select">
+                    <select id="filtroGrupo"
+                            class="form-select">
 
-                        <option selected>
+                        <option value="">
                             Todos los grupos
                         </option>
 
-                        <option>7-A</option>
-                        <option>8-B</option>
-                        <option>9-C</option>
+                        <option value="7-A">7-A</option>
+                        <option value="8-B">8-B</option>
+                        <option value="9-C">9-C</option>
 
                     </select>
 
@@ -200,167 +208,74 @@
                     </label>
 
                     <input type="date"
+                           id="filtroFecha"
                            class="form-control" />
-
                 </div>
 
             </div>
 
 
             <!-- LISTA DE NOTIFICACIONES -->
-            <div class="notifications-list">
-
-                <!-- NOTIFICACIÓN 1 -->
-                <div class="notification-item">
-
-                    <div class="notification-icon notification-danger">
-                        <i class="bi bi-graph-down-arrow"></i>
-                    </div>
+            <div id="listaNotificaciones"
+                 class="notifications-list">
 
 
-                    <div class="notification-body">
+                @if (ViewBag.Notificaciones != null)
+                {
+                    foreach (
+                        EscuelaCopalchi.UI.Models.Notificaciones.Notificacion n
+                        in ViewBag.Notificaciones)
+                    {
+                       <div class="notification-item"
+                            data-estudiante="Andrés Solís"
+                            data-tipo="Bajo rendimiento"
+                            data-grupo="8-B"
+                            data-fecha="2026-11-08">
 
-                        <div class="notification-top">
+                           <div class="notification-icon notification-danger">
 
-                            <div>
+                               <i class="bi bi-bell"></i>
 
-                                <h3>
-                                    Calificación baja — Andrés Solís
-                                </h3>
+                           </div>
 
-                                <p>
-                                    Obtuvo 58 en el examen de Matemática del grupo 8-B.
-                                </p>
+                           <div class="notification-body">
 
-                            </div>
+                               <div class="notification-top">
 
+                                   <div>
 
-                            <span class="priority priority-high">
-                                Alta
-                            </span>
+                                       <h3>
+                                           @n.Titulo
+                                       </h3>
 
-                        </div>
+                                       <p>
+                                           @n.Mensaje
+                                       </p>
 
+                                   </div>
 
-                        <div class="notification-footer">
+                                   <span class="priority priority-high">
+                                       @n.Tipo
+                                   </span>
 
-                            <span>
-                                <i class="bi bi-clock me-1"></i>
-                                Hoy, 9:40 a.m.
-                            </span>
+                               </div>
 
-                            <span>
-                                <i class="bi bi-mortarboard me-1"></i>
-                                Grupo 8-B
-                            </span>
+                               <div class="notification-footer">
 
-                        </div>
+                                   <span>
+                                       <i class="bi bi-clock me-1"></i>
 
-                    </div>
+                                       @n.Fecha.ToString(
+                                           "dd/MM/yyyy HH:mm")
+                                   </span>
 
-                </div>
+                               </div>
 
+                           </div>
 
-                <!-- NOTIFICACIÓN 2 -->
-                <div class="notification-item">
-
-                    <div class="notification-icon notification-warning">
-                        <i class="bi bi-calendar-x"></i>
-                    </div>
-
-
-                    <div class="notification-body">
-
-                        <div class="notification-top">
-
-                            <div>
-
-                                <h3>
-                                    Ausencias frecuentes — Karla Jiménez
-                                </h3>
-
-                                <p>
-                                    Acumula 4 ausencias en el último mes en el grupo 9-C.
-                                </p>
-
-                            </div>
-
-
-                            <span class="priority priority-medium">
-                                Media
-                            </span>
-
-                        </div>
-
-
-                        <div class="notification-footer">
-
-                            <span>
-                                <i class="bi bi-clock me-1"></i>
-                                Ayer, 2:15 p.m.
-                            </span>
-
-                            <span>
-                                <i class="bi bi-mortarboard me-1"></i>
-                                Grupo 9-C
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- NOTIFICACIÓN 3 -->
-                <div class="notification-item">
-
-                    <div class="notification-icon notification-danger">
-                        <i class="bi bi-graph-down-arrow"></i>
-                    </div>
-
-
-                    <div class="notification-body">
-
-                        <div class="notification-top">
-
-                            <div>
-
-                                <h3>
-                                    Calificación baja — Marco Vindas
-                                </h3>
-
-                                <p>
-                                    Obtuvo 61 en Ciencias del grupo 7-A.
-                                </p>
-
-                            </div>
-
-
-                            <span class="priority priority-high">
-                                Alta
-                            </span>
-
-                        </div>
-
-
-                        <div class="notification-footer">
-
-                            <span>
-                                <i class="bi bi-clock me-1"></i>
-                                Lun 4 ago, 11:05 a.m.
-                            </span>
-
-                            <span>
-                                <i class="bi bi-mortarboard me-1"></i>
-                                Grupo 7-A
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                       </div>
+                    }
+                }
 
             </div>
 
@@ -369,6 +284,113 @@
     </section>
 
 </main>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const buscar =
+        document.getElementById(
+            "buscarNotificacion");
+
+    const tipo =
+        document.getElementById(
+            "filtroTipo");
+
+    const grupo =
+        document.getElementById(
+            "filtroGrupo");
+
+    const fecha =
+        document.getElementById(
+            "filtroFecha");
+
+    function aplicarFiltros()
+    {
+        const texto =
+            buscar.value.toLowerCase();
+
+        const tipoSeleccionado =
+            tipo.value.toLowerCase();
+
+        const grupoSeleccionado =
+            grupo.value.toLowerCase();
+
+        const fechaSeleccionada =
+            fecha.value;
+
+        const items =
+            document.querySelectorAll(
+                "#listaNotificaciones .notification-item");
+
+        items.forEach(function (item) {
+
+            const estudiante =
+                item.dataset.estudiante
+                    .toLowerCase();
+
+            const tipoItem =
+                item.dataset.tipo
+                    .toLowerCase();
+
+            const grupoItem =
+                item.dataset.grupo
+                    .toLowerCase();
+
+            const fechaItem =
+                item.dataset.fecha;
+
+            const coincideTexto =
+                estudiante.includes(texto);
+
+            const coincideTipo =
+                tipoSeleccionado === "" ||
+                tipoItem === tipoSeleccionado;
+
+            const coincideGrupo =
+                grupoSeleccionado === "" ||
+                grupoItem === grupoSeleccionado;
+
+            const coincideFecha =
+                fechaSeleccionada === "" ||
+                fechaItem === fechaSeleccionada;
+
+            if (
+                coincideTexto &&
+                coincideTipo &&
+                coincideGrupo &&
+                coincideFecha)
+            {
+                item.style.display = "";
+            }
+            else
+            {
+                item.style.display = "none";
+            }
+
+        });
+    }
+
+    buscar.addEventListener(
+        "keyup",
+        aplicarFiltros);
+
+    tipo.addEventListener(
+        "change",
+        aplicarFiltros);
+
+    grupo.addEventListener(
+        "change",
+        aplicarFiltros);
+
+    fecha.addEventListener(
+        "change",
+        aplicarFiltros);
+});
+
+</script>
 
 
 @section styles {

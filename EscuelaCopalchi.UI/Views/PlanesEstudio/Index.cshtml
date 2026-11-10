@@ -1,4 +1,8 @@
-﻿@{
+@using System.Linq
+
+@model List<EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio>
+
+@{
     ViewBag.Title = "Planes de estudio";
 }
 
@@ -30,6 +34,7 @@
                 </div>
 
                 <div>
+                    @if ((bool)(ViewBag.PuedeCrear ?? false)) {
                     <a href="@Url.Action("Crear", "PlanesEstudio")"
                        class="btn btn-cop-primary">
 
@@ -37,6 +42,7 @@
                         Nuevo plan
 
                     </a>
+                    }
                 </div>
 
             </div>
@@ -44,6 +50,23 @@
     </section>
 
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
     <!-- CONTENIDO -->
     <section class="container pb-5">
 
@@ -60,7 +83,9 @@
 
                     <div>
                         <span class="summary-label">Pendientes</span>
-                        <h2 class="summary-number">3</h2>
+                        <h2 class="summary-number">
+                            @ViewBag.Pendientes
+                        </h2>
                     </div>
 
                 </div>
@@ -77,7 +102,9 @@
 
                     <div>
                         <span class="summary-label">Aprobados</span>
-                        <h2 class="summary-number">8</h2>
+                        <h2 class="summary-number">
+                            @ViewBag.Aprobados
+                        </h2>
                     </div>
 
                 </div>
@@ -94,7 +121,9 @@
 
                     <div>
                         <span class="summary-label">Rechazados</span>
-                        <h2 class="summary-number">1</h2>
+                        <h2 class="summary-number">
+                            @ViewBag.Rechazados
+                        </h2>
                     </div>
 
                 </div>
@@ -128,6 +157,7 @@
                     <i class="bi bi-search"></i>
 
                     <input type="text"
+                           id="buscarPlan"
                            class="form-control"
                            placeholder="Buscar plan..." />
 
@@ -137,325 +167,392 @@
 
 
             <!-- FILTROS -->
-            <div class="plans-filters">
+            @using (Html.BeginForm(
+                "Index",
+                "PlanesEstudio",
+                FormMethod.Get))
+            {
+                <div class="plans-filters">
 
-                <select class="form-select">
+                    <select id="filtroEstado"
+                            class="form-select">
 
-                    <option value="">
-                        Todos los estados
-                    </option>
+                        <option value="">
+                            Todos los estados
+                        </option>
 
-                    <option>Pendiente</option>
-                    <option>Aprobado</option>
-                    <option>Rechazado</option>
+                        <option value="Pendiente">
+                            Pendiente
+                        </option>
 
-                </select>
+                        <option value="Aprobado">
+                            Aprobado
+                        </option>
+
+                        <option value="Denegado">
+                            Rechazado
+                        </option>
+
+                    </select>
 
 
-                <select class="form-select">
+                    <select id="filtroPeriodo" class="form-select"><option value="">Todos los meses</option>@for(int m=1;m<=12;m++){<option value="@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))">@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))</option>}</select>
 
-                    <option value="">
-                        Todos los meses
-                    </option>
+                </div>
+            }
 
-                    <option>Enero</option>
-                    <option>Febrero</option>
-                    <option>Marzo</option>
-                    <option>Abril</option>
-                    <option>Mayo</option>
-                    <option>Junio</option>
-                    <option>Julio</option>
-                    <option>Agosto</option>
-                    <option>Septiembre</option>
-                    <option>Octubre</option>
-                    <option>Noviembre</option>
-                    <option>Diciembre</option>
+        </div>
 
-                </select>
+
+        <!-- TABLA -->
+        <div class="table-responsive">
+
+            <table id="tablaPlanes"
+                   class="table plans-table align-middle">
+
+                <thead>
+
+                    <tr>
+                        <th>Asignatura / Nivel</th>
+                        <th>Periodo</th>
+                        <th>Fecha de registro</th>
+                        <th>Estado</th>
+                        <th>Archivo</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model != null)
+                    {
+                        foreach (var plan in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <div class="plan-name">
+
+                                        <div class="plan-file-icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                @plan.Asignatura
+                                            </strong>
+
+                                            <small>
+                                                @plan.Nivel
+                                            </small>
+                                        </div>
+
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @plan.Periodo @plan.Anio
+                                </td>
+
+                                <td>
+                                    @plan.FechaCarga.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+
+                                    @if (plan.Estado == "Pendiente")
+                                    {
+                                        <span class="status status-pending">
+                                            <i class="bi bi-clock"></i>
+                                            Pendiente
+                                        </span>
+                                    }
+                                    else if (plan.Estado == "Aprobado")
+                                    {
+                                        <span class="status status-approved">
+                                            <i class="bi bi-check-circle"></i>
+                                            Aprobado
+                                        </span>
+                                    }
+                                    else if (plan.Estado == "Denegado")
+                                    {
+                                        <span class="status status-rejected">
+                                            <i class="bi bi-x-circle"></i>
+                                            Denegado
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    @if (!string.IsNullOrEmpty(plan.Archivo))
+                                    {
+                                        <span class="teams-status teams-ok">
+                                            Archivo cargado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="teams-status">
+                                            Sin archivo
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td class="text-end">
+
+
+                                    @if ((bool)(ViewBag.PuedeRevisar ?? false) && plan.Estado == "Pendiente") {
+                                    <a href="@Url.Action("Revisar", "PlanesEstudio", new { id = plan.IdPlan})"
+                                       class="btn btn-action"
+                                       title="Ver plan">
+
+                                        <i class="bi bi-check-circle"></i>
+
+                                    </a>
+                                    }
+
+                                    <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = plan.IdPlan})"
+                                       class="btn btn-action"
+                                       title="Ver plan">
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+
+
+                                    @if (plan.Estado == "Pendiente" && ((bool)(ViewBag.PuedeAdministrar ?? false) || ((bool)(ViewBag.PuedeEditar ?? false) && plan.IdDocente == (int)(ViewBag.IdDocenteActual ?? 0)))) {
+                                    <a href="@Url.Action("Editar", "PlanesEstudio", new { id = plan.IdPlan})"
+                                       class="btn btn-action"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    }
+
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+            <div class="d-flex justify-content-center mt-4">
+
+                <ul id="paginacionPlanes"
+                    class="pagination">
+                </ul>
 
             </div>
 
-
-            <!-- TABLA -->
-            <div class="table-responsive">
-
-                <table class="table plans-table align-middle">
-
-                    <thead>
-
-                        <tr>
-                            <th>Plan</th>
-                            <th>Periodo</th>
-                            <th>Fecha de registro</th>
-                            <th>Estado</th>
-                            <th>Teams</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <!-- PLAN PENDIENTE -->
-                        <tr>
-
-                            <td>
-
-                                <div class="plan-name">
-
-                                    <div class="plan-file-icon">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Plan mensual de Matemáticas
-                                        </strong>
-
-                                        <small>
-                                            Primer grado
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                Agosto 2026
-                            </td>
-
-
-                            <td>
-                                05/08/2026
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-pending">
-
-                                    <i class="bi bi-clock"></i>
-                                    Pendiente
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="teams-status">
-
-                                    <i class="bi bi-microsoft-teams"></i>
-                                    No sincronizado
-
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Ver plan">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-
-                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PLAN APROBADO -->
-                        <tr>
-
-                            <td>
-
-                                <div class="plan-name">
-
-                                    <div class="plan-file-icon">
-                                        <i class="bi bi-file-earmark-excel"></i>
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Plan mensual de Ciencias
-                                        </strong>
-
-                                        <small>
-                                            Segundo grado
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                Julio 2026
-                            </td>
-
-
-                            <td>
-                                02/07/2026
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-approved">
-
-                                    <i class="bi bi-check-circle"></i>
-                                    Aprobado
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="teams-status teams-ok">
-
-                                    <i class="bi bi-check-circle"></i>
-                                    Sincronizado
-
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Ver plan">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- PLAN RECHAZADO -->
-                        <tr>
-
-                            <td>
-
-                                <div class="plan-name">
-
-                                    <div class="plan-file-icon">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Plan mensual de Español
-                                        </strong>
-
-                                        <small>
-                                            Tercer grado
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                Junio 2026
-                            </td>
-
-
-                            <td>
-                                03/06/2026
-                            </td>
-
-
-                            <td>
-
-                                <span class="status status-rejected">
-
-                                    <i class="bi bi-x-circle"></i>
-                                    Rechazado
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="teams-status">
-
-                                    <i class="bi bi-microsoft-teams"></i>
-                                    No sincronizado
-
-                                </span>
-
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Ver plan">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-
-                                <a href="@Url.Action("Editar", "PlanesEstudio", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Corregir plan">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
+        </div>
 
         </div>
 
     </section>
 
 </main>
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const buscador =
+            document.getElementById("buscarPlan");
+
+        buscador.addEventListener("keyup", function () {
+
+            const texto =
+                this.value.toLowerCase();
+
+            const filas =
+                document.querySelectorAll(
+                    "#tablaPlanes tbody tr");
+
+            filas.forEach(function (fila) {
+
+                const contenido =
+                    fila.innerText.toLowerCase();
+
+                if (contenido.includes(texto)) {
+                    fila.style.display = "";
+                }
+                else {
+                    fila.style.display = "none";
+                }
+
+            });
+
+        });
+
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+    const buscador =
+        document.getElementById("buscarPlan");
+
+        const filtroEstado =
+        document.getElementById("filtroEstado");
+
+        const filtroPeriodo =
+        document.getElementById("filtroPeriodo");
+
+        function aplicarFiltros() {
+
+        const texto =
+        buscador.value.toLowerCase();
+
+        const estado =
+        filtroEstado.value.toLowerCase();
+
+        const periodo =
+        filtroPeriodo.value.toLowerCase();
+
+        const filas =
+        document.querySelectorAll(
+        "#tablaPlanes tbody tr");
+
+        filas.forEach(function (fila) {
+
+            const contenido =
+        fila.innerText.toLowerCase();
+
+        const coincideTexto =
+        contenido.includes(texto);
+
+        const coincideEstado =
+        estado === "" ||
+        contenido.includes(estado);
+
+        const coincidePeriodo =
+        periodo === "" ||
+        contenido.includes(periodo);
+
+        if (
+        coincideTexto &&
+        coincideEstado &&
+        coincidePeriodo
+        )
+        {
+            fila.style.display = "";
+            }
+        else
+        {
+            fila.style.display = "none";
+            }
+
+        });
+    }
+
+        buscador.addEventListener(
+        "keyup",
+        aplicarFiltros);
+
+        filtroEstado.addEventListener(
+        "change",
+        aplicarFiltros);
+
+        filtroPeriodo.addEventListener(
+        "change",
+        aplicarFiltros);
+
+        });
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const filas =
+            document.querySelectorAll(
+                "#tablaPlanes tbody tr");
+
+        const filasPorPagina = 10;
+
+        const totalPaginas =
+            Math.ceil(
+                filas.length /
+                filasPorPagina);
+
+        const paginacion =
+            document.getElementById(
+                "paginacionPlanes");
+
+        function mostrarPagina(pagina) {
+            filas.forEach((fila, index) => {
+
+                fila.style.display =
+                    index >=
+                        (pagina - 1) *
+                        filasPorPagina
+
+                        &&
+
+                        index <
+                        pagina *
+                        filasPorPagina
+
+                        ? ""
+
+                        : "none";
+
+            });
+        }
+
+        function crearPaginacion() {
+            paginacion.innerHTML = "";
+
+            for (
+                let i = 1;
+                i <= totalPaginas;
+                i++) {
+                let li =
+                    document.createElement(
+                        "li");
+
+                li.className =
+                    "page-item";
+
+                let a =
+                    document.createElement(
+                        "a");
+
+                a.className =
+                    "page-link";
+
+                a.href = "#";
+
+                a.innerText = i;
+
+                a.addEventListener(
+                    "click",
+                    function (e) {
+                        e.preventDefault();
+
+                        mostrarPagina(i);
+                    });
+
+                li.appendChild(a);
+
+                paginacion.appendChild(li);
+            }
+        }
+
+        crearPaginacion();
+
+        mostrarPagina(1);
+
+    });
+
+
+</script>
 
 
 @section styles {
@@ -477,7 +574,6 @@
         body {
             background-color: var(--cop-page-bg);
         }
-
 
         /* ==============================
            HEADER

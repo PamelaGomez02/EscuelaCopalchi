@@ -1,12 +1,17 @@
-﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.GestionAcademicaIndexViewModel
+@model EscuelaCopalchi.UI.Models.GestionAcademica.GestionAcademicaIndexViewModel
 @using EscuelaCopalchi.UI.Models.GestionAcademica
+
 @{
     ViewBag.Title = "Gestión académica";
+
     var usuario = ViewBag.UsuarioActual as UsuarioSesion;
-    // Las opciones sin permiso se muestran atenuadas (el permiso se asigna en Roles → Permisos)
-    string sinGestion = usuario != null && !usuario.PuedeGestionar ? "option-disabled" : "";
-    string sinMiGrupo = usuario != null && !usuario.PuedeVerMiGrupo ? "option-disabled" : "";
-    string sinReportes = usuario != null && !usuario.PuedeVerReportes ? "option-disabled" : "";
+
+    bool verAulas = usuario != null && usuario.PuedeVerAulas;
+    bool verGrupos = usuario != null && usuario.PuedeVerGrupos;
+    bool asignar = usuario != null && usuario.PuedeAsignarEstudiantes;
+    bool importar = usuario != null && usuario.PuedeImportarAsignaciones;
+    bool miGrupo = usuario != null && usuario.PuedeVerMiGrupo;
+
 }
 
 <main>
@@ -35,7 +40,6 @@
 
     <section class="container pb-5">
 
-        @Html.Partial("_BarraUsuario")
 
         <div class="row g-3 mb-4">
 
@@ -90,60 +94,6 @@
         </div>
 
 
-        @* ===== Selección de usuario (temporal hasta que exista el login) ===== *@
-        <div class="academic-card mb-4">
-
-            <div class="academic-card-header">
-                <div>
-                    <h2><i class="bi bi-person-check me-2"></i>¿Con qué usuario desea trabajar?</h2>
-                    <p>
-                        Mientras el sistema no tenga inicio de sesión, seleccione un usuario. Solo aparecen los usuarios cuyo rol tiene
-                        permisos de Gestión Académica (Roles → Permisos).
-                    </p>
-                </div>
-            </div>
-
-            <div class="p-4">
-                @using (Html.BeginForm("CambiarUsuario", "GestionAcademica", FormMethod.Post, new { @class = "user-form" }))
-                {
-                    @Html.AntiForgeryToken()
-
-                    <select name="idUsuario" class="form-select">
-                        <option value="0">— Ninguno —</option>
-
-                        @foreach (var grupoRol in Model.Usuarios.GroupBy(u => u.Rol))
-                        {
-                            <optgroup label="@grupoRol.Key">
-                                @foreach (var u in grupoRol)
-                                {
-                                    <option value="@u.IdUsuario" @(usuario != null && usuario.IdUsuario == u.IdUsuario ? "selected" : "")>
-                                        @u.NombreCompleto · @u.Identificacion
-                                    </option>
-                                }
-                            </optgroup>
-                        }
-                    </select>
-
-                    <input type="password" name="contrasena" class="form-control" style="max-width:240px"
-                           placeholder="Contraseña" autocomplete="off" />
-
-                    <button type="submit" class="btn btn-cop-primary">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>
-                        Usar este usuario
-                    </button>
-                }
-
-                @if (!Model.Usuarios.Any() && ViewBag.ErrorCarga == null)
-                {
-                    <p class="text-muted small mt-3 mb-0">
-                        No hay usuarios con permisos de Gestión Académica. Ejecute el script de Gestión Académica
-                        (incluye usuarios de prueba) o asigne los permisos en Roles → Permisos.
-                    </p>
-                }
-            </div>
-
-        </div>
-
 
         <div class="academic-card">
 
@@ -156,150 +106,46 @@
 
 
             <div class="academic-grid">
-
-                <a href="@Url.Action("Aulas", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-door-open"></i>
-                    </div>
-
-                    <div>
-                        <strong>Aulas <em class="option-role">Director</em></strong>
-                        <span>Crear aulas, definir capacidad y consultar su ocupación.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Docentes", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-person-badge"></i>
-                    </div>
-
-                    <div>
-                        <strong>Grupos, horarios y docentes <em class="option-role">Director</em></strong>
-                        <span>Crear grupos, definir aula y horario, y asignar el docente responsable.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Asignaciones", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-person-plus"></i>
-                    </div>
-
-                    <div>
-                        <strong>Asignación de estudiantes <em class="option-role">Director</em></strong>
-                        <span>Asignar, trasladar o retirar estudiantes de los grupos.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Reportes", "GestionAcademica")"
-                   class="academic-option @sinReportes">
-
-                    <div class="option-icon">
-                        <i class="bi bi-file-earmark-bar-graph"></i>
-                    </div>
-
-                    <div>
-                        <strong>Reportes de distribución <em class="option-role">Reportes</em></strong>
-                        <span>Reportes por aula, grupo y docente. Exportar a Excel o PDF.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("ImportarExcel", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-file-earmark-excel"></i>
-                    </div>
-
-                    <div>
-                        <strong>Importar asignaciones <em class="option-role">Director</em></strong>
-                        <span>Cargar grupos y docentes desde Excel.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Bitacora", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-
-                    <div>
-                        <strong>Bitácora de cambios <em class="option-role">Director</em></strong>
-                        <span>Historial de asignaciones, traslados e incidentes de notificación.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("MiGrupo", "GestionAcademica")"
-                   class="academic-option @sinMiGrupo">
-
-                    <div class="option-icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-
-                    <div>
-                        <strong>Mis grupos <em class="option-role">Docente</em></strong>
-                        <span>Consultar estudiantes, aula y horario de cada grupo a cargo.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Notificaciones", "GestionAcademica")"
-                   class="academic-option">
-
-                    <div class="option-icon">
-                        <i class="bi bi-bell"></i>
-                    </div>
-
-                    <div>
-                        <strong>Notificaciones</strong>
-                        <span>Avisos de nuevos grupos, incorporaciones, retiros y cambios de aula.</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
-
-                <a href="@Url.Action("Distribucion", "GestionAcademica")"
-                   class="academic-option @sinGestion">
-
-                    <div class="option-icon">
-                        <i class="bi bi-diagram-3"></i>
-                    </div>
-
-                    <div>
-                        <strong>Distribución automática <em class="option-role">Director</em></strong>
-                        <span>Generar propuestas según la capacidad de las aulas (maqueta).</span>
-                    </div>
-
-                    <i class="bi bi-chevron-right option-arrow"></i>
-                </a>
-
+                @if (verAulas)
+                {
+                    <a href="@Url.Action("Aulas", "GestionAcademica")" class="academic-option">
+                        <div class="option-icon"><i class="bi bi-door-open"></i></div>
+                        <div><strong>Aulas</strong><span>Consultar aulas, capacidad y ocupación.</span></div>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </a>
+                }
+                @if (verGrupos)
+                {
+                    <a href="@Url.Action("Docentes", "GestionAcademica")" class="academic-option">
+                        <div class="option-icon"><i class="bi bi-person-badge"></i></div>
+                        <div><strong>Grupos, horarios y docentes</strong><span>Consultar grupos, aulas, horarios y docentes asignados.</span></div>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </a>
+                }
+                @if (asignar)
+                {
+                    <a href="@Url.Action("Asignaciones", "GestionAcademica")" class="academic-option">
+                        <div class="option-icon"><i class="bi bi-person-plus"></i></div>
+                        <div><strong>Asignación de estudiantes</strong><span>Asignar, trasladar o retirar estudiantes de los grupos.</span></div>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </a>
+                }
+                @if (importar)
+                {
+                    <a href="@Url.Action("ImportarExcel", "GestionAcademica")" class="academic-option">
+                        <div class="option-icon"><i class="bi bi-file-earmark-excel"></i></div>
+                        <div><strong>Importar asignaciones</strong><span>Cargar grupos y docentes desde Excel.</span></div>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </a>
+                }
+                @if (miGrupo)
+                {
+                    <a href="@Url.Action("MiGrupo", "GestionAcademica")" class="academic-option">
+                        <div class="option-icon"><i class="bi bi-people"></i></div>
+                        <div><strong>Mis grupos</strong><span>Consultar los estudiantes, el aula y el horario de mis grupos.</span></div>
+                        <i class="bi bi-chevron-right option-arrow"></i>
+                    </a>
+                }
             </div>
 
         </div>
@@ -483,17 +329,6 @@
             }
         }
 
-        .user-form {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-            .user-form .form-select {
-                flex: 1;
-                min-width: 240px;
-            }
-
         .btn-cop-primary {
             background: var(--cop-primary);
             border-color: var(--cop-primary);
@@ -516,10 +351,6 @@
             border-radius: 10px;
             margin-left: 6px;
             vertical-align: middle;
-        }
-
-        .option-disabled {
-            opacity: .5;
         }
     </style>
 

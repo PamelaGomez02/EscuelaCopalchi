@@ -1,5 +1,37 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAsistencia.AsistenciaIndexVM
+@using EscuelaCopalchi.UI.Models.GestionAsistencia
+@{
     ViewBag.Title = "Asistencia";
+    var r = Model.Resumen ?? new ResumenAsistencia();
+}
+@functions {
+    static string Iniciales(string nombre)
+    {
+        var p = (nombre ?? "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (p.Length == 0) return "?";
+        return p.Length == 1 ? p[0].Substring(0, 1).ToUpper()
+                             : (p[0].Substring(0, 1) + p[1].Substring(0, 1)).ToUpper();
+    }
+    static string Clase(string estado)
+    {
+        switch (estado)
+        {
+            case "Presente": return "status-present";
+            case "Ausente": return "status-absent";
+            case "Tardanza": return "status-late";
+            default: return "status-justified";
+        }
+    }
+    static string Icono(string estado)
+    {
+        switch (estado)
+        {
+            case "Presente": return "bi-check-circle";
+            case "Ausente": return "bi-x-circle";
+            case "Tardanza": return "bi-clock";
+            default: return "bi-file-earmark-check";
+        }
+    }
 }
 
 <main>
@@ -14,26 +46,23 @@
             </div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-
                 <div>
                     <h1 class="attendance-title">
                         <i class="bi bi-calendar-check me-2"></i>
                         Asistencia de alumnos
                     </h1>
-
                     <p class="attendance-subtitle">
                         Registra, consulta y administra la asistencia de los estudiantes.
                     </p>
                 </div>
 
-                <a href="@Url.Action("Registrar", "Asistencia")"
-                   class="btn btn-cop-primary">
-
-                    <i class="bi bi-plus-lg me-1"></i>
-                    Registrar asistencia
-
-                </a>
-
+                @if (Model.PuedeEditar)
+                {
+                    <a href="@Url.Action("Registrar", "Asistencia")" class="btn btn-cop-primary">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Registrar asistencia
+                    </a>
+                }
             </div>
 
         </div>
@@ -42,69 +71,66 @@
 
     <section class="container pb-5">
 
+        @if (TempData["Exito"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle me-1"></i> @TempData["Exito"]
+            </div>
+        }
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @TempData["Error"]
+            </div>
+        }
+
         <!-- RESUMEN -->
         <div class="row g-3 mb-4">
 
             <div class="col-md-3">
                 <div class="summary-card">
-
-                    <div class="summary-icon present">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-
+                    <div class="summary-icon present"><i class="bi bi-check-circle"></i></div>
                     <div>
                         <span>Presentes</span>
-                        <h2>21</h2>
+                        <h2>@r.Presentes</h2>
                     </div>
-
                 </div>
             </div>
 
-
             <div class="col-md-3">
                 <div class="summary-card">
-
-                    <div class="summary-icon absent">
-                        <i class="bi bi-x-circle"></i>
-                    </div>
-
+                    <div class="summary-icon absent"><i class="bi bi-x-circle"></i></div>
                     <div>
                         <span>Ausentes</span>
-                        <h2>2</h2>
+                        <h2>@r.Ausentes</h2>
+                        <small class="text-muted">@r.Justificados justificados</small>
                     </div>
-
                 </div>
             </div>
 
-
             <div class="col-md-3">
                 <div class="summary-card">
-
-                    <div class="summary-icon late">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-
+                    <div class="summary-icon late"><i class="bi bi-clock-history"></i></div>
                     <div>
                         <span>Tardanzas</span>
-                        <h2>1</h2>
+                        <h2>@r.Tardanzas</h2>
                     </div>
-
                 </div>
             </div>
 
-
             <div class="col-md-3">
                 <div class="summary-card">
-
-                    <div class="summary-icon percentage">
-                        <i class="bi bi-percent"></i>
-                    </div>
-
+                    <div class="summary-icon percentage"><i class="bi bi-percent"></i></div>
                     <div>
                         <span>Asistencia</span>
-                        <h2>91%</h2>
+                        <h2>@(r.Porcentaje.HasValue ? r.Porcentaje.Value.ToString("0.##") + "%" : "—")</h2>
                     </div>
-
                 </div>
             </div>
 
@@ -114,201 +140,127 @@
         <div class="attendance-card">
 
             <div class="attendance-toolbar">
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Porcentaje", "Asistencia")" class="btn btn-outline-cop">
+                        <i class="bi bi-percent me-1"></i>
+                        Ver porcentajes
+                    </a>
 
-                <div>
-                    <h2>Consulta de asistencia</h2>
-                    <p>Consulta registros por grupo y fecha.</p>
+                    <a href="@Url.Action("Historial", "Asistencia")" class="btn btn-outline-cop">
+                        <i class="bi bi-clock-history me-1"></i>
+                        Ver historial
+                    </a>
                 </div>
-
-                <a href="@Url.Action("Historial", "Asistencia")"
-                   class="btn btn-outline-cop">
-
-                    <i class="bi bi-clock-history me-1"></i>
-                    Ver historial
-
-                </a>
-
             </div>
 
 
             <!-- FILTROS -->
-            <div class="filters">
+            <form method="get" action="@Url.Action("Index", "Asistencia")" class="filters">
 
-                <select class="form-select">
-                    <option selected disabled>Seleccione un grupo</option>
-                    <option>Primer grado A</option>
-                    <option>Segundo grado A</option>
-                    <option>Tercer grado A</option>
+                <select name="grupo" class="form-select">
+                    <option value="">Seleccione un grupo</option>
+                    @foreach (var g in Model.Grupos)
+                    {
+                        <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">
+                            @g.Grupo (@g.Anio)
+                        </option>
+                    }
                 </select>
 
-                <input type="date"
-                       class="form-control"
-                       value="2026-08-10" />
+                <input type="date" name="fecha" class="form-control"
+                       value="@Model.Fecha.ToString("yyyy-MM-dd")" />
 
-                <button class="btn btn-cop-primary">
+                <button type="submit" class="btn btn-cop-primary">
                     <i class="bi bi-search me-1"></i>
                     Consultar
                 </button>
 
-            </div>
+            </form>
 
 
             <!-- TABLA -->
-            <div class="table-responsive">
+            @if (!Model.Consultado)
+            {
+                <p class="text-muted p-4 mb-0">Seleccione un grupo y una fecha para consultar la asistencia.</p>
+            }
+            else if (!Model.Filas.Any())
+            {
+                <p class="text-muted p-4 mb-0">
+                    No hay asistencia registrada para este grupo en esa fecha.
+                    @if (Model.PuedeEditar)
+                    {
+                        <a href="@Url.Action("Registrar", "Asistencia", new { grupo = Model.IdGrupo, fecha = Model.Fecha.ToString("yyyy-MM-dd") })">Registrarla ahora</a>
+                    }
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table attendance-table align-middle">
 
-                <table class="table attendance-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Estado</th>
+                                <th>Hora</th>
+                                <th>Observación</th>
+                                @if (Model.PuedeEditar)
+                                {
+                                    <th class="text-end">Acciones</th>
+                                }
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>Estudiante</th>
-                            <th>Estado</th>
-                            <th>Hora</th>
-                            <th>Observación</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
+                        <tbody>
+                            @foreach (var f in Model.Filas)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="student-info">
+                                            <div class="student-avatar">@Iniciales(f.Estudiante)</div>
+                                            <div>
+                                                <strong>@f.Estudiante</strong>
+                                                <small>@Model.NombreGrupo</small>
+                                            </div>
+                                        </div>
+                                    </td>
 
-                    <tbody>
+                                    <td>
+                                        <span class="status @Clase(f.Estado)">
+                                            <i class="bi @Icono(f.Estado)"></i>
+                                            @f.Estado
+                                        </span>
+                                    </td>
 
-                        <tr>
+                                    <td>@(string.IsNullOrEmpty(f.HoraLlegada) ? "—" : f.HoraLlegada)</td>
 
-                            <td>
-                                <div class="student-info">
+                                    <td>
+                                        @if (string.IsNullOrEmpty(f.Observacion))
+                                        {
+                                            <span class="text-muted">Sin observaciones</span>
+                                        }
+                                        else
+                                        {
+                                            @f.Observacion
+                                        }
+                                    </td>
 
-                                    <div class="student-avatar">
-                                        MG
-                                    </div>
+                                    @if (Model.PuedeEditar)
+                                    {
+                                        <td class="text-end">
+                                            <a href="@Url.Action("Editar", "Asistencia", new { id = f.IdAsistencia })"
+                                               class="btn btn-action" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
 
-                                    <div>
-                                        <strong>María González</strong>
-                                        <small>Primer grado A</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="status status-present">
-                                    <i class="bi bi-check-circle"></i>
-                                    Presente
-                                </span>
-                            </td>
-
-                            <td>7:00 a. m.</td>
-
-                            <td>
-                                <span class="text-muted">
-                                    Sin observaciones
-                                </span>
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Editar", "Asistencia", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Editar">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        JP
-                                    </div>
-
-                                    <div>
-                                        <strong>Juan Pérez</strong>
-                                        <small>Primer grado A</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="status status-absent">
-                                    <i class="bi bi-x-circle"></i>
-                                    Ausente
-                                </span>
-                            </td>
-
-                            <td>—</td>
-
-                            <td>
-                                Sin justificar
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Editar", "Asistencia", new { id = 2 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        AS
-                                    </div>
-
-                                    <div>
-                                        <strong>Andrea Solano</strong>
-                                        <small>Primer grado A</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="status status-late">
-                                    <i class="bi bi-clock"></i>
-                                    Tardanza
-                                </span>
-                            </td>
-
-                            <td>7:18 a. m.</td>
-
-                            <td>
-                                Transporte
-                            </td>
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Editar", "Asistencia", new { id = 3 })"
-                                   class="btn btn-action">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
+                    </table>
+                </div>
+            }
 
         </div>
 
@@ -541,6 +493,10 @@
         .status-late {
             background: #fff3cd;
             color: #856404;
+        }
+        .status-justified {
+            background: #cfe2ff;
+            color: #084298;
         }
 
         .btn-action {

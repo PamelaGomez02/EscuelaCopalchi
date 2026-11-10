@@ -1,4 +1,6 @@
-﻿@{
+@model EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio
+
+@{
     ViewBag.Title = "Editar plan";
 }
 
@@ -37,52 +39,62 @@
                 <i class="bi bi-exclamation-triangle-fill mt-1"></i>
 
                 <div>
-                    <strong>Plan pendiente de corrección</strong>
+                    <strong>Plan sin aprobar</strong>
 
                     <div class="small">
-                        Revisa las observaciones realizadas antes de volver a enviar el plan.
+                        Si existen observaciones debes tomarlas en cuenta antes de volver a enviar el plan.
                     </div>
                 </div>
 
             </div>
 
 
-            <div class="observation-box mb-4">
+            @if (!string.IsNullOrEmpty(Model.Observaciones))
+            {
+                <div class="observation-box mb-4">
 
-                <span class="observation-title">
-                    <i class="bi bi-chat-left-text me-1"></i>
-                    Observación del director
-                </span>
+                    <span class="observation-title">
 
-                <p>
-                    Debe ampliar las actividades de evaluación correspondientes
-                    a la segunda semana del mes.
-                </p>
+                        <i class="bi bi-chat-left-text me-1"></i>
+                        Observación del director
 
-            </div>
+                    </span>
+
+                    <p>
+                        @Model.Observaciones
+                    </p>
+
+                </div>
+            }
 
 
-            <form>
+            @using (Html.BeginForm("Editar", "PlanesEstudio", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.HiddenFor(x => x.IdPlan)
+                @Html.AntiForgeryToken()
 
-                <div class="row g-3">
+                <div class="row g-3"><div class="col-md-6"><label class="form-label">Grupo</label>@Html.DropDownListFor(x=>x.IdGrupo,(IEnumerable<SelectListItem>)ViewBag.Grupos,"Seleccione un grupo",new {@class="form-select",required="required"})</div><div class="col-md-6"><label class="form-label">Título</label>@Html.TextBoxFor(x=>x.Titulo,new {@class="form-control",required="required"})</div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Mes</label>
-
-                        <select class="form-select">
-                            <option>Julio</option>
-                            <option selected>Agosto</option>
-                            <option>Septiembre</option>
-                        </select>
-                    </div>
-
+                    <div class="col-md-6"><label class="form-label">Mes</label>@Html.DropDownListFor(x => x.Mes, Enumerable.Range(1, 12).Select(m => new SelectListItem { Value = m.ToString(), Text = new DateTime(2000, m, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-CR")), Selected = Model != null && Model.Mes == m }), "Seleccione el mes", new { @class = "form-select", required = "required", id = "Periodo" })</div>
 
                     <div class="col-md-6">
                         <label class="form-label">Año</label>
 
-                        <select class="form-select">
-                            <option selected>2026</option>
-                            <option>2027</option>
+                        <select class="form-select"
+                                name="Anio">
+
+                            <option value="2026">
+                                2026
+                            </option>
+
+                            <option value="2027">
+                                2027
+                            </option>
+
+                            <option value="2028">
+                                2028
+                            </option>
+
                         </select>
                     </div>
 
@@ -90,55 +102,38 @@
                     <div class="col-md-6">
                         <label class="form-label">Grado</label>
 
-                        <select class="form-select">
-                            <option selected>Primer grado</option>
-                            <option>Segundo grado</option>
-                        </select>
+                        @Html.DropDownListFor(x => x.Nivel, new[] {"Preescolar","Primer grado","Segundo grado","Tercer grado","Cuarto grado","Quinto grado","Sexto grado"}.Select(n => new SelectListItem { Value = n, Text = n, Selected = Model != null && Model.Nivel == n }), "Seleccione una opción", new { @class = "form-select", required = "required" })
                     </div>
 
 
                     <div class="col-md-6">
                         <label class="form-label">Asignatura</label>
 
-                        <select class="form-select">
-                            <option selected>Matemáticas</option>
-                            <option>Español</option>
-                            <option>Ciencias</option>
+                        <select class="form-select"
+                                name="Asignatura">
+
+                            <option value="Español">
+                                Español
+                            </option>
+
+                            <option value="Matemáticas">
+                                Matemáticas
+                            </option>
+
+                            <option value="Ciencias">
+                                Ciencias
+                            </option>
+
+                            <option value="Estudios Sociales">
+                                Estudios Sociales
+                            </option>
+
+                            <option value="Inglés">
+                                Inglés
+                            </option>
+
                         </select>
                     </div>
-
-
-                    <div class="col-12">
-                        <label class="form-label">Objetivo de aprendizaje</label>
-
-                        <textarea class="form-control"
-                                  rows="3">Desarrollar habilidades para resolver operaciones matemáticas básicas.</textarea>
-                    </div>
-
-
-                    <div class="col-12">
-                        <label class="form-label">Contenidos</label>
-
-                        <textarea class="form-control"
-                                  rows="4">Sumas, restas y resolución de problemas sencillos.</textarea>
-                    </div>
-
-
-                    <div class="col-12">
-                        <label class="form-label">Actividades</label>
-
-                        <textarea class="form-control"
-                                  rows="4">Ejercicios individuales, actividades grupales y resolución de problemas prácticos.</textarea>
-                    </div>
-
-
-                    <div class="col-12">
-                        <label class="form-label">Evaluación</label>
-
-                        <textarea class="form-control"
-                                  rows="3">Prácticas en clase, participación y evaluación corta semanal.</textarea>
-                    </div>
-
 
                     <div class="col-12">
 
@@ -148,8 +143,25 @@
                         </label>
 
                         <input type="file"
+                               name="archivo"
                                class="form-control"
-                               accept=".xlsx,.xls" />
+                               accept=".xlsx,.xls,.pdf" />
+
+                        @if (!string.IsNullOrEmpty(Model.Archivo))
+                        {
+                            <div class="mt-2">
+
+                                <strong>Archivo actual:</strong>
+
+                                <a href="@Url.Action("Descargar", "PlanesEstudio", new { id = Model.IdPlan })"
+                                   target="_blank">
+
+                                    Ver archivo
+
+                                </a>
+
+                            </div>
+                        }
 
                     </div>
 
@@ -158,12 +170,12 @@
 
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = 1 })"
+                    <a href="@Url.Action("Index", "PlanesEstudio")"
                        class="btn btn-light">
                         Cancelar
                     </a>
 
-                    <button type="button"
+                    <button type="submit"
                             class="btn btn-cop-primary">
 
                         <i class="bi bi-send me-1"></i>
@@ -173,7 +185,7 @@
 
                 </div>
 
-            </form>
+            }
 
         </div>
 

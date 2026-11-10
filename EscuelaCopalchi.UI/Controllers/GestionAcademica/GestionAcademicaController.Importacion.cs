@@ -1,4 +1,4 @@
-﻿using EscuelaCopalchi.UI.Logica.GestionAcademica;
+using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
         private readonly ImportacionExcelService importacion = new ImportacionExcelService();
 
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.ImportarAsignaciones)]
         public ActionResult ImportarExcel()
         {
             var modelo = new ImportacionViewModel
@@ -35,7 +35,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// <summary>Paso 1: leer y validar el archivo; se muestra la vista previa sin guardar nada.</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.ImportarAsignaciones)]
         public ActionResult VistaPreviaImportacion(HttpPostedFileBase archivo)
         {
             Session.Remove(SesionImportacion);
@@ -102,7 +102,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// <summary>Paso 2: guardar los registros válidos de la vista previa.</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.ImportarAsignaciones)]
         public ActionResult ConfirmarImportacion()
         {
             var filas = Session[SesionImportacion] as List<FilaImportacion>;
@@ -132,7 +132,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// <summary>Cancela la importación: descarta la vista previa sin guardar cambios.</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.ImportarAsignaciones)]
         public ActionResult CancelarImportacion()
         {
             Session.Remove(SesionImportacion);
@@ -142,7 +142,7 @@ namespace EscuelaCopalchi.UI.Controllers
             return RedirectToAction("ImportarExcel");
         }
 
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.ImportarAsignaciones)]
         public ActionResult DescargarPlantilla()
         {
             return File(ImportacionExcelService.GenerarPlantilla(),

@@ -1,4 +1,7 @@
-﻿@{
+﻿@model List<EscuelaCopalchi.UI.Models.Notificaciones.EstudianteRiesgo>
+
+
+@{
     ViewBag.Title = "Estudiantes en riesgo";
 }
 
@@ -77,7 +80,7 @@
 
                     <div>
                         <span>Estudiantes en riesgo</span>
-                        <h2>8</h2>
+                        <h2>@ViewBag.TotalRiesgo</h2>
                     </div>
 
                 </div>
@@ -95,7 +98,9 @@
 
                     <div>
                         <span>Bajo rendimiento</span>
-                        <h2 class="text-danger">5</h2>
+                        <h2 class="text-danger">
+                            @ViewBag.BajoRendimiento
+                        </h2>
                     </div>
 
                 </div>
@@ -113,7 +118,9 @@
 
                     <div>
                         <span>Problemas de asistencia</span>
-                        <h2 class="warning-value">3</h2>
+                        <h2 class="warning-value">
+                            @ViewBag.Inasistencia
+                        </h2>
                     </div>
 
                 </div>
@@ -255,193 +262,90 @@
 
                     <tbody>
 
-                        <!-- ANDRÉS -->
-                        <tr>
+                        @foreach (var estudiante in Model)
+                        {
+                            <tr>
 
-                            <td>
+                                <td>
 
-                                <div class="student-info">
+                                    <div class="student-info">
 
-                                    <div class="student-avatar">
-                                        AS
-                                    </div>
+                                        <div class="student-avatar">
 
-                                    <div>
+                                            @estudiante.NombreCompleto
+                                            .Substring(0,1)
 
-                                        <strong>
-                                            Andrés Solís
-                                        </strong>
+                                        </div>
 
-                                        <small>
-                                            Estudiante
-                                        </small>
+                                        <div>
 
-                                    </div>
+                                            <strong>
+                                                @estudiante.NombreCompleto
+                                            </strong>
 
-                                </div>
+                                            <small>
+                                                Estudiante
+                                            </small>
 
-                            </td>
-
-
-                            <td>
-                                8-B
-                            </td>
-
-
-                            <td>
-
-                                <span class="risk-status risk-danger">
-                                    <i class="bi bi-graph-down-arrow"></i>
-                                    Bajo rendimiento
-                                </span>
-
-                            </td>
-
-
-                            <td>
-                                Prof. Juan Pérez
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 1 })"
-                                   class="btn btn-action"
-                                   title="Ver ficha">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- KARLA -->
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        KJ
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Karla Jiménez
-                                        </strong>
-
-                                        <small>
-                                            Estudiante
-                                        </small>
+                                        </div>
 
                                     </div>
 
-                                </div>
+                                </td>
 
-                            </td>
+                                <td>
+                                    @estudiante.Grupo
+                                </td>
 
+                                <td>
 
-                            <td>
-                                9-C
-                            </td>
+                                    @if (estudiante.Motivo ==
+                                        "Bajo rendimiento")
+                                    {
+                                        <span class="risk-status risk-danger">
 
+                                            <i class="bi bi-graph-down-arrow"></i>
 
-                            <td>
+                                            Bajo rendimiento
 
-                                <span class="risk-status risk-warning">
-                                    <i class="bi bi-calendar-x"></i>
-                                    Inasistencia
-                                </span>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="risk-status risk-warning">
 
-                            </td>
+                                            <i class="bi bi-calendar-x"></i>
 
+                                            Inasistencia
 
-                            <td>
-                                Prof. Laura Gómez
-                            </td>
+                                        </span>
+                                    }
 
+                                </td>
 
-                            <td class="text-end">
+                                <td>
+                                    @estudiante.Docente
+                                </td>
 
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 2 })"
-                                   class="btn btn-action"
-                                   title="Ver ficha">
+                                <td class="text-end">
 
-                                    <i class="bi bi-eye"></i>
+                                    <a href="@Url.Action(
+                        "Detalle",
+                        "Estudiantes",
+                        new
+                        {
+                            id = estudiante.IdEstudiante
+                        })"
+                                       class="btn btn-action">
 
-                                </a>
+                                        <i class="bi bi-eye"></i>
 
-                            </td>
+                                    </a>
 
-                        </tr>
+                                </td>
 
-
-                        <!-- MARCO -->
-                        <tr>
-
-                            <td>
-
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        MV
-                                    </div>
-
-                                    <div>
-
-                                        <strong>
-                                            Marco Vindas
-                                        </strong>
-
-                                        <small>
-                                            Estudiante
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-                                7-A
-                            </td>
-
-
-                            <td>
-
-                                <span class="risk-status risk-danger">
-                                    <i class="bi bi-graph-down-arrow"></i>
-                                    Bajo rendimiento
-                                </span>
-
-                            </td>
-
-
-                            <td>
-                                Prof. María Rodríguez
-                            </td>
-
-
-                            <td class="text-end">
-
-                                <a href="@Url.Action("Detalle", "Estudiantes", new { id = 3 })"
-                                   class="btn btn-action"
-                                   title="Ver ficha">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
+                            </tr>
+                        }
 
                     </tbody>
 

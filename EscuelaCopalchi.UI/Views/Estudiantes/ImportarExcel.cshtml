@@ -11,7 +11,7 @@
             <div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "EstudiantesAdd")">Estudiantes</a>
+                <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Importar Excel</span>
             </div>
@@ -34,12 +34,34 @@
 
         <div class="import-card">
 
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Error
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+
             @using (Html.BeginForm(
                 "ImportarExcel",
-                "EstudiantesAdd",
+                "Estudiantes",
                 FormMethod.Post,
                 new { enctype = "multipart/form-data" }))
             {
+                @Html.AntiForgeryToken()
                 <div class="upload-box">
 
                     <i class="bi bi-file-earmark-excel"></i>
@@ -56,8 +78,7 @@
                     <input type="file"
                            name="archivoExcel"
                            class="form-control"
-                           accept=".xls,.xlsx"
-                           required />
+                           accept=".xls,.xlsx" />
 
                     <small>
                         Formatos permitidos: .xls y .xlsx
@@ -65,9 +86,11 @@
 
                 </div>
 
+
+
                 <div class="form-actions">
 
-                    <a href="@Url.Action("Index", "EstudiantesAdd")"
+                    <a href="@Url.Action("Index", "Estudiantes")"
                        class="btn btn-light">
 
                         Cancelar
@@ -83,20 +106,23 @@
                         Cargar Excel
                     </button>
 
-                    <button type="submit"
-                            class="btn btn-cop-primary">
 
-                        <i class="bi bi-upload me-1"></i>
-                        Importar estudiantes
-
-                    </button>
 
                 </div>
 
+                <button type="submit"
+                        name="accion"
+                        value="Importar"
+                        class="btn btn-cop-primary">
 
+                    <i class="bi bi-upload me-1"></i>
+                    Importar estudiantes
 
+                </button>
 
             }
+
+
 
 
             <div class="preview-section">
@@ -112,7 +138,7 @@
                         @(ViewBag.Preview != null
                         ? ((List<EscuelaCopalchi.UI.Models.Estudiantes.Estudiante>)ViewBag.Preview).Count
                         : 0)
-                        registros válidos
+                        registros encontrados
                     </span>
 
                 </div>
@@ -156,8 +182,7 @@
                                         <td>@estudiante.Identificacion</td>
 
                                         <td>
-                                            @estudiante.FechaNacimiento
-                                            .ToString("dd/MM/yyyy")
+                                            @estudiante.FechaNacimiento.ToString("dd/MM/yyyy")
                                         </td>
 
                                         <td>@estudiante.NombreEncargado</td>
@@ -171,10 +196,20 @@
                                         <td>@estudiante.Direccion</td>
 
                                         <td>
-                                            <span class="text-success">
-                                                <i class="bi bi-check-circle"></i>
-                                                Válido
-                                            </span>
+                                            @if (estudiante.EsValido)
+                                            {
+                                                <span class="text-success">
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Válido
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger">
+                                                    <i class="bi bi-x-circle"></i>
+                                                    @estudiante.EstadoImportacion
+                                                </span>
+                                            }
                                         </td>
 
                                     </tr>

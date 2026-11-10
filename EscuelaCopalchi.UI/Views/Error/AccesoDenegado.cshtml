@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Acceso denegado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .acceso-container {
+        min-height: 65vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 15px;
+    }
+
+    .acceso-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 45px 35px;
+        text-align: center;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 4px 20px rgba(0,0,0,.04);
+    }
+
+    .acceso-icono {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        background: #fff0f0;
+        color: #dc3545;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 35px;
+        margin: 0 auto 22px;
+    }
+
+    .acceso-titulo {
+        font-size: 25px;
+        font-weight: 700;
+        color: #153b53;
+        margin-bottom: 15px;
+    }
+
+    .acceso-texto {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+    }
+
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: #153b53;
+        color: white;
+        text-decoration: none;
+        padding: 11px 23px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+        .btn-volver:hover {
+            background: #0c293d;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="acceso-container">
+    <div class="acceso-card">
+
+        <div class="acceso-icono">
+            <i class="bi bi-shield-lock"></i>
+        </div>
+
+        <h2 class="acceso-titulo">
+            Acceso denegado
+        </h2>
+
+        <p class="acceso-texto">
+            No tienes permiso para acceder a esta página.
+            <br />
+            Consulta con el administrador del sistema
+            si necesitas acceso a esta funcionalidad.
+        </p>
+
+        <a href="@Url.Action("Index", "Home")"
+           class="btn-volver">
+            <i class="bi bi-house-door"></i>
+            Volver al panel principal
+        </a>
+
+    </div>
+</div>

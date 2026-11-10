@@ -1,4 +1,4 @@
-﻿using EscuelaCopalchi.UI.Logica.GestionAcademica;
+using EscuelaCopalchi.UI.Logica.GestionAcademica;
 using EscuelaCopalchi.UI.Models.GestionAcademica;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace EscuelaCopalchi.UI.Controllers
     {
         private readonly AulaService aulas = new AulaService();
 
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.VerAulas)]
         public ActionResult Aulas()
         {
             var lista = new List<Aula>();
@@ -29,7 +29,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.GestionarAulas)]
         public ActionResult GuardarAula(int idAula, string nombre, int? capacidad, string ubicacion, bool estado = true)
         {
             var aula = new Aula
@@ -45,7 +45,7 @@ namespace EscuelaCopalchi.UI.Controllers
             return RedirectToAction("Aulas");
         }
 
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.VerGrupos)]
         public ActionResult Docentes(int periodo = 0)
         {
             var modelo = new DocentesViewModel { Periodo = periodo };
@@ -67,7 +67,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.GestionarGrupos)]
         public ActionResult GuardarGrupo(int idGrupo, string nombre, string nivel, int periodo, int cupo = 0,
                                          int idAula = 0, int idDocente = 0, int[] dias = null,
                                          string horaInicio = "", string horaFin = "", int periodoFiltro = 0)
@@ -93,7 +93,7 @@ namespace EscuelaCopalchi.UI.Controllers
         /// <param name="idDocente">Id de la tabla DOCENTE; 0 quita el docente.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermisoRequerido(Permisos.GestionarAcademica)]
+        [PermisoRequerido(Permisos.GestionarGrupos)]
         public ActionResult AsignarDocente(int idGrupo, int idDocente = 0, int periodoFiltro = 0)
         {
             MostrarResultado(grupos.AsignarDocente(idGrupo, idDocente, IdUsuarioActual));

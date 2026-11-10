@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,11 +15,18 @@ namespace EscuelaCopalchi.UI.Models.GestionAcademica
 
         /// <summary>Docente: consultar sus grupos, estudiantes, aula y horario.</summary>
         public const string VerMiGrupo = "VER_MI_GRUPO";
+        public const string VerAulas = "VER_AULAS";
+        public const string GestionarAulas = "GESTIONAR_AULAS";
+        public const string VerGrupos = "VER_GRUPOS";
+        public const string GestionarGrupos = "GESTIONAR_GRUPOS";
+        public const string AsignarEstudiantesGrupos = "ASIGNAR_ESTUDIANTES_GRUPOS";
+        public const string ImportarAsignaciones = "IMPORTAR_ASIGNACIONES";
+        public const string VerBitacoraAcademica = "VER_BITACORA_ACADEMICA";
 
         /// <summary>Reportes de distribución (permiso que ya existe en la base).</summary>
         public const string VerReportes = "VER_REPORTES";
 
-        public static readonly string[] DelModulo = { GestionarAcademica, VerMiGrupo, VerReportes };
+        public static readonly string[] DelModulo = { GestionarAcademica, VerMiGrupo, VerAulas, GestionarAulas, VerGrupos, GestionarGrupos, AsignarEstudiantesGrupos, ImportarAsignaciones, VerBitacoraAcademica };
     }
 
     /// <summary>Resultado de un procedimiento que modifica datos.</summary>
@@ -56,10 +63,62 @@ namespace EscuelaCopalchi.UI.Models.GestionAcademica
         /// <summary>Está en la tabla DOCENTE: se le pueden asignar grupos.</summary>
         public bool EsDocente { get { return IdDocente > 0; } }
 
-        public bool TienePermiso(string permiso) { return Permisos.Contains(permiso); }
-
         /// <summary>Tiene al menos un permiso del módulo de Gestión Académica.</summary>
         public bool UsaModulo { get { return Permisos.Any(p => GestionAcademica.Permisos.DelModulo.Contains(p)); } }
+
+        public bool PuedeVerAulas
+        {
+            get { return TienePermiso("VER_AULAS"); }
+        }
+
+        public bool PuedeGestionarAulas
+        {
+            get { return TienePermiso("GESTIONAR_AULAS"); }
+        }
+
+        public bool PuedeVerGrupos
+        {
+            get { return TienePermiso("VER_GRUPOS"); }
+        }
+
+        public bool PuedeGestionarGrupos
+        {
+            get { return TienePermiso("GESTIONAR_GRUPOS"); }
+        }
+
+        public bool PuedeAsignarEstudiantes
+        {
+            get { return TienePermiso("ASIGNAR_ESTUDIANTES_GRUPOS"); }
+        }
+
+        public bool PuedeImportarAsignaciones
+        {
+            get { return TienePermiso("IMPORTAR_ASIGNACIONES"); }
+        }
+
+        public bool PuedeVerBitacora
+        {
+            get { return TienePermiso("VER_BITACORA_ACADEMICA"); }
+        }
+
+        public bool PuedeVerMiGrupo
+        {
+            get { return TienePermiso("VER_MI_GRUPO"); }
+        }
+
+        public bool TienePermiso(string permiso)
+        {
+            return Permisos != null &&
+                   Permisos.Any(p =>
+                       string.Equals(
+                           p,
+                           permiso,
+                           StringComparison.OrdinalIgnoreCase));
+        }
+
+
+
+
     }
 
     public class ResumenAcademico
@@ -357,8 +416,16 @@ namespace EscuelaCopalchi.UI.Models.GestionAcademica
         public string Rol { get; set; }
         public List<string> Permisos { get; set; } = new List<string>();
 
-        public bool PuedeGestionar { get { return Permisos.Contains(GestionAcademica.Permisos.GestionarAcademica); } }
-        public bool PuedeVerMiGrupo { get { return Permisos.Contains(GestionAcademica.Permisos.VerMiGrupo); } }
-        public bool PuedeVerReportes { get { return Permisos.Contains(GestionAcademica.Permisos.VerReportes); } }
+        public bool TienePermiso(string nombre) { return Permisos != null && Permisos.Any(p => string.Equals(p, nombre, StringComparison.OrdinalIgnoreCase)); }
+        public bool PuedeGestionar { get { return TienePermiso(GestionAcademica.Permisos.GestionarAcademica); } }
+        public bool PuedeVerAulas { get { return TienePermiso(GestionAcademica.Permisos.VerAulas) || TienePermiso(GestionAcademica.Permisos.GestionarAulas); } }
+        public bool PuedeGestionarAulas { get { return TienePermiso(GestionAcademica.Permisos.GestionarAulas); } }
+        public bool PuedeVerGrupos { get { return TienePermiso(GestionAcademica.Permisos.VerGrupos) || TienePermiso(GestionAcademica.Permisos.GestionarGrupos); } }
+        public bool PuedeGestionarGrupos { get { return TienePermiso(GestionAcademica.Permisos.GestionarGrupos); } }
+        public bool PuedeAsignarEstudiantes { get { return TienePermiso(GestionAcademica.Permisos.AsignarEstudiantesGrupos); } }
+        public bool PuedeImportarAsignaciones { get { return TienePermiso(GestionAcademica.Permisos.ImportarAsignaciones); } }
+        public bool PuedeVerMiGrupo { get { return TienePermiso(GestionAcademica.Permisos.VerMiGrupo); } }
+        public bool PuedeVerReportes { get { return TienePermiso(GestionAcademica.Permisos.VerReportes); } }
+        public bool PuedeVerBitacora { get { return TienePermiso(GestionAcademica.Permisos.VerBitacoraAcademica); } }
     }
 }

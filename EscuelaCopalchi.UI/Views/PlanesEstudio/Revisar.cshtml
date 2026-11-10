@@ -1,4 +1,6 @@
-﻿@{
+@model EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio
+
+@{
     ViewBag.Title = "Revisar plan";
 }
 
@@ -38,66 +40,126 @@
 
     </section>
 
+    @using (Html.BeginForm(
+"Revisar",
+"PlanesEstudio",
+FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.IdPlan)
+        @Html.AntiForgeryToken()
+        <section class="container pb-5">
 
-    <section class="container pb-5">
+            <div class="row g-4">
 
-        <div class="row g-4">
+                <!-- PLAN -->
+                <div class="col-lg-8">
 
-            <!-- PLAN -->
-            <div class="col-lg-8">
+                    <div class="review-card">
 
-                <div class="review-card">
+                        <div class="plan-header">
 
-                    <div class="plan-header">
+                            <div>
 
-                        <div>
+                                <span class="small-label">
+                                    Plan de estudio de: @Model.Asignatura
+                                </span>
+                            </div>
 
-                            <span class="small-label">
-                                Plan de estudio
-                            </span>
 
-                            <h2>
-                                Plan mensual de Matemáticas
-                            </h2>
+                            @if (Model.Estado == "Pendiente")
+                            {
+                                <span class="status-pending">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @Model.Estado
+                                </span>
+                            }
+                            else if (Model.Estado == "Aprobado")
+                            {
+                                <span class="status-approved">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    @Model.Estado
+                                </span>
+                            }
+                            else if (Model.Estado == "Denegado")
+                            {
+                                <span class="status-rejected">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    @Model.Estado
+                                </span>
+                            }
 
-                            <p>
-                                Primer grado · Agosto 2026
-                            </p>
 
                         </div>
 
 
-                        <span class="status-pending">
-                            <i class="bi bi-clock me-1"></i>
-                            Pendiente
-                        </span>
+                        <hr />
+
+
+                        <div class="row g-4">
+
+                            <div class="col-md-6">
+                                <span class="detail-label">Docente</span>
+                                <strong>@Model.NombreDocente</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                <span class="detail-label">Periodo</span>
+                                <strong>@Model.Periodo</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                <span class="detail-label">Asignatura</span>
+                                <strong>@Model.Asignatura</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                <span class="detail-label">Asignatura</span>
+                                <strong>@Model.Nivel</strong>
+                            </div>
+
+                        </div>
 
                     </div>
 
 
-                    <hr />
+                    <!-- ARCHIVO -->
+                    <div class="review-card mt-4">
+
+                        <h3 class="section-title">
+                            Documento adjunto
+                        </h3>
 
 
-                    <div class="row g-4">
+                        <div class="file-card">
 
-                        <div class="col-md-6">
-                            <span class="detail-label">Docente</span>
-                            <strong>María González</strong>
-                        </div>
+                            <div class="file-icon">
+                                <i class="bi bi-file-earmark-excel"></i>
+                            </div>
 
-                        <div class="col-md-6">
-                            <span class="detail-label">Fecha de envío</span>
-                            <strong>05/08/2026</strong>
-                        </div>
 
-                        <div class="col-md-6">
-                            <span class="detail-label">Asignatura</span>
-                            <strong>Matemáticas</strong>
-                        </div>
+                            <div class="flex-grow-1">
 
-                        <div class="col-md-6">
-                            <span class="detail-label">Tipo de registro</span>
-                            <strong>Archivo Excel</strong>
+                                <strong>
+                                    <strong>
+                                        @System.IO.Path.GetFileName(Model.Archivo)
+                                    </strong>
+                                </strong>
+
+                                <small>
+                                    Documento enviado por el docente
+                                </small>
+
+                            </div>
+
+
+                            <a href="@Url.Action("Descargar", "PlanesEstudio", new { id = Model.IdPlan })"
+                               target="_blank"
+                               class="btn btn-outline-cop">
+
+                                <i class="bi bi-download me-1"></i>
+                                Descargar
+                            </a>
+
                         </div>
 
                     </div>
@@ -105,170 +167,109 @@
                 </div>
 
 
-                <!-- ARCHIVO -->
-                <div class="review-card mt-4">
+                <!-- RESOLUCIÓN -->
+                <div class="col-lg-4">
 
-                    <h3 class="section-title">
-                        Documento adjunto
-                    </h3>
+                    <div class="review-card sticky-lg-top review-panel">
 
-
-                    <div class="file-card">
-
-                        <div class="file-icon">
-                            <i class="bi bi-file-earmark-excel"></i>
-                        </div>
+                        <h3 class="section-title">
+                            Resolución
+                        </h3>
 
 
-                        <div class="flex-grow-1">
+                        <p class="review-description">
 
-                            <strong>
-                                Plan_Matematicas_Agosto.xlsx
-                            </strong>
+                            Selecciona la decisión correspondiente
+                            después de revisar el plan.
 
-                            <small>
-                                Archivo enviado por el docente
-                            </small>
-
-                        </div>
+                        </p>
 
 
-                        <button class="btn btn-outline-cop">
+                        <label class="form-label">
+                            Observaciones
+                        </label>
 
-                            <i class="bi bi-download me-1"></i>
-                            Descargar
+
+                        @Html.TextAreaFor(
+                            x => x.Observaciones,
+                            new
+                            {
+                                @class = "form-control",
+                                rows = 6,
+                                id = "observaciones"
+                            })
+
+
+
+                        <small class="text-muted d-block mt-2">
+                            La observación es obligatoria si rechazas el plan.
+                        </small>
+
+
+                        <hr />
+
+
+                        <button type="submit"
+                                name="accion"
+                                value="Aprobar"
+                                class="btn btn-approve w-100 mb-2">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Aprobar plan
 
                         </button>
 
+                        <button type="submit"
+                                name="accion"
+                                value="Denegar"
+                                class="btn btn-reject w-100"
+                                onclick="return validarObservacion();">
+
+                            <i class="bi bi-x-circle me-1"></i>
+                            Denegar plan
+
+                        </button>
+
+
+                        <a href="@Url.Action("Index", "PlanesEstudio")"
+                           class="btn btn-light w-100 mt-2">
+
+                            Cancelar
+
+                        </a>
+
                     </div>
 
                 </div>
 
-            </div>
-
-
-            <!-- RESOLUCIÓN -->
-            <div class="col-lg-4">
-
-                <div class="review-card sticky-lg-top review-panel">
-
-                    <h3 class="section-title">
-                        Resolución
-                    </h3>
-
-
-                    <p class="review-description">
-
-                        Selecciona la decisión correspondiente
-                        después de revisar el plan.
-
-                    </p>
-
-
-                    <label class="form-label">
-                        Observaciones
-                    </label>
-
-
-                    <textarea id="observacion"
-                              class="form-control"
-                              rows="6"
-                              placeholder="Ingrese las observaciones para el docente..."></textarea>
-
-
-                    <small class="text-muted d-block mt-2">
-                        La observación es obligatoria si rechazas el plan.
-                    </small>
-
-
-                    <hr />
-
-
-                    <button type="button"
-                            class="btn btn-approve w-100 mb-2"
-                            onclick="aprobarPlan()">
-
-                        <i class="bi bi-check-circle me-1"></i>
-                        Aprobar plan
-
-                    </button>
-
-
-                    <button type="button"
-                            class="btn btn-reject w-100"
-                            onclick="rechazarPlan()">
-
-                        <i class="bi bi-x-circle me-1"></i>
-                        Rechazar plan
-
-                    </button>
-
-
-                    <a href="@Url.Action("Index", "PlanesEstudio")"
-                       class="btn btn-light w-100 mt-2">
-
-                        Cancelar
-
-                    </a>
-
-                </div>
 
             </div>
 
-        </div>
-
-    </section>
+        </section>
+    }
 
 </main>
 
 
-<!-- MODAL APROBAR -->
-<div class="modal fade"
-     id="modalAprobar"
-     tabindex="-1">
+<script>
 
-    <div class="modal-dialog modal-dialog-centered">
+    function validarObservacion() {
+        var observacion =
+            document.getElementById(
+                "observaciones").value.trim();
 
-        <div class="modal-content">
+        if (observacion === "") {
+            alert(
+                "Debe ingresar una observación para rechazar el plan.");
 
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    Aprobar plan
-                </h5>
-            </div>
+            return false;
+        }
 
-            <div class="modal-body">
+        return true;
+    }
 
-                <div class="modal-icon success">
-                    <i class="bi bi-check-circle"></i>
-                </div>
+</script>
 
-                <p class="text-center">
-                    ¿Deseas aprobar este plan de estudio?
-                </p>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button type="button"
-                        class="btn btn-approve">
-                    Confirmar aprobación
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 
 @section styles {
@@ -447,51 +448,28 @@
             .modal-icon.success {
                 color: #198754;
             }
+
+
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .status-approved {
+            background: #D4EDDA;
+            color: #155724;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .status-rejected {
+            background: #F8D7DA;
+            color: #721C24;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
     </style>
-
-}
-
-
-@section scripts {
-
-    <script>
-
-    function aprobarPlan() {
-
-        var modal = new bootstrap.Modal(
-            document.getElementById('modalAprobar')
-        );
-
-        modal.show();
-
-    }
-
-
-    function rechazarPlan() {
-
-        var observacion =
-            document.getElementById("observacion").value.trim();
-
-        if (observacion === "") {
-
-            alert("Debe ingresar una observación para rechazar el plan.");
-
-            document
-                .getElementById("observacion")
-                .focus();
-
-            return;
-
-        }
-
-        if (confirm("¿Desea rechazar este plan?")) {
-
-            alert("El plan ha sido rechazado.");
-
-        }
-
-    }
-
-    </script>
 
 }

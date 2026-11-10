@@ -1,0 +1,332 @@
+﻿@model EscuelaCopalchi.UI.Models.GestionAsistencia.AsistenciaPorcentajeVM
+@using System.Globalization
+@using EscuelaCopalchi.UI.Models.GestionAsistencia
+@{
+    ViewBag.Title = "Porcentaje de asistencia";
+    var r = Model.Resumen ?? new ResumenAsistencia();
+    string desdeIso = Model.Desde.HasValue ? Model.Desde.Value.ToString("yyyy-MM-dd") : null;
+    string hastaIso = Model.Hasta.HasValue ? Model.Hasta.Value.ToString("yyyy-MM-dd") : null;
+}
+
+<main>
+
+    <section class="attendance-header">
+        <div class="container">
+
+            <div class="attendance-breadcrumb">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <i class="bi bi-chevron-right"></i>
+                <a href="@Url.Action("Index", "Asistencia")">Asistencia</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Porcentaje</span>
+            </div>
+
+            <h1 class="attendance-title">
+                <i class="bi bi-percent me-2"></i>
+                Porcentaje de asistencia
+            </h1>
+
+            <p class="attendance-subtitle">
+                Calcula el porcentaje de asistencia de cada estudiante del grupo.
+                Cuentan como asistencia las presencias y las tardanzas; las ausencias, justificadas o no, cuentan como inasistencia.
+            </p>
+
+        </div>
+    </section>
+
+
+    <section class="container pb-5">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error
+            </div>
+        }
+
+        <div class="history-card">
+
+            <!-- FILTROS -->
+            <form method="get" action="@Url.Action("Porcentaje", "Asistencia")" class="filters">
+
+                <div>
+                    <small class="text-muted d-block">Grupo</small>
+                    <select name="grupo" class="form-select">
+                        <option value="">Seleccione un grupo</option>
+                        @foreach (var g in Model.Grupos)
+                        {
+                            <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">
+                                @g.Grupo (@g.Anio)
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <small class="text-muted d-block">Desde</small>
+                    <input type="date" name="desde" class="form-control" value="@desdeIso" />
+                </div>
+
+                <div>
+                    <small class="text-muted d-block">Hasta</small>
+                    <input type="date" name="hasta" class="form-control" value="@hastaIso" />
+                </div>
+
+                <div class="d-flex align-items-end">
+                    <button type="submit" class="btn btn-cop-primary">
+                        <i class="bi bi-calculator me-1"></i>
+                        Calcular
+                    </button>
+                </div>
+
+            </form>
+
+
+            @if (!Model.Consultado)
+            {
+                <p class="text-muted p-4 mb-0">
+                    Seleccione un grupo y, si desea, un rango de fechas para calcular el porcentaje.
+                    Sin fechas se calcula con todos los registros.
+                </p>
+            }
+            else
+            {
+                <!-- RESUMEN DEL GRUPO -->
+                <div class="student-summary">
+                    <div>
+                        <span>Grupo</span>
+                        <strong>@Model.NombreGrupo</strong>
+                    </div>
+                    <div>
+                        <span>Presentes</span>
+                        <strong>@r.Presentes</strong>
+                    </div>
+                    <div>
+                        <span>Ausencias</span>
+                        <strong>@r.Ausentes</strong>
+                    </div>
+                    <div>
+                        <span>Justificadas</span>
+                        <strong>@r.Justificados</strong>
+                    </div>
+                    <div>
+                        <span>Tardanzas</span>
+                        <strong>@r.Tardanzas</strong>
+                    </div>
+                    <div class="percentage-box">
+                        <span>Porcentaje del grupo</span>
+                        <strong>@(r.Porcentaje.HasValue ? r.Porcentaje.Value.ToString("0.##") + "%" : "—")</strong>
+                    </div>
+                </div>
+
+                if (!Model.Filas.Any())
+                {
+                    <p class="text-muted p-4 mb-0">Este grupo no tiene estudiantes para calcular.</p>
+                }
+                else
+                {
+                    <!-- UNA FILA POR ESTUDIANTE -->
+                    <div class="table-responsive">
+                        <table class="table history-table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th class="text-center">Registros</th>
+                                    <th class="text-center">Presentes</th>
+                                    <th class="text-center">Tardanzas</th>
+                                    <th class="text-center">Justificadas</th>
+                                    <th class="text-center">Ausentes</th>
+                                    <th style="min-width:200px;">% Asistencia</th>
+                                    <th class="text-end">Detalle</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var f in Model.Filas)
+                                {
+                                    <tr>
+                                        <td><strong>@f.Estudiante</strong></td>
+                                        <td class="text-center">@f.TotalRegistros</td>
+                                        <td class="text-center">@f.Presentes</td>
+                                        <td class="text-center">@f.Tardanzas</td>
+                                        <td class="text-center">@f.Justificados</td>
+                                        <td class="text-center">@f.Ausentes</td>
+                                        <td>
+                                            @if (f.Porcentaje.HasValue)
+                                            {
+                                                <div class="pct-cell">
+                                                    <div class="pct-bar">
+                                                        <div class="pct-fill"
+                                                             style="width:@(f.Porcentaje.Value.ToString("0.##", CultureInfo.InvariantCulture))%"></div>
+                                                    </div>
+                                                    <strong>@f.Porcentaje.Value.ToString("0.##")%</strong>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin registros</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="@Url.Action("Historial", "Asistencia", new { grupo = Model.IdGrupo, estudiante = f.IdEstudiante, desde = desdeIso, hasta = hastaIso })"
+                                               class="btn btn-sm btn-outline-secondary" title="Ver historial">
+                                                <i class="bi bi-clock-history"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                }
+            }
+
+        </div>
+
+    </section>
+
+</main>
+
+@section styles {
+    <style>
+        :root {
+            --cop-primary: #133C55;
+            --cop-secondary: #386FA4;
+            --cop-muted: #6c757d;
+            --cop-page-bg: #f4f7fa;
+        }
+
+        body {
+            background: var(--cop-page-bg);
+        }
+
+        .attendance-header {
+            background: white;
+            border-bottom: 1px solid #e3e8ee;
+            padding: 30px 0;
+            margin-bottom: 28px;
+        }
+
+        .attendance-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--cop-muted);
+            font-size: .85rem;
+            margin-bottom: 12px;
+        }
+
+            .attendance-breadcrumb a {
+                color: var(--cop-secondary);
+                text-decoration: none;
+            }
+
+        .attendance-title {
+            color: var(--cop-primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .attendance-subtitle {
+            color: var(--cop-muted);
+            margin: 0;
+        }
+
+        .history-card {
+            background: white;
+            border: 1px solid #e3e8ee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .filters {
+            padding: 18px;
+            background: #f8fafc;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .filters .form-select,
+            .filters .form-control {
+                max-width: 220px;
+            }
+
+        .student-summary {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr repeat(5, 1fr);
+            gap: 15px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+            .student-summary span {
+                display: block;
+                color: var(--cop-muted);
+                font-size: .8rem;
+            }
+
+            .student-summary strong {
+                color: var(--cop-primary);
+                font-size: 1.2rem;
+            }
+
+        .percentage-box strong {
+            color: var(--cop-secondary);
+            font-size: 1.5rem;
+        }
+
+        .history-table th {
+            background: #f8fafc;
+            color: var(--cop-muted);
+            font-size: .8rem;
+            text-transform: uppercase;
+            padding: 14px 16px;
+        }
+
+        .history-table td {
+            padding: 14px 16px;
+        }
+
+        .pct-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pct-bar {
+            flex: 1;
+            height: 8px;
+            background: #e9eef3;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .pct-fill {
+            height: 100%;
+            background: var(--cop-secondary);
+            border-radius: 20px;
+        }
+
+        .btn-cop-primary {
+            background: var(--cop-primary);
+            border-color: var(--cop-primary);
+            color: white;
+        }
+
+            .btn-cop-primary:hover {
+                background: var(--cop-secondary);
+                border-color: var(--cop-secondary);
+                color: white;
+            }
+
+        @@media (max-width: 768px) {
+            .student-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+}

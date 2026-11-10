@@ -1,21 +1,27 @@
-﻿@{
+﻿@model EscuelaCopalchi.UI.Models.GestionAsistencia.AsistenciaRegistrarVM
+@using EscuelaCopalchi.UI.Models.GestionAsistencia
+@{
     ViewBag.Title = "Registrar asistencia";
+}
+@functions {
+    static string Iniciales(string nombre)
+    {
+        var p = (nombre ?? "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (p.Length == 0) return "?";
+        return p.Length == 1 ? p[0].Substring(0, 1).ToUpper()
+                             : (p[0].Substring(0, 1) + p[1].Substring(0, 1)).ToUpper();
+    }
 }
 
 <main>
 
     <section class="attendance-header">
-
         <div class="container">
 
             <div class="attendance-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
-
-                <a href="@Url.Action("Index", "Asistencia")">
-                    Asistencia
-                </a>
-
+                <a href="@Url.Action("Index", "Asistencia")">Asistencia</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Registrar</span>
             </div>
@@ -30,239 +36,145 @@
             </p>
 
         </div>
-
     </section>
 
 
     <section class="container pb-5">
 
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error
+            </div>
+        }
+
         <div class="attendance-card">
 
-            <div class="filters">
+            <!-- 1) Elegir grupo y fecha (carga la lista de estudiantes) -->
+            <form method="get" action="@Url.Action("Registrar", "Asistencia")" class="filters">
 
                 <div class="filter-field">
                     <label class="form-label">Grupo</label>
-
-                    <select class="form-select">
-                        <option selected>Primer grado A</option>
-                        <option>Segundo grado A</option>
-                        <option>Tercer grado A</option>
+                    <select name="grupo" class="form-select">
+                        <option value="">Seleccione un grupo</option>
+                        @foreach (var g in Model.Grupos)
+                        {
+                            <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">
+                                @g.Grupo (@g.Anio)
+                            </option>
+                        }
                     </select>
                 </div>
 
-
                 <div class="filter-field">
                     <label class="form-label">Fecha</label>
-
-                    <input type="date"
-                           class="form-control"
-                           value="2026-08-10" />
+                    <input type="date" name="fecha" class="form-control"
+                           max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           value="@Model.Fecha.ToString("yyyy-MM-dd")" />
                 </div>
 
-            </div>
-
-
-            <div class="quick-actions">
-
-                <span>
-                    Acciones rápidas:
-                </span>
-
-                <button type="button"
-                        class="btn btn-sm btn-outline-success">
-                    <i class="bi bi-check-all me-1"></i>
-                    Marcar todos presentes
-                </button>
-
-            </div>
-
-
-            <div class="table-responsive">
-
-                <table class="table attendance-table align-middle">
-
-                    <thead>
-                        <tr>
-                            <th>Estudiante</th>
-                            <th>Estado</th>
-                            <th>Hora de llegada</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        MG
-                                    </div>
-
-                                    <div>
-                                        <strong>María González</strong>
-                                        <small>ID: EST-001</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-
-                            <td>
-
-                                <select class="form-select status-select">
-                                    <option selected>Presente</option>
-                                    <option>Ausente</option>
-                                    <option>Justificado</option>
-                                    <option>Tardanza</option>
-                                </select>
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="time"
-                                       class="form-control"
-                                       value="07:00" />
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="text"
-                                       class="form-control"
-                                       placeholder="Observación opcional" />
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        JP
-                                    </div>
-
-                                    <div>
-                                        <strong>Juan Pérez</strong>
-                                        <small>ID: EST-002</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-
-                            <td>
-
-                                <select class="form-select status-select">
-                                    <option>Presente</option>
-                                    <option selected>Ausente</option>
-                                    <option>Justificado</option>
-                                    <option>Tardanza</option>
-                                </select>
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="time"
-                                       class="form-control" />
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="text"
-                                       class="form-control"
-                                       placeholder="Motivo u observación" />
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                <div class="student-info">
-
-                                    <div class="student-avatar">
-                                        AS
-                                    </div>
-
-                                    <div>
-                                        <strong>Andrea Solano</strong>
-                                        <small>ID: EST-003</small>
-                                    </div>
-
-                                </div>
-                            </td>
-
-
-                            <td>
-
-                                <select class="form-select status-select">
-                                    <option>Presente</option>
-                                    <option>Ausente</option>
-                                    <option>Justificado</option>
-                                    <option selected>Tardanza</option>
-                                </select>
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="time"
-                                       class="form-control"
-                                       value="07:18" />
-
-                            </td>
-
-
-                            <td>
-
-                                <input type="text"
-                                       class="form-control"
-                                       value="Transporte" />
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "Asistencia")"
-                   class="btn btn-light">
-                    Cancelar
-                </a>
-
-                <button type="button"
-                        class="btn btn-cop-primary">
-
-                    <i class="bi bi-save me-1"></i>
-                    Guardar asistencia
-
-                </button>
-
-            </div>
+                <div class="filter-field d-flex align-items-end">
+                    <button type="submit" class="btn btn-cop-primary">
+                        <i class="bi bi-people me-1"></i>
+                        Cargar estudiantes
+                    </button>
+                </div>
+
+            </form>
+
+
+            @if (Model.Cargada && Model.YaRegistrada)
+            {
+                <div class="alert alert-warning m-3">
+                    Este grupo ya tiene asistencia registrada para el @Model.Fecha.ToString("dd/MM/yyyy").
+                    <a href="@Url.Action("Index", "Asistencia", new { grupo = Model.IdGrupo, fecha = Model.Fecha.ToString("yyyy-MM-dd") })">
+                        Consultarla o modificarla
+                    </a>
+                </div>
+            }
+            else if (Model.Cargada && !Model.Filas.Any())
+            {
+                <div class="alert alert-info m-3">Este grupo no tiene estudiantes activos.</div>
+            }
+            else if (Model.Cargada)
+            {
+                <!-- 2) Marcar estados y guardar -->
+                using (Html.BeginForm("Registrar", "Asistencia", FormMethod.Post, new { id = "formAsistencia" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="grupo" value="@Model.IdGrupo" />
+                    <input type="hidden" name="fecha" value="@Model.Fecha.ToString("yyyy-MM-dd")" />
+
+                    <div class="quick-actions">
+                        <span>Acciones rápidas:</span>
+                        <button type="button" id="btnTodosPresentes" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-check-all me-1"></i>
+                            Marcar todos presentes
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table attendance-table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Estado</th>
+                                    <th>Hora de llegada</th>
+                                    <th>Observación</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @for (int i = 0; i < Model.Filas.Count; i++)
+                                {
+                                    var f = Model.Filas[i];
+                                    var actual = string.IsNullOrEmpty(f.Estado) ? EstadosAsistencia.Presente : f.Estado;
+
+                                    <tr data-fila>
+                                        <td>
+                                            <div class="student-info">
+                                                <div class="student-avatar">@Iniciales(f.Estudiante)</div>
+                                                <div><strong>@f.Estudiante</strong></div>
+                                            </div>
+                                            <input type="hidden" name="filas[@i].IdEstudiante" value="@f.IdEstudiante" />
+                                        </td>
+
+                                        <td>
+                                            <select name="filas[@i].Estado" class="form-select status-select js-estado">
+                                                @foreach (var e in EstadosAsistencia.Todos)
+                                                {
+                                                    <option value="@e" selected="@(e == actual ? "selected" : null)">@e</option>
+                                                }
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <input type="time" name="filas[@i].HoraLlegada"
+                                                   class="form-control js-hora" value="@f.HoraLlegada" />
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="filas[@i].Observacion" maxlength="500"
+                                                   class="form-control js-obs" value="@f.Observacion"
+                                                   placeholder="Observación opcional" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="@Url.Action("Index", "Asistencia")" class="btn btn-light">Cancelar</a>
+                        <button type="submit" class="btn btn-cop-primary">
+                            <i class="bi bi-save me-1"></i>
+                            Guardar asistencia
+                        </button>
+                    </div>
+                }
+            }
 
         </div>
 
@@ -431,5 +343,42 @@
             }
         }
     </style>
-
 }
+
+@section scripts {
+    <script>
+                            (function () {
+                                // Ausente y Justificado no llevan hora; Tardanza la necesita; Justificado pide observación.
+                                function ajustar(fila) {
+                                    var estado = fila.querySelector('.js-estado').value;
+                                    var hora = fila.querySelector('.js-hora');
+                                    var obs = fila.querySelector('.js-obs');
+                                    var sinHora = (estado === 'Ausente' || estado === 'Justificado');
+
+                                    hora.disabled = sinHora;
+                                    if (sinHora) hora.value = '';
+
+                                    obs.placeholder = (estado === 'Justificado')
+                                        ? 'Motivo de la justificación (obligatorio)'
+                                        : 'Observación opcional';
+                                }
+
+                                document.querySelectorAll('tr[data-fila]').forEach(function (fila) {
+                                    ajustar(fila);
+                                    fila.querySelector('.js-estado').addEventListener('change', function () { ajustar(fila); });
+                                });
+
+                                var btn = document.getElementById('btnTodosPresentes');
+                                if (btn) {
+                                    btn.addEventListener('click', function () {
+                                        document.querySelectorAll('.js-estado').forEach(function (s) {
+                                            s.value = 'Presente';
+                                            s.dispatchEvent(new Event('change'));
+                                        });
+                                    });
+                                }
+                            })();
+    </script>
+}
+
+

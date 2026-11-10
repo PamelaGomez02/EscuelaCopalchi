@@ -34,17 +34,23 @@
 
                 <div class="d-flex gap-2">
 
-                    <a href="@Url.Action("ImportarExcel", "EstudiantesAdd")"
-                       class="btn btn-outline-cop">
-                        <i class="bi bi-file-earmark-excel me-1"></i>
-                        Importar Excel
-                    </a>
+                    @if (ViewBag.PuedeImportar == true)
+                    {
+                        <a href="@Url.Action("ImportarExcel", "Estudiantes")"
+                           class="btn btn-outline-cop">
+                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            Importar Excel
+                        </a>
+                    }
 
-                    <a href="@Url.Action("Registrar", "EstudiantesAdd")"
-                       class="btn btn-cop-primary">
-                        <i class="bi bi-person-plus me-1"></i>
-                        Registrar estudiante
-                    </a>
+                    @if (ViewBag.PuedeCrear == true)
+                    {
+                        <a href="@Url.Action("Registrar", "Estudiantes")"
+                           class="btn btn-cop-primary">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Registrar estudiante
+                        </a>
+                    }
 
                 </div>
 
@@ -135,9 +141,10 @@
 
                 @using (Html.BeginForm(
                     "Index",
-                    "EstudiantesAdd",
+                    "Estudiantes",
                     FormMethod.Get))
                 {
+                    @Html.AntiForgeryToken()
                     <div class="toolbar-actions">
 
                         <select name="filtroEstado"
@@ -251,7 +258,7 @@
                                     </td>
 
                                     <td class="text-end">
-                                        <a href="@Url.Action("Detalle","EstudiantesAdd", new { id = estudiante.IdEstudiante})"
+                                        <a href="@Url.Action("Detalle","Estudiantes", new { id = estudiante.IdEstudiante})"
                                            class="btn btn-action"
                                            title="Detalle">
                                             <i class="bi bi-eye"></i>
@@ -259,19 +266,25 @@
                                         </a>
 
 
-                                        <a href="@Url.Action("Editar", "EstudiantesAdd", new { id = estudiante.IdEstudiante})"
-                                           class="btn btn-action"
-                                           title="Editar">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
+                                        @if (ViewBag.PuedeEditar == true)
+                                        {
+                                            <a href="@Url.Action("Editar", "Estudiantes", new { id = estudiante.IdEstudiante})"
+                                               class="btn btn-action"
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        }
 
-                                        <a href="@Url.Action("Expediente",  "EstudiantesAdd", new { id = estudiante.IdEstudiante})"
-                                           class="btn btn-action"
-                                           title="Expediente">
-                                            <i class="bi bi-heart-pulse"></i>
-                                        </a>
+                                        @if (ViewBag.PuedeExpediente == true)
+                                        {
+                                            <a href="@Url.Action("Expediente",  "Estudiantes", new { id = estudiante.IdEstudiante})"
+                                               class="btn btn-action"
+                                               title="Expediente">
+                                                <i class="bi bi-heart-pulse"></i>
+                                            </a>
+                                        }
 
-                                        @if (estudiante.Estado)
+                                        @if (ViewBag.PuedeBajas == true && estudiante.Estado)
                                         {
                                             <button type="button"
                                                     class="btn btn-action-danger"
@@ -284,7 +297,7 @@
 
                                             </button>
                                         }
-                                        else
+                                        else if (ViewBag.PuedeBajas == true)
                                         {
                                             <button type="button"
                                                     class="btn btn-action-danger"
@@ -313,13 +326,16 @@
 
             <div class="history-link">
 
-                <a href="@Url.Action("HistorialBajas", "EstudiantesAdd")"
-                   class="btn btn-light">
+                @if (ViewBag.PuedeBajas == true)
+                {
+                    <a href="@Url.Action("HistorialBajas", "Estudiantes")"
+                       class="btn btn-light">
 
-                    <i class="bi bi-clock-history me-1"></i>
-                    Ver historial de bajas
+                        <i class="bi bi-clock-history me-1"></i>
+                        Ver historial de bajas
 
-                </a>
+                    </a>
+                }
 
             </div>
 
@@ -330,92 +346,93 @@
 </main>
 
 
-<!-- MODAL BAJA -->
+@if (ViewBag.PuedeBajas == true)
+{
+    <!-- MODAL BAJA -->
 
-<div class="modal fade"
-     id="modalBaja"
-     tabindex="-1">
+    <div class="modal fade"
+         id="modalBaja"
+         tabindex="-1">
 
-    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content">
+            <div class="modal-content">
 
-            @using (Html.BeginForm("DarBaja",
-                                   "EstudiantesAdd",
-                                   FormMethod.Post))
-            {
-                <input type="hidden"
-                       id="idEstudianteBaja"
-                       name="id" />
+                @using (Html.BeginForm("DarBaja",
+                                       "Estudiantes",
+                                       FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden"
+                           id="idEstudianteBaja"
+                           name="id" />
 
-                <div class="modal-header">
+                    <div class="modal-header">
 
-                    <h5 class="modal-title">
-                        Dar de baja estudiante
-                    </h5>
+                        <h5 class="modal-title">
+                            Dar de baja estudiante
+                        </h5>
 
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="warning-box">
-
-                        <i class="bi bi-exclamation-triangle"></i>
-
-                        <p>
-                            El estudiante cambiará al estado Inactivo.
-                        </p>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                        </button>
 
                     </div>
 
-                    <label class="form-label">
-                        Observación de baja
-                    </label>
+                    <div class="modal-body">
 
-                    <textarea class="form-control"
-                              rows="4"
-                              name="observacionBaja"
-                              placeholder="Agregue el motivo por el que se da de baja al estudiante."></textarea>
+                        <div class="warning-box">
 
-                </div>
+                            <i class="bi bi-exclamation-triangle"></i>
 
-                <div class="modal-footer">
+                            <p>
+                                El estudiante cambiará al estado Inactivo.
+                            </p>
 
-                    <button type="button"
-                            class="btn btn-light"
-                            data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
+                        </div>
 
-                    <button type="submit"
-                            class="btn btn-danger">
+                        <label class="form-label">
+                            Observación de baja
+                        </label>
 
-                        <i class="bi bi-person-dash me-1"></i>
-                        Confirmar baja
+                        <textarea class="form-control"
+                                  rows="4"
+                                  name="observacionBaja"
+                                  placeholder="Agregue el motivo por el que se da de baja al estudiante."></textarea>
 
-                    </button>
+                    </div>
 
-                </div>
-            }
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-light"
+                                data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="bi bi-person-dash me-1"></i>
+                            Confirmar baja
+
+                        </button>
+
+                    </div>
+                }
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
-
-
-
+}
 
 <script>
-    function seleccionarEstudiante(id) {
-        document.getElementById("idEstudianteBaja").value = id;
-    }
+            function seleccionarEstudiante(id) {
+                document.getElementById("idEstudianteBaja").value = id;
+            }
 </script>
 
 

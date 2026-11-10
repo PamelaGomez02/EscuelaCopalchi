@@ -1,0 +1,230 @@
+﻿@model EscuelaCopalchi.UI.Models.Reportes.ReportesViewModel
+@{
+    ViewBag.Title = "Reportes";
+    var ci = System.Globalization.CultureInfo.InvariantCulture;
+
+    var est = Model.Estudiantes;
+    int r90 = est.Count(e => e.Promedio >= 90);
+    int r80 = est.Count(e => e.Promedio >= 80 && e.Promedio < 90);
+    int r70 = est.Count(e => e.Promedio >= 70 && e.Promedio < 80);
+    int rBajo = est.Count(e => e.Promedio < 70);
+    int rSin = est.Count(e => !e.Promedio.HasValue);
+
+    string jsAsig = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Asignaturas.Select(a => new { a.Asignatura, a.Promedio }));
+    string jsDist = Newtonsoft.Json.JsonConvert.SerializeObject(new[] { r90, r80, r70, rBajo, rSin });
+    string jsAsis = Newtonsoft.Json.JsonConvert.SerializeObject(new[]
+    {
+        est.Sum(e => e.Presentes), est.Sum(e => e.Tardanzas), est.Sum(e => e.Justificados), est.Sum(e => e.Ausentes)
+    });
+}
+@section styles {
+    <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+    <style>
+        .rp-card { background:#fff; border:1px solid #e3e8ee; border-radius:10px; padding:16px 18px; height:100%; }
+        .rp-card span { display:block; color:#6c757d; font-size:.8rem; }
+        .rp-card h3 { margin:2px 0 0; color:#133C55; font-size:1.6rem; font-weight:700; }
+        .rp-chart { background:#fff; border:1px solid #e3e8ee; border-radius:10px; padding:16px 18px; height:100%; }
+        .rp-chart h5 { color:#133C55; font-size:.95rem; font-weight:700; margin-bottom:10px; }
+        .rp-chart .rp-box { position:relative; height:240px; }
+        .rp-tag { display:inline-block; padding:3px 9px; border-radius:20px; font-size:.74rem; font-weight:600; margin-right:4px; }
+        .rp-tag-nota { background:#f8d7da; color:#842029; }
+        .rp-tag-asis { background:#fff3cd; color:#664d03; }
+        .rp-tag-ok { background:#d1e7dd; color:#0f5132; }
+        .rp-vacio { color:#6c757d; font-size:.85rem; text-align:center; padding:80px 0; }
+    </style>
+}
+<main>
+    @{ var ses = ViewBag.ReportesSesion as EscuelaCopalchi.UI.Models.Reportes.ReportesSesion; }
+    @if (ses != null)
+    {
+        <div class="gn-bar">
+            <span><i class="bi bi-person-circle me-1"></i> <strong>@ses.Nombre</strong> <span class="badge gn-badge gn-badge-ext ms-1">@ses.Rol</span></span>
+        </div>
+    }
+
+    <div class="gn-header">
+        <div>
+            <h2 class="gn-title">Reportes</h2>
+            <p class="gn-sub">Rendimiento académico y asistencia de los estudiantes.</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (ses != null && ses.EsDirector)
+            {
+                <a href="@Url.Action("Traslado")" class="btn gn-btn-out"><i class="bi bi-envelope-paper me-1"></i> Cartas de traslado</a>
+            }
+            <a href="@Url.Action("ExportarRendimiento", new { grupo = Model.Grupo, buscar = Model.Buscar })" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i> Exportar a Excel</a>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+
+    <form method="get" class="gn-filters">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Grupo</label>
+                <select name="grupo" class="form-select" onchange="this.form.submit()">
+                    <option value="0">Todos los grupos</option>
+                    @foreach (var g in Model.Grupos)
+                    {
+                        <option value="@g.IdGrupo" @(g.IdGrupo == Model.Grupo ? "selected" : "")>@g.Grupo (@g.Anio)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Mostrar</label>
+                <select id="rpFiltro" class="form-select">
+                    <option value="todos">Todos los estudiantes</option>
+                    <option value="riesgo">Solo con alerta (seguimiento)</option>
+                    <option value="nota">Bajo rendimiento</option>
+                    <option value="asis">Problemas de asistencia</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Buscar estudiante</label>
+                <div class="input-group">
+                    <input type="text" name="buscar" value="@Model.Buscar" class="form-control" placeholder="Nombre o identificación">
+                    <button type="submit" class="btn btn-outline-secondary" title="Buscar"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Buscar))
+        {
+            <div class="mt-2 small text-muted">
+                Mostrando resultados para "<strong>@Model.Buscar</strong>" -
+                <a href="@Url.Action("Index", new { grupo = Model.Grupo })" class="gn-link">Quitar búsqueda</a>
+            </div>
+        }
+    </form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Estudiantes</span><h3>@est.Count</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Promedio general</span><h3>@(Model.PromedioGeneral.HasValue ? Model.PromedioGeneral.Value.ToString("0.#", ci) : "-")</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Asistencia general</span><h3>@(Model.AsistenciaGeneral.HasValue ? Model.AsistenciaGeneral.Value.ToString("0.#", ci) + "%" : "-")</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Requieren seguimiento</span><h3>@Model.EnRiesgo</h3></div></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <div class="rp-chart"><h5>Promedio por asignatura</h5>
+                <div class="rp-box">
+                    @if (Model.Asignaturas.Count == 0) { <div class="rp-vacio">Aún no hay notas registradas.</div> } else { <canvas id="chAsig"></canvas> }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="rp-chart"><h5>Distribución de promedios</h5>
+                <div class="rp-box">
+                    @if (est.Count == 0) { <div class="rp-vacio">Sin datos.</div> } else { <canvas id="chDist"></canvas> }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="rp-chart"><h5>Asistencia</h5>
+                <div class="rp-box">
+                    @if (est.Sum(e => e.Clases) == 0) { <div class="rp-vacio">Aún no hay asistencia registrada.</div> } else { <canvas id="chAsis"></canvas> }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive gn-table-wrap mb-4">
+        <table class="table align-middle gn-table" id="rpTabla">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Grupo</th>
+                    <th class="text-center">Promedio</th>
+                    <th class="text-center">Asistencia</th>
+                    <th class="text-center">Ausencias</th>
+                    <th>Seguimiento</th>
+                    <th class="text-end">Ficha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in est)
+                {
+                    <tr data-riesgo="@(e.EnRiesgo ? 1 : 0)" data-nota="@(e.BajoRendimiento ? 1 : 0)" data-asis="@(e.BajaAsistencia ? 1 : 0)">
+                        <td><strong>@e.Estudiante</strong><div class="text-muted small">@e.Identificacion</div></td>
+                        <td>@e.Grupo</td>
+                        <td class="text-center">
+                            @if (e.Promedio.HasValue) { <span class="gn-final @(e.BajoRendimiento ? "bad" : "ok")">@e.Promedio.Value.ToString("0.#", ci)</span> }
+                            else { <span class="gn-final none">-</span> }
+                        </td>
+                        <td class="text-center">@(e.PctAsistencia.HasValue ? e.PctAsistencia.Value.ToString("0.#", ci) + "%" : "-")</td>
+                        <td class="text-center">@(e.Clases > 0 ? e.Ausentes.ToString() : "-")</td>
+                        <td>
+                            @if (e.BajoRendimiento) { <span class="rp-tag rp-tag-nota">Bajo rendimiento</span> }
+                            @if (e.BajaAsistencia) { <span class="rp-tag rp-tag-asis">Asistencia baja</span> }
+                            @if (!e.EnRiesgo) { <span class="rp-tag rp-tag-ok">Sin alertas</span> }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a class="gn-link" target="_blank" href="@Url.Action("Ficha", new { estudiante = e.IdEstudiante })"><i class="bi bi-file-earmark-pdf me-1"></i>Ver</a>
+                            <a class="gn-link ms-2" href="@Url.Action("Ficha", new { estudiante = e.IdEstudiante, descargar = true })" title="Descargar"><i class="bi bi-download"></i></a>
+                        </td>
+                    </tr>
+                }
+                @if (est.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">No hay estudiantes matriculados para los filtros seleccionados.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <p class="text-muted small">
+        Alerta por rendimiento: promedio menor a 70. Alerta por asistencia: menos de 80% (se descuentan solo las ausencias injustificadas).
+    </p>
+
+    <div class="d-flex justify-content-end mb-5">
+        <a href="@Url.Action("Index", "Home")" class="btn gn-btn-out"><i class="bi bi-house me-1"></i> Volver al inicio</a>
+    </div>
+</main>
+
+@section scripts {
+    <script src="~/Scripts/chart.umd.js"></script>
+    <script>
+        (function () {
+            var asig = @Html.Raw(jsAsig);
+            var dist = @Html.Raw(jsDist);
+            var asis = @Html.Raw(jsAsis);
+
+            if (window.Chart) {
+                var c = document.getElementById('chAsig');
+                if (c) new Chart(c, {
+                    type: 'bar',
+                    data: { labels: asig.map(function (a) { return a.Asignatura; }),
+                            datasets: [{ data: asig.map(function (a) { return a.Promedio; }), backgroundColor: '#386FA4', borderRadius: 4 }] },
+                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100 } } }
+                });
+
+                c = document.getElementById('chDist');
+                if (c) new Chart(c, {
+                    type: 'doughnut',
+                    data: { labels: ['90-100', '80-89', '70-79', 'Menos de 70', 'Sin notas'],
+                            datasets: [{ data: dist, backgroundColor: ['#198754', '#59A5D8', '#ffc107', '#dc3545', '#adb5bd'] }] },
+                    options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+                });
+
+                c = document.getElementById('chAsis');
+                if (c) new Chart(c, {
+                    type: 'doughnut',
+                    data: { labels: ['Presentes', 'Tardanzas', 'Justificadas', 'Ausentes'],
+                            datasets: [{ data: asis, backgroundColor: ['#198754', '#ffc107', '#59A5D8', '#dc3545'] }] },
+                    options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+                });
+            }
+
+            var filtro = document.getElementById('rpFiltro');
+            function aplicar() {
+                var f = filtro.value;
+                document.querySelectorAll('#rpTabla tbody tr[data-riesgo]').forEach(function (tr) {
+                    var ok = f === 'todos' || (f === 'riesgo' && tr.dataset.riesgo === '1') ||
+                             (f === 'nota' && tr.dataset.nota === '1') || (f === 'asis' && tr.dataset.asis === '1');
+                    tr.style.display = ok ? '' : 'none';
+                });
+            }
+            filtro.addEventListener('change', aplicar);
+        })();
+    </script>
+}

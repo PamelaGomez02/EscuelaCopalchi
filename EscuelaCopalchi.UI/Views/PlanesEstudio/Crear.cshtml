@@ -1,4 +1,7 @@
-﻿@{
+@using System.Linq
+@model EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio
+
+@{
     ViewBag.Title = "Nuevo plan de estudio";
 }
 
@@ -29,161 +32,152 @@
     </section>
 
 
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
     <section class="container pb-5">
 
         <div class="creation-card">
 
-            <h2 class="section-title">¿Cómo deseas registrar el plan?</h2>
 
-            <p class="section-subtitle">
-                Selecciona una de las siguientes opciones.
-            </p>
+            @using (Html.BeginForm(
+                "Crear",
+                "PlanesEstudio",
+                FormMethod.Post,
+                new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <!-- FORMULARIO EXCEL -->
+                <div id="formExcel">
 
+                    <div class="form-section">
 
-            <div class="row g-4 mb-4">
-
-                <!-- EXCEL -->
-                <div class="col-md-6">
-
-                    <div class="option-card active"
-                         id="optionExcel"
-                         onclick="mostrarExcel()">
-
-                        <div class="option-icon">
+                        <div class="section-heading">
                             <i class="bi bi-file-earmark-excel"></i>
-                        </div>
-
-                        <div>
-                            <h3>Subir archivo Excel</h3>
-                            <p>
-                                Carga un archivo con la planificación académica mensual.
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- MANUAL -->
-                <div class="col-md-6">
-
-                    <div class="option-card"
-                         id="optionManual"
-                         onclick="mostrarManual()">
-
-                        <div class="option-icon">
-                            <i class="bi bi-pencil-square"></i>
-                        </div>
-
-                        <div>
-                            <h3>Registro manual</h3>
-                            <p>
-                                Ingresa directamente los datos del plan en el sistema.
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- FORMULARIO EXCEL -->
-            <div id="formExcel">
-
-                <div class="form-section">
-
-                    <div class="section-heading">
-                        <i class="bi bi-file-earmark-excel"></i>
-                        <div>
-                            <h3>Importar archivo Excel</h3>
-                            <p>Selecciona el periodo y el archivo correspondiente.</p>
-                        </div>
-                    </div>
-
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-                            <label class="form-label">Mes</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione un mes</option>
-                                <option>Enero</option>
-                                <option>Febrero</option>
-                                <option>Marzo</option>
-                                <option>Abril</option>
-                                <option>Mayo</option>
-                                <option>Junio</option>
-                                <option>Julio</option>
-                                <option>Agosto</option>
-                                <option>Septiembre</option>
-                                <option>Octubre</option>
-                                <option>Noviembre</option>
-                                <option>Diciembre</option>
-                            </select>
+                            <div>
+                                <h3>Carga el Plan de Estudio Aquí</h3>
+                                <p>Selecciona el periodo y el archivo correspondiente.</p>
+                            </div>
                         </div>
 
 
-                        <div class="col-md-6">
-                            <label class="form-label">Año</label>
-
-                            <select class="form-select">
-                                <option>2026</option>
-                                <option>2027</option>
-                                <option>2028</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Grado</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione el grado</option>
-                                <option>Primer grado</option>
-                                <option>Segundo grado</option>
-                                <option>Tercer grado</option>
-                                <option>Cuarto grado</option>
-                                <option>Quinto grado</option>
-                                <option>Sexto grado</option>
-                            </select>
-                        </div>
+                        <div class="row g-3">
+<div class="col-md-6">
+<label class="form-label">Docente</label>
+@if ((bool)(ViewBag.DocenteVinculado ?? false))
+{
+    <input class="form-control" value="@ViewBag.NombreDocente" readonly />
+}
+else
+{
+    @Html.DropDownListFor(x => x.IdDocente, (IEnumerable<SelectListItem>)ViewBag.Docentes,
+        "Seleccione un docente", new { @class = "form-select", required = "required" })
+}
+</div>
+<div class="col-md-6"><label class="form-label">Grupo</label>@Html.DropDownListFor(x=>x.IdGrupo,(IEnumerable<SelectListItem>)ViewBag.Grupos,"Seleccione un grupo",new {@class="form-select",required="required"})</div>
+<div class="col-12"><label class="form-label">Título del plan</label>@Html.TextBoxFor(x=>x.Titulo,new {@class="form-control",required="required",maxlength="200",placeholder="Ej. Plan mensual de Matemáticas"})</div>
 
 
-                        <div class="col-md-6">
-                            <label class="form-label">Asignatura</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione una asignatura</option>
-                                <option>Español</option>
-                                <option>Matemáticas</option>
-                                <option>Ciencias</option>
-                                <option>Estudios Sociales</option>
-                                <option>Inglés</option>
-                            </select>
-                        </div>
+                            <div class="col-md-6"><label class="form-label">Mes</label>@Html.DropDownListFor(x => x.Mes, Enumerable.Range(1, 12).Select(m => new SelectListItem { Value = m.ToString(), Text = new DateTime(2000, m, 1).ToString("MMMM", new System.Globalization.CultureInfo("es-CR")), Selected = Model != null && Model.Mes == m }), "Seleccione el mes", new { @class = "form-select", required = "required", id = "Periodo" })</div>
 
 
-                        <div class="col-12">
+                            <div class="col-md-6">
+                                <label class="form-label">Año</label>
 
-                            <label class="form-label">Archivo Excel</label>
+                                <select id="Anio" class="form-select"
+                                        name="Anio"
+                                        required>
 
-                            <div class="upload-box">
+                                    @{
+                                        int anioActual = DateTime.Now.Year;
+                                    }
 
-                                <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                                    @for (int anio = anioActual; anio <= anioActual + 5; anio++)
+                                    {
+                                        <option value="@anio">
+                                            @anio
+                                        </option>
+                                    }
 
-                                <h4>Selecciona tu archivo</h4>
+                                </select>
+                            </div>
 
-                                <p>
-                                    Formato permitido: .xlsx o .xls
-                                </p>
 
-                                <input type="file"
-                                       class="form-control"
-                                       accept=".xlsx,.xls" />
+                            <div class="col-md-6">
+                                <label class="form-label">Grado</label>
+                                <select id="Nivel" class="form-select"
+                                        name="Nivel"
+                                        required>
+
+                                    <option selected disabled>
+                                        Seleccione una opción
+                                    </option>
+
+                                    <option value="Preescolar">Preescolar</option>
+                                    <option value="Primer grado">Primer grado</option>
+                                    <option value="Segundo grado">Segundo grado</option>
+                                    <option value="Tercer grado">Tercer grado</option>
+                                    <option value="Cuarto grado">Cuarto grado</option>
+                                    <option value="Quinto grado">Quinto grado</option>
+                                    <option value="Sexto grado">Sexto grado</option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="form-label">Asignatura</label>
+
+                                <select id="Asignatura" class="form-select"
+                                        name="Asignatura"
+                                        required>
+
+                                    <option selected disabled>
+                                        Seleccione una opción
+                                    </option>
+
+                                    <option value="Español">Español</option>
+                                    <option value="Matemáticas">Matemáticas</option>
+                                    <option value="Ciencias">Ciencias</option>
+                                    <option value="Estudios Sociales">Estudios Sociales</option>
+                                    <option value="Inglés">Inglés</option>
+
+                                </select>
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label class="form-label">Archivo Excel o PDF</label>
+
+                                <div class="upload-box">
+
+                                    <i class="bi bi-cloud-arrow-up upload-icon"></i>
+
+                                    <h4>Selecciona tu archivo</h4>
+
+                                    <p>
+                                        Formato permitido: .xlsx,  .xls o .pdf
+                                    </p>
+
+                                    <input type="file"
+                                           name="archivo"
+                                           class="form-control"
+                                           accept=".xlsx,.xls,.pdf"
+                                           required />
+
+                                </div>
 
                             </div>
 
@@ -193,152 +187,84 @@
 
                 </div>
 
-            </div>
 
+                <!-- BOTONES -->
+                <div class="form-actions">
 
-            <!-- REGISTRO MANUAL -->
-            <div id="formManual" style="display:none;">
+                    <a href="@Url.Action("Index", "PlanesEstudio")"
+                       class="btn btn-cancel">
+                        Cancelar
+                    </a>
 
-                <div class="form-section">
-
-                    <div class="section-heading">
-
-                        <i class="bi bi-pencil-square"></i>
-
-                        <div>
-                            <h3>Registro manual</h3>
-                            <p>Ingresa los datos correspondientes al plan mensual.</p>
-                        </div>
-
-                    </div>
-
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-                            <label class="form-label">Mes</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione un mes</option>
-                                <option>Enero</option>
-                                <option>Febrero</option>
-                                <option>Marzo</option>
-                                <option>Abril</option>
-                                <option>Mayo</option>
-                                <option>Junio</option>
-                                <option>Julio</option>
-                                <option>Agosto</option>
-                                <option>Septiembre</option>
-                                <option>Octubre</option>
-                                <option>Noviembre</option>
-                                <option>Diciembre</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Año</label>
-
-                            <select class="form-select">
-                                <option>2026</option>
-                                <option>2027</option>
-                                <option>2028</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Grado</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione el grado</option>
-                                <option>Primer grado</option>
-                                <option>Segundo grado</option>
-                                <option>Tercer grado</option>
-                                <option>Cuarto grado</option>
-                                <option>Quinto grado</option>
-                                <option>Sexto grado</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Asignatura</label>
-
-                            <select class="form-select">
-                                <option selected disabled>Seleccione una asignatura</option>
-                                <option>Español</option>
-                                <option>Matemáticas</option>
-                                <option>Ciencias</option>
-                                <option>Estudios Sociales</option>
-                                <option>Inglés</option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-12">
-                            <label class="form-label">Objetivo de aprendizaje</label>
-
-                            <textarea class="form-control"
-                                      rows="3"
-                                      placeholder="Ingrese el objetivo de aprendizaje..."></textarea>
-                        </div>
-
-
-                        <div class="col-12">
-                            <label class="form-label">Contenidos</label>
-
-                            <textarea class="form-control"
-                                      rows="4"
-                                      placeholder="Ingrese los contenidos que se desarrollarán..."></textarea>
-                        </div>
-
-
-                        <div class="col-12">
-                            <label class="form-label">Actividades</label>
-
-                            <textarea class="form-control"
-                                      rows="4"
-                                      placeholder="Describa las actividades planeadas..."></textarea>
-                        </div>
-
-
-                        <div class="col-12">
-                            <label class="form-label">Evaluación</label>
-
-                            <textarea class="form-control"
-                                      rows="3"
-                                      placeholder="Indique cómo se evaluará el aprendizaje..."></textarea>
-                        </div>
-
-                    </div>
+                    <button type="submit"
+                            class="btn btn-cop-primary"
+                            onclick="return validarPlan();">
+                        <i class="bi bi-save me-1"></i>
+                        Guardar plan
+                    </button>
 
                 </div>
-
-            </div>
-
-
-            <!-- BOTONES -->
-            <div class="form-actions">
-
-                <a href="@Url.Action("Index", "PlanesEstudio")"
-                   class="btn btn-cancel">
-                    Cancelar
-                </a>
-
-                <button type="button"
-                        class="btn btn-cop-primary">
-                    <i class="bi bi-save me-1"></i>
-                    Guardar plan
-                </button>
-
-            </div>
-
+            }
         </div>
 
     </section>
 
+
 </main>
+
+
+<script>
+
+    function validarPlan() {
+
+        var periodo =
+            document.getElementById(
+                "Periodo").value;
+
+        var anio =
+            document.getElementById(
+                "Anio").value;
+
+        var nivel =
+            document.getElementById(
+                "Nivel").value;
+
+        var asignatura =
+            document.getElementById(
+                "Asignatura").value;
+
+        if (!periodo) {
+            alert(
+                "Debe seleccionar un período.");
+
+            return false;
+        }
+
+        if (anio === "Seleccione una opción") {
+            alert(
+                "Debe seleccionar un año.");
+
+            return false;
+        }
+
+        if (nivel === "Seleccione una opción") {
+            alert(
+                "Debe seleccionar un nivel.");
+
+            return false;
+        }
+
+        if (asignatura === "Seleccione una opción") {
+            alert(
+                "Debe seleccionar una asignatura.");
+
+            return false;
+        }
+
+        return true;
+    }
+
+</script>
 
 
 @section styles {
@@ -538,32 +464,3 @@
 
 }
 
-
-@section scripts {
-
-    <script>
-
-    function mostrarExcel() {
-
-        document.getElementById("formExcel").style.display = "block";
-        document.getElementById("formManual").style.display = "none";
-
-        document.getElementById("optionExcel").classList.add("active");
-        document.getElementById("optionManual").classList.remove("active");
-
-    }
-
-
-    function mostrarManual() {
-
-        document.getElementById("formExcel").style.display = "none";
-        document.getElementById("formManual").style.display = "block";
-
-        document.getElementById("optionManual").classList.add("active");
-        document.getElementById("optionExcel").classList.remove("active");
-
-    }
-
-    </script>
-
-}
