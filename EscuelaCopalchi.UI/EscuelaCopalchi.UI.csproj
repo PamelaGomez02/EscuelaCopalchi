@@ -170,15 +170,15 @@
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.MiGrupo.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Reportes.cs" />
     <Compile Include="Controllers\GestionNotas\GestionNotasController.cs" />
+    <Compile Include="Controllers\HomeController\HomeController.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
-    <Compile Include="Controllers\HomeController\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\PlanesEstudio\PlanesEstudioController.cs" />
-    <Compile Include="Controllers\Reportes\ReportesController.cs" />
     <Compile Include="Controllers\GestionMaterialController\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController\AsistenciaController.cs" />
+    <Compile Include="Controllers\Reportes\ReportesController.cs" />
     <Compile Include="Controllers\RolesController\RolesController.cs" />
     <Compile Include="Controllers\Usuarios\UsuariosController.cs" />
     <Compile Include="Datos\GestionAcademica\AccesoDatos.cs" />
@@ -329,10 +329,7 @@
     <Content Include="Views\RepositorioMaterial\_Formulario.cshtml" />
     <Content Include="Views\Error\AccesoDenegado.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
-    <Content Include="Views\Reportes\Index.cshtml" />
-    <Content Include="Views\Reportes\Traslado.cshtml" />
     <Content Include="Views\Monitoreo\_EstilosMonitoreo.cshtml" />
-    <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
     <Content Include="Views\Home\_HomeDashboardEstilos.cshtml" />
     <Content Include="Views\Home\IndexAdmin.cshtml" />
     <Content Include="Views\Home\IndexUsuario.cshtml" />
@@ -361,7 +358,6 @@
     <Content Include="Views\Roles\Asignar.cshtml" />
     <Content Include="Views\Roles\Crear.cshtml" />
     <Content Include="Views\Roles\Editar.cshtml" />
-    <Content Include="Views\Roles\Permisos.cshtml" />
     <Content Include="Views\GestionAcademica\MiGrupo.cshtml" />
     <Content Include="Views\GestionAcademica\Reportes.cshtml" />
     <Content Include="Views\Asistencia\Editar.cshtml" />
@@ -379,6 +375,10 @@
     <Content Include="Views\PlanesEstudio\Editar.cshtml" />
     <Content Include="Views\PlanesEstudio\Index.cshtml" />
     <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
+    <Content Include="Views\Reportes\Index.cshtml" />
+    <Content Include="Views\Reportes\Traslado.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
+    <Content Include="Views\Roles\Permisos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

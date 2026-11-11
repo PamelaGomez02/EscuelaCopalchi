@@ -4,6 +4,11 @@
     var ci = System.Globalization.CultureInfo.InvariantCulture;
 
     var est = Model.Estudiantes;
+    int totalClases = est.Sum(e => e.Clases);
+    int sinNotas = est.Count(e => !e.Promedio.HasValue);
+    int bajoAsistencia = est.Count(e => e.BajaAsistencia);
+    int bajoRendimiento = est.Count(e => e.BajoRendimiento);
+    int sinAlertas = est.Count(e => !e.EnRiesgo);
     int r90 = est.Count(e => e.Promedio >= 90);
     int r80 = est.Count(e => e.Promedio >= 80 && e.Promedio < 90);
     int r70 = est.Count(e => e.Promedio >= 70 && e.Promedio < 80);
@@ -20,6 +25,17 @@
 @section styles {
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
     <style>
+        .rp-header-note {color:#64748b;font-size:.9rem;margin:0}
+        .rp-card {box-shadow:0 4px 18px rgba(19,60,85,.035); transition:transform .15s ease;}
+        .rp-card:hover {transform:translateY(-2px)}
+        .rp-toolbar {display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}
+        .rp-toolbar select {max-width:130px}
+        .rp-pager {display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+        .rp-pager button {border:1px solid #dce4ed;border-radius:7px;background:#fff;color:#133c55;padding:5px 11px}
+        .rp-pager button.active {background:#133c55;color:#fff}
+        .rp-pager button:disabled {opacity:.4;cursor:not-allowed}
+        .rp-export {display:flex;align-items:end;gap:8px;flex-wrap:wrap}
+        .rp-export .form-select {min-width:170px}
         .rp-card { background:#fff; border:1px solid #e3e8ee; border-radius:10px; padding:16px 18px; height:100%; }
         .rp-card span { display:block; color:#6c757d; font-size:.8rem; }
         .rp-card h3 { margin:2px 0 0; color:#133C55; font-size:1.6rem; font-weight:700; }
@@ -52,7 +68,7 @@
             {
                 <a href="@Url.Action("Traslado")" class="btn gn-btn-out"><i class="bi bi-envelope-paper me-1"></i> Cartas de traslado</a>
             }
-            <a href="@Url.Action("ExportarRendimiento", new { grupo = Model.Grupo, buscar = Model.Buscar })" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i> Exportar a Excel</a>
+
         </div>
     </div>
 
@@ -97,11 +113,18 @@
         }
     </form>
 
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3"><div class="rp-card"><span>Estudiantes</span><h3>@est.Count</h3></div></div>
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-xl-3"><div class="rp-card"><span>Estudiantes</span><h3>@est.Count</h3></div></div>
         <div class="col-6 col-lg-3"><div class="rp-card"><span>Promedio general</span><h3>@(Model.PromedioGeneral.HasValue ? Model.PromedioGeneral.Value.ToString("0.#", ci) : "-")</h3></div></div>
         <div class="col-6 col-lg-3"><div class="rp-card"><span>Asistencia general</span><h3>@(Model.AsistenciaGeneral.HasValue ? Model.AsistenciaGeneral.Value.ToString("0.#", ci) + "%" : "-")</h3></div></div>
         <div class="col-6 col-lg-3"><div class="rp-card"><span>Requieren seguimiento</span><h3>@Model.EnRiesgo</h3></div></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Rendimiento bajo</span><h3>@bajoRendimiento</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Asistencia baja</span><h3>@bajoAsistencia</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Sin alertas</span><h3>@sinAlertas</h3></div></div>
+        <div class="col-6 col-lg-3"><div class="rp-card"><span>Sin calificaciones</span><h3>@sinNotas</h3></div></div>
     </div>
 
     <div class="row g-3 mb-4">
@@ -128,7 +151,19 @@
         </div>
     </div>
 
-    <div class="table-responsive gn-table-wrap mb-4">
+    <div class="rp-toolbar">
+        <div>
+            <h5 class="mb-1" style="color:#133c55;font-weight:700">Detalle de estudiantes</h5>
+            <small id="rpContador" class="text-muted">@est.Count estudiantes</small>
+        </div>
+        <div class="rp-export">
+            <label for="rpTamano" class="small text-muted">Filas</label>
+            <select id="rpTamano" class="form-select form-select-sm"><option value="10">10</option><option value="20">20</option><option value="50">50</option></select>
+            <button type="button" class="btn btn-outline-danger btn-sm" id="rpPdf"><i class="bi bi-file-earmark-pdf me-1"></i> PDF</button>
+            <button type="button" class="btn btn-outline-success btn-sm" id="rpExcel"><i class="bi bi-file-earmark-excel me-1"></i> Excel</button>
+        </div>
+    </div>
+    <div class="table-responsive gn-table-wrap mb-2">
         <table class="table align-middle gn-table" id="rpTabla">
             <thead>
                 <tr>
@@ -172,6 +207,7 @@
         </table>
     </div>
 
+    <div class="rp-toolbar mb-4"><span id="rpRango" class="small text-muted"></span><div id="rpPaginas" class="rp-pager"></div></div>
     <p class="text-muted small">
         Alerta por rendimiento: promedio menor a 70. Alerta por asistencia: menos de 80% (se descuentan solo las ausencias injustificadas).
     </p>
@@ -182,7 +218,7 @@
 </main>
 
 @section scripts {
-    <script src="~/Scripts/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script>
         (function () {
             var asig = @Html.Raw(jsAsig);
@@ -216,15 +252,46 @@
             }
 
             var filtro = document.getElementById('rpFiltro');
-            function aplicar() {
+            var tamano = document.getElementById('rpTamano');
+            var filas = Array.prototype.slice.call(document.querySelectorAll('#rpTabla tbody tr[data-riesgo]'));
+            var pagina = 1;
+            function visibles() {
                 var f = filtro.value;
-                document.querySelectorAll('#rpTabla tbody tr[data-riesgo]').forEach(function (tr) {
-                    var ok = f === 'todos' || (f === 'riesgo' && tr.dataset.riesgo === '1') ||
-                             (f === 'nota' && tr.dataset.nota === '1') || (f === 'asis' && tr.dataset.asis === '1');
-                    tr.style.display = ok ? '' : 'none';
+                return filas.filter(function (tr) {
+                    return f === 'todos' || (f === 'riesgo' && tr.dataset.riesgo === '1') ||
+                        (f === 'nota' && tr.dataset.nota === '1') || (f === 'asis' && tr.dataset.asis === '1');
                 });
             }
-            filtro.addEventListener('change', aplicar);
+            function dibujar() {
+                var v = visibles(), n = Number(tamano.value), paginas = Math.max(1, Math.ceil(v.length / n));
+                pagina = Math.min(pagina, paginas);
+                filas.forEach(function (tr) { tr.style.display = 'none'; });
+                v.slice((pagina-1)*n,pagina*n).forEach(function(tr){tr.style.display='';});
+                document.getElementById('rpContador').textContent = v.length + ' de ' + filas.length + ' estudiantes';
+                document.getElementById('rpRango').textContent = v.length ? 'Mostrando '+((pagina-1)*n+1)+'–'+Math.min(pagina*n,v.length)+' de '+v.length : 'Sin resultados';
+                var nav = document.getElementById('rpPaginas'); nav.innerHTML='';
+                function boton(txt,num,disabled,activo) {
+                    var b=document.createElement('button');b.type='button';b.textContent=txt;b.disabled=disabled;
+                    if(activo)b.className='active';
+                    b.addEventListener('click',function(){pagina=num;dibujar();});nav.appendChild(b);
+                }
+                boton('‹',pagina-1,pagina===1,false);
+                var desde=Math.max(1,pagina-2),hasta=Math.min(paginas,desde+4);
+                for(var i=desde;i<=hasta;i++)boton(String(i),i,false,i===pagina);
+                boton('›',pagina+1,pagina===paginas,false);
+            }
+            filtro.addEventListener('change',function(){pagina=1;dibujar();});
+            tamano.addEventListener('change',function(){pagina=1;dibujar();});
+            dibujar();
+            function exportar(formato) {
+                var url = '@Url.Action("ExportarSeleccion", "Reportes")';
+                var q = '?grupo=' + encodeURIComponent('@Model.Grupo') +
+                    '&buscar=' + encodeURIComponent(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Buscar ?? ""))) +
+                    '&filtro=' + encodeURIComponent(filtro.value) + '&formato=' + encodeURIComponent(formato);
+                window.location.href = url + q;
+            }
+            document.getElementById('rpPdf').addEventListener('click',function(){exportar('pdf');});
+            document.getElementById('rpExcel').addEventListener('click',function(){exportar('excel');});
         })();
     </script>
 }
