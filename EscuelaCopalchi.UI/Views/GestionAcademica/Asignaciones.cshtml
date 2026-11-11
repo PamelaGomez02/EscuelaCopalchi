@@ -1,4 +1,4 @@
-﻿@model EscuelaCopalchi.UI.Models.GestionAcademica.AsignacionesViewModel
+@model EscuelaCopalchi.UI.Models.GestionAcademica.AsignacionesViewModel
 @{
     ViewBag.Title = "Asignación de estudiantes";
 }
@@ -6,29 +6,24 @@
 <main>
 
     <section class="academic-header">
-
-        <div class="container">
-
-            <div class="academic-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Asignaciones</span>
-            </div>
-
-            <h1 class="academic-title">
+    <div class="container">
+        <div class="academic-heading-row">
+            <div>
+                <h1 class="academic-title">
                 <i class="bi bi-person-plus me-2"></i>
                 Asignación de estudiantes
             </h1>
-
-            <p class="academic-subtitle">
+                <p class="academic-subtitle">
                 Asigna estudiantes a grupos y gestiona cambios o traslados. Cada cambio queda en la bitácora y se notifica a los docentes.
             </p>
-
+            </div>
+            <div class="academic-heading-actions">
+                <a href="@Url.Action("Index", "GestionAcademica")" class="academic-back-btn" aria-label="Regresar a Gestión académica"><i class="bi bi-arrow-left"></i> Atrás</a>
+                
+            </div>
         </div>
-
-    </section>
+    </div>
+</section>
 
 
     <section class="container pb-5">
@@ -320,6 +315,85 @@
 </div>
 
 
+<style>
+.ga-pagination{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 16px;background:#fff;border:1px solid #dce5ef;border-top:0;border-radius:0 0 9px 9px}
+.ga-pagination-summary{color:#65768a;font-size:.82rem}
+.ga-pagination-controls{display:flex;gap:5px;flex-wrap:wrap}
+.ga-page-btn{border:1px solid #d6e1ed;background:#fff;color:#133c55;border-radius:6px;padding:6px 11px;font-size:.82rem;min-width:34px}
+.ga-page-btn:hover:not(:disabled){background:#eaf2fa}
+.ga-page-btn.active{background:#133c55;color:white;border-color:#133c55}
+.ga-page-btn:disabled{opacity:.45;cursor:not-allowed}
+</style>
+
+<script>
+(function () {
+    'use strict';
+    function iniciarPaginacion() {
+        var tablas = document.querySelectorAll('table.academic-table, table.preview-table');
+        Array.prototype.forEach.call(tablas, function (tabla, indice) {
+            var cuerpo = tabla.tBodies.length ? tabla.tBodies[0] : null;
+            if (!cuerpo) return;
+            var filas = Array.prototype.slice.call(cuerpo.rows);
+            // No paginar filas informativas, por ejemplo "Sin registros".
+            if (!filas.length || (filas.length === 1 && filas[0].querySelector('td[colspan]'))) return;
+            var porPagina = 10;
+            var pagina = 1;
+            var entrada = null;
+            if (tabla.id === 'tablaAulas') entrada = document.getElementById('buscarAula');
+            if (tabla.id === 'tablaEstudiantes') entrada = document.getElementById('buscarEstudiante');
+            var panel = document.createElement('div');
+            panel.className = 'ga-pagination';
+            panel.setAttribute('aria-label', 'Paginación de registros');
+            var resumen = document.createElement('span');
+            resumen.className = 'ga-pagination-summary';
+            var controles = document.createElement('div');
+            controles.className = 'ga-pagination-controls';
+            panel.appendChild(resumen);
+            panel.appendChild(controles);
+            var contenedor = tabla.closest('.table-responsive') || tabla;
+            contenedor.parentNode.insertBefore(panel, contenedor.nextSibling);
+            function boton(texto, destino, deshabilitado, actual) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'ga-page-btn' + (actual ? ' active' : '');
+                b.textContent = texto;
+                b.disabled = deshabilitado;
+                if (actual) b.setAttribute('aria-current', 'page');
+                b.addEventListener('click', function () { pagina = destino; pintar(); });
+                controles.appendChild(b);
+            }
+            function pintar() {
+                var texto = entrada ? entrada.value.toLocaleLowerCase().trim() : '';
+                var filtradas = filas.filter(function (fila) {
+                    return !texto || fila.textContent.toLocaleLowerCase().indexOf(texto) !== -1;
+                });
+                var total = filtradas.length;
+                var paginas = Math.max(1, Math.ceil(total / porPagina));
+                pagina = Math.min(Math.max(1, pagina), paginas);
+                filas.forEach(function (fila) { fila.style.display = 'none'; });
+                filtradas.slice((pagina - 1) * porPagina, pagina * porPagina).forEach(function (fila) {
+                    fila.style.display = '';
+                });
+                var inicio = total ? (pagina - 1) * porPagina + 1 : 0;
+                var fin = Math.min(pagina * porPagina, total);
+                resumen.textContent = 'Mostrando ' + inicio + '–' + fin + ' de ' + total + ' registros';
+                controles.textContent = '';
+                if (paginas <= 1) return;
+                boton('Anterior', pagina - 1, pagina === 1, false);
+                var desde = Math.max(1, pagina - 2), hasta = Math.min(paginas, desde + 4);
+                desde = Math.max(1, hasta - 4);
+                for (var n = desde; n <= hasta; n++) boton(String(n), n, false, n === pagina);
+                boton('Siguiente', pagina + 1, pagina === paginas, false);
+            }
+            if (entrada) entrada.addEventListener('input', function () { pagina = 1; pintar(); });
+            pintar();
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciarPaginacion);
+    else iniciarPaginacion();
+})();
+</script>
+
 @section scripts {
     <script>
         (function () {
@@ -577,6 +651,82 @@
             background: #fff3cd;
             color: #856404;
         }
+    
+        /* Diseño institucional uniforme: Usuarios / Roles / Estudiantes */
+        .academic-header {
+            background: transparent;
+            border-bottom: 0;
+            padding: 0;
+            margin: 14px 0 24px;
+        }
+        .academic-header > .container {
+            background: #fff;
+            border-bottom: 1px solid #e2e8ef;
+            padding: 22px 24px 24px;
+        }
+        .academic-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .academic-topbar .academic-breadcrumb {
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        .academic-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #fff;
+            color: #386FA4;
+            border: 1px solid #8795a4;
+            border-radius: 7px;
+            padding: 8px 14px;
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .academic-back-btn:hover, .academic-back-btn:focus {
+            background: #f4f7fa;
+            border-color: #133C55;
+            color: #133C55;
+        }
+        .academic-header .academic-title {
+            color: #133C55;
+            font-size: 1.55rem;
+            line-height: 1.3;
+            margin-bottom: 5px;
+        }
+        .academic-header .academic-subtitle {
+            color: #6c7888;
+            font-size: .9rem;
+            line-height: 1.55;
+        }
+        .academic-header .btn-cop-primary { border-radius: 6px; }
+        .academic-card, .summary-card, .form-card, .filters-card, .import-card,
+        .distribution-card { border-radius: 9px; }
+        @@media (max-width: 575px) {
+            .academic-header > .container { padding: 18px 16px; }
+            .academic-header .academic-title { font-size: 1.32rem; }
+            .academic-back-btn { padding: 7px 12px; }
+        }
+
     </style>
 
 }
+
+<style>
+/* Encabezado sin tarjeta blanca, consistente con Gestión Académica */
+main .academic-header { background: transparent !important; border: 0 !important; box-shadow: none !important; margin: 0 auto 18px !important; padding: 20px 0 0 !important; }
+main .academic-header > .container { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 12px !important; }
+main .academic-header .academic-title { margin: 0 0 4px !important; padding: 0 !important; font-size: 1.55rem !important; font-weight: 700 !important; color: #133c55 !important; }
+main .academic-header .academic-subtitle { margin: 0 !important; padding: 0 !important; color: #65758a !important; font-size: .9rem !important; }
+main .academic-header .academic-back-btn { display: inline-flex !important; align-items: center; gap: 5px; background: transparent !important; border: 1px solid #7e8c9b !important; color: #52647a !important; border-radius: 6px !important; padding: 8px 12px !important; text-decoration: none !important; white-space: nowrap; }
+main .academic-header .academic-back-btn:hover { background: #e8eef4 !important; }
+main .academic-header .academic-heading-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+main .academic-header .academic-heading-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+</style>

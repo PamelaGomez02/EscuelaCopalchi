@@ -17,31 +17,37 @@
 <main>
 
     <!-- ENCABEZADO -->
+
     <section class="roles-header">
         <div class="container">
-            
-<div class="cop-header-nav">
-            <div class="roles-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "Roles")">Roles</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Asignar rol</span>
-            </div>
-                <a href="@Url.Action("Index", "Roles")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
-            </div>
 
-            <h1 class="roles-title">
-                <i class="bi bi-person-plus me-2"></i>
-                Asignar rol
-            </h1>
+            <div class="d-flex flex-column flex-md-row
+                    justify-content-between
+                    align-items-md-center gap-3">
 
-            <p class="roles-subtitle">
-                Asigna el rol seleccionado a los usuarios del sistema.
-            </p>
+                <div>
+                    <h1 class="roles-title">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Asignar rol
+                    </h1>
+
+                    <p class="roles-subtitle">
+                        Asigna el rol seleccionado a los usuarios
+                        del sistema.
+                    </p>
+                </div>
+
+                <a href="@Url.Action("Index", "Roles")"
+                   class="btn btn-outline-secondary cop-back-btn">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Atrás
+                </a>
+
+            </div>
 
         </div>
     </section>
+
 
     <!-- CONTENIDO -->
     <section class="container pb-5">
@@ -242,37 +248,42 @@
             background: var(--cop-page-bg);
         }
 
+
         .roles-header {
-            background: white;
-            padding: 18px 0;
-            border-bottom: 1px solid #e3e8ee;
-            margin-bottom: 22px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 24px 0 18px;
+            margin-bottom: 0;
         }
-
-        .roles-breadcrumb {
-            display: flex;
-            gap: 7px;
-            align-items: center;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
-
-            .roles-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
 
         .roles-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
+            color: #133C55;
+            font-size: 1.65rem;
             font-weight: 700;
+            margin: 0 0 5px;
         }
 
         .roles-subtitle {
-            color: var(--cop-muted);
+            color: #6c757d;
+            font-size: .88rem;
             margin: 0;
         }
+
+        .cop-back-btn {
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: .88rem;
+            font-weight: 500;
+            background: white;
+            white-space: nowrap;
+        }
+
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386FA4;
+                color: #133C55;
+            }
 
         .assign-card {
             max-width: 800px;

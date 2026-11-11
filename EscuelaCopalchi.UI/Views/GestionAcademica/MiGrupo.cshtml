@@ -7,32 +7,36 @@
 <main>
 
     <section class="academic-header">
-
         <div class="container">
+            <div class="academic-heading-row">
 
-            <div class="academic-breadcrumb">
-                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Mis grupos</span>
+                <div>
+                    <h1 class="academic-title">
+                        <i class="bi bi-people me-2"></i>
+                        Mis grupos
+                    </h1>
+
+                    <p class="academic-subtitle">
+                        Consulta estudiantes, aula y horario
+                        de cada grupo a su cargo.
+                    </p>
+                </div>
+
+                <a href="@Url.Action("Index", "GestionAcademica")"
+                   class="btn btn-outline-secondary academic-back-btn">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Atrás
+                </a>
+
             </div>
-
-            <h1 class="academic-title">
-                <i class="bi bi-people me-2"></i>
-                Mis grupos
-            </h1>
-
-            <p class="academic-subtitle">
-                Consulta estudiantes, aula y horario de cada grupo a su cargo.
-            </p>
-
         </div>
-
     </section>
+
 
 
     <section class="container pb-5">
 
-   
+
 
         @if (!Model.TieneGrupos)
         {
@@ -335,36 +339,51 @@
             background: var(--cop-page-bg);
         }
 
+
         .academic-header {
-            background: white;
-            padding: 30px 0;
-            border-bottom: 1px solid #e3e8ee;
-            margin-bottom: 28px;
+            background: transparent;
+            border: none;
+            padding: 24px 0 18px;
+            margin-bottom: 0;
         }
 
-        .academic-breadcrumb {
+        .academic-heading-row {
             display: flex;
-            gap: 7px;
-            color: var(--cop-muted);
-            font-size: .85rem;
-            margin-bottom: 12px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
-
-            .academic-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
 
         .academic-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
+            color: #133C55;
+            font-size: 1.65rem;
             font-weight: 700;
+            margin: 0 0 5px;
         }
 
         .academic-subtitle {
-            color: var(--cop-muted);
+            color: #6c757d;
+            font-size: .88rem;
             margin: 0;
         }
+
+        .academic-back-btn {
+            flex-shrink: 0;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: .88rem;
+        }
+
+        @@media (max-width: 576px) {
+            .academic-heading-row {
+                flex-wrap: wrap;
+            }
+
+            .academic-back-btn {
+                margin-left: auto;
+            }
+        }
+
 
         .summary-card,
         .academic-card,

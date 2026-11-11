@@ -1,4 +1,4 @@
-﻿@using System
+@using System
 @using System.Linq
 @using System.Collections.Generic
 @model List<EscuelaCopalchi.UI.Models.Estudiantes.Estudiante>
@@ -13,15 +13,12 @@
     <section class="adec-header">
         <div class="container">
             <div class="adec-head-row">
-                <nav class="adec-crumb" aria-label="Ruta de navegación">
-                    <a href="@Url.Action("Index", "Home")">Inicio</a><i class="bi bi-chevron-right"></i>
-                    <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a><i class="bi bi-chevron-right"></i>
-                    <span>Alergias</span>
-                </nav>
+                <div>
+                    <h1><i class="bi bi-heart-pulse me-2"></i>Estudiantes con alergias</h1>
+                    <p>Consulta de alergias registradas en los expedientes estudiantiles.</p>
+                </div>
                 <a class="btn btn-outline-secondary adec-back" href="@Url.Action("Index", "Estudiantes")"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             </div>
-            <h1><i class="bi bi-heart-pulse me-2"></i>Estudiantes con alergias</h1>
-            <p>Consulta de alergias registradas en los expedientes estudiantiles.</p>
         </div>
     </section>
     <section class="container adec-content">
@@ -85,8 +82,8 @@
 </main>
 <style>
     .adec-page { background:#f4f7fa; min-height:calc(100vh - 90px); color:#133c55; padding-bottom:40px; }
-    .adec-header { background:#fff; padding:22px 0 24px; border-bottom:1px solid #e3eaf0; }
-    .adec-head-row { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:16px; }
+    .adec-header { background:transparent; padding:18px 0 0; border:0; }
+    .adec-head-row { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:0; }
     .adec-crumb { display:flex; gap:10px; align-items:center; color:#64748b; font-size:13px; flex-wrap:wrap; }
     .adec-crumb a { color:#386fa4; text-decoration:none; }
     .adec-crumb i { font-size:10px; }
@@ -94,7 +91,7 @@
     .adec-header h1 { font-size:27px; font-weight:750; margin:0 0 6px; }
     .adec-header h1 i { color:#386fa4; }
     .adec-header p { color:#64748b; margin:0; }
-    .adec-content { padding-top:26px; }
+    .adec-content { padding-top:22px; }
     .adec-stat { display:flex; align-items:center; gap:14px; padding:18px; background:#fff; border:1px solid #dfe7ee; border-radius:11px; min-height:86px; }
     .adec-stat-icon { background:#e5f1fb; color:#386fa4; padding:12px; border-radius:10px; font-size:20px; }
     .adec-stat-icon.green { background:#d9f0e5; color:#16754a; }

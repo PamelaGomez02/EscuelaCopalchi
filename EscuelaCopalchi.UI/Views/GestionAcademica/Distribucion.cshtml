@@ -1,29 +1,28 @@
-﻿@{
+@{
     ViewBag.Title = "Distribución automática";
 }
 
 <main>
 
     <section class="academic-header">
-        <div class="container">
-
-            <div class="academic-breadcrumb">
-                <a href="@Url.Action("Index", "GestionAcademica")">Gestión académica</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Distribución automática</span>
-            </div>
-
-            <h1 class="academic-title">
+    <div class="container">
+        <div class="academic-heading-row">
+            <div>
+                <h1 class="academic-title">
                 <i class="bi bi-diagram-3 me-2"></i>
                 Distribución automática
             </h1>
-
-            <p class="academic-subtitle">
+                <p class="academic-subtitle">
                 Genera una propuesta equilibrada según estudiantes y capacidad disponible.
             </p>
-
+            </div>
+            <div class="academic-heading-actions">
+                <a href="@Url.Action("Index", "GestionAcademica")" class="academic-back-btn" aria-label="Regresar a Gestión académica"><i class="bi bi-arrow-left"></i> Atrás</a>
+                
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
 
     <section class="container pb-5">
@@ -296,6 +295,82 @@
             border-color: var(--cop-primary);
             color: white;
         }
+    
+        /* Diseño institucional uniforme: Usuarios / Roles / Estudiantes */
+        .academic-header {
+            background: transparent;
+            border-bottom: 0;
+            padding: 0;
+            margin: 14px 0 24px;
+        }
+        .academic-header > .container {
+            background: #fff;
+            border-bottom: 1px solid #e2e8ef;
+            padding: 22px 24px 24px;
+        }
+        .academic-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .academic-topbar .academic-breadcrumb {
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        .academic-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #fff;
+            color: #386FA4;
+            border: 1px solid #8795a4;
+            border-radius: 7px;
+            padding: 8px 14px;
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .academic-back-btn:hover, .academic-back-btn:focus {
+            background: #f4f7fa;
+            border-color: #133C55;
+            color: #133C55;
+        }
+        .academic-header .academic-title {
+            color: #133C55;
+            font-size: 1.55rem;
+            line-height: 1.3;
+            margin-bottom: 5px;
+        }
+        .academic-header .academic-subtitle {
+            color: #6c7888;
+            font-size: .9rem;
+            line-height: 1.55;
+        }
+        .academic-header .btn-cop-primary { border-radius: 6px; }
+        .academic-card, .summary-card, .form-card, .filters-card, .import-card,
+        .distribution-card { border-radius: 9px; }
+        @@media (max-width: 575px) {
+            .academic-header > .container { padding: 18px 16px; }
+            .academic-header .academic-title { font-size: 1.32rem; }
+            .academic-back-btn { padding: 7px 12px; }
+        }
+
     </style>
 
 }
+
+<style>
+/* Encabezado sin tarjeta blanca, consistente con Gestión Académica */
+main .academic-header { background: transparent !important; border: 0 !important; box-shadow: none !important; margin: 0 auto 18px !important; padding: 20px 0 0 !important; }
+main .academic-header > .container { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 12px !important; }
+main .academic-header .academic-title { margin: 0 0 4px !important; padding: 0 !important; font-size: 1.55rem !important; font-weight: 700 !important; color: #133c55 !important; }
+main .academic-header .academic-subtitle { margin: 0 !important; padding: 0 !important; color: #65758a !important; font-size: .9rem !important; }
+main .academic-header .academic-back-btn { display: inline-flex !important; align-items: center; gap: 5px; background: transparent !important; border: 1px solid #7e8c9b !important; color: #52647a !important; border-radius: 6px !important; padding: 8px 12px !important; text-decoration: none !important; white-space: nowrap; }
+main .academic-header .academic-back-btn:hover { background: #e8eef4 !important; }
+main .academic-header .academic-heading-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+main .academic-header .academic-heading-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+</style>

@@ -1,4 +1,4 @@
-﻿
+
 @model EscuelaCopalchi.UI.Models.Usuarios.Usuario
 @using System.Collections.Generic
 @using EscuelaCopalchi.UI.Models.Usuarios
@@ -10,19 +10,18 @@
                 ?? new List<RolDropdownItem>();
 }
 
-<main>
-    <div class="cop-page-header">
-        <div>
-            <h2 class="cop-page-title"><i class="bi bi-pencil-square me-2"></i>Editar usuario</h2>
-            <p class="cop-page-subtitle">
-                Actualiza la información de
-                @Model.Nombre @Model.Apellido1.
-            </p>
+<main class="container cop-usuarios-page">
+    <header class="cop-usuarios-hero">
+        <div class="cop-usuarios-heading">
+            <div>
+                <h2 class="cop-page-title"><i class="bi bi-pencil-square me-2"></i>Editar usuario</h2>
+                <p class="cop-page-subtitle">Actualiza la información de @Model.Nombre @Model.Apellido1.</p>
+            </div>
+            <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary cop-back-btn">
+                <i class="bi bi-arrow-left me-1"></i> Atrás
+            </a>
         </div>
-        <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary cop-back-btn">
-            <i class="bi bi-arrow-left me-1"></i> Atrás
-        </a>
-    </div>
+    </header>
 
     @if (ViewBag.Error != null)
     {
@@ -360,6 +359,42 @@
         @@media (max-width: 576px) {
             .cop-page-header { align-items: flex-start; }
             .cop-back-btn { width: auto; }
+        }
+
+        /* Encabezado y contenedor uniformes con Gestión Académica */
+        body { background-color: #F4F7FA; }
+        .cop-usuarios-page { padding-top: 16px; padding-bottom: 36px; }
+        .cop-usuarios-hero {
+            background: transparent;
+            border: 0;
+            padding: 8px 0 18px;
+            margin-bottom: 18px;
+        }
+        .cop-usuarios-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .cop-usuarios-heading .cop-page-title {
+            font-size: 1.55rem;
+            line-height: 1.3;
+            margin: 0 0 4px;
+            color: #133C55;
+            font-weight: 700;
+        }
+        .cop-usuarios-heading .cop-page-subtitle {
+            color: #6c757d;
+            font-size: .9rem;
+            margin: 0;
+        }
+        .cop-usuarios-heading .cop-back-btn { flex-shrink: 0; }
+        .cop-usuarios-page .cop-form-card,
+        .cop-usuarios-page .cop-detail-wrapper { max-width: none; }
+        @@media (max-width: 576px) {
+            .cop-usuarios-hero { padding: 8px 0 16px; }
+            .cop-usuarios-heading { align-items: flex-start; }
+            .cop-usuarios-heading .cop-page-title { font-size: 1.3rem; }
         }
     </style>
 }

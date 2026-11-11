@@ -1,4 +1,4 @@
-﻿@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
+@model EscuelaCopalchi.UI.Models.Estudiantes.Estudiante
 
 @{
     ViewBag.Title = "Registrar estudiante";
@@ -6,40 +6,10 @@
 
 <main>
 
-    <section class="students-header">
-
-        <div class="container">
-
-            <div class="cop-nav-row">
-<div class="students-breadcrumb">
-
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-
-                <a href="@Url.Action("Index", "Estudiantes")">
-                    Estudiantes
-                </a>
-
-                <i class="bi bi-chevron-right"></i>
-
-                <span>Registrar estudiante</span>
-
-            </div>
-<a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
-</div>
-
-            <h1 class="students-title">
-                <i class="bi bi-person-plus me-2"></i>
-                Registrar estudiante
-            </h1>
-
-            <p class="students-subtitle">
-                Ingresa la información necesaria para matricular un nuevo estudiante.
-            </p>
-
-        </div>
-
-    </section>
+    <section class="students-header"><div class="container">
+<div class="cop-student-headline"><div><h1 class="students-title"><i class="bi bi-person-plus me-2"></i>Registrar estudiante</h1><p class="students-subtitle">Ingresa la información necesaria para matricular un nuevo estudiante.</p></div>
+<div class="cop-student-actions"><a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div></div>
+</div></section>
 
     <section class="container pb-5">
 
@@ -298,6 +268,35 @@
 @section styles {
 
     <style>
+        /* Encabezado unificado con Gestión Académica */
+        .students-header, .record-header {
+            background: transparent !important;
+            border: 0 !important;
+            padding: 0 !important;
+            margin: 0 0 22px !important;
+            box-shadow: none !important;
+        }
+        .students-header > .container, .record-header > .container {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 12px !important;
+            max-width: 1140px;
+        }
+        .cop-student-headline { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+        .cop-student-headline .students-title, .cop-student-headline .record-title { margin:0 0 4px !important; font-size:1.65rem; color:#133c55; font-weight:700; }
+        .cop-student-headline .students-subtitle, .cop-student-headline .record-subtitle { margin:0 !important; color:#64748b; }
+        .cop-student-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        .cop-student-actions .btn { border-radius:7px; white-space:nowrap; }
+        .cop-student-breadcrumb { display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:.82rem; color:#64748b; flex-wrap:wrap; }
+        .cop-student-breadcrumb a { color:#386fa4; text-decoration:none; }
+        .cop-student-breadcrumb i { font-size:.65rem; }
+        @@media (max-width: 576px) {
+          .students-header > .container, .record-header > .container { padding:0 12px !important; }
+          .cop-student-headline { align-items:flex-start; }
+          .cop-student-headline .students-title, .cop-student-headline .record-title { font-size:1.35rem; }
+        }
+
 
         :root {
             --cop-primary: #133C55;
@@ -409,6 +408,21 @@
         .students-header, .record-header { padding-top:22px !important; padding-bottom:22px !important; }
         .students-card, .form-card, .history-card { box-shadow:0 5px 20px rgba(19,60,85,.045); }
 
+        /* Encabezado sin tarjeta ni ruta de navegación */
+        .students-header, .record-header {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 20px 0 0 !important;
+            margin: 0 0 20px !important;
+        }
+        .students-header > .container, .record-header > .container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 12px !important;
+        }
+        .cop-student-headline { align-items: center; }
     </style>
 
 }
