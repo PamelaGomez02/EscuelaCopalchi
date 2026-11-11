@@ -6,21 +6,39 @@
 }
 @section styles {
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+    <style>
+
+    /* Encabezado compacto y consistente en todo Gestión de Notas */
+    body { background:#f4f7fa; }
+    .gn-header.cop-notes-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:14px 0 20px!important; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .cop-notes-header .gn-title { font-size:1.55rem!important; line-height:1.3; font-weight:700; color:#133c55; margin:0 0 4px; }
+    .cop-notes-header .gn-title i { color:#386fa4; }
+    .cop-notes-header .gn-sub { font-size:.9rem; color:#6c7888; line-height:1.5; margin:0; }
+    .cop-notes-header .cop-header-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+    .cop-notes-header .cop-back-btn { background:#fff; border:1px solid #cbd5e1; border-radius:6px; color:#475569; padding:.55rem 1rem; font-weight:600; white-space:nowrap; }
+    .cop-notes-header .cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
+    .cop-notes-header .btn { border-radius:6px; }
+    @@media (max-width:575px) { .cop-notes-header .gn-title { font-size:1.32rem!important; } }
+    .gn-index-tools { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .gn-index-tools #gnBuscar { flex:1 1 250px; min-width:180px; }
+    .gn-index-tools .gn-history-link { flex:0 0 auto; white-space:nowrap; }
+    @@media (max-width:575px) { .gn-index-tools .gn-history-link { width:100%; } }
+    </style>
 }
 <main>
 
 
-    <div class="gn-header">
+    <div class="gn-header cop-notes-header">
         <div>
-            <h2 class="gn-title">Gestión de notas</h2>
+            <h1 class="gn-title"><i class="bi bi-journal-check me-2"></i>Gestión de notas</h1>
             <p class="gn-sub">@(veTodo ? "Consulta de calificaciones de todos los grupos." : "Mis grupos y calificaciones.")</p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="@Url.Action("Historial")" class="btn gn-btn-out"><i class="bi bi-clock-history me-1"></i> Historial</a>
+        <div class="cop-header-actions">
+            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             @if (puedeRegistrar)
             {
-                <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i> Importar Excel</a>
-                <a href="@Url.Action("Registrar")" class="btn gn-btn"><i class="bi bi-pencil-square me-1"></i> Registrar notas</a>
+                <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i>Importar Excel</a>
+                <a href="@Url.Action("Registrar")" class="btn gn-btn"><i class="bi bi-pencil-square me-1"></i>Registrar notas</a>
             }
         </div>
     </div>
@@ -35,8 +53,9 @@
         <div class="col-sm-4"><div class="gn-stat"><span class="gn-stat-label">Notas pendientes</span><span class="gn-stat-value gn-stat-alert">@Model.Sum(g => g.Pendientes)</span></div></div>
     </div>
 
-    <div class="gn-filters">
+    <div class="gn-filters gn-index-tools">
         <input type="text" id="gnBuscar" class="form-control" placeholder="Buscar grupo@(veTodo ? " o docente" : "")...">
+        <a href="@Url.Action("Historial")" class="btn gn-btn-out gn-history-link"><i class="bi bi-clock-history me-1"></i>Ver historial de notas</a>
     </div>
 
     <div class="table-responsive gn-table-wrap">
@@ -79,9 +98,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-end mb-5">
-        <a href="@Url.Action("Index", "Home")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver al inicio</a>
-    </div>
+    
 </main>
 @section scripts {
     <script>

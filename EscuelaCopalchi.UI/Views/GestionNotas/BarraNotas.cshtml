@@ -1,9 +1,0 @@
-﻿@{
-    var ses = ViewBag.NotasSesion as EscuelaCopalchi.UI.Models.GestionNotas.NotasSesion;
-}
-@if (ses != null)
-{
-    <div class="gn-bar">
-        <span><i class="bi bi-person-circle me-1"></i> <strong>@ses.Nombre</strong> <span class="badge gn-badge gn-badge-ext ms-1">@ses.Rol</span></span>
-    </div>
-}

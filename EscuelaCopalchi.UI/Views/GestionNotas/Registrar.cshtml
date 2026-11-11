@@ -3,24 +3,207 @@
     ViewBag.Title = "Registrar notas";
     var ci = System.Globalization.CultureInfo.InvariantCulture;
     int k = 0;
+    decimal restante = Math.Max(0m, 100m - Model.PorcentajeTotal);
 }
 @section styles {
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
+    <style>
+        body {
+            background: #f4f7fa;
+        }
+
+        .gn-header.cop-notes-header {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 14px 0 24px !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .cop-notes-header .gn-title {
+            font-size: 1.55rem !important;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #133C55;
+            margin: 0 0 4px;
+        }
+
+            .cop-notes-header .gn-title i {
+                color: #386FA4;
+            }
+
+        .cop-notes-header .gn-sub {
+            font-size: .9rem;
+            color: #6c7888;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .cop-notes-header .cop-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cop-notes-header .cop-back-btn {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            color: #475569;
+            padding: .55rem 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+            .cop-notes-header .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386FA4;
+                color: #133C55;
+            }
+
+        .cop-notes-header .btn {
+            border-radius: 6px;
+        }
+
+        .gn-rubros-panel {
+            background: #fff;
+            border: 1px solid #dce5ee;
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin: 18px 0;
+            box-shadow: 0 4px 16px rgba(19,60,85,.045)
+        }
+
+        .gn-rubros-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 17px
+        }
+
+            .gn-rubros-head h2 {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #133c55;
+                margin: 0 0 4px
+            }
+
+            .gn-rubros-head p {
+                font-size: .84rem;
+                color: #64748b;
+                margin: 0
+            }
+
+        .gn-rubros-stats {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 12px;
+            margin-bottom: 15px
+        }
+
+        .gn-rubros-stat {
+            background: #f8fafc;
+            border: 1px solid #e8eef4;
+            border-radius: 10px;
+            padding: 12px 14px
+        }
+
+            .gn-rubros-stat span {
+                display: block;
+                color: #64748b;
+                font-size: .78rem;
+                margin-bottom: 4px
+            }
+
+            .gn-rubros-stat strong {
+                font-size: 1.3rem;
+                color: #133c55
+            }
+
+        .gn-rubros-progress {
+            height: 11px;
+            border-radius: 99px;
+            background: #e6edf5;
+            overflow: hidden;
+            margin-bottom: 10px
+        }
+
+            .gn-rubros-progress > div {
+                height: 100%;
+                background: #386fa4;
+                border-radius: 99px;
+                transition: width .2s
+            }
+
+        .gn-rubros-help {
+            font-size: .83rem;
+            color: #64748b;
+            margin-bottom: 15px
+        }
+
+        .gn-rubros-form {
+            border-top: 1px solid #edf1f5;
+            padding-top: 16px;
+            margin-top: 12px
+        }
+
+            .gn-rubros-form .form-label {
+                font-size: .8rem;
+                font-weight: 650;
+                color: #475569
+            }
+
+        .gn-rubros-note {
+            font-size: .82rem;
+            color: #64748b;
+            margin-top: 10px
+        }
+
+        @@media (max-width:650px) {
+            .gn-rubros-stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+                .gn-rubros-stats .gn-rubros-stat:first-child {
+                    grid-column: span 2
+                }
+        }
+
+        @@media (max-width:575px) {
+            .cop-notes-header .gn-title {
+                font-size: 1.32rem !important;
+            }
+        }
+    </style>
 }
 <main>
 
 
-    <div class="gn-header">
+    <div class="gn-header cop-notes-header">
         <div>
-            <h2 class="gn-title">Registrar notas</h2>
+            <h1 class="gn-title"><i class="bi bi-pencil-square me-2"></i>Registrar notas</h1>
             <p class="gn-sub">Solo el docente de cada grupo puede ingresar o modificar calificaciones.</p>
         </div>
-        <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i> Importar Excel</a>
+        <div class="cop-header-actions">
+            <a href="@Url.Action("Index", "GestionNotas")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
+            <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i>Importar Excel</a>
+        </div>
     </div>
 
-    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
-    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
-    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+    @if (TempData["Success"] != null)
+    {<div class="alert alert-success">@TempData["Success"]</div>}
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
+    @if (ViewBag.Error != null)
+    {<div class="alert alert-danger">@ViewBag.Error</div>}
 
     @if (Model.Grupos.Count > 0)
     {
@@ -53,28 +236,43 @@
             </div>
         </form>
 
-        <div class="gn-card">
-            <div class="d-flex align-items-center flex-wrap gap-3">
-                <button type="button" class="btn gn-btn-accent" style="background:#2E9E6B;border-color:#2E9E6B;color:#fff;font-weight:600" data-bs-toggle="collapse" data-bs-target="#gnNuevaEval"><i class="bi bi-plus-circle me-1"></i> Crear evaluación</button>
-                <span class="text-muted small">Porcentaje usado: <strong>@Model.PorcentajeTotal.ToString("0.##", ci)%</strong> de 100%</span>
+        <section class="gn-rubros-panel" aria-label="Configuración de rubros de evaluación">
+            <div class="gn-rubros-head">
+                <div>
+                    <h2><i class="bi bi-sliders me-2" style="color:#386fa4"></i>Distribución de evaluaciones</h2>
+                    <p>Agrega tantos rubros como necesites para esta asignatura y trimestre.</p>
+                </div>
+                <button type="button" class="btn gn-btn" data-bs-toggle="collapse" data-bs-target="#gnNuevaEval" aria-expanded="false" aria-controls="gnNuevaEval" @(restante <= 0 ? "disabled" : "")>
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo rubro
+                </button>
             </div>
-            <div class="collapse mt-3" id="gnNuevaEval">
-                @using (Html.BeginForm("CrearEvaluacion", "GestionNotas", FormMethod.Post))
+            <div class="gn-rubros-stats">
+                <div class="gn-rubros-stat"><span>Porcentaje asignado</span><strong>@Model.PorcentajeTotal.ToString("0.##", ci)%</strong></div>
+                <div class="gn-rubros-stat"><span>Porcentaje disponible</span><strong id="gnDisponible">@restante.ToString("0.##", ci)%</strong></div>
+                <div class="gn-rubros-stat"><span>Rubros creados</span><strong>@Model.Evaluaciones.Count</strong></div>
+            </div>
+            <div class="gn-rubros-progress" role="progressbar" aria-label="Porcentaje asignado" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@Model.PorcentajeTotal.ToString("0.##", ci)">
+                <div style="width:@Math.Min(100m, Math.Max(0m, Model.PorcentajeTotal)).ToString("0.##", ci)%"></div>
+            </div>
+            <p class="gn-rubros-help">@((restante > 0) ? "Todavía puedes distribuir el porcentaje restante entre nuevas evaluaciones." : "Ya se distribuyó el 100% de la calificación.")</p>
+            <div class="collapse" id="gnNuevaEval">
+                @using (Html.BeginForm("CrearEvaluacion", "GestionNotas", FormMethod.Post, new { id = "gnFormNuevaEval", @class = "gn-rubros-form" }))
                 {
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="idGrupo" value="@Model.IdGrupo" />
                     <input type="hidden" name="asignatura" value="@Model.Asignatura" />
                     <input type="hidden" name="trimestre" value="@Model.Trimestre" />
-                    <div class="row g-2">
-                        <div class="col-md-4"><input name="nombre" class="form-control" placeholder="Nombre (ej. Examen 1)" required maxlength="100" /></div>
-                        <div class="col-md-2"><input name="porcentaje" class="form-control" placeholder="% valor" required /></div>
-                        <div class="col-md-2"><input name="notaMaxima" class="form-control" value="100" placeholder="Nota máx." /></div>
-                        <div class="col-md-2"><input type="date" name="fecha" class="form-control" /></div>
-                        <div class="col-md-2"><button class="btn gn-btn w-100">Crear</button></div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4"><label class="form-label">Nombre del rubro</label><input name="nombre" class="form-control" placeholder="Ej. Proyecto, tarea o examen" required maxlength="100" /></div>
+                        <div class="col-md-2"><label class="form-label">Porcentaje (%)</label><input name="porcentaje" id="gnNuevoPct" type="number" min="0.01" max="@restante.ToString("0.##", ci)" step="0.01" class="form-control" placeholder="Ej. 5" required /></div>
+                        <div class="col-md-2"><label class="form-label">Nota máxima</label><input name="notaMaxima" type="number" min="0.01" step="0.01" class="form-control" value="100" required /></div>
+                        <div class="col-md-2"><label class="form-label">Fecha</label><input type="date" name="fecha" class="form-control" /></div>
+                        <div class="col-md-2"><button type="submit" class="btn gn-btn w-100">Crear rubro</button></div>
                     </div>
+                    <div class="gn-rubros-note" id="gnNotaRestante" aria-live="polite">Disponible para este rubro: @restante.ToString("0.##", ci)%.</div>
                 }
             </div>
-        </div>
+        </section>
 
         if (Model.Evaluaciones.Count == 0)
         {
@@ -99,10 +297,15 @@
                                         @e.Nombre
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 gn-ev-edit" title="Editar evaluación"
                                                 data-id="@e.IdEvaluacion" data-nombre="@e.Nombre" data-pct="@e.Porcentaje.ToString("0.##", ci)"
-                                                data-max="@e.NotaMaxima.ToString("0.##", ci)" data-fecha="@(e.Fecha.HasValue ? e.Fecha.Value.ToString("yyyy-MM-dd") : "")"><i class="bi bi-pencil"></i></button>
+                                                data-max="@e.NotaMaxima.ToString("0.##", ci)" data-fecha="@(e.Fecha.HasValue ? e.Fecha.Value.ToString("yyyy-MM-dd") : "")">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
                                         <button type="button" class="btn btn-link btn-sm p-0 gn-ev-del text-danger" title="Eliminar evaluación"
-                                                data-id="@e.IdEvaluacion" data-nombre="@e.Nombre"><i class="bi bi-trash"></i></button>
-                                        <span class="gn-pct">@e.Porcentaje.ToString("0.##", ci)% · máx @e.NotaMaxima.ToString("0.##", ci)</span></th>
+                                                data-id="@e.IdEvaluacion" data-nombre="@e.Nombre">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <span class="gn-pct">@e.Porcentaje.ToString("0.##", ci)% · máx @e.NotaMaxima.ToString("0.##", ci)</span>
+                                    </th>
                                 }
                                 <th class="text-center">Nota final</th>
                             </tr>
@@ -187,6 +390,23 @@
 </main>
 @section scripts {
     <script>
+        (function () {
+            var input = document.getElementById('gnNuevoPct');
+            var form = document.getElementById('gnFormNuevaEval');
+            var nota = document.getElementById('gnNotaRestante');
+            var disponible = @restante.ToString("0.##", ci);
+            if (!input || !form || !nota) return;
+            function actualizar() {
+                var valor = Number(input.value || 0);
+                var queda = Math.round((disponible - valor) * 100) / 100;
+                var valido = valor > 0 && queda >= -0.00001;
+                input.setCustomValidity(valido || !input.value ? '' : 'El porcentaje debe ser mayor que 0 y no superar el disponible.');
+                nota.textContent = input.value ? 'Después de crear este rubro quedará ' + Math.max(0, queda).toFixed(2) + '% disponible.' : 'Disponible para este rubro: ' + disponible.toFixed(2) + '%.';
+                nota.style.color = queda < 0 ? '#b42318' : '#64748b';
+            }
+            input.addEventListener('input', actualizar);
+            form.addEventListener('submit', function (e) { actualizar(); if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); } });
+        })();
         document.querySelectorAll('.gn-input').forEach(function (i) {
             i.addEventListener('input', function () {
                 var v = parseFloat(this.value.replace(',', '.')), m = parseFloat(this.dataset.max);
