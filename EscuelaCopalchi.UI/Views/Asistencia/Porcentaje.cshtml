@@ -10,344 +10,294 @@
 
 <main>
 
+
     <section class="attendance-header">
         <div class="container">
 
-            <div class="attendance-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "Asistencia")">Asistencia</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Porcentaje</span>
-            </div>
+            <div class="d-flex justify-content-between
+                    align-items-center gap-3 flex-wrap">
 
-            <h1 class="attendance-title">
-                <i class="bi bi-percent me-2"></i>
-                Porcentaje de asistencia
-            </h1>
+                <div>
+                    <h1 class="attendance-title mb-1">
+                        <i class="bi bi-percent me-2"></i>
+                        Porcentaje de asistencia
+                    </h1>
 
-            <p class="attendance-subtitle">
-                Calcula el porcentaje de asistencia de cada estudiante del grupo.
-                Cuentan como asistencia las presencias y las tardanzas; las ausencias, justificadas o no, cuentan como inasistencia.
-            </p>
-            <div class="attendance-header-actions mt-3">
-                <a href="@Url.Action("Index", "Asistencia")" class="btn cop-back-button"><i class="bi bi-arrow-left me-1"></i> Atrás</a>
+                    <p class="attendance-subtitle mb-0">
+                        Calcula el porcentaje de asistencia de cada estudiante del grupo.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <a href="@Url.Action("Index", "Asistencia")"
+                       class="btn btn-outline-secondary cop-back-btn">
+                        <i class="bi bi-arrow-left me-1"></i>Atrás
+                    </a>
+                </div>
+
             </div>
 
         </div>
     </section>
 
 
-    <section class="container pb-5">
 
+    <section class="container pb-5 percentage-page">
         @if (ViewBag.Error != null)
         {
-            <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error
-            </div>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i> @ViewBag.Error</div>
         }
 
-        <div class="history-card">
-
-            <!-- FILTROS -->
-            <form method="get" action="@Url.Action("Porcentaje", "Asistencia")" class="filters">
-
+        <div class="filter-panel">
+            <div class="panel-heading">
+                <div class="panel-heading-icon"><i class="bi bi-sliders"></i></div>
                 <div>
-                    <small class="text-muted d-block">Grupo</small>
-                    <select name="grupo" class="form-select">
+                    <h2>Filtros de consulta</h2>
+                    <p>Selecciona el grupo y, si lo necesitas, un período para analizar la asistencia.</p>
+                </div>
+            </div>
+            <form method="get" action="@Url.Action("Porcentaje", "Asistencia")" class="percentage-filters">
+                <div class="filter-field">
+                    <label for="grupo" class="form-label">Grupo <span class="text-danger">*</span></label>
+                    <select name="grupo" id="grupo" class="form-select" required>
                         <option value="">Seleccione un grupo</option>
                         @foreach (var g in Model.Grupos)
                         {
-                            <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">
-                                @g.Grupo (@g.Anio)
-                            </option>
+                            <option value="@g.IdGrupo" selected="@(g.IdGrupo == Model.IdGrupo ? "selected" : null)">@g.Grupo (@g.Anio)</option>
                         }
                     </select>
                 </div>
-
-                <div>
-                    <small class="text-muted d-block">Desde</small>
-                    <input type="date" name="desde" class="form-control" value="@desdeIso" />
+                <div class="filter-field">
+                    <label for="desde" class="form-label">Fecha inicial</label>
+                    <input type="date" name="desde" id="desde" class="form-control" value="@desdeIso" />
                 </div>
-
-                <div>
-                    <small class="text-muted d-block">Hasta</small>
-                    <input type="date" name="hasta" class="form-control" value="@hastaIso" />
+                <div class="filter-field">
+                    <label for="hasta" class="form-label">Fecha final</label>
+                    <input type="date" name="hasta" id="hasta" class="form-control" value="@hastaIso" />
                 </div>
-
-                <div class="d-flex align-items-end">
-                    <button type="submit" class="btn btn-cop-primary">
-                        <i class="bi bi-calculator me-1"></i>
-                        Calcular
-                    </button>
+                <div class="filter-actions">
+                    <span class="filter-hint"><i class="bi bi-info-circle me-1"></i>Sin fechas se incluyen todos los registros disponibles.</span>
+                    <button type="submit" class="btn btn-cop-primary"><i class="bi bi-calculator me-2"></i>Calcular porcentaje</button>
                 </div>
-
             </form>
+        </div>
 
+        <div class="calculation-note">
+            <i class="bi bi-info-circle"></i>
+            <span><strong>Criterio de cálculo:</strong> las presencias y tardanzas cuentan como asistencia; las ausencias, justificadas o no, cuentan como inasistencia.</span>
+        </div>
 
-            @if (!Model.Consultado)
-            {
-                <p class="text-muted p-4 mb-0">
-                    Seleccione un grupo y, si desea, un rango de fechas para calcular el porcentaje.
-                    Sin fechas se calcula con todos los registros.
-                </p>
-            }
-            else
-            {
-                <!-- RESUMEN DEL GRUPO -->
-                <div class="student-summary">
-                    <div>
-                        <span>Grupo</span>
-                        <strong>@Model.NombreGrupo</strong>
-                    </div>
-                    <div>
-                        <span>Presentes</span>
-                        <strong>@r.Presentes</strong>
-                    </div>
-                    <div>
-                        <span>Ausencias</span>
-                        <strong>@r.Ausentes</strong>
-                    </div>
-                    <div>
-                        <span>Justificadas</span>
-                        <strong>@r.Justificados</strong>
-                    </div>
-                    <div>
-                        <span>Tardanzas</span>
-                        <strong>@r.Tardanzas</strong>
-                    </div>
-                    <div class="percentage-box">
-                        <span>Porcentaje del grupo</span>
-                        <strong>@(r.Porcentaje.HasValue ? r.Porcentaje.Value.ToString("0.##") + "%" : "—")</strong>
-                    </div>
+        @if (!Model.Consultado)
+        {
+            <div class="empty-results" role="status">
+                <div class="empty-icon"><i class="bi bi-bar-chart-line"></i></div>
+                <h2>Resultados de asistencia</h2>
+                <p>Selecciona un grupo y presiona <strong>Calcular porcentaje</strong> para visualizar el resumen y los resultados de cada estudiante.</p>
+            </div>
+        }
+        else
+        {
+            <div class="results-heading">
+                <div>
+                    <h2><i class="bi bi-graph-up-arrow me-2"></i>Resultados de asistencia</h2>
+                    <p>Resumen del grupo y detalle por estudiante.</p>
                 </div>
+            </div>
 
-                if (!Model.Filas.Any())
+            <div class="summary-grid">
+                <div class="metric-card metric-group"><span>Grupo consultado</span><strong>@Model.NombreGrupo</strong><i class="bi bi-people"></i></div>
+                <div class="metric-card"><span>Presentes</span><strong>@r.Presentes</strong><i class="bi bi-check-circle metric-green"></i></div>
+                <div class="metric-card"><span>Ausencias</span><strong>@r.Ausentes</strong><i class="bi bi-x-circle metric-red"></i></div>
+                <div class="metric-card"><span>Justificadas</span><strong>@r.Justificados</strong><i class="bi bi-file-earmark-check metric-blue"></i></div>
+                <div class="metric-card"><span>Tardanzas</span><strong>@r.Tardanzas</strong><i class="bi bi-clock metric-amber"></i></div>
+                <div class="metric-card metric-percentage"><span>Porcentaje del grupo</span><strong>@(r.Porcentaje.HasValue ? r.Porcentaje.Value.ToString("0.##") + "%" : "—")</strong><i class="bi bi-percent"></i></div>
+            </div>
+
+            <div class="results-panel">
+                <div class="results-panel-heading">
+                    <div><h3>Detalle por estudiante</h3><p>Consulta los registros y el porcentaje individual de asistencia.</p></div>
+                    <span class="result-count">@Model.Filas.Count estudiante(s)</span>
+                </div>
+                @if (!Model.Filas.Any())
                 {
-                    <div class="text-center p-4" role="status">
-                        <i class="bi bi-clipboard-data fs-1 text-secondary"></i>
-                        <h5 class="fw-semibold mt-2">No se encontraron resultados</h5>
-                        <p class="text-muted mb-0">No hay datos disponibles para calcular el porcentaje de asistencia con los filtros seleccionados. Verifica el grupo y el rango de fechas.</p>
-                    </div>
+                    <div class="empty-table" role="status"><i class="bi bi-clipboard-data"></i><h4>No se encontraron resultados</h4><p>No hay datos disponibles con los filtros seleccionados. Verifica el grupo y el rango de fechas.</p></div>
                 }
                 else
                 {
-                    <!-- UNA FILA POR ESTUDIANTE -->
                     <div class="table-responsive">
-                        <table class="table history-table align-middle">
-
-                            <thead>
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th class="text-center">Registros</th>
-                                    <th class="text-center">Presentes</th>
-                                    <th class="text-center">Tardanzas</th>
-                                    <th class="text-center">Justificadas</th>
-                                    <th class="text-center">Ausentes</th>
-                                    <th style="min-width:200px;">% Asistencia</th>
-                                    <th class="text-end">Detalle</th>
-                                </tr>
-                            </thead>
-
+                        <table class="table percentage-table align-middle">
+                            <thead><tr>
+                                <th>Estudiante</th><th class="text-center">Registros</th><th class="text-center">Presentes</th><th class="text-center">Tardanzas</th><th class="text-center">Justificadas</th><th class="text-center">Ausentes</th><th style="min-width:190px">% Asistencia</th><th class="text-end">Detalle</th>
+                            </tr></thead>
                             <tbody>
-                                @foreach (var f in Model.Filas)
-                                {
-                                    <tr>
-                                        <td><strong>@f.Estudiante</strong></td>
-                                        <td class="text-center">@f.TotalRegistros</td>
-                                        <td class="text-center">@f.Presentes</td>
-                                        <td class="text-center">@f.Tardanzas</td>
-                                        <td class="text-center">@f.Justificados</td>
-                                        <td class="text-center">@f.Ausentes</td>
-                                        <td>
-                                            @if (f.Porcentaje.HasValue)
-                                            {
-                                                <div class="pct-cell">
-                                                    <div class="pct-bar">
-                                                        <div class="pct-fill"
-                                                             style="width:@(f.Porcentaje.Value.ToString("0.##", CultureInfo.InvariantCulture))%"></div>
-                                                    </div>
-                                                    <strong>@f.Porcentaje.Value.ToString("0.##")%</strong>
+                            @foreach (var f in Model.Filas)
+                            {
+                                <tr>
+                                    <td class="student-name">@f.Estudiante</td>
+                                    <td class="text-center">@f.TotalRegistros</td>
+                                    <td class="text-center">@f.Presentes</td>
+                                    <td class="text-center">@f.Tardanzas</td>
+                                    <td class="text-center">@f.Justificados</td>
+                                    <td class="text-center">@f.Ausentes</td>
+                                    <td>
+                                        @if (f.Porcentaje.HasValue)
+                                        {
+                                            <div class="pct-cell">
+                                                <div class="pct-bar" role="progressbar" aria-label="Porcentaje de asistencia de @f.Estudiante" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@(f.Porcentaje.Value.ToString("0.##", CultureInfo.InvariantCulture))">
+                                                    <div class="pct-fill" style="width:@(f.Porcentaje.Value.ToString("0.##", CultureInfo.InvariantCulture))%"></div>
                                                 </div>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">Sin registros</span>
-                                            }
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="@Url.Action("Historial", "Asistencia", new { grupo = Model.IdGrupo, estudiante = f.IdEstudiante, desde = desdeIso, hasta = hastaIso })"
-                                               class="btn btn-sm btn-outline-secondary" title="Ver historial">
-                                                <i class="bi bi-clock-history"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
+                                                <strong>@f.Porcentaje.Value.ToString("0.##")%</strong>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Sin registros</span>
+                                        }
+                                    </td>
+                                    <td class="text-end"><a href="@Url.Action("Historial", "Asistencia", new { grupo = Model.IdGrupo, estudiante = f.IdEstudiante, desde = desdeIso, hasta = hastaIso })" class="btn btn-sm btn-outline-secondary detail-btn" title="Ver historial de @f.Estudiante" aria-label="Ver historial de @f.Estudiante"><i class="bi bi-clock-history"></i></a></td>
+                                </tr>
+                            }
                             </tbody>
-
                         </table>
                     </div>
                 }
-            }
-
-        </div>
-
+            </div>
+        }
     </section>
 
 </main>
 
 @section styles {
-    <style>
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
+<style>
+    :root { --cop-primary:#133C55; --cop-secondary:#386FA4; --cop-page-bg:#f4f7fa; }
+    body { background:var(--cop-page-bg); }
+    .attendance-header { background:transparent; border:0; box-shadow:none; padding:0; margin:14px 0 24px; }
+    .attendance-header > .container { padding:0 12px; }
+    .attendance-title { color:#133C55; font-size:1.55rem; line-height:1.3; font-weight:700; margin:0; }
+    .attendance-title i { color:#386FA4; }
+    .attendance-subtitle { color:#6c7888; font-size:.9rem; line-height:1.55; margin:0; }
+    .attendance-header .btn { border-radius:6px; }
+    .cop-back-btn { font-weight:600; padding:.55rem 1rem; white-space:nowrap; background:#fff; }
+    .cop-back-btn:hover { background:#edf3f8; border-color:#386FA4; color:#133C55; }
+    .percentage-page { max-width:1140px; }
+    .filter-panel,.empty-results,.results-panel { background:#fff; border:1px solid #e3e8ee; border-radius:10px; box-shadow:0 3px 14px rgba(19,60,85,.04); }
+    .filter-panel { overflow:hidden; }
+    .panel-heading { display:flex; gap:12px; align-items:center; padding:20px 24px; border-bottom:1px solid #edf0f3; }
+    .panel-heading-icon { flex:0 0 40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:9px; background:#e6f1fb; color:#386FA4; font-size:1.15rem; }
+    .panel-heading h2,.results-heading h2 { color:#133C55; font-size:1.08rem; font-weight:700; margin:0 0 4px; }
+    .panel-heading p,.results-heading p,.results-panel-heading p { margin:0; color:#64748b; font-size:.85rem; }
+    .percentage-filters { display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:18px; padding:22px 24px; }
+    .filter-field { min-width:0; }
+    .filter-field .form-label { display:block; font-size:.85rem; font-weight:600; color:#344054; margin-bottom:7px; }
+    .filter-field .form-control,.filter-field .form-select { width:100%; min-height:41px; border-color:#dce3eb; border-radius:7px; }
+    .filter-actions { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding-top:2px; }
+    .filter-hint { color:#64748b; font-size:.81rem; }
+    .btn-cop-primary { background:#133C55; border:1px solid #133C55; color:#fff; border-radius:7px; font-weight:600; padding:9px 16px; }
+    .btn-cop-primary:hover,.btn-cop-primary:focus { background:#386FA4; border-color:#386FA4; color:#fff; }
+    .form-control:focus,.form-select:focus { border-color:#59a5d8; box-shadow:0 0 0 .2rem rgba(56,111,164,.13); }
+    .calculation-note { display:flex; align-items:flex-start; gap:10px; margin:15px 0 24px; color:#5d6d7e; font-size:.84rem; line-height:1.55; }
+    .calculation-note i { color:#386FA4; margin-top:2px; }
+    .empty-results { text-align:center; padding:42px 24px; }
+    .empty-icon { width:58px; height:58px; border-radius:50%; background:#e6f1fb; color:#386FA4; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:1.65rem; }
+    .empty-results h2 { font-size:1.12rem; font-weight:700; color:#133C55; margin:0 0 8px; }
+    .empty-results p { max-width:540px; margin:0 auto; font-size:.9rem; color:#64748b; line-height:1.65; }
+    .results-heading { margin:26px 0 15px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:22px; }
+    .metric-card { position:relative; overflow:hidden; min-height:100px; background:#fff; border:1px solid #e3e8ee; border-radius:10px; padding:18px; box-shadow:0 3px 14px rgba(19,60,85,.035); }
+    .metric-card span { display:block; color:#64748b; font-size:.82rem; margin-bottom:9px; }
+    .metric-card strong { display:block; color:#133C55; font-size:1.45rem; line-height:1.25; overflow-wrap:anywhere; }
+    .metric-card > i { position:absolute; top:18px; right:18px; color:#a4b8ca; font-size:1.3rem; }
+    .metric-card .metric-green { color:#198754; } .metric-card .metric-red { color:#c75059; } .metric-card .metric-blue { color:#386FA4; } .metric-card .metric-amber { color:#b88721; }
+    .metric-group strong { font-size:1.13rem; padding-right:20px; }
+    .metric-percentage { border-color:#c9dced; background:#f7fbff; } .metric-percentage strong,.metric-percentage > i { color:#386FA4; }
+    .results-panel { overflow:hidden; }
+    .results-panel-heading { padding:20px 22px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; border-bottom:1px solid #edf0f3; }
+    .results-panel-heading h3 { font-size:1rem; font-weight:700; color:#133C55; margin:0 0 5px; }
+    .result-count { background:#e6f1fb; color:#386FA4; border-radius:20px; padding:5px 11px; font-size:.78rem; font-weight:600; }
+    .percentage-table { margin-bottom:0; }
+    .percentage-table th { background:#f8fafc; color:#53616d; text-transform:uppercase; font-size:.75rem; font-weight:700; white-space:nowrap; padding:14px 15px; }
+    .percentage-table td { padding:15px; font-size:.87rem; color:#475569; }
+    .percentage-table .student-name { color:#133C55; font-weight:600; min-width:150px; }
+    .percentage-table tbody tr:hover { background:#fbfdff; }
+    .pct-cell { display:flex; align-items:center; gap:10px; }
+    .pct-cell strong { color:#133C55; min-width:48px; font-size:.83rem; text-align:right; }
+    .pct-bar { flex:1; height:9px; background:#e9eef3; border-radius:20px; overflow:hidden; min-width:75px; }
+    .pct-fill { height:100%; background:#386FA4; border-radius:20px; }
+    .detail-btn { border-radius:6px; }
+    .empty-table { text-align:center; padding:38px 20px; }
+    .empty-table > i { color:#9fb1c2; font-size:2.2rem; }
+    .empty-table h4 { color:#133C55; font-size:1rem; font-weight:700; margin:10px 0 7px; }
+    .empty-table p { color:#64748b; font-size:.87rem; margin:0; }
+    @@media (max-width:767px) {
+        .attendance-title { font-size:1.32rem; }
+        .percentage-filters { grid-template-columns:1fr; padding:18px; gap:14px; }
+        .filter-actions { flex-direction:column; align-items:stretch; }
+        .filter-actions .btn { width:100%; }
+        .panel-heading { padding:17px 18px; }
+        .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @@media (max-width:420px) { .summary-grid { grid-template-columns:1fr; } }
+
+/* ===== AULA VIRTUAL COPALCHÍ · SISTEMA VISUAL ASISTENCIA ===== */
+body { background:#f4f7fa; }
+.attendance-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:18px 0 25px!important; }
+.attendance-header > .container { background:transparent!important; padding-left:12px; padding-right:12px; }
+.attendance-title { font-size:1.55rem!important; line-height:1.3; color:#133c55!important; font-weight:750; margin:0 0 5px!important; letter-spacing:-.025em; }
+.attendance-title i { color:#386fa4; }
+.attendance-subtitle { color:#64748b!important; font-size:.9rem!important; line-height:1.6!important; margin:0!important; }
+.attendance-header .btn { border-radius:8px; }
+.cop-back-btn { background:#fff; border:1px solid #cbd5e1; color:#475569; padding:.58rem 1rem; font-weight:600; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+.cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
+.btn-cop-primary { background:#133c55!important; border:1px solid #133c55!important; color:#fff!important; border-radius:8px!important; padding:.62rem 1rem; font-weight:650!important; box-shadow:0 2px 5px rgba(19,60,85,.10); }
+.btn-cop-primary:hover,.btn-cop-primary:focus { background:#285b7c!important; border-color:#285b7c!important; color:#fff!important; }
+.attendance-card,.history-card,.edit-card { background:#fff; border:1px solid #e2e8f0; border-radius:13px; box-shadow:0 4px 18px rgba(19,60,85,.045); overflow:hidden; }
+.form-control,.form-select { min-height:41px; border:1px solid #d5dee8; border-radius:8px; color:#334155; font-size:.9rem; background-color:#fff; }
+.form-control:focus,.form-select:focus { border-color:#386fa4; box-shadow:0 0 0 .2rem rgba(56,111,164,.12); }
+.form-label,.filters label,.filters small { color:#475569!important; font-size:.8rem!important; font-weight:650; margin-bottom:6px; }
+.filters { background:#fff!important; border-bottom:1px solid #edf1f5!important; padding:22px 24px!important; gap:16px!important; display:flex; flex-wrap:wrap; align-items:end; }
+.filters > div { min-width:155px; flex:1 1 165px; }
+.filters .form-control,.filters .form-select { max-width:none!important; width:100%; }
+.filters .btn { white-space:nowrap; }
+.attendance-table,.history-table { margin:0; }
+.attendance-table thead th,.history-table thead th { background:#f8fafc; color:#536579; font-size:.75rem; font-weight:700; letter-spacing:.045em; text-transform:uppercase; border-bottom:1px solid #e2e8f0; padding:15px 17px; white-space:nowrap; }
+.attendance-table tbody td,.history-table tbody td { border-color:#edf1f5; padding:15px 17px; vertical-align:middle; }
+.attendance-table tbody tr:hover,.history-table tbody tr:hover { background:#f8fbfe; }
+.summary-card { border:1px solid #e2e8f0!important; border-radius:12px!important; background:#fff!important; box-shadow:0 3px 12px rgba(19,60,85,.035)!important; min-height:100px; }
+.summary-card h2 { font-weight:750; letter-spacing:-.03em; }
+.student-avatar { flex-shrink:0; }
+.status { white-space:nowrap; }
+.form-actions { background:#fff; }
+.av-section-heading { padding:19px 24px 0; display:flex; align-items:flex-start; gap:11px; }
+.av-section-heading .av-heading-icon { width:35px; height:35px; flex:0 0 35px; display:grid; place-items:center; border-radius:9px; color:#386fa4; background:#eaf2f9; font-size:1.05rem; }
+.av-section-heading h2 { font-size:1rem; font-weight:700; color:#133c55; margin:0 0 3px; }
+.av-section-heading p { color:#64748b; font-size:.83rem; margin:0; line-height:1.5; }
+.av-empty-state { padding:38px 22px; text-align:center; background:#fff; }
+.av-empty-state .av-empty-icon { width:58px; height:58px; border-radius:16px; background:#edf4fa; color:#386fa4; display:grid; place-items:center; font-size:1.6rem; margin:0 auto 14px; }
+.av-empty-state h3 { color:#133c55; font-size:1rem; font-weight:700; margin:0 0 6px; }
+.av-empty-state p { color:#64748b; font-size:.88rem; max-width:480px; margin:0 auto; line-height:1.6; }
+    @@media (max-width: 767px) {
+        .filters {
+            padding: 17px !important;
+            gap: 12px !important;
         }
 
-        body {
-            background: var(--cop-page-bg);
-        }
-
-        .attendance-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
-        }
-
-        .attendance-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--cop-muted);
-            font-size: .85rem;
-            margin-bottom: 12px;
-        }
-
-            .attendance-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
+            .filters > div {
+                flex: 1 1 100%;
             }
+
+            .filters button {
+                width: 100%;
+            }
+
+        .av-section-heading {
+            padding: 17px 17px 0;
+        }
 
         .attendance-title {
-            color: var(--cop-primary);
-            font-weight: 700;
-            font-size: 1.8rem;
+            font-size: 1.32rem !important;
         }
+    }
 
-        .attendance-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-        .history-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .filters {
-            padding: 18px;
-            background: #f8fafc;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-bottom: 1px solid #edf0f3;
-        }
-
-            .filters .form-select,
-            .filters .form-control {
-                max-width: 220px;
-            }
-
-        .student-summary {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 2fr repeat(5, 1fr);
-            gap: 15px;
-            border-bottom: 1px solid #edf0f3;
-        }
-
-            .student-summary span {
-                display: block;
-                color: var(--cop-muted);
-                font-size: .8rem;
-            }
-
-            .student-summary strong {
-                color: var(--cop-primary);
-                font-size: 1.2rem;
-            }
-
-        .percentage-box strong {
-            color: var(--cop-secondary);
-            font-size: 1.5rem;
-        }
-
-        .history-table th {
-            background: #f8fafc;
-            color: var(--cop-muted);
-            font-size: .8rem;
-            text-transform: uppercase;
-            padding: 14px 16px;
-        }
-
-        .history-table td {
-            padding: 14px 16px;
-        }
-
-        .pct-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pct-bar {
-            flex: 1;
-            height: 8px;
-            background: #e9eef3;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .pct-fill {
-            height: 100%;
-            background: var(--cop-secondary);
-            border-radius: 20px;
-        }
-
-        .btn-cop-primary {
-            background: var(--cop-primary);
-            border-color: var(--cop-primary);
-            color: white;
-        }
-
-            .btn-cop-primary:hover {
-                background: var(--cop-secondary);
-                border-color: var(--cop-secondary);
-                color: white;
-            }
-
-        @@media (max-width: 768px) {
-            .student-summary {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        /* Estilo unificado con Repositorio de Materiales */
-        .attendance-header { background:#fff; border-bottom:1px solid #e3e8ee; padding:26px 0; margin-bottom:28px; }
-        .attendance-title { color:#133c55; font-size:1.75rem; font-weight:700; margin-bottom:8px; }
-        .attendance-subtitle { color:#64748b; line-height:1.55; }
-        .attendance-card, .history-card, .edit-card, .summary-card { border:1px solid #e3e8ee; border-radius:10px; background:#fff; box-shadow:0 3px 14px rgba(19,60,85,.04); }
-        .btn-cop-primary { background:#133c55; border-color:#133c55; color:#fff; border-radius:7px; font-weight:600; }
-        .btn-cop-primary:hover, .btn-cop-primary:focus { background:#386fa4; border-color:#386fa4; color:#fff; }
-        .cop-back-button { border:1px solid #ced4da; color:#475569; background:#fff; border-radius:7px; font-weight:500; padding:9px 15px; text-decoration:none; white-space:nowrap; }
-        .cop-back-button:hover { background:#f1f5f9; color:#133c55; border-color:#94a3b8; }
-        .attendance-header-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
-        .form-control:focus, .form-select:focus { border-color:#59a5d8; box-shadow:0 0 0 .2rem rgba(56,111,164,.13); }
-        @@media (max-width: 767px) { .attendance-header-actions { width:100%; } .attendance-header-actions .btn, .attendance-header-actions .cop-back-button { flex:1; text-align:center; } }
-
-    </style>
+ .percentage-page .filters { gap:16px!important; } .percentage-page .pct-bar { height:9px; border-radius:20px; } .percentage-page .pct-fill { background:#386fa4; } .percentage-page .pct-cell { min-width:175px; } .percentage-page .student-summary > div { background:#f8fafc; border:1px solid #edf1f5; border-radius:9px; padding:12px; } 
+</style>
 }

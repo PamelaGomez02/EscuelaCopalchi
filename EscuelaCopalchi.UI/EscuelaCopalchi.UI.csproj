@@ -347,11 +347,6 @@
     <Content Include="Views\Home\IndexAdmin.cshtml" />
     <Content Include="Views\Home\IndexUsuario.cshtml" />
     <Content Include="Views\Monitoreo\Reporte.cshtml" />
-    <Content Include="Views\Asistencia\Editar.cshtml" />
-    <Content Include="Views\Asistencia\Historial.cshtml" />
-    <Content Include="Views\Asistencia\Index.cshtml" />
-    <Content Include="Views\Asistencia\Porcentaje.cshtml" />
-    <Content Include="Views\Asistencia\Registrar.cshtml" />
     <Content Include="Views\Estudiantes\Adecuaciones.cshtml" />
     <Content Include="Views\Estudiantes\Crear.cshtml" />
     <Content Include="Views\Estudiantes\Detalle.cshtml" />
@@ -379,6 +374,11 @@
     <Content Include="Views\Roles\Permisos.cshtml" />
     <Content Include="Views\GestionAcademica\MiGrupo.cshtml" />
     <Content Include="Views\GestionAcademica\Reportes.cshtml" />
+    <Content Include="Views\Asistencia\Editar.cshtml" />
+    <Content Include="Views\Asistencia\Historial.cshtml" />
+    <Content Include="Views\Asistencia\Index.cshtml" />
+    <Content Include="Views\Asistencia\Porcentaje.cshtml" />
+    <Content Include="Views\Asistencia\Registrar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
