@@ -315,11 +315,6 @@
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
     <Content Include="Views\Monitoreo\Estadisticas.cshtml" />
-    <Content Include="Views\PlanesEstudio\Index.cshtml" />
-    <Content Include="Views\PlanesEstudio\Crear.cshtml" />
-    <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
-    <Content Include="Views\PlanesEstudio\Editar.cshtml" />
-    <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
     <Content Include="Views\AuditoriaSistema\Detalle.cshtml" />
     <Content Include="Views\AuditoriaSistema\Index.cshtml" />
     <Content Include="Views\InventarioCocina\Create.cshtml" />
@@ -379,6 +374,11 @@
     <Content Include="Views\GestionNotas\Historial.cshtml" />
     <Content Include="Views\GestionNotas\ImportarExcel.cshtml" />
     <Content Include="Views\GestionNotas\Index.cshtml" />
+    <Content Include="Views\PlanesEstudio\Crear.cshtml" />
+    <Content Include="Views\PlanesEstudio\Detalle.cshtml" />
+    <Content Include="Views\PlanesEstudio\Editar.cshtml" />
+    <Content Include="Views\PlanesEstudio\Index.cshtml" />
+    <Content Include="Views\PlanesEstudio\Revisar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

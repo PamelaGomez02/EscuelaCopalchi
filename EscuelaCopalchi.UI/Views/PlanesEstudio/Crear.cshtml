@@ -7,29 +7,9 @@
 
 <main>
 
-    <section class="planes-header">
-        <div class="container">
-
-            <div class="planes-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "PlanesEstudio")">Planes de estudio</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Nuevo plan</span>
-            </div>
-
-            <h1 class="planes-title">
-                <i class="bi bi-file-earmark-plus me-2"></i>
-                Nuevo plan de estudio
-            </h1>
-
-            <p class="planes-subtitle">
-                Registra la planificación académica mensual mediante un archivo Excel
-                o ingresando la información manualmente.
-            </p>
-
-        </div>
-    </section>
+    <section class="planes-header"><div class="container"><div class="planes-header-layout"><div><h1 class="planes-title"><i class="bi bi-file-earmark-plus me-2"></i>
+                Nuevo plan de estudio</h1><p class="planes-subtitle">Registra la planificación académica mensual mediante un archivo Excel
+                o ingresando la información manualmente.</p></div><div class="planes-header-actions"><a href="@Url.Action("Index", "PlanesEstudio")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div></div></div></section>
 
 
     @if (ViewBag.Error != null)
@@ -460,7 +440,23 @@ else
             background: white;
             color: #495057;
         }
-    </style>
+    
+/* Diseño unificado de encabezados - Planes de Estudio */
+.planes-page, body { background:#f4f7fa; }
+.planes-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:16px 0 24px!important; }
+.planes-header > .container { background:transparent!important; padding-left:12px; padding-right:12px; }
+.planes-breadcrumb { display:none!important; }
+.planes-header .planes-title { font-size:1.55rem!important; line-height:1.3; font-weight:700!important; color:#133c55!important; margin:0 0 5px!important; }
+.planes-header .planes-title i { color:#386fa4; }
+.planes-header .planes-subtitle { color:#64748b!important; font-size:.9rem!important; line-height:1.55; margin:0!important; }
+.planes-header .planes-header-layout { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.planes-header .planes-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.planes-header .cop-back-btn { background:#fff; border:1px solid #cbd5e1; color:#475569; font-weight:600; border-radius:7px; padding:.55rem 1rem; text-decoration:none; white-space:nowrap; }
+.planes-header .cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
+.planes-header .btn { border-radius:7px; }
+.plans-container,.creation-card,.edit-card,.review-card,.detail-card { border-radius:12px; }
+@@media(max-width:575px) { .planes-header .planes-title { font-size:1.32rem!important; } }
+</style>
 
 }
 

@@ -37,7 +37,7 @@
             <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             @if (puedeRegistrar)
             {
-                <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i>Importar Excel</a>
+          
                 <a href="@Url.Action("Registrar")" class="btn gn-btn"><i class="bi bi-pencil-square me-1"></i>Registrar notas</a>
             }
         </div>
@@ -55,6 +55,8 @@
 
     <div class="gn-filters gn-index-tools">
         <input type="text" id="gnBuscar" class="form-control" placeholder="Buscar grupo@(veTodo ? " o docente" : "")...">
+        <a href="@Url.Action("ImportarExcel")" class="btn gn-btn-out"><i class="bi bi-file-earmark-excel me-1"></i>Importar Excel</a>
+
         <a href="@Url.Action("Historial")" class="btn gn-btn-out gn-history-link"><i class="bi bi-clock-history me-1"></i>Ver historial de notas</a>
     </div>
 

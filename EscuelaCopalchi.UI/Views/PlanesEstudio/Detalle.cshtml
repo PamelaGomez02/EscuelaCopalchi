@@ -1,4 +1,4 @@
-﻿@model EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio
+@model EscuelaCopalchi.UI.Models.PlanesEstudio.PlanEstudio
 @{
     ViewBag.Title = "Detalle del plan";
 }
@@ -7,51 +7,31 @@
 
     <section class="planes-header">
         <div class="container">
-
-            <div class="planes-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="@Url.Action("Index", "PlanesEstudio")">Planes de estudio</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Detalle</span>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-start">
-
-                <div>
-                    <h1 class="planes-title">
-                        Plan de estudio de @Model.Asignatura
-                    </h1>
-
-                    <p class="planes-subtitle">
-                        @Model.Periodo · @Model.Anio
-                    </p>
+            <div class="planes-header-layout">
+                <div><h1 class="planes-title">Plan de estudio de @Model.Asignatura</h1><p class="planes-subtitle">@Model.Periodo · @Model.Anio</p></div><div class="planes-header-actions">
+                    <a href="@Url.Action("Index", "PlanesEstudio")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>@if (Model.Estado == "Pendiente")
+                    {
+                        <span class="status status-pending plan-state-badge">
+                            <i class="bi bi-clock"></i>
+                            Pendiente
+                        </span>
+                    }
+                    else if (Model.Estado == "Aprobado")
+                    {
+                        <span class="status status-approved plan-state-badge">
+                            <i class="bi bi-check-circle"></i>
+                            Aprobado
+                        </span>
+                    }
+                    else if (Model.Estado == "Denegado")
+                    {
+                        <span class="status status-rejected plan-state-badge">
+                            <i class="bi bi-x-circle"></i>
+                            Denegado
+                        </span>
+                    }
                 </div>
-
-                @if (Model.Estado == "Pendiente")
-                {
-                    <span class="status status-pending">
-                        <i class="bi bi-clock"></i>
-                        Pendiente
-                    </span>
-                }
-                else if (Model.Estado == "Aprobado")
-                {
-                    <span class="status status-approved">
-                        <i class="bi bi-check-circle"></i>
-                        Aprobado
-                    </span>
-                }
-                else if (Model.Estado == "Denegado")
-                {
-                    <span class="status status-rejected">
-                        <i class="bi bi-x-circle"></i>
-                        Denegado
-                    </span>
-                }
-
             </div>
-
         </div>
     </section>
 
@@ -253,58 +233,68 @@
 
                         </div>
 
-                </div>
-
-
-                <!-- TEAMS -->
-                <div class="detail-card mt-4">
-
-                    <h2 class="section-title">
-                        Microsoft Teams
-                    </h2>
-
-                    <div class="teams-box">
-
-                        <i class="bi bi-microsoft-teams"></i>
-
-                        <div>
-                            <strong>No sincronizado</strong>
-                            <p>
-                                Puedes sincronizar las fechas del plan cuando este
-                                sea aprobado.
-                            </p>
-                        </div>
-
                     </div>
 
-                    <button class="btn btn-cop-primary w-100"
-                            disabled>
-                        <i class="bi bi-arrow-repeat me-1"></i>
-                        Sincronizar con Teams
-                    </button>
 
-                </div>
+                    <!-- AGREGAR UNA ACTIVIDAD A OUTLOOK (SIN MICROSOFT GRAPH) -->
+                    <div class="detail-card mt-4 teams-panel">
+                        <h2 class="section-title"><i class="bi bi-calendar-event me-2"></i>Calendario de actividades</h2>
+                        @if (Model.Estado == "Aprobado")
+                        {
+                            <p class="text-muted mb-3">Completa los datos de una actividad para abrirla en el calendario de Outlook.</p>
+                            <form id="formActividadOutlook">
+                                <div class="mb-3">
+                                    <label for="actividadNombre" class="form-label">Nombre de la actividad</label>
+                                    <input id="actividadNombre" type="text" class="form-control" maxlength="150" required placeholder="Ej. Evaluación de Ciencias" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="actividadFecha" class="form-label">Fecha</label>
+                                    <input id="actividadFecha" type="date" class="form-control" required />
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label for="actividadInicio" class="form-label">Hora de inicio</label>
+                                        <input id="actividadInicio" type="time" class="form-control" required />
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="actividadFin" class="form-label">Hora de finalización</label>
+                                        <input id="actividadFin" type="time" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="actividadDescripcion" class="form-label">Descripción (opcional)</label>
+                                    <textarea id="actividadDescripcion" class="form-control" rows="2" maxlength="1000" placeholder="Detalles de la actividad"></textarea>
+                                </div>
+                                <div id="actividadError" class="text-danger small mb-2" role="alert" style="display:none"></div>
+                                <button type="submit" class="btn btn-cop-primary w-100">
+                                    <i class="bi bi-calendar-plus me-1"></i>Agregar a Outlook
+                                </button>
+                            </form>
+                            <small class="teams-hint">Outlook se abrirá con los datos precargados. Debes iniciar sesión si es necesario y guardar el evento.</small>
+                        }
+                        else
+                        {
+                            <div class="teams-box">
+                                <i class="bi bi-lock"></i>
+                                <div>
+                                    <strong>Disponible únicamente para planes aprobados</strong>
+                                    <p>Cuando el director apruebe este plan, podrás agregar actividades a Outlook.</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary w-100" disabled>
+                                <i class="bi bi-calendar-plus me-1"></i>Agregar a Outlook
+                            </button>
+                        }
+                    </div>
 
-   
+                    <div class="mt-3 d-grid gap-2">
 
-                <div class="mt-3 d-grid gap-2">
 
-                    <br>
-
-                    <a href="@Url.Action("Index", "PlanesEstudio")"
-                       class="btn btn-outline-cop">
-                        <i class="bi bi-arrow-left me-1"></i>
-                        Volver
-                    </a>
-
-                    <br>
-
+                    </div>
 
                 </div>
 
             </div>
-
-        </div>
 
     </section>
 
@@ -546,6 +536,207 @@
             background: #f8d7da;
             color: #842029;
         }
+
+        /* Diseño unificado de encabezados - Planes de Estudio */
+        .planes-page, body {
+            background: #f4f7fa;
+        }
+
+        .planes-header {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 16px 0 24px !important;
+        }
+
+            .planes-header > .container {
+                background: transparent !important;
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+        .planes-breadcrumb {
+            display: none !important;
+        }
+
+        .planes-header .planes-title {
+            font-size: 1.55rem !important;
+            line-height: 1.3;
+            font-weight: 700 !important;
+            color: #133c55 !important;
+            margin: 0 0 5px !important;
+        }
+
+            .planes-header .planes-title i {
+                color: #386fa4;
+            }
+
+        .planes-header .planes-subtitle {
+            color: #64748b !important;
+            font-size: .9rem !important;
+            line-height: 1.55;
+            margin: 0 !important;
+        }
+
+        .planes-header .planes-header-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .planes-header .planes-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .planes-header .cop-back-btn {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-weight: 600;
+            border-radius: 7px;
+            padding: .55rem 1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .planes-header .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386fa4;
+                color: #133c55;
+            }
+
+        .planes-header .btn {
+            border-radius: 7px;
+        }
+
+        .plans-container, .creation-card, .edit-card, .review-card, .detail-card {
+            border-radius: 12px;
+        }
+
+        @@media(max-width:575px) {
+            .planes-header .planes-title {
+                font-size: 1.32rem !important;
+            }
+        }
+
+        .planes-header .planes-header-actions {
+            gap: 0 !important;
+        }
+
+        .planes-header .plan-state-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: 22px;
+            padding: 10px 16px;
+            border-radius: 9px;
+            font-size: .86rem;
+            font-weight: 750;
+            line-height: 1.2;
+            border: 1px solid transparent;
+            box-shadow: 0 2px 8px rgba(15,23,42,.05);
+        }
+
+            .planes-header .plan-state-badge i {
+                font-size: 1rem;
+            }
+
+        .planes-header .status-approved {
+            background: #e4f5eb;
+            color: #12663c;
+            border-color: #b7e2c9;
+        }
+
+        .planes-header .status-rejected {
+            background: #fde8e9;
+            color: #a32635;
+            border-color: #f3bfc5;
+        }
+
+        .planes-header .status-pending {
+            background: #fff4d7;
+            color: #8a6008;
+            border-color: #f2d58a;
+        }
+
+        .teams-panel .section-title i {
+            color: #6264a7;
+        }
+
+        .teams-panel .teams-box {
+            background: #f8f9fd;
+            padding: 14px;
+            border: 1px solid #e7e8f3;
+            border-radius: 9px;
+        }
+
+        .teams-panel .teams-hint {
+            display: block;
+            margin-top: 10px;
+            color: #64748b;
+            font-size: .76rem;
+            line-height: 1.5;
+        }
+
+        @@media(max-width:575px) {
+            .planes-header .planes-header-actions {
+                width: 100%;
+                justify-content: space-between;
+                gap: 12px !important;
+            }
+
+            .planes-header .plan-state-badge {
+                margin-left: 0;
+            }
+        }
     </style>
 
 }
+<script>
+    (function () {
+        var form = document.getElementById('formActividadOutlook');
+        if (!form) return;
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var nombre = document.getElementById('actividadNombre').value.trim();
+            var fecha = document.getElementById('actividadFecha').value;
+            var inicio = document.getElementById('actividadInicio').value;
+            var fin = document.getElementById('actividadFin').value;
+            var descripcion = document.getElementById('actividadDescripcion').value.trim();
+            var error = document.getElementById('actividadError');
+            error.style.display = 'none';
+
+            if (!nombre || !fecha || !inicio || !fin || fin <= inicio) {
+                error.textContent = 'Completa los datos e indica una hora de finalización posterior a la de inicio.';
+                error.style.display = 'block';
+                return;
+            }
+
+            // Zona horaria de Costa Rica (UTC-06:00, sin horario de verano).
+            var fechaInicio = new Date(fecha + 'T' + inicio + ':00-06:00');
+            var fechaFin = new Date(fecha + 'T' + fin + ':00-06:00');
+            if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+                error.textContent = 'La fecha o las horas no son válidas.';
+                error.style.display = 'block';
+                return;
+            }
+
+            var parametros = [
+                'path=%2Fcalendar%2Faction%2Fcompose',
+                'rru=addevent',
+                'subject=' + encodeURIComponent(nombre),
+                'startdt=' + encodeURIComponent(fechaInicio.toISOString()),
+                'enddt=' + encodeURIComponent(fechaFin.toISOString()),
+                'body=' + encodeURIComponent(descripcion || 'Actividad del plan de estudio - Aula Virtual Copalchí')
+            ];
+            window.open('https://outlook.office.com/calendar/deeplink/compose?' + parametros.join('&'), '_blank', 'noopener,noreferrer');
+        });
+    })();
+</script>

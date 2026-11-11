@@ -9,32 +9,9 @@
 <main class="planes-page">
 
     <!-- ENCABEZADO -->
-    <section class="planes-header">
-        <div class="container">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-
-                <div>
-
-                    <div class="planes-breadcrumb">
-                        <a href="@Url.Action("Index", "Home")">Inicio</a>
-                        <i class="bi bi-chevron-right"></i>
-                        <span>Planes de estudio</span>
-                    </div>
-
-                    <h1 class="planes-title">
-                        <i class="bi bi-journal-text me-2"></i>
-                        Planes de estudio
-                    </h1>
-
-                    <p class="planes-subtitle">
-                        Administra la planificación académica mensual,
-                        revisa su estado y consulta las observaciones realizadas.
-                    </p>
-
-                </div>
-
-                <div>
-                    @if ((bool)(ViewBag.PuedeCrear ?? false)) {
+    <section class="planes-header"><div class="container"><div class="planes-header-layout"><div><h1 class="planes-title"><i class="bi bi-journal-text me-2"></i>
+                        Planes de estudio</h1><p class="planes-subtitle">Administra la planificación académica mensual,
+                        revisa su estado y consulta las observaciones realizadas.</p></div><div class="planes-header-actions"><a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>@if ((bool)(ViewBag.PuedeCrear ?? false)) {
                     <a href="@Url.Action("Crear", "PlanesEstudio")"
                        class="btn btn-cop-primary">
 
@@ -42,12 +19,7 @@
                         Nuevo plan
 
                     </a>
-                    }
-                </div>
-
-            </div>
-        </div>
-    </section>
+                    }</div></div></div></section>
 
 
     @if (TempData["Success"] != null)
@@ -230,7 +202,7 @@
                     {
                         foreach (var plan in Model)
                         {
-                            <tr>
+                            <tr data-estado="@plan.Estado" data-periodo="@plan.Periodo">
 
                                 <td>
                                     <div class="plan-name">
@@ -344,12 +316,10 @@
                 </tbody>
 
             </table>
-            <div class="d-flex justify-content-center mt-4">
-
-                <ul id="paginacionPlanes"
-                    class="pagination">
-                </ul>
-
+            <div id="sinResultadosPlanes" class="text-center p-4 text-muted" hidden><i class="bi bi-search fs-3 d-block mb-2"></i>No se encontraron planes con los filtros seleccionados.</div>
+            <div class="planes-pagination-bar">
+                <div class="d-flex align-items-center gap-2 flex-wrap"><span class="small text-muted">10 planes por página</span><span id="infoPaginaPlanes" class="small text-muted" aria-live="polite"></span></div>
+                <nav aria-label="Paginación de planes"><ul id="paginacionPlanes" class="pagination pagination-sm mb-0"></ul></nav>
             </div>
 
         </div>
@@ -363,195 +333,51 @@
 
 
 <script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const buscador =
-            document.getElementById("buscarPlan");
-
-        buscador.addEventListener("keyup", function () {
-
-            const texto =
-                this.value.toLowerCase();
-
-            const filas =
-                document.querySelectorAll(
-                    "#tablaPlanes tbody tr");
-
-            filas.forEach(function (fila) {
-
-                const contenido =
-                    fila.innerText.toLowerCase();
-
-                if (contenido.includes(texto)) {
-                    fila.style.display = "";
-                }
-                else {
-                    fila.style.display = "none";
-                }
-
-            });
-
-        });
-
-    });
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-    const buscador =
-        document.getElementById("buscarPlan");
-
-        const filtroEstado =
-        document.getElementById("filtroEstado");
-
-        const filtroPeriodo =
-        document.getElementById("filtroPeriodo");
-
-        function aplicarFiltros() {
-
-        const texto =
-        buscador.value.toLowerCase();
-
-        const estado =
-        filtroEstado.value.toLowerCase();
-
-        const periodo =
-        filtroPeriodo.value.toLowerCase();
-
-        const filas =
-        document.querySelectorAll(
-        "#tablaPlanes tbody tr");
-
-        filas.forEach(function (fila) {
-
-            const contenido =
-        fila.innerText.toLowerCase();
-
-        const coincideTexto =
-        contenido.includes(texto);
-
-        const coincideEstado =
-        estado === "" ||
-        contenido.includes(estado);
-
-        const coincidePeriodo =
-        periodo === "" ||
-        contenido.includes(periodo);
-
-        if (
-        coincideTexto &&
-        coincideEstado &&
-        coincidePeriodo
-        )
-        {
-            fila.style.display = "";
-            }
-        else
-        {
-            fila.style.display = "none";
-            }
-
+document.addEventListener('DOMContentLoaded', function () {
+    var tabla=document.getElementById('tablaPlanes');
+    if(!tabla) return;
+    var filas=Array.prototype.slice.call(tabla.querySelectorAll('tbody tr'));
+    var buscar=document.getElementById('buscarPlan');
+    var estado=document.getElementById('filtroEstado');
+    var periodo=document.getElementById('filtroPeriodo');
+    var paginas=document.getElementById('paginacionPlanes');
+    var info=document.getElementById('infoPaginaPlanes');
+    var vacio=document.getElementById('sinResultadosPlanes');
+    var actual=1;
+    function normalizar(t){return (t||'').toString().toLocaleLowerCase().trim();}
+    function filtrar(){
+        var q=normalizar(buscar&&buscar.value), e=normalizar(estado&&estado.value), p=normalizar(periodo&&periodo.value);
+        return filas.filter(function(f){
+            var texto=normalizar(f.textContent);
+            var estadoFila=normalizar(f.getAttribute('data-estado'));
+            var periodoFila=normalizar(f.getAttribute('data-periodo'));
+            return (!q||texto.indexOf(q)!==-1)&&(!e||estadoFila===e)&&(!p||periodoFila.indexOf(p)!==-1);
         });
     }
-
-        buscador.addEventListener(
-        "keyup",
-        aplicarFiltros);
-
-        filtroEstado.addEventListener(
-        "change",
-        aplicarFiltros);
-
-        filtroPeriodo.addEventListener(
-        "change",
-        aplicarFiltros);
-
-        });
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const filas =
-            document.querySelectorAll(
-                "#tablaPlanes tbody tr");
-
-        const filasPorPagina = 10;
-
-        const totalPaginas =
-            Math.ceil(
-                filas.length /
-                filasPorPagina);
-
-        const paginacion =
-            document.getElementById(
-                "paginacionPlanes");
-
-        function mostrarPagina(pagina) {
-            filas.forEach((fila, index) => {
-
-                fila.style.display =
-                    index >=
-                        (pagina - 1) *
-                        filasPorPagina
-
-                        &&
-
-                        index <
-                        pagina *
-                        filasPorPagina
-
-                        ? ""
-
-                        : "none";
-
-            });
+    function boton(etiqueta,pagina,deshabilitado,activo){
+        var li=document.createElement('li'); li.className='page-item'+(deshabilitado?' disabled':'')+(activo?' active':'');
+        var a=document.createElement('button'); a.type='button';a.className='page-link';a.textContent=etiqueta;a.disabled=deshabilitado;
+        if(activo)a.setAttribute('aria-current','page');
+        a.addEventListener('click',function(){actual=pagina;render();});li.appendChild(a);paginas.appendChild(li);
+    }
+    function render(){
+        var lista=filtrar(), porPagina=10, total=Math.max(1,Math.ceil(lista.length/porPagina));
+        actual=Math.max(1,Math.min(actual,total));
+        filas.forEach(function(f){f.style.display='none';});
+        lista.slice((actual-1)*porPagina,actual*porPagina).forEach(function(f){f.style.display='';});
+        paginas.innerHTML='';
+        if(total>1){
+            boton('Anterior',actual-1,actual===1,false);
+            var inicio=Math.max(1,actual-2),fin=Math.min(total,inicio+4);inicio=Math.max(1,fin-4);
+            for(var n=inicio;n<=fin;n++)boton(String(n),n,false,n===actual);
+            boton('Siguiente',actual+1,actual===total,false);
         }
-
-        function crearPaginacion() {
-            paginacion.innerHTML = "";
-
-            for (
-                let i = 1;
-                i <= totalPaginas;
-                i++) {
-                let li =
-                    document.createElement(
-                        "li");
-
-                li.className =
-                    "page-item";
-
-                let a =
-                    document.createElement(
-                        "a");
-
-                a.className =
-                    "page-link";
-
-                a.href = "#";
-
-                a.innerText = i;
-
-                a.addEventListener(
-                    "click",
-                    function (e) {
-                        e.preventDefault();
-
-                        mostrarPagina(i);
-                    });
-
-                li.appendChild(a);
-
-                paginacion.appendChild(li);
-            }
-        }
-
-        crearPaginacion();
-
-        mostrarPagina(1);
-
-    });
-
-
+        var primero=lista.length?(actual-1)*porPagina+1:0, ultimo=Math.min(actual*porPagina,lista.length);
+        info.textContent='Mostrando '+primero+'–'+ultimo+' de '+lista.length+' planes';
+        vacio.hidden=lista.length!==0;
+    }
+    [buscar,estado,periodo].forEach(function(el){if(el){el.addEventListener('input',function(){actual=1;render();});el.addEventListener('change',function(){actual=1;render();});}});
+});
 </script>
 
 
@@ -988,6 +814,26 @@
                     width: 100%;
                 }
         }
-    </style>
+    
+/* Diseño unificado de encabezados - Planes de Estudio */
+.planes-page, body { background:#f4f7fa; }
+.planes-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:16px 0 24px!important; }
+.planes-header > .container { background:transparent!important; padding-left:12px; padding-right:12px; }
+.planes-breadcrumb { display:none!important; }
+.planes-header .planes-title { font-size:1.55rem!important; line-height:1.3; font-weight:700!important; color:#133c55!important; margin:0 0 5px!important; }
+.planes-header .planes-title i { color:#386fa4; }
+.planes-header .planes-subtitle { color:#64748b!important; font-size:.9rem!important; line-height:1.55; margin:0!important; }
+.planes-header .planes-header-layout { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.planes-header .planes-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.planes-header .cop-back-btn { background:#fff; border:1px solid #cbd5e1; color:#475569; font-weight:600; border-radius:7px; padding:.55rem 1rem; text-decoration:none; white-space:nowrap; }
+.planes-header .cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
+.planes-header .btn { border-radius:7px; }
+.plans-container,.creation-card,.edit-card,.review-card,.detail-card { border-radius:12px; }
+@@media(max-width:575px) { .planes-header .planes-title { font-size:1.32rem!important; } }
+.planes-pagination-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:17px 20px; border-top:1px solid #e7edf4; background:#fff; }
+.planes-pagination-bar .page-link { color:#133c55; border-color:#e2e8f0; }
+.planes-pagination-bar .page-item.active .page-link { background:#133c55; border-color:#133c55; color:#fff; }
+@@media(max-width:575px) { .planes-pagination-bar { justify-content:center; } }
+</style>
 
 }
