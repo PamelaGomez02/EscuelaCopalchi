@@ -141,14 +141,14 @@
 
         <div class="students-card">
 
-            <div class="student-quick-filters" aria-label="Vistas de estudiantes">
-                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Todos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Todos" })"><i class="bi bi-people me-1"></i>Todos</a>
-                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Activos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Activos" })"><i class="bi bi-person-check me-1"></i>Activos</a>
-                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Inactivos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Inactivos" })"><i class="bi bi-person-dash me-1"></i>Inactivos</a>
+            <div class="student-quick-filters" aria-label="Filtrar estudiantes">
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Todos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Todos", busqueda = ViewBag.Busqueda })"><i class="bi bi-people me-1"></i>Todos</a>
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Activos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Activos", busqueda = ViewBag.Busqueda })"><i class="bi bi-person-check me-1"></i>Activos</a>
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Inactivos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Inactivos", busqueda = ViewBag.Busqueda })"><i class="bi bi-person-dash me-1"></i>Inactivos</a>
                 @if (ViewBag.PuedeExpediente == true)
                 {
-                    <a class="student-filter-tab" href="@Url.Action("Adecuaciones", "Estudiantes")"><i class="bi bi-clipboard2-pulse me-1"></i>Con adecuaciones</a>
-                    <a class="student-filter-tab" href="@Url.Action("Alergias", "Estudiantes")"><i class="bi bi-heart-pulse me-1"></i>Con alergias</a>
+                    <a class="student-filter-tab @(ViewBag.FiltroEstado == "Adecuaciones" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Adecuaciones", busqueda = ViewBag.Busqueda })"><i class="bi bi-clipboard2-pulse me-1"></i>Con adecuaciones</a>
+                    <a class="student-filter-tab @(ViewBag.FiltroEstado == "Alergias" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Alergias", busqueda = ViewBag.Busqueda })"><i class="bi bi-heart-pulse me-1"></i>Con alergias</a>
                 }
             </div>
             <div class="students-toolbar">
@@ -165,26 +165,7 @@
                 {
                     <div class="toolbar-actions">
 
-                        <select name="filtroEstado"
-                                class="form-select">
-
-                            <option value="Todos"
-                                    @(ViewBag.FiltroEstado == "Todos" ? "selected" : "")>
-                                Todos
-                            </option>
-
-                            <option value="Activos"
-                                    @(ViewBag.FiltroEstado == "Activos" ? "selected" : "")>
-                                Activos
-                            </option>
-
-                            <option value="Inactivos"
-                                    @(ViewBag.FiltroEstado == "Inactivos" ? "selected" : "")>
-                                Inactivos
-                            </option>
-
-                        </select>
-
+                        <input type="hidden" name="filtroEstado" value="@ViewBag.FiltroEstado" />
                         <div class="search-box">
 
                             <i class="bi bi-search"></i>
@@ -318,12 +299,14 @@
                                         else if (ViewBag.PuedeBajas == true)
                                         {
                                             <button type="button"
-                                                    class="btn btn-action-danger"
-                                                    title="El estudiante ya está inactivo"
-                                                    disabled>
-
-                                                <i class="bi bi-person-dash-fill"></i>
-
+                                                    class="btn btn-action-reactivar"
+                                                    title="Reactivar estudiante"
+                                                    aria-label="Reactivar estudiante"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalReactivar"
+                                                    data-id="@estudiante.IdEstudiante"
+                                                    data-nombre="@((estudiante.Nombre + " " + estudiante.Apellido1 + " " + estudiante.Apellido2).Trim())">
+                                                <i class="bi bi-person-check"></i>
                                             </button>
                                         }
 
@@ -383,6 +366,31 @@
 
 @if (ViewBag.PuedeBajas == true)
 {
+    <!-- MODAL REACTIVAR -->
+    <div class="modal fade" id="modalReactivar" tabindex="-1" aria-labelledby="tituloModalReactivar" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                @using (Html.BeginForm("Reactivar", "Estudiantes", FormMethod.Post, new { id = "formReactivar" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="idEstudianteReactivar" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalReactivar"><i class="bi bi-person-check text-success me-2"></i>Reactivar estudiante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Deseas reactivar a <strong id="nombreEstudianteReactivar"></strong>?</p>
+                        <div class="alert alert-info mb-0"><i class="bi bi-info-circle me-2"></i>El estudiante volverá a Activos. Su expediente y el historial de bajas se conservarán.</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" id="btnConfirmarReactivar" class="btn btn-success"><i class="bi bi-person-check me-1"></i>Confirmar reactivación</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL BAJA -->
 
     <div class="modal fade"
@@ -465,6 +473,26 @@
 }
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalReactivar = document.getElementById('modalReactivar');
+        if (!modalReactivar) return;
+        modalReactivar.addEventListener('show.bs.modal', function (event) {
+            var boton = event.relatedTarget;
+            if (!boton) return;
+            document.getElementById('idEstudianteReactivar').value = boton.getAttribute('data-id');
+            document.getElementById('nombreEstudianteReactivar').textContent = boton.getAttribute('data-nombre') || 'este estudiante';
+        });
+        var formulario = document.getElementById('formReactivar');
+        var confirmar = document.getElementById('btnConfirmarReactivar');
+        if (formulario && confirmar) {
+            formulario.addEventListener('submit', function (event) {
+                if (formulario.dataset.enviado === '1') { event.preventDefault(); return; }
+                formulario.dataset.enviado = '1';
+                confirmar.disabled = true;
+                confirmar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Reactivando...';
+            });
+        }
+    });
     function seleccionarEstudiante(id) {
         document.getElementById("idEstudianteBaja").value = id;
     }
@@ -488,6 +516,8 @@
 @section styles {
 
     <style>
+        .btn-action-reactivar { color: #16734a; background: #f0faf5; border: 1px solid #9bd5b7; border-radius: 5px; padding: 6px 10px; }
+        .btn-action-reactivar:hover { background: #d8f2e5; color: #105a39; }
 
         :root {
             --cop-primary: #133C55;

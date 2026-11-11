@@ -105,9 +105,7 @@ namespace EscuelaCopalchi.UI.Controllers
             }
         }
 
-        public ActionResult Index(
-            string filtroEstado = "Todos",
-            string busqueda = "", int pagina = 1)
+        public ActionResult Index(string filtroEstado = "Todos", string busqueda = "", int pagina = 1)
         {
             if (!TienePermiso("VER_ESTUDIANTES")) return SinPermiso();
             PermisosVista();
@@ -115,51 +113,54 @@ namespace EscuelaCopalchi.UI.Controllers
             ViewBag.TotalEstudiantes = todos.Count;
             ViewBag.TotalActivos = todos.Count(x => x.Estado);
             ViewBag.TotalInactivos = todos.Count(x => !x.Estado);
-            var estudiantes = todos;
+
+            var filtrosValidos = new[] { "Todos", "Activos", "Inactivos", "Adecuaciones", "Alergias" };
+            if (!filtrosValidos.Contains(filtroEstado)) filtroEstado = "Todos";
+            if ((filtroEstado == "Adecuaciones" || filtroEstado == "Alergias") &&
+                !TienePermiso("VER_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
+
+            IEnumerable<Estudiante> estudiantes = todos;
+            if (filtroEstado == "Activos") estudiantes = estudiantes.Where(x => x.Estado);
+            else if (filtroEstado == "Inactivos") estudiantes = estudiantes.Where(x => !x.Estado);
+            else if (filtroEstado == "Adecuaciones")
+            {
+                var ids = new HashSet<int>();
+                foreach (var e in todos)
+                    if ((repository.ObtenerAdecuaciones(e.IdEstudiante) ?? new List<AdecuacionAcademica>()).Any())
+                        ids.Add(e.IdEstudiante);
+                estudiantes = estudiantes.Where(x => ids.Contains(x.IdEstudiante));
+            }
+            else if (filtroEstado == "Alergias")
+            {
+                var ids = new HashSet<int>();
+                foreach (var e in todos)
+                    if ((repository.ObtenerAlergias(e.IdEstudiante) ?? new List<Alergia>()).Any())
+                        ids.Add(e.IdEstudiante);
+                estudiantes = estudiantes.Where(x => ids.Contains(x.IdEstudiante));
+            }
 
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
-                estudiantes = estudiantes
-                    .Where(x =>
-                        (x.Nombre + " " + x.Apellido1 + " " + x.Apellido2)
-                        .ToLower()
-                        .Contains(busqueda.ToLower())
-                        ||
-                        x.Identificacion.ToLower()
-                        .Contains(busqueda.ToLower())
-                        ||
-                        x.NombreEncargado.ToLower()
-                        .Contains(busqueda.ToLower()))
-                    .ToList();
+                string q = busqueda.Trim();
+                estudiantes = estudiantes.Where(x =>
+                    ((x.Nombre ?? "") + " " + (x.Apellido1 ?? "") + " " + (x.Apellido2 ?? ""))
+                        .IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (x.Identificacion ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (x.NombreEncargado ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
-            if (filtroEstado == "Activos")
-            {
-                estudiantes = estudiantes
-                    .Where(x => x.Estado)
-                    .ToList();
-            }
-            else if (filtroEstado == "Inactivos")
-            {
-                estudiantes = estudiantes
-                    .Where(x => !x.Estado)
-                    .ToList();
-            }
-
-            estudiantes = estudiantes.OrderBy(x => x.Apellido1).ThenBy(x => x.Apellido2).ThenBy(x => x.Nombre).ToList();
-            int totalFiltrados = estudiantes.Count;
-            int totalPaginas = Math.Max(1, (int)Math.Ceiling(totalFiltrados / 10.0));
-            pagina = Math.Max(1, Math.Min(pagina, totalPaginas));
-            estudiantes = estudiantes.Skip((pagina - 1) * 10).Take(10).ToList();
+            var ordenados = estudiantes.OrderBy(x => x.Apellido1)
+                .ThenBy(x => x.Apellido2).ThenBy(x => x.Nombre).ToList();
+            int total = ordenados.Count;
+            int paginas = Math.Max(1, (int)Math.Ceiling(total / 10.0));
+            pagina = Math.Max(1, Math.Min(pagina, paginas));
             ViewBag.Pagina = pagina;
-            ViewBag.TotalPaginas = totalPaginas;
-            ViewBag.TotalFiltrados = totalFiltrados;
+            ViewBag.TotalPaginas = paginas;
+            ViewBag.TotalFiltrados = total;
             ViewBag.FiltroEstado = filtroEstado;
-            ViewBag.Busqueda = busqueda;
-
-            return View(
-                "~/Views/Estudiantes/Index.cshtml",
-                estudiantes);
+            ViewBag.Busqueda = busqueda ?? "";
+            return View("~/Views/Estudiantes/Index.cshtml",
+                ordenados.Skip((pagina - 1) * 10).Take(10).ToList());
         }
 
 
@@ -368,6 +369,40 @@ namespace EscuelaCopalchi.UI.Controllers
             return RedirectToAction("Index");
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reactivar(int id)
+        {
+            if (!TienePermiso("GESTIONAR_BAJAS_ESTUDIANTES")) return SinPermiso();
+            try
+            {
+                var estudiante = repository.ObtenerPorId(id);
+                if (estudiante == null)
+                {
+                    TempData["Error"] = "No se encontró al estudiante.";
+                    return RedirectToAction("Index", new { filtroEstado = "Inactivos" });
+                }
+                if (estudiante.Estado)
+                {
+                    TempData["Error"] = "El estudiante ya se encuentra activo.";
+                    return RedirectToAction("Index", new { filtroEstado = "Activos" });
+                }
+                string resultado = repository.Reactivar(id);
+                if (resultado == "Se ha guardado correctamente")
+                {
+                    TempData["Success"] = "El estudiante fue reactivado correctamente. Se conserva su historial de bajas.";
+                    return RedirectToAction("Index", new { filtroEstado = "Activos" });
+                }
+                TempData["Error"] = string.IsNullOrWhiteSpace(resultado)
+                    ? "No se pudo confirmar la reactivación." : resultado;
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "No se pudo reactivar al estudiante: " + ex.Message;
+            }
+            return RedirectToAction("Index", new { filtroEstado = "Inactivos" });
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

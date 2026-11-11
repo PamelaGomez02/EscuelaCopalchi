@@ -232,6 +232,15 @@ namespace EscuelaCopalchi.UI.Models
                 valores);
         }
 
+        // Reactiva sin borrar fecha, motivo ni historial de bajas.
+        public string Reactivar(int idEstudiante)
+        {
+            return db.ejecutarProcedimiento_Save(
+                "SP_ReactivarEstudiante",
+                new[] { "@id_estudiante" },
+                new[] { idEstudiante.ToString() });
+        }
+
         public string GuardarAdecuacion(
             AdecuacionAcademica adecuacion)
         {
