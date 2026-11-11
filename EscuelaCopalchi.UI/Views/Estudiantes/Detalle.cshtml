@@ -7,10 +7,48 @@
 
 <main>
 
-    <section class="students-header"><div class="container">
-<div class="cop-student-headline"><div><h1 class="students-title"><i class="bi bi-person-vcard me-2"></i>@Model.Nombre @Model.Apellido1 @Model.Apellido2</h1><p class="students-subtitle">Consulta la información registrada del estudiante.</p></div>
-<div class="cop-student-actions"><span class="status @(Model.Estado ? "status-active" : "status-inactive")"><i class="bi @(Model.Estado ? "bi-check-circle" : "bi-x-circle")"></i> @(Model.Estado ? "Activo" : "Inactivo")</span><a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div></div>
-</div></section>
+    <section class="students-header">
+        <div class="container">
+
+            <div class="cop-student-headline">
+
+                <div>
+                    <h1 class="students-title">
+                        <i class="bi bi-person-vcard me-2"></i>
+                        @Model.Nombre @Model.Apellido1 @Model.Apellido2
+                    </h1>
+
+                    <p class="students-subtitle">
+                        Consulta la información registrada del estudiante.
+                    </p>
+                </div>
+
+                <div class="cop-student-actions">
+
+                    <span class="status student-header-status
+                             @(Model.Estado ? "status-active" : "status-inactive")">
+
+                        <i class="bi @(Model.Estado ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+
+                        @(Model.Estado ? "Activo" : "Inactivo")
+
+                    </span>
+
+                    <a href="@Url.Action("Index", "Estudiantes")"
+                       class="btn btn-outline-secondary cop-back-btn">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Atrás
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
 
 
     <section class="container pb-5">
@@ -145,7 +183,7 @@
                             Inactivo
                         </span>
                     }
-                    
+
 
                     <hr />
 
@@ -526,6 +564,69 @@
             padding: 0 12px !important;
         }
         .cop-student-headline { align-items: center; }
+
+
+        /* Separación entre estado y botón Atrás */
+        .cop-student-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* Estado destacado en el encabezado */
+        .student-header-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: .2px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+            /* Estudiante activo */
+            .student-header-status.status-active {
+                background: #d1e7dd;
+                color: #146c43;
+                border-color: #a3cfbb;
+            }
+
+            /* Estudiante inactivo */
+            .student-header-status.status-inactive {
+                background: #f8d7da;
+                color: #b02a37;
+                border-color: #f1aeb5;
+            }
+
+            /* Ícono del estado */
+            .student-header-status i {
+                font-size: 1.05rem;
+            }
+
+        /* Botón Atrás */
+        .cop-student-actions .cop-back-btn {
+            border-radius: 7px;
+            padding: 8px 15px;
+            font-size: .88rem;
+        }
+
+        /* Adaptación a pantallas pequeñas */
+        @@media (max-width: 576px) {
+            .cop-student-actions {
+                gap: 16px;
+            }
+
+            .student-header-status {
+                padding: 8px 14px;
+                font-size: .85rem;
+            }
+        }
+
     </style>
 
 }

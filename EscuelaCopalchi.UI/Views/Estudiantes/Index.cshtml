@@ -9,20 +9,13 @@
 
 <main>
 
+
     <section class="students-header">
         <div class="container">
 
-
-            <div class="cop-nav-row">
-<div class="students-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Estudiantes</span>
-            </div>
-<a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
-</div>
-
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div class="d-flex flex-column flex-lg-row
+                    justify-content-between
+                    align-items-lg-center gap-3">
 
                 <div>
                     <h1 class="students-title">
@@ -35,7 +28,14 @@
                     </p>
                 </div>
 
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+
+                    <a href="@Url.Action("Index", "Home")"
+                       class="btn btn-outline-secondary cop-back-btn">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Atrás
+                    </a>
+
                     @if (ViewBag.PuedeImportar == true)
                     {
                         <a href="@Url.Action("ImportarExcel", "Estudiantes")"
@@ -60,6 +60,7 @@
 
         </div>
     </section>
+
 
 
     <section class="container pb-5">
@@ -531,48 +532,76 @@
             background: var(--cop-page-bg);
         }
 
+
+
         .students-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
-            margin-bottom: 28px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 24px 0 18px;
+            margin-bottom: 0;
         }
-
-        .students-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
-        }
-
-            .students-breadcrumb a {
-                color: var(--cop-secondary);
-                text-decoration: none;
-            }
 
         .students-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
+            color: #133C55;
+            font-size: 1.65rem;
             font-weight: 700;
+            margin: 0 0 5px;
         }
 
+            .students-title i {
+                color: #386FA4;
+            }
+
         .students-subtitle {
-            color: var(--cop-muted);
+            color: #6c757d;
+            font-size: .88rem;
             margin: 0;
         }
 
+        .cop-back-btn {
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: .88rem;
+            font-weight: 500;
+            background: white;
+            white-space: nowrap;
+        }
+
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386FA4;
+                color: #133C55;
+            }
+
+        .btn-outline-cop {
+            border: 1px solid #386FA4;
+            color: #386FA4;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: .88rem;
+        }
+
+            .btn-outline-cop:hover {
+                background: #e6f1fb;
+                color: #133C55;
+            }
+
         .btn-cop-primary {
-            background: var(--cop-primary);
-            border-color: var(--cop-primary);
+            background: #133C55;
+            border-color: #133C55;
             color: white;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: .88rem;
         }
 
             .btn-cop-primary:hover {
-                background: var(--cop-secondary);
+                background: #386FA4;
+                border-color: #386FA4;
                 color: white;
             }
+
 
         .btn-outline-cop {
             border: 1px solid var(--cop-secondary);
