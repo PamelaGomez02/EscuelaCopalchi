@@ -34,6 +34,9 @@
             <p class="attendance-subtitle">
                 Registra el estado de asistencia de los estudiantes del grupo seleccionado.
             </p>
+            <div class="attendance-header-actions mt-3">
+                <a href="@Url.Action("Index", "Asistencia")" class="btn cop-back-button"><i class="bi bi-arrow-left me-1"></i> Atrás</a>
+            </div>
 
         </div>
     </section>
@@ -348,6 +351,20 @@
                 width: 100%;
             }
         }
+
+        /* Estilo unificado con Repositorio de Materiales */
+        .attendance-header { background:#fff; border-bottom:1px solid #e3e8ee; padding:26px 0; margin-bottom:28px; }
+        .attendance-title { color:#133c55; font-size:1.75rem; font-weight:700; margin-bottom:8px; }
+        .attendance-subtitle { color:#64748b; line-height:1.55; }
+        .attendance-card, .history-card, .edit-card, .summary-card { border:1px solid #e3e8ee; border-radius:10px; background:#fff; box-shadow:0 3px 14px rgba(19,60,85,.04); }
+        .btn-cop-primary { background:#133c55; border-color:#133c55; color:#fff; border-radius:7px; font-weight:600; }
+        .btn-cop-primary:hover, .btn-cop-primary:focus { background:#386fa4; border-color:#386fa4; color:#fff; }
+        .cop-back-button { border:1px solid #ced4da; color:#475569; background:#fff; border-radius:7px; font-weight:500; padding:9px 15px; text-decoration:none; white-space:nowrap; }
+        .cop-back-button:hover { background:#f1f5f9; color:#133c55; border-color:#94a3b8; }
+        .attendance-header-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+        .form-control:focus, .form-select:focus { border-color:#59a5d8; box-shadow:0 0 0 .2rem rgba(56,111,164,.13); }
+        @@media (max-width: 767px) { .attendance-header-actions { width:100%; } .attendance-header-actions .btn, .attendance-header-actions .cop-back-button { flex:1; text-align:center; } }
+
     </style>
 }
 

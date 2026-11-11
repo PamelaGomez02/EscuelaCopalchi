@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,52 +15,151 @@ namespace EscuelaCopalchi.UI.Controllers
     // Entra quien tenga REGISTRAR_NOTAS (docente) o VER_TODAS_NOTAS (director / administrador).
     // Registrar, crear evaluaciones y editar exigen REGISTRAR_NOTAS y además que el usuario
     // sea el docente del grupo (el procedimiento almacenado lo vuelve a validar).
-    [NotasAcceso]
+    [Authorize]
     public class GestionNotasController : Controller
     {
         private readonly NotasRepository repo = new NotasRepository();
 
         // ---------------------------------------------------------------
-        // Utilidades de sesión (sesión propia de Gestión de notas)
+        // Seguridad: permisos vigentes consultados en SQL Server.
+        // La sesión de notas solo se usa para identificar al docente asignado.
         // ---------------------------------------------------------------
+        private readonly string cadena = ConfigurationManager
+            .ConnectionStrings["AulaVirtualCopalchi"].ConnectionString;
+
         private NotasSesion Sesion
         {
             get { return NotasSesion.Obtener(Session); }
         }
 
+        private int? UsuarioActual()
+        {
+            if (!Request.IsAuthenticated) return null;
+
+            int id;
+            if (Session["IdUsuario"] != null &&
+                int.TryParse(Session["IdUsuario"].ToString(), out id) && id > 0)
+                return id;
+
+            string correo = User.Identity.Name;
+            if (string.IsNullOrWhiteSpace(correo)) return null;
+
+            const string sql = @"SELECT id_usuario FROM dbo.USUARIO
+                                 WHERE correo = @correo AND estado = 1";
+            using (var cn = new SqlConnection(cadena))
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                cmd.Parameters.Add("@correo", SqlDbType.NVarChar, 255).Value = correo;
+                cn.Open();
+                object valor = cmd.ExecuteScalar();
+                if (valor == null || valor == DBNull.Value) return null;
+                id = Convert.ToInt32(valor);
+                Session["IdUsuario"] = id;
+                return id;
+            }
+        }
+
         private int IdUsuario()
         {
-            var s = Sesion;
-            return s == null ? 0 : s.IdUsuario;
+            return UsuarioActual() ?? 0;
         }
 
         private bool Tiene(string permiso)
         {
-            var s = Sesion;
-            if (s == null) return false;
-            if (permiso == "REGISTRAR_NOTAS") return s.PuedeRegistrar;
-            if (permiso == "VER_TODAS_NOTAS") return s.VeTodo;
-            return false;
+            int? usuario = UsuarioActual();
+            if (!usuario.HasValue) return false;
+
+            const string sql = @"SELECT COUNT(1)
+                FROM dbo.USUARIO u
+                INNER JOIN dbo.ROL r ON r.id_rol = u.id_rol
+                INNER JOIN dbo.ROL_PERMISO rp ON rp.id_rol = r.id_rol
+                INNER JOIN dbo.PERMISO p ON p.id_permiso = rp.id_permiso
+                WHERE u.id_usuario = @usuario
+                  AND u.estado = 1 AND r.estado = 1 AND p.estado = 1
+                  AND p.nombre = @permiso";
+            using (var cn = new SqlConnection(cadena))
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                cmd.Parameters.Add("@usuario", SqlDbType.Int).Value = usuario.Value;
+                cmd.Parameters.Add("@permiso", SqlDbType.NVarChar, 150).Value = permiso;
+                cn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
         }
 
-        // Alcance para escribir (registrar, importar, modificar):
-        // > 0 = solo los grupos de ese docente, 0 = todos los grupos (Director), -1 = no puede escribir.
+        // Un permiso de escritura no da acceso global por sí solo.
+        // Solo Administrador o Director con REGISTRAR_NOTAS pueden escribir
+        // con alcance global (0), sujeto a la validación del repositorio/SP.
+        private bool EsResponsableGlobal()
+        {
+            int? usuario = UsuarioActual();
+            if (!usuario.HasValue) return false;
+
+            const string sql = @"SELECT COUNT(1)
+                FROM dbo.USUARIO u
+                INNER JOIN dbo.ROL r ON r.id_rol = u.id_rol
+                WHERE u.id_usuario = @usuario AND u.estado = 1
+                  AND r.estado = 1
+                  AND r.nombre IN ('Administrador', 'Director')";
+            using (var cn = new SqlConnection(cadena))
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                cmd.Parameters.Add("@usuario", SqlDbType.Int).Value = usuario.Value;
+                cn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
+        // Se ejecuta antes de cada acción (GET y POST), sin depender
+        // del atributo NotasAcceso ni de permisos almacenados en sesión.
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            if (filterContext.Result != null) return;
+
+            string accion = filterContext.ActionDescriptor.ActionName;
+            bool escritura = new[] {
+                "Registrar", "CrearEvaluacion", "EditarEvaluacion",
+                "EliminarEvaluacion", "Editar", "ImportarExcel",
+                "ImportarEscuela", "ImportarExterna"
+            }.Contains(accion, StringComparer.OrdinalIgnoreCase);
+
+            bool autorizado = escritura
+                ? Tiene("REGISTRAR_NOTAS")
+                : Tiene("REGISTRAR_NOTAS") || Tiene("VER_TODAS_NOTAS");
+
+            if (!autorizado)
+            {
+                TempData["Error"] =
+                    "Su rol no tiene acceso a esta función de Gestión de notas.";
+
+                filterContext.Result = new RedirectToRouteResult(
+                    new System.Web.Routing.RouteValueDictionary(new
+                    {
+                        controller = "Home",
+                        action = "AccesoDenegado"
+                    }));
+            }
+        }
+
+        // Alcance para escribir: 0 = Administrador/Director autorizado,
+        // >0 = docente asignado; -1 = sin docente o sin permiso.
         private int IdDocente()
         {
+            if (!Tiene("REGISTRAR_NOTAS")) return -1;
+            if (EsResponsableGlobal()) return 0;
+
             var s = Sesion;
             if (s == null) return -1;
-            if (s.EsDirector) return 0;
-            if (s.EsDocente) return s.IdDocente > 0 ? s.IdDocente : -1;
-            return -1;
+            return s.IdDocente > 0 ? s.IdDocente : -1;
         }
 
-        // Alcance para consultar: 0 = todos los grupos (VER_TODAS_NOTAS),
-        // > 0 = solo los grupos de ese docente, -1 = no puede consultar nada.
+        // Alcance para leer: 0 = todos los grupos; >0 = docente;
+        // -1 = no tiene acceso a grupos.
         private int AlcanceLectura()
         {
             if (Tiene("VER_TODAS_NOTAS")) return 0;
-            int d = IdDocente();
-            return d > 0 ? d : -1;
+            return IdDocente();
         }
 
         private static bool TryParseNumero(string texto, out decimal valor)
@@ -109,7 +210,6 @@ namespace EscuelaCopalchi.UI.Controllers
         // REGISTRAR notas
         // ---------------------------------------------------------------
         [HttpGet]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult Registrar(int? grupo, string asignatura, int trimestre = 1)
         {
             int idDocente = IdDocente();
@@ -155,7 +255,6 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult Registrar(int idGrupo, string asignatura, int trimestre, List<NotaInput> notas)
         {
             int idDocente = IdDocente();
@@ -212,7 +311,6 @@ namespace EscuelaCopalchi.UI.Controllers
         // ---------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult CrearEvaluacion(
             int idGrupo, string asignatura, int trimestre, string nombre,
             string porcentaje, string fecha, string notaMaxima)
@@ -276,7 +374,6 @@ namespace EscuelaCopalchi.UI.Controllers
         // ---------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult EditarEvaluacion(
             int idEvaluacion, int idGrupo, string asignatura, int trimestre, string nombre,
             string porcentaje, string fecha, string notaMaxima)
@@ -315,7 +412,6 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult EliminarEvaluacion(int idEvaluacion, int idGrupo, string asignatura, int trimestre)
         {
             string resultado = repo.EliminarEvaluacion(idEvaluacion, IdUsuario(), IdDocente());
@@ -336,7 +432,6 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpGet]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult Editar(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Historial");
@@ -364,7 +459,6 @@ namespace EscuelaCopalchi.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult Editar(int idCalificacion, string nota, string observacion)
         {
             try
@@ -592,7 +686,6 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         [HttpGet]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarExcel(int? grupo, string asignatura, int trimestre = 1)
         {
             if (IdDocente() < 0)
@@ -612,7 +705,6 @@ namespace EscuelaCopalchi.UI.Controllers
         // Plantilla: Identificacion | <una columna por evaluación del grupo, con el nombre exacto>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarEscuela(int idGrupo, string asignatura, int trimestre, HttpPostedFileBase archivo)
         {
             int idDocente = IdDocente();
@@ -711,7 +803,6 @@ namespace EscuelaCopalchi.UI.Controllers
         // Plantilla: Identificacion | Escuela | Asignatura | Periodo | Anio | Nota   (estudiantes que vienen de otra escuela)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NotasAcceso(SoloDocente = true)]
         public ActionResult ImportarExterna(HttpPostedFileBase archivo)
         {
             int idDocente = IdDocente();

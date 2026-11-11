@@ -75,15 +75,22 @@
             </p>
         </div>
 
-        @if (puedeCargarMaterial || puedeCargarDocumentoInstitucional)
-        {
-            <a class="btn btn-cop-primary"
-               href="@Url.Action("Crear", "RepositorioMaterial")">
-
-                <i class="bi bi-cloud-arrow-up me-1"></i>
-                Cargar material
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <a class="btn btn-outline-secondary"
+               href="@Url.Action("Index", "Home")">
+                <i class="bi bi-arrow-left me-1"></i>
+                Atrás
             </a>
-        }
+
+            @if (puedeCargarMaterial || puedeCargarDocumentoInstitucional)
+            {
+                <a class="btn btn-cop-primary"
+                   href="@Url.Action("Crear", "RepositorioMaterial")">
+                    <i class="bi bi-cloud-arrow-up me-1"></i>
+                    Cargar material
+                </a>
+            }
+        </div>
     </div>
 
     <!-- MENSAJES -->
