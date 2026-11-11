@@ -8,7 +8,8 @@
 
     <section class="roles-header">
         <div class="container">
-
+            
+<div class="cop-header-nav">
             <div class="roles-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
@@ -17,6 +18,8 @@
                 <i class="bi bi-chevron-right"></i>
 
                 <span>Permisos</span>
+            </div>
+                <a href="@Url.Action("Index", "Roles")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             </div>
 
             <h1 class="roles-title">
@@ -34,6 +37,15 @@
 
     <section class="container pb-5">
 
+        @if (TempData["Exito"] != null || TempData["Success"] != null)
+        {
+            <div class="alert alert-success d-flex align-items-center gap-2" role="status"><i class="bi bi-check-circle-fill"></i><span>@(TempData["Exito"] ?? TempData["Success"])</span></div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" role="alert"><i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]</div>
+        }
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="permissions-card">
 
             <div class="selected-role">
@@ -57,11 +69,13 @@
             </div>
 
 
-            @using (Html.BeginForm("Permisos", "Roles", FormMethod.Post))
+            @using (Html.BeginForm("Permisos", "Roles", FormMethod.Post, new { id = "formPermisos" }))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.IdRol)
 
+                <div class="permissions-layout">
+                  <div class="permissions-main">
                 <div class="permissions-toolbar">
 
                     <div>
@@ -92,7 +106,7 @@
                 </div>
 
 
-                if (Model.Permisos != null && Model.Permisos.Count > 0)
+                @if (Model.Permisos != null && Model.Permisos.Count > 0)
                 {
                     var modulos = Model.Permisos
                         .Select(p => p.Modulo)
@@ -116,7 +130,7 @@
                                         Configura el acceso a este módulo.
                                     </small>
                                 </div>
-
+                                <button type="button" class="module-toggle btn btn-sm btn-outline-secondary ms-auto" aria-expanded="true" aria-label="Contraer módulo"><i class="bi bi-chevron-up"></i></button>
                             </div>
 
 
@@ -126,7 +140,7 @@
                                 {
                                     if (Model.Permisos[i].Modulo == modulo)
                                     {
-                                        <div class="permission-item">
+                                        <label class="permission-item">
 
                                             @Html.HiddenFor(
                                                 m => m.Permisos[i].IdPermiso
@@ -135,7 +149,7 @@
                                             <div class="permission-info">
 
                                                 <strong>
-                                                    @Model.Permisos[i].Nombre
+                                                    @Model.Permisos[i].Nombre.Replace("_", " ")
                                                 </strong>
 
                                                 <span>
@@ -158,7 +172,7 @@
 
                                             </div>
 
-                                        </div>
+                                        </label>
                                     }
                                 }
 
@@ -198,22 +212,20 @@
                 </div>
 
 
-                <div class="form-actions">
-
-                    <a href="@Url.Action("Index", "Roles")"
-                       class="btn btn-light">
-                        Cancelar
-                    </a>
-
-                    <button type="submit"
-                            class="btn btn-cop-primary">
-
-                        <i class="bi bi-save me-1"></i>
-                        Guardar permisos
-
-                    </button>
-
+                  </div>
+                  <aside class="permissions-side" aria-label="Acciones de permisos">
+                    <div class="save-panel">
+                      <div class="save-panel-icon"><i class="bi bi-shield-lock"></i></div>
+                      <h3>Configuración del rol</h3>
+                      <p>Activa únicamente los accesos que necesita <strong>@Model.NombreRol</strong>.</p>
+                      <div class="selection-stat"><span>Permisos seleccionados</span><strong id="contadorPermisos" aria-live="polite">0</strong></div>
+                      <div class="save-state" id="estadoGuardado" role="status" aria-live="polite"><i class="bi bi-check-circle"></i> Sin cambios pendientes</div>
+                      <button type="submit" id="guardarPermisosLateral" class="btn btn-cop-primary w-100"><i class="bi bi-save me-1"></i> Guardar cambios</button>
+                      <a href="@Url.Action("Index", "Roles")" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+                    </div>
+                  </aside>
                 </div>
+              
             }
 
         </div>
@@ -240,9 +252,9 @@
 
         .roles-header {
             background: white;
-            padding: 30px 0;
+            padding: 18px 0;
             border-bottom: 1px solid #e3e8ee;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
         .roles-breadcrumb {
@@ -272,7 +284,7 @@
         }
 
         .permissions-card {
-            max-width: 900px;
+            max-width: 1200px;
             margin: auto;
         }
 
@@ -380,11 +392,12 @@
         }
 
         .permission-item {
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            padding: 15px 18px;
+            padding: 11px 16px;
             border-bottom: 1px solid #edf0f3;
         }
 
@@ -392,6 +405,10 @@
                 border-bottom: none;
             }
 
+        .permission-item:hover { background:#f7faff; }
+        .permission-item:has(.permiso-check:checked) { background:#f7fbff; }
+        .permission-info { min-width:0; }
+        .permission-info strong { overflow-wrap:anywhere; }
         .permission-info strong {
             display: block;
             color: #344054;
@@ -480,44 +497,79 @@
                 align-items: stretch;
             }
         }
+
+        /* Diseño institucional compartido */
+        .cop-back-btn { border-radius: 9px; padding: .55rem 1rem; font-weight: 600; background: #fff; white-space: nowrap; }
+        .cop-back-btn:hover { background: #edf3f8; color: #133C55; border-color: #386FA4; }
+        .roles-header .roles-title i { color: #386FA4; }
+        .roles-header { box-shadow: 0 2px 12px rgba(19,60,85,.035); }
+        .assign-card, .permissions-card, .roles-card, .form-card { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
+        @@media (max-width: 576px) { .cop-back-btn { width: auto; } }
+
+        .cop-header-nav { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:10px; }
+        .cop-header-nav .roles-breadcrumb { margin:0; flex-wrap:wrap; }
+        @@media (max-width: 576px) { .cop-header-nav { align-items:flex-start; } }
+
+        .permissions-layout { display:grid; grid-template-columns:minmax(0,1fr) 275px; gap:22px; align-items:start; }
+        .permissions-main { min-width:0; }
+        .permissions-side { position:sticky; top:24px; }
+        .save-panel { background:white; border:1px solid #dfe7ef; border-radius:12px; padding:22px; box-shadow:0 8px 25px rgba(19,60,85,.06); }
+        .save-panel-icon { width:43px; height:43px; display:grid; place-items:center; border-radius:10px; color:#386FA4; background:#e6f1fb; margin-bottom:12px; font-size:1.25rem; }
+        .save-panel h3 { color:#133C55; font-size:1.05rem; font-weight:700; }
+        .save-panel p { font-size:.85rem; color:#667585; line-height:1.5; }
+        .selection-stat { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px 0; border-top:1px solid #e7ecf1; border-bottom:1px solid #e7ecf1; font-size:.83rem; color:#5d6b78; }
+        .selection-stat strong { font-size:1.15rem; color:#133C55; }
+        .save-state { font-size:.8rem; color:#54765c; margin:15px 0; display:flex; align-items:center; gap:7px; }
+        .save-state.pending { color:#94621d; }
+        .save-state.saving { color:#386FA4; }
+        .module-card { box-shadow:0 2px 12px rgba(19,60,85,.035); }
+        .module-header { border-left:4px solid #386FA4; }
+        .module-toggle { flex-shrink:0; }
+        .permission-info strong { text-transform:lowercase; }
+        .permission-info strong::first-letter { text-transform:uppercase; }
+        .permission-list.is-collapsed { display:none; }
+        .permission-item .form-switch { flex-shrink:0; margin:0; padding-left:2.9em; }
+        .permission-item .form-check-input { margin-left:-2.9em; }
+        @@media (max-width: 991px) { .permissions-layout { grid-template-columns:minmax(0,1fr); } .permissions-side { position:sticky; bottom:10px; top:auto; z-index:10; } .save-panel { padding:12px 15px; } .save-panel-icon,.save-panel h3,.save-panel p,.selection-stat,.save-panel > a { display:none; } .save-state { margin:0 0 7px; } }
+        @@media (max-width: 576px) { .permission-item { padding:12px; gap:12px; } .permissions-toolbar { padding:14px; } .permissions-toolbar .d-flex { flex-wrap:wrap; } }
     </style>
 }
 
 
 @section scripts {
-
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const seleccionar =
-                document.getElementById("seleccionarTodos");
-
-            const limpiar =
-                document.getElementById("quitarTodos");
-
-            const checks =
-                document.querySelectorAll(".permiso-check");
-
-
-            seleccionar.addEventListener("click", function () {
-
-                checks.forEach(function (check) {
-                    check.checked = true;
-                });
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('formPermisos');
+        var checks = Array.prototype.slice.call(document.querySelectorAll('.permiso-check'));
+        var count = document.getElementById('contadorPermisos');
+        var state = document.getElementById('estadoGuardado');
+        var submit = document.getElementById('guardarPermisosLateral');
+        var original = checks.map(function (x) { return x.checked; });
+        function refresh() {
+            count.textContent = checks.filter(function (x) { return x.checked; }).length + ' / ' + checks.length;
+            var changed = checks.some(function (x, i) { return x.checked !== original[i]; });
+            state.className = 'save-state' + (changed ? ' pending' : '');
+            state.innerHTML = changed ? '<i class="bi bi-pencil-square"></i> Cambios sin guardar' : '<i class="bi bi-check-circle"></i> Sin cambios pendientes';
+        }
+        checks.forEach(function (x) { x.addEventListener('change', refresh); });
+        document.querySelectorAll('.module-toggle').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var list = button.closest('.module-card').querySelector('.permission-list');
+                var collapsed = list.classList.toggle('is-collapsed');
+                button.setAttribute('aria-expanded', String(!collapsed));
+                button.setAttribute('aria-label', collapsed ? 'Expandir módulo' : 'Contraer módulo');
+                button.innerHTML = collapsed ? '<i class="bi bi-chevron-down"></i>' : '<i class="bi bi-chevron-up"></i>';
             });
-
-
-            limpiar.addEventListener("click", function () {
-
-                checks.forEach(function (check) {
-                    check.checked = false;
-                });
-
-            });
-
         });
-
-    </script>
+        document.getElementById('seleccionarTodos').addEventListener('click', function () { checks.forEach(function (x) { x.checked = true; }); refresh(); });
+        document.getElementById('quitarTodos').addEventListener('click', function () { checks.forEach(function (x) { x.checked = false; }); refresh(); });
+        form.addEventListener('submit', function () {
+            state.className = 'save-state saving';
+            state.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando en el servidor...';
+            submit.disabled = true;
+            submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Guardando...';
+        });
+        refresh();
+    });
+</script>
 }

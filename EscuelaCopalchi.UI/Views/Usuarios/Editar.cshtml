@@ -13,12 +13,15 @@
 <main>
     <div class="cop-page-header">
         <div>
-            <h2 class="cop-page-title">Editar usuario</h2>
+            <h2 class="cop-page-title"><i class="bi bi-pencil-square me-2"></i>Editar usuario</h2>
             <p class="cop-page-subtitle">
                 Actualiza la información de
                 @Model.Nombre @Model.Apellido1.
             </p>
         </div>
+        <a href="@Url.Action("Index", "Usuarios")" class="btn btn-outline-secondary cop-back-btn">
+            <i class="bi bi-arrow-left me-1"></i> Atrás
+        </a>
     </div>
 
     @if (ViewBag.Error != null)
@@ -341,5 +344,22 @@
                 border-color: #386FA4;
                 color: #fff;
             }
+    
+        /* Identidad visual compartida con Repositorio de Materiales */
+        .cop-back-btn {
+            border-radius: 9px;
+            font-weight: 600;
+            padding: .55rem 1rem;
+            white-space: nowrap;
+            background: #fff;
+        }
+        .cop-back-btn:hover { background: #edf3f8; border-color: #386FA4; color: #133C55; }
+        .cop-page-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .cop-form-card, .cop-detail-wrapper { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
+        .cop-page-title i { color: #386FA4; }
+        @@media (max-width: 576px) {
+            .cop-page-header { align-items: flex-start; }
+            .cop-back-btn { width: auto; }
+        }
     </style>
 }

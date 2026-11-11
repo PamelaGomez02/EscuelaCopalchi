@@ -17,9 +17,14 @@
                     <h1 class="usuarios-title"><i class="bi bi-people me-2"></i>Gestión de usuarios</h1>
                     <p class="usuarios-subtitle">Administra los usuarios, roles y estados de acceso al sistema.</p>
                 </div>
-                <a href="@Url.Action("Registrar", "Usuarios")" class="btn btn-cop-primary">
-                    <i class="bi bi-person-plus me-1"></i> Nuevo usuario
-                </a>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn">
+                        <i class="bi bi-arrow-left me-1"></i> Atrás
+                    </a>
+                    <a href="@Url.Action("Registrar", "Usuarios")" class="btn btn-cop-primary">
+                        <i class="bi bi-person-plus me-1"></i> Nuevo usuario
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -424,6 +429,23 @@
             .search-box {
                 width: 100%;
             }
+        }
+    
+        /* Identidad visual compartida con Repositorio de Materiales */
+        .cop-back-btn {
+            border-radius: 9px;
+            font-weight: 600;
+            padding: .55rem 1rem;
+            white-space: nowrap;
+            background: #fff;
+        }
+        .cop-back-btn:hover { background: #edf3f8; border-color: #386FA4; color: #133C55; }
+        .cop-page-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .cop-form-card, .cop-detail-wrapper { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
+        .cop-page-title i { color: #386FA4; }
+        @@media (max-width: 576px) {
+            .cop-page-header { align-items: flex-start; }
+            .cop-back-btn { width: auto; }
         }
     </style>
 }

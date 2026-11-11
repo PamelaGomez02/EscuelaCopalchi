@@ -19,13 +19,16 @@
     <!-- ENCABEZADO -->
     <section class="roles-header">
         <div class="container">
-
+            
+<div class="cop-header-nav">
             <div class="roles-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
                 <a href="@Url.Action("Index", "Roles")">Roles</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Asignar rol</span>
+            </div>
+                <a href="@Url.Action("Index", "Roles")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             </div>
 
             <h1 class="roles-title">
@@ -54,11 +57,11 @@
                 </div>
             }
 
-            @if (TempData["Exito"] != null)
+            @if (TempData["Exito"] != null || TempData["Success"] != null)
             {
                 <div class="alert alert-success" role="alert">
                     <i class="bi bi-check-circle me-2"></i>
-                    @TempData["Exito"]
+                    @(TempData["Exito"] ?? TempData["Success"])
                 </div>
             }
 
@@ -98,6 +101,13 @@
                 </div>
             }
 
+            <div class="assign-section-heading">
+                <div>
+                    <h3><i class="bi bi-people me-2"></i>Usuarios disponibles</h3>
+                    <p>Busca por nombre o correo y selecciona los usuarios que tendrán este rol.</p>
+                </div>
+                <span class="assign-counter" id="contadorSeleccionados" aria-live="polite">0 seleccionados</span>
+            </div>
             <!-- BUSCADOR -->
             <div class="search-box mb-3">
 
@@ -126,7 +136,8 @@
                     @if (Model.Usuarios != null &&
                          Model.Usuarios.Count > 0)
                     {
-                        for (int i = 0; i < Model.Usuarios.Count; i++)
+                        foreach (int i in Enumerable.Range(0, Model.Usuarios.Count)
+                            .OrderBy(i => Model.Usuarios[i].NombreCompleto ?? ""))
                         {
                             var usuario = Model.Usuarios[i];
 
@@ -186,7 +197,9 @@
 
                 </div>
 
+                <div class="assign-help"><i class="bi bi-info-circle me-2"></i>Revisa la selección antes de guardar. Los cambios se aplicarán al confirmar la asignación.</div>
                 <!-- BOTONES -->
+                <div id="estadoAsignacion" class="text-muted small mt-3" role="status" aria-live="polite"></div>
                 <div class="form-actions">
 
                     <a href="@Url.Action("Index", "Roles")"
@@ -231,9 +244,9 @@
 
         .roles-header {
             background: white;
-            padding: 30px 0;
+            padding: 18px 0;
             border-bottom: 1px solid #e3e8ee;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
         .roles-breadcrumb {
@@ -415,6 +428,33 @@
                 opacity: .65;
                 cursor: not-allowed;
             }
+
+        /* Diseño institucional compartido */
+        .cop-back-btn { border-radius: 9px; padding: .55rem 1rem; font-weight: 600; background: #fff; white-space: nowrap; }
+        .cop-back-btn:hover { background: #edf3f8; color: #133C55; border-color: #386FA4; }
+        .roles-header .roles-title i { color: #386FA4; }
+        .roles-header { box-shadow: 0 2px 12px rgba(19,60,85,.035); }
+        .assign-card, .permissions-card, .roles-card, .form-card { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
+        @@media (max-width: 576px) { .cop-back-btn { width: auto; } }
+
+        .assign-card { max-width: 980px; padding: 28px; }
+        .assign-section-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin:22px 0 14px; }
+        .assign-section-heading h3 { font-size:1.13rem; font-weight:700; color:#133C55; margin:0 0 4px; }
+        .assign-section-heading p { font-size:.87rem; color:#6c757d; margin:0; }
+        .assign-counter { background:#e6f1fb; color:#133C55; border-radius:30px; padding:8px 13px; font-size:.82rem; font-weight:700; }
+        .user-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; max-height:470px; overflow-y:auto; padding:4px; }
+        .user-item { border:1px solid #e2e9ef; border-radius:10px; background:#fff; padding:15px; min-width:0; transition:background .15s,border-color .15s,box-shadow .15s; }
+        .user-item:hover { background:#f7fbff; border-color:#b9d3e7; }
+        .user-item:focus-within { outline:2px solid #386FA4; outline-offset:2px; }
+        .user-item.is-selected { background:#eef6fd; border-color:#386FA4; box-shadow:0 0 0 1px rgba(56,111,164,.12); }
+        .user-item .usuario-check { width:19px; height:19px; accent-color:#133C55; }
+        .assign-help { margin-top:15px; padding:12px 14px; background:#f5f8fb; border-radius:9px; color:#526477; font-size:.83rem; }
+        .form-actions { position:sticky; bottom:0; background:#fff; z-index:2; padding-bottom:5px; }
+        @@media (max-width: 767px) { .user-list { grid-template-columns:1fr; } .assign-card { padding:18px; } .form-actions { flex-wrap:wrap; } }
+
+        .cop-header-nav { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:10px; }
+        .cop-header-nav .roles-breadcrumb { margin:0; flex-wrap:wrap; }
+        @@media (max-width: 576px) { .cop-header-nav { align-items:flex-start; } }
     </style>
 
 }
@@ -444,6 +484,20 @@
         const esRolUnico =
             @(rolUnico ? "true" : "false");
 
+
+        const contador = document.getElementById("contadorSeleccionados");
+        function actualizarSeleccion() {
+            let cantidad = 0;
+            usuarios.forEach(function (item) {
+                const check = item.querySelector(".usuario-check");
+                const activo = !!(check && check.checked);
+                item.classList.toggle("is-selected", activo);
+                if (activo) cantidad++;
+            });
+            if (contador) contador.textContent = cantidad + (cantidad === 1 ? " seleccionado" : " seleccionados");
+        }
+        checks.forEach(function (check) { check.addEventListener("change", actualizarSeleccion); });
+        actualizarSeleccion();
 
         // =====================================
         // BUSCAR USUARIOS
@@ -495,13 +549,10 @@
                         });
 
                     }
-
+                    actualizarSeleccion();
                 });
-
             });
-
         }
-
 
         // =====================================
         // GUARDAR ASIGNACIÓN

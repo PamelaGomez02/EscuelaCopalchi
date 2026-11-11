@@ -311,9 +311,6 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Usuarios\Index.cshtml" />
-    <Content Include="Views\Usuarios\Crear.cshtml" />
-    <Content Include="Views\Usuarios\Editar.cshtml" />
     <Content Include="Views\Monitoreo\Index.cshtml" />
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
@@ -341,11 +338,6 @@
     <Content Include="Views\GestionAcademica\Distribucion.cshtml" />
     <Content Include="Views\GestionAcademica\Docentes.cshtml" />
     <Content Include="Views\GestionAcademica\MiGrupo.cshtml" />
-    <Content Include="Views\Roles\Asignar.cshtml" />
-    <Content Include="Views\Roles\Crear.cshtml" />
-    <Content Include="Views\Roles\Editar.cshtml" />
-    <Content Include="Views\Roles\Permisos.cshtml" />
-    <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\GestionAcademica\Reportes.cshtml" />
     <Content Include="Views\GestionAcademica\ImportarExcel.cshtml" />
     <Content Include="Views\GestionAcademica\_BarraUsuario.cshtml" />
@@ -358,7 +350,6 @@
     <Content Include="Views\Estudiantes\HistorialBajas.cshtml" />
     <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
     <Content Include="Views\Estudiantes\Index.cshtml" />
-    <Content Include="Views\Usuarios\Detalle.cshtml" />
     <Content Include="Views\RepositorioMaterial\Crear.cshtml" />
     <Content Include="Views\RepositorioMaterial\Detalle.cshtml" />
     <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
@@ -379,6 +370,15 @@
     <Content Include="Views\Asistencia\Index.cshtml" />
     <Content Include="Views\Asistencia\Porcentaje.cshtml" />
     <Content Include="Views\Asistencia\Registrar.cshtml" />
+    <Content Include="Views\Usuarios\Crear.cshtml" />
+    <Content Include="Views\Usuarios\Detalle.cshtml" />
+    <Content Include="Views\Usuarios\Editar.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Roles\Asignar.cshtml" />
+    <Content Include="Views\Roles\Crear.cshtml" />
+    <Content Include="Views\Roles\Editar.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
+    <Content Include="Views\Roles\Permisos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
