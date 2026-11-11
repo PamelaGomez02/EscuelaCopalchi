@@ -101,6 +101,16 @@ namespace EscuelaCopalchi.UI.Controllers
                 vm.Notificaciones = Entero(cn, "SELECT COUNT(*) FROM dbo.NOTIFICACION WHERE id_usuario=@id AND leida=0", null, id);
                 if (vm.Puede("VER_AUDITORIA")) vm.Actividad = Actividades(cn, id, global);
             }
+
+            vm.Modulos.Add(new ModuloHome
+            {
+                Titulo = "PRUEBA REPORTES 2026",
+                Descripcion = "Comprobación del Home",
+                Icono = "bi-file-earmark-bar-graph",
+                Controlador = "Reportes",
+                Accion = "Index",
+                Permisos = new[] { "VER_REPORTES_ACADEMICOS" }
+            });
             return View(vm.EsAdministrador ? "IndexAdmin" : "IndexUsuario", vm);
         }
 
@@ -178,7 +188,7 @@ namespace EscuelaCopalchi.UI.Controllers
             new ModuloHome { Titulo="Planes de estudio", Descripcion="Planeamiento y aprobación", Icono="bi-journal-text", Controlador="PlanesEstudio", Permisos=new[]{"GESTIONAR_PLANES"}},
             new ModuloHome { Titulo="Material didáctico", Descripcion="Repositorio educativo", Icono="bi-folder2-open", Controlador="RepositorioMaterial", Permisos=new[]{"GESTIONAR_MATERIAL","VER_MATERIAL","CARGAR_MATERIAL","DESCARGAR_MATERIAL","EDITAR_MATERIAL","ADMINISTRAR_TODO_MATERIAL","CARGAR_DOCUMENTO_INSTITUCIONAL"}},
             new ModuloHome { Titulo="Monitoreo académico", Descripcion="Seguimiento y alertas académicas", Icono="bi-graph-up", Controlador="Monitoreo", Permisos=new[]{"VER_REPORTES"}},
-             new ModuloHome { Titulo="Reportes académicos", Descripcion="Estadísticas, fichas y exportaciones PDF/Excel", Icono="bi-file-earmark-bar-graph", Controlador="Reportes", Permisos=new[]{"VER_REPORTES_ACADEMICOS"}},
+            new ModuloHome { Titulo="Reportes académicos", Descripcion="Estadísticas, fichas y exportaciones PDF/Excel", Icono="bi-file-earmark-bar-graph", Controlador="Reportes", Permisos=new[]{"VER_REPORTES_ACADEMICOS"}},
             new ModuloHome { Titulo="Auditoría", Descripcion="Historial de movimientos", Icono="bi-journal-check", Controlador="AuditoriaSistema", Permisos=new[]{"VER_AUDITORIA"}},
             new ModuloHome { Titulo="Inventario de limpieza", Descripcion="Existencias y suministros", Icono="bi-bucket", Controlador="InventarioLimpieza", Permisos=new[]{"GESTIONAR_INVENTARIO"}},
             new ModuloHome { Titulo="Inventario de cocina", Descripcion="Insumos y existencias", Icono="bi-basket", Controlador="InventarioCocina", Permisos=new[]{"GESTIONAR_INVENTARIO"}}

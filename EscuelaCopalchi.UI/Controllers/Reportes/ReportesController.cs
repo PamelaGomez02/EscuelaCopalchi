@@ -349,7 +349,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 return RedirectToAction("Traslado");
             }
         }
-    }
+
         // Exporta TODOS los registros que coinciden con el grupo, búsqueda y filtro, no solo la página visible.
         [HttpGet]
         public ActionResult ExportarSeleccion(int grupo = 0, string buscar = "", string filtro = "todos", string formato = "pdf")
@@ -384,7 +384,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 pdf.Texto(40, 54, "Reporte de rendimiento y asistencia", 10, false, 235, 241, 247);
                 y = 97;
                 pdf.Texto(40, y, titulo, 11, true, 19, 60, 85); y += 24;
-                pdf.Rect(40, y-13, 515, 20, 232, 239, 246);
+                pdf.Rect(40, y - 13, 515, 20, 232, 239, 246);
                 pdf.Texto(46, y, "Estudiante", 9, true);
                 pdf.Texto(280, y, "Prom.", 9, true);
                 pdf.Texto(340, y, "Asist.", 9, true);
@@ -400,9 +400,9 @@ namespace EscuelaCopalchi.UI.Controllers
                 pdf.Texto(340, y, e.PctAsistencia.HasValue ? e.PctAsistencia.Value.ToString("0.#") + "%" : "-", 9);
                 pdf.Texto(405, y, e.Clases > 0 ? e.Ausentes.ToString() : "-", 9);
                 pdf.Texto(455, y, e.EnRiesgo ? "Seguimiento" : "Sin alerta", 8);
-                pdf.Linea(40, y+7, 555, y+7, .35, 224, 230, 236); y += 24;
+                pdf.Linea(40, y + 7, 555, y + 7, .35, 224, 230, 236); y += 24;
             }
             return File(pdf.Guardar("Generado " + DateTime.Now.ToString("dd/MM/yyyy HH:mm")), "application/pdf", "Reporte_Estudiantes.pdf");
         }
-
+    }
 }
