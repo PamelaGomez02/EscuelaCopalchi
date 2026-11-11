@@ -1,0 +1,145 @@
+﻿@using System
+@using System.Linq
+@using System.Collections.Generic
+@model List<EscuelaCopalchi.UI.Models.Estudiantes.Estudiante>
+@{
+    ViewBag.Title = "Estudiantes con adecuaciones";
+    var mapa = ViewBag.AdecuacionesPorEstudiante as Dictionary<int, List<EscuelaCopalchi.UI.Models.Estudiantes.AdecuacionAcademica>>
+        ?? new Dictionary<int, List<EscuelaCopalchi.UI.Models.Estudiantes.AdecuacionAcademica>>();
+    var tipos = ViewBag.TiposAdecuacion as List<EscuelaCopalchi.UI.Models.Estudiantes.TipoAdecuacion>
+        ?? new List<EscuelaCopalchi.UI.Models.Estudiantes.TipoAdecuacion>();
+    string filtro = ViewBag.FiltroEstado as string ?? "Todos";
+    string busqueda = ViewBag.Busqueda as string ?? "";
+    int? tipo = ViewBag.TipoSeleccionado as int?;
+}
+<main class="adec-page">
+    <section class="adec-header">
+        <div class="container">
+            <div class="adec-head-row">
+                <nav class="adec-crumb" aria-label="Ruta de navegación">
+                    <a href="@Url.Action("Index", "Home")">Inicio</a><i class="bi bi-chevron-right"></i>
+                    <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a><i class="bi bi-chevron-right"></i>
+                    <span>Adecuaciones</span>
+                </nav>
+                <a class="btn btn-outline-secondary adec-back" href="@Url.Action("Index", "Estudiantes")"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
+            </div>
+            <h1><i class="bi bi-clipboard2-pulse me-2"></i>Estudiantes con adecuaciones</h1>
+            <p>Consulta y seguimiento de las adecuaciones académicas registradas en los expedientes.</p>
+        </div>
+    </section>
+    <section class="container adec-content">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4"><div class="adec-stat"><span class="adec-stat-icon"><i class="bi bi-people"></i></span><div><small>Con adecuaciones</small><strong>@ViewBag.TotalConAdecuaciones</strong></div></div></div>
+            <div class="col-md-4"><div class="adec-stat"><span class="adec-stat-icon green"><i class="bi bi-person-check"></i></span><div><small>Estudiantes activos</small><strong>@ViewBag.TotalActivos</strong></div></div></div>
+            <div class="col-md-4"><div class="adec-stat"><span class="adec-stat-icon red"><i class="bi bi-person-dash"></i></span><div><small>Estudiantes inactivos</small><strong>@ViewBag.TotalInactivos</strong></div></div></div>
+        </div>
+        <div class="adec-card">
+            <div class="adec-card-head">
+                <div><h2>Listado de estudiantes</h2><p>Filtra por nombre, identificación, estado o tipo de adecuación.</p></div>
+                <span class="adec-count">@ViewBag.TotalFiltrados resultado(s)</span>
+            </div>
+            @using (Html.BeginForm("Adecuaciones", "Estudiantes", FormMethod.Get, new { @class = "adec-filters" }))
+            {
+                <div class="adec-field adec-search"><label for="busqueda">Buscar estudiante</label><input id="busqueda" type="search" name="busqueda" value="@busqueda" placeholder="Nombre o identificación" class="form-control" /></div>
+                <div class="adec-field"><label for="filtroEstado">Estado</label><select id="filtroEstado" name="filtroEstado" class="form-select"><option value="Todos" @(filtro == "Todos" ? "selected" : "")>Todos</option><option value="Activos" @(filtro == "Activos" ? "selected" : "")>Activos</option><option value="Inactivos" @(filtro == "Inactivos" ? "selected" : "")>Inactivos</option></select></div>
+                <div class="adec-field"><label for="tipo">Tipo de adecuación</label><select id="tipo" name="tipo" class="form-select"><option value="">Todos los tipos</option>@foreach (var t in tipos) { <option value="@t.IdTipo" @(tipo == t.IdTipo ? "selected" : "")>@t.NombreAdecuacion</option> }</select></div>
+                <div class="adec-actions"><button class="btn adec-primary" type="submit"><i class="bi bi-search me-1"></i>Buscar</button><a href="@Url.Action("Adecuaciones", "Estudiantes")" class="btn btn-outline-secondary">Limpiar</a></div>
+            }
+            <div class="table-responsive">
+                <table class="table adec-table mb-0">
+                    <thead><tr><th>Estudiante</th><th>Identificación</th><th>Adecuaciones</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+                    <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr><td colspan="5"><div class="adec-empty"><i class="bi bi-inbox"></i><strong>No se encontraron estudiantes</strong><span>No hay registros que coincidan con los filtros seleccionados.</span></div></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var e in Model.OrderBy(x => x.Apellido1).ThenBy(x => x.Nombre))
+                        {
+                            var ads = mapa[e.IdEstudiante];
+                            <tr>
+                                <td><div class="adec-person"><span class="adec-avatar">@((e.Nombre ?? "?").Substring(0,1).ToUpper())@((e.Apellido1 ?? "?").Substring(0,1).ToUpper())</span><div><strong>@e.Nombre @e.Apellido1 @e.Apellido2</strong><small>Estudiante</small></div></div></td>
+                                <td>@e.Identificacion</td>
+                                <td><span class="adec-pill"><i class="bi bi-journal-medical me-1"></i>@ads.Count registrada(s)</span><div class="adec-types">@string.Join(", ", ads.Select(a => a.NombreTipoAdecuacion).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct())</div></td>
+                                <td>@if (e.Estado) { <span class="adec-status active">Activo</span> } else { <span class="adec-status inactive">Inactivo</span> }</td>
+                                <td class="text-end"><a class="btn btn-sm adec-detail" href="@Url.Action("Expediente", "Estudiantes", new { id = e.IdEstudiante })" title="Ver expediente"><i class="bi bi-folder2-open me-1"></i>Ver expediente</a></td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if ((int)ViewBag.TotalPaginas > 1)
+        {
+            <nav class="adec-pager" aria-label="Paginación">
+                <span>Mostrando @Model.Count de @ViewBag.TotalFiltrados estudiantes</span>
+                <div class="adec-pager-links">
+                    @for (int numero = 1; numero <= (int)ViewBag.TotalPaginas; numero++)
+                    {
+                        <a class="adec-page-number @(numero == (int)ViewBag.Pagina ? "active" : "")" href="@Url.Action("Adecuaciones", "Estudiantes", new { busqueda = ViewBag.Busqueda, filtroEstado = ViewBag.FiltroEstado, tipo = ViewBag.TipoSeleccionado, pagina = numero })">@numero</a>
+                    }
+                </div>
+            </nav>
+        }
+        <div class="adec-note"><i class="bi bi-shield-check me-2"></i>Información académica de acceso restringido. Las adecuaciones se registran y modifican desde el expediente de cada estudiante.</div>
+    </section>
+</main>
+<style>
+    .adec-page { background:#f4f7fa; min-height:calc(100vh - 90px); color:#133c55; padding-bottom:40px; }
+    .adec-header { background:#fff; padding:22px 0 24px; border-bottom:1px solid #e3eaf0; }
+    .adec-head-row { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:16px; }
+    .adec-crumb { display:flex; gap:10px; align-items:center; color:#64748b; font-size:13px; flex-wrap:wrap; }
+    .adec-crumb a { color:#386fa4; text-decoration:none; }
+    .adec-crumb i { font-size:10px; }
+    .adec-back { border-radius:9px; }
+    .adec-header h1 { font-size:27px; font-weight:750; margin:0 0 6px; }
+    .adec-header h1 i { color:#386fa4; }
+    .adec-header p { color:#64748b; margin:0; }
+    .adec-content { padding-top:26px; }
+    .adec-stat { display:flex; align-items:center; gap:14px; padding:18px; background:#fff; border:1px solid #dfe7ee; border-radius:11px; min-height:86px; }
+    .adec-stat-icon { background:#e5f1fb; color:#386fa4; padding:12px; border-radius:10px; font-size:20px; }
+    .adec-stat-icon.green { background:#d9f0e5; color:#16754a; }
+    .adec-stat-icon.red { background:#fbe3e5; color:#aa3344; }
+    .adec-stat small { display:block; font-size:12px; color:#64748b; }
+    .adec-stat strong { display:block; font-size:23px; line-height:1.3; }
+    .adec-card { background:#fff; border:1px solid #dfe7ee; border-radius:12px; overflow:hidden; }
+    .adec-card-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:20px; flex-wrap:wrap; }
+    .adec-card-head h2 { font-size:17px; font-weight:700; margin:0 0 4px; }
+    .adec-card-head p { margin:0; color:#64748b; font-size:13px; }
+    .adec-count { background:#e5f1fb; color:#133c55; border-radius:20px; padding:7px 11px; font-size:12px; font-weight:600; }
+    .adec-filters { display:flex; flex-wrap:wrap; align-items:end; gap:12px; padding:0 20px 20px; }
+    .adec-field { min-width:150px; flex:1; }
+    .adec-field.adec-search { flex:1.5; }
+    .adec-field label { display:block; font-size:12px; margin-bottom:5px; font-weight:600; }
+    .adec-actions { display:flex; gap:8px; }
+    .adec-primary { background:#133c55; color:#fff; }
+    .adec-primary:hover { background:#205775; color:#fff; }
+    .adec-table { font-size:13px; vertical-align:middle; }
+    .adec-table thead th { background:#f6f9fb; color:#52677a; font-size:11px; letter-spacing:.03em; padding:13px 16px; white-space:nowrap; }
+    .adec-table tbody td { padding:15px 16px; border-color:#e8eef3; }
+    .adec-person { display:flex; align-items:center; gap:10px; min-width:185px; }
+    .adec-person strong { display:block; color:#133c55; }
+    .adec-person small { display:block; color:#8190a0; }
+    .adec-avatar { display:grid; place-items:center; background:#e5f1fb; color:#133c55; width:36px; height:36px; border-radius:50%; font-weight:700; flex-shrink:0; }
+    .adec-pill { display:inline-block; background:#e5f1fb; color:#245b87; padding:5px 10px; border-radius:18px; font-size:12px; font-weight:600; }
+    .adec-types { color:#64748b; font-size:11px; margin-top:5px; max-width:260px; }
+    .adec-status { display:inline-block; padding:5px 10px; border-radius:20px; font-weight:600; font-size:12px; }
+    .adec-status.active { background:#d8efe4; color:#116442; }
+    .adec-status.inactive { background:#fbe3e5; color:#a82f41; }
+    .adec-detail { border:1px solid #bed3e6; color:#245b87; white-space:nowrap; }
+    .adec-detail:hover { background:#e5f1fb; color:#133c55; }
+    .adec-empty { display:flex; flex-direction:column; align-items:center; padding:35px; gap:8px; color:#64748b; }
+    .adec-empty i { font-size:30px; color:#386fa4; }
+    .adec-empty strong { color:#133c55; }
+    .adec-note { color:#687f90; font-size:12px; margin-top:16px; }
+    @@media(max-width:767px) { .adec-header h1 { font-size:22px; } .adec-field,.adec-field.adec-search { flex-basis:100%; } .adec-actions { width:100%; } .adec-actions .btn { flex:1; } }
+</style>
+
+<style>
+.adec-pager { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:18px 20px; color:#64748b; font-size:13px; }
+.adec-pager-links { display:flex; flex-wrap:wrap; gap:6px; }
+.adec-page-number { display:inline-flex; min-width:35px; height:35px; justify-content:center; align-items:center; border:1px solid #dbe5ee; border-radius:8px; color:#386fa4; text-decoration:none; }
+.adec-page-number.active { background:#133c55; color:#fff; border-color:#133c55; }
+</style>

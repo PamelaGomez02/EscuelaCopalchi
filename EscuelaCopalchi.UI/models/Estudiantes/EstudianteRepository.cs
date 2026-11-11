@@ -80,7 +80,7 @@ namespace EscuelaCopalchi.UI.Models
 
             if (dt.Rows.Count == 0)
             {
-                throw new Exception("SP_ListarEstudiantes devolvió 0 registros");
+                return lista;
             }
 
             foreach (DataRow row in dt.Rows)

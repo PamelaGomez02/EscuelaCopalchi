@@ -106,12 +106,16 @@ namespace EscuelaCopalchi.UI.Controllers
         }
 
         public ActionResult Index(
-            string filtroEstado = "Activos",
-            string busqueda = "")
+            string filtroEstado = "Todos",
+            string busqueda = "", int pagina = 1)
         {
             if (!TienePermiso("VER_ESTUDIANTES")) return SinPermiso();
             PermisosVista();
-            var estudiantes = repository.ObtenerTodos();
+            var todos = repository.ObtenerTodos() ?? new List<Estudiante>();
+            ViewBag.TotalEstudiantes = todos.Count;
+            ViewBag.TotalActivos = todos.Count(x => x.Estado);
+            ViewBag.TotalInactivos = todos.Count(x => !x.Estado);
+            var estudiantes = todos;
 
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
@@ -142,6 +146,14 @@ namespace EscuelaCopalchi.UI.Controllers
                     .ToList();
             }
 
+            estudiantes = estudiantes.OrderBy(x => x.Apellido1).ThenBy(x => x.Apellido2).ThenBy(x => x.Nombre).ToList();
+            int totalFiltrados = estudiantes.Count;
+            int totalPaginas = Math.Max(1, (int)Math.Ceiling(totalFiltrados / 10.0));
+            pagina = Math.Max(1, Math.Min(pagina, totalPaginas));
+            estudiantes = estudiantes.Skip((pagina - 1) * 10).Take(10).ToList();
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalFiltrados = totalFiltrados;
             ViewBag.FiltroEstado = filtroEstado;
             ViewBag.Busqueda = busqueda;
 
@@ -150,6 +162,113 @@ namespace EscuelaCopalchi.UI.Controllers
                 estudiantes);
         }
 
+
+        // Consulta de estudiantes que tienen al menos una adecuación registrada.
+        // Reutiliza los procedimientos existentes y respeta los permisos del expediente.
+        [HttpGet]
+        public ActionResult Adecuaciones(string busqueda = "", string filtroEstado = "Todos", int? tipo = null, int pagina = 1)
+        {
+            if (!TienePermiso("VER_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
+
+            var estudiantes = repository.ObtenerTodos();
+            var mapa = new Dictionary<int, List<AdecuacionAcademica>>();
+            foreach (var estudiante in estudiantes)
+            {
+                var adecuaciones = repository.ObtenerAdecuaciones(estudiante.IdEstudiante);
+                if (adecuaciones != null && adecuaciones.Count > 0)
+                    mapa[estudiante.IdEstudiante] = adecuaciones;
+            }
+
+            var conAdecuaciones = estudiantes
+                .Where(e => mapa.ContainsKey(e.IdEstudiante)).ToList();
+            ViewBag.TotalConAdecuaciones = conAdecuaciones.Count;
+            ViewBag.TotalActivos = conAdecuaciones.Count(e => e.Estado);
+            ViewBag.TotalInactivos = conAdecuaciones.Count(e => !e.Estado);
+            ViewBag.TiposAdecuacion = repository.ObtenerTiposAdecuacion();
+            ViewBag.AdecuacionesPorEstudiante = mapa;
+            ViewBag.Busqueda = busqueda ?? "";
+            ViewBag.FiltroEstado = filtroEstado ?? "Todos";
+            ViewBag.TipoSeleccionado = tipo;
+
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                var q = busqueda.Trim();
+                conAdecuaciones = conAdecuaciones.Where(e =>
+                    ((e.Nombre ?? "") + " " + (e.Apellido1 ?? "") + " " + (e.Apellido2 ?? ""))
+                        .IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (e.Identificacion ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
+                ).ToList();
+            }
+            if (string.Equals(filtroEstado, "Activos", StringComparison.OrdinalIgnoreCase))
+                conAdecuaciones = conAdecuaciones.Where(e => e.Estado).ToList();
+            else if (string.Equals(filtroEstado, "Inactivos", StringComparison.OrdinalIgnoreCase))
+                conAdecuaciones = conAdecuaciones.Where(e => !e.Estado).ToList();
+            if (tipo.HasValue && tipo.Value > 0)
+                conAdecuaciones = conAdecuaciones
+                    .Where(e => mapa[e.IdEstudiante].Any(a => a.TipoAdecuacion == tipo.Value)).ToList();
+
+            conAdecuaciones = conAdecuaciones.OrderBy(x => x.Apellido1).ThenBy(x => x.Apellido2).ThenBy(x => x.Nombre).ToList();
+            int totalFiltrados = conAdecuaciones.Count;
+            int totalPaginas = Math.Max(1, (int)Math.Ceiling(totalFiltrados / 10.0));
+            pagina = Math.Max(1, Math.Min(pagina, totalPaginas));
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalFiltrados = totalFiltrados;
+            conAdecuaciones = conAdecuaciones.Skip((pagina - 1) * 10).Take(10).ToList();
+
+            return View("~/Views/Estudiantes/Adecuaciones.cshtml", conAdecuaciones);
+        }
+
+        // Listado de estudiantes con alergias registradas en el expediente.
+        [HttpGet]
+        public ActionResult Alergias(string busqueda = "", string filtroEstado = "Todos", int pagina = 1)
+        {
+            if (!TienePermiso("VER_EXPEDIENTE_ESTUDIANTES")) return SinPermiso();
+            PermisosVista();
+
+            var estudiantes = repository.ObtenerTodos();
+            var mapa = new Dictionary<int, List<Alergia>>();
+            foreach (var estudiante in estudiantes)
+            {
+                var alergias = repository.ObtenerAlergias(estudiante.IdEstudiante);
+                if (alergias != null && alergias.Count > 0)
+                    mapa[estudiante.IdEstudiante] = alergias;
+            }
+
+            var conAlergias = estudiantes.Where(e => mapa.ContainsKey(e.IdEstudiante)).ToList();
+            ViewBag.TotalConAlergias = conAlergias.Count;
+            ViewBag.TotalActivos = conAlergias.Count(e => e.Estado);
+            ViewBag.TotalInactivos = conAlergias.Count(e => !e.Estado);
+            ViewBag.AlergiasPorEstudiante = mapa;
+            ViewBag.Busqueda = busqueda ?? "";
+            ViewBag.FiltroEstado = filtroEstado ?? "Todos";
+
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                var q = busqueda.Trim();
+                conAlergias = conAlergias.Where(e =>
+                    ((e.Nombre ?? "") + " " + (e.Apellido1 ?? "") + " " + (e.Apellido2 ?? ""))
+                        .IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (e.Identificacion ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
+                ).ToList();
+            }
+            if (string.Equals(filtroEstado, "Activos", StringComparison.OrdinalIgnoreCase))
+                conAlergias = conAlergias.Where(e => e.Estado).ToList();
+            else if (string.Equals(filtroEstado, "Inactivos", StringComparison.OrdinalIgnoreCase))
+                conAlergias = conAlergias.Where(e => !e.Estado).ToList();
+
+            conAlergias = conAlergias.OrderBy(x => x.Apellido1).ThenBy(x => x.Apellido2).ThenBy(x => x.Nombre).ToList();
+            int totalFiltrados = conAlergias.Count;
+            int totalPaginas = Math.Max(1, (int)Math.Ceiling(totalFiltrados / 10.0));
+            pagina = Math.Max(1, Math.Min(pagina, totalPaginas));
+            ViewBag.Pagina = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalFiltrados = totalFiltrados;
+            conAlergias = conAlergias.Skip((pagina - 1) * 10).Take(10).ToList();
+
+            return View("~/Views/Estudiantes/Alergias.cshtml", conAlergias);
+        }
 
         public ActionResult Detalle(int id)
         {
@@ -231,18 +350,21 @@ namespace EscuelaCopalchi.UI.Controllers
         public ActionResult DarBaja(int id, string observacionBaja)
         {
             if (!TienePermiso("GESTIONAR_BAJAS_ESTUDIANTES")) return SinPermiso();
-            string resultado = repository.DarBaja(id, observacionBaja);
-
-            if (resultado == "Se ha guardado correctamente")
+            try
             {
-                TempData["Success"] = "El estudiante fue dado de baja correctamente.";
+                string resultado = repository.DarBaja(id, observacionBaja);
+                if (resultado == "Se ha guardado correctamente")
+                {
+                    TempData["Success"] = "El estudiante fue dado de baja correctamente. Ahora aparece en Inactivos.";
+                    return RedirectToAction("Index", new { filtroEstado = "Inactivos" });
+                }
+                TempData["Error"] = string.IsNullOrWhiteSpace(resultado)
+                    ? "No se pudo confirmar la baja del estudiante." : resultado;
             }
-            else
+            catch (Exception ex)
             {
-                TempData["Error"] =
-                    resultado;
+                TempData["Error"] = "No se pudo dar de baja al estudiante: " + ex.Message;
             }
-
             return RedirectToAction("Index");
         }
 

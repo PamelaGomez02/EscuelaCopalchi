@@ -13,11 +13,14 @@
         <div class="container">
 
 
-            <div class="students-breadcrumb">
+            <div class="cop-nav-row">
+<div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Estudiantes</span>
             </div>
+<a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
+</div>
 
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
@@ -32,8 +35,7 @@
                     </p>
                 </div>
 
-                <div class="d-flex gap-2">
-
+                <div class="d-flex flex-wrap gap-2">
                     @if (ViewBag.PuedeImportar == true)
                     {
                         <a href="@Url.Action("ImportarExcel", "Estudiantes")"
@@ -73,7 +75,7 @@
 
                     <div>
                         <span>Total estudiantes</span>
-                        <h2>@(Model?.Count() ?? 0)</h2>
+                        <h2>@ViewBag.TotalEstudiantes</h2>
                     </div>
 
                 </div>
@@ -89,7 +91,7 @@
 
                     <div>
                         <span>Activos</span>
-                        <h2>@(Model?.Count(x => x.Estado) ?? 0)</h2>
+                        <h2>@ViewBag.TotalActivos</h2>
                     </div>
 
                 </div>
@@ -105,7 +107,7 @@
 
                     <div>
                         <span>Inactivos</span>
-                        <h2>@(Model?.Count(x => !x.Estado) ?? 0)</h2>
+                        <h2>@ViewBag.TotalInactivos</h2>
                     </div>
 
                 </div>
@@ -113,6 +115,13 @@
 
         </div>
 
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        }
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show"
@@ -132,6 +141,16 @@
 
         <div class="students-card">
 
+            <div class="student-quick-filters" aria-label="Vistas de estudiantes">
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Todos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Todos" })"><i class="bi bi-people me-1"></i>Todos</a>
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Activos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Activos" })"><i class="bi bi-person-check me-1"></i>Activos</a>
+                <a class="student-filter-tab @(ViewBag.FiltroEstado == "Inactivos" ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = "Inactivos" })"><i class="bi bi-person-dash me-1"></i>Inactivos</a>
+                @if (ViewBag.PuedeExpediente == true)
+                {
+                    <a class="student-filter-tab" href="@Url.Action("Adecuaciones", "Estudiantes")"><i class="bi bi-clipboard2-pulse me-1"></i>Con adecuaciones</a>
+                    <a class="student-filter-tab" href="@Url.Action("Alergias", "Estudiantes")"><i class="bi bi-heart-pulse me-1"></i>Con alergias</a>
+                }
+            </div>
             <div class="students-toolbar">
 
                 <div>
@@ -144,7 +163,6 @@
                     "Estudiantes",
                     FormMethod.Get))
                 {
-                    @Html.AntiForgeryToken()
                     <div class="toolbar-actions">
 
                         <select name="filtroEstado"
@@ -208,7 +226,7 @@
                     </thead>
 
                     <tbody>
-                        @if (Model != null)
+                        @if (Model != null && Model.Any())
                         {
                             foreach (var estudiante in Model)
                             {
@@ -324,6 +342,23 @@
 
             </div>
 
+            @if ((int)ViewBag.TotalPaginas > 1)
+            {
+                <nav class="student-pagination" aria-label="Páginas de estudiantes">
+                    <span>Mostrando @Model.Count de @ViewBag.TotalFiltrados estudiantes · Página @ViewBag.Pagina de @ViewBag.TotalPaginas</span>
+                    <div class="student-pages">
+                        @for (int numero = 1; numero <= (int)ViewBag.TotalPaginas; numero++)
+                        {
+                            <a class="student-page-link @(numero == (int)ViewBag.Pagina ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = numero })">@numero</a>
+                        }
+                    </div>
+                </nav>
+            }
+            else
+            {
+                <div class="student-page-summary">Mostrando @Model.Count de @ViewBag.TotalFiltrados estudiantes</div>
+            }
+
             <div class="history-link">
 
                 @if (ViewBag.PuedeBajas == true)
@@ -411,7 +446,7 @@
                             Cancelar
                         </button>
 
-                        <button type="submit"
+                        <button type="submit" id="btnConfirmarBaja"
                                 class="btn btn-danger">
 
                             <i class="bi bi-person-dash me-1"></i>
@@ -430,9 +465,23 @@
 }
 
 <script>
-            function seleccionarEstudiante(id) {
-                document.getElementById("idEstudianteBaja").value = id;
-            }
+    function seleccionarEstudiante(id) {
+        document.getElementById("idEstudianteBaja").value = id;
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('modalBaja');
+        if (!modal) return;
+        var form = modal.querySelector('form');
+        var button = document.getElementById('btnConfirmarBaja');
+        if (form && button) {
+            form.addEventListener('submit', function () {
+                if (form.dataset.enviado === '1') return;
+                form.dataset.enviado = '1';
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Guardando...';
+            });
+        }
+    });
 </script>
 
 
@@ -716,6 +765,26 @@
                     width: 100%;
                 }
         }
+    
+        /* Estilo compartido Aula Virtual Copalchí */
+        .cop-nav-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:14px; }
+        .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb { margin-bottom:0; }
+        .cop-back-btn { border-radius:9px; font-weight:600; padding:.5rem .95rem; white-space:nowrap; background:white; }
+        .cop-back-btn:hover { background:#edf3f8; border-color:#386FA4; color:#133C55; }
+        .students-header, .record-header { padding-top:22px !important; padding-bottom:22px !important; }
+        .students-card, .form-card, .history-card { box-shadow:0 5px 20px rgba(19,60,85,.045); }
+
     </style>
 
 }
+<style>
+.student-quick-filters { display:flex; flex-wrap:wrap; gap:8px; padding:16px 20px; background:#fff; border-bottom:1px solid #e5ebf1; }
+.student-filter-tab { display:inline-flex; align-items:center; padding:9px 14px; border:1px solid #dbe5ee; border-radius:9px; color:#386fa4; text-decoration:none; font-size:13px; font-weight:600; }
+.student-filter-tab:hover { background:#eef5fb; color:#133c55; }
+.student-filter-tab.active { background:#133c55; border-color:#133c55; color:white; }
+.student-pagination { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:17px 20px; border-top:1px solid #e5ebf1; color:#52677a; font-size:13px; }
+.student-pages { display:flex; flex-wrap:wrap; gap:5px; }
+.student-page-link { display:inline-flex; align-items:center; justify-content:center; min-width:35px; height:35px; padding:0 9px; border:1px solid #dbe5ee; border-radius:8px; color:#386fa4; text-decoration:none; }
+.student-page-link.active { background:#133c55; color:#fff; border-color:#133c55; }
+.student-page-summary { padding:13px 20px; font-size:13px; color:#64748b; }
+</style>

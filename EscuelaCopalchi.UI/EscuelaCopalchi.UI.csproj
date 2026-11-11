@@ -159,7 +159,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountController\AccountController.cs" />
     <Compile Include="Controllers\AuditoriaSistemaController.cs" />
     <Compile Include="Controllers\ErrorController\ErrorController.cs" />
     <Compile Include="Controllers\Estudiante\EstudiantesController.cs" />
@@ -173,13 +173,13 @@
     <Compile Include="Controllers\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HomeController\HomeController.cs" />
     <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\PlanesEstudio\PlanesEstudioController.cs" />
     <Compile Include="Controllers\Reportes\ReportesController.cs" />
-    <Compile Include="Controllers\RepositorioMaterialController.cs" />
-    <Compile Include="Controllers\AsistenciaController.cs" />
-    <Compile Include="Controllers\RolesController.cs" />
+    <Compile Include="Controllers\GestionMaterialController\RepositorioMaterialController.cs" />
+    <Compile Include="Controllers\AsistenciaController\AsistenciaController.cs" />
+    <Compile Include="Controllers\RolesController\RolesController.cs" />
     <Compile Include="Controllers\Usuarios\UsuariosController.cs" />
     <Compile Include="Datos\GestionAcademica\AccesoDatos.cs" />
     <Compile Include="Datos\GestionAcademica\AuditoriaRepository.cs" />
@@ -343,13 +343,6 @@
     <Content Include="Views\GestionAcademica\_BarraUsuario.cshtml" />
     <Content Include="Views\GestionAcademica\Notificaciones.cshtml" />
     <Content Include="Views\GestionAcademica\Bitacora.cshtml" />
-    <Content Include="Views\Estudiantes\Crear.cshtml" />
-    <Content Include="Views\Estudiantes\Detalle.cshtml" />
-    <Content Include="Views\Estudiantes\Editar.cshtml" />
-    <Content Include="Views\Estudiantes\Expediente.cshtml" />
-    <Content Include="Views\Estudiantes\HistorialBajas.cshtml" />
-    <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
-    <Content Include="Views\Estudiantes\Index.cshtml" />
     <Content Include="Views\RepositorioMaterial\Crear.cshtml" />
     <Content Include="Views\RepositorioMaterial\Detalle.cshtml" />
     <Content Include="Views\RepositorioMaterial\Editar.cshtml" />
@@ -379,6 +372,15 @@
     <Content Include="Views\Roles\Editar.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Roles\Permisos.cshtml" />
+    <Content Include="Views\Estudiantes\Crear.cshtml" />
+    <Content Include="Views\Estudiantes\Detalle.cshtml" />
+    <Content Include="Views\Estudiantes\Editar.cshtml" />
+    <Content Include="Views\Estudiantes\Expediente.cshtml" />
+    <Content Include="Views\Estudiantes\HistorialBajas.cshtml" />
+    <Content Include="Views\Estudiantes\ImportarExcel.cshtml" />
+    <Content Include="Views\Estudiantes\Adecuaciones.cshtml" />
+    <Content Include="Views\Estudiantes\Alergias.cshtml" />
+    <Content Include="Views\Estudiantes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

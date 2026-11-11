@@ -8,13 +8,16 @@
 
         <div class="container">
 
-            <div class="students-breadcrumb">
+            <div class="cop-nav-row">
+<div class="students-breadcrumb">
                 <a href="@Url.Action("Index", "Home")">Inicio</a>
                 <i class="bi bi-chevron-right"></i>
                 <a href="@Url.Action("Index", "Estudiantes")">Estudiantes</a>
                 <i class="bi bi-chevron-right"></i>
                 <span>Importar Excel</span>
             </div>
+<a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
+</div>
 
             <h1 class="students-title">
                 <i class="bi bi-file-earmark-excel me-2"></i>
@@ -356,6 +359,15 @@
             border-color: var(--cop-primary);
             color: white;
         }
+    
+        /* Estilo compartido Aula Virtual Copalchí */
+        .cop-nav-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:14px; }
+        .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb { margin-bottom:0; }
+        .cop-back-btn { border-radius:9px; font-weight:600; padding:.5rem .95rem; white-space:nowrap; background:white; }
+        .cop-back-btn:hover { background:#edf3f8; border-color:#386FA4; color:#133C55; }
+        .students-header, .record-header { padding-top:22px !important; padding-bottom:22px !important; }
+        .students-card, .form-card, .history-card { box-shadow:0 5px 20px rgba(19,60,85,.045); }
+
     </style>
 
 }
