@@ -172,9 +172,8 @@
     <Compile Include="Controllers\GestionNotas\GestionNotasController.cs" />
     <Compile Include="Controllers\HomeController\HomeController.cs" />
     <Compile Include="Controllers\InventarioCocinaController.cs" />
-    <Compile Include="Controllers\InventarioLimpiezaController.cs" />
+    <Compile Include="Controllers\MonitoreoDashboardController\MonitoreoDashboardController.cs" />
     <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
-    <Compile Include="Controllers\MonitoreoController.cs" />
     <Compile Include="Controllers\PlanesEstudio\PlanesEstudioController.cs" />
     <Compile Include="Controllers\GestionMaterialController\RepositorioMaterialController.cs" />
     <Compile Include="Controllers\AsistenciaController\AsistenciaController.cs" />
@@ -223,12 +222,8 @@
     <Compile Include="Models\Home\HomeDashboardViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Gestion Material\RepositorioMaterialViewModel.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoAcceso.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoCalculo.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoModelos.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoReporte.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoRepository.cs" />
-    <Compile Include="Models\Monitoreo\MonitoreoVistas.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoDashboardRepository.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoDashboardVM.cs" />
     <Compile Include="Models\Notificaciones\EstudianteRiesgo.cs" />
     <Compile Include="Models\Notificaciones\Notificacion.cs" />
     <Compile Include="Models\Notificaciones\NotificacionRepository.cs" />
@@ -347,10 +342,6 @@
     <Content Include="Views\InventarioLimpieza\Create.cshtml" />
     <Content Include="Views\InventarioLimpieza\Index.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
-    <Content Include="Views\Monitoreo\Estadisticas.cshtml" />
-    <Content Include="Views\Monitoreo\Index.cshtml" />
-    <Content Include="Views\Monitoreo\Reporte.cshtml" />
-    <Content Include="Views\Monitoreo\_EstilosMonitoreo.cshtml" />
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
     <Content Include="Views\PlanesEstudio\Crear.cshtml" />
@@ -378,6 +369,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Reportes\Index.cshtml" />
     <Content Include="Views\Traslados\Index.cshtml" />
+    <Content Include="Views\MonitoreoDashboard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

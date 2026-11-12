@@ -1,0 +1,44 @@
+@model EscuelaCopalchi.UI.Models.MonitoreoNuevo.MonitoreoDashboardVM
+@{ ViewBag.Title = "Monitoreo Académico"; }
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2 class="fw-bold mb-1">Monitoreo Académico</h2><p class="text-muted mb-0">Rendimiento, excelencia y seguimiento académico</p></div>
+        <span class="badge bg-primary">Datos de SQL Server</span>
+    </div>
+    <form method="get" action="@Url.Action("Index", "MonitoreoDashboard")" class="card card-body shadow-sm mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3"><label class="form-label">Año lectivo</label><select class="form-select" name="anio">
+                @foreach (var a in Model.Anios) { <option value="@a" @(Model.Anio == a ? "selected" : "")>@a</option> }
+            </select></div>
+            <div class="col-md-3"><label class="form-label">Trimestre</label><select class="form-select" name="trimestre">
+                <option value="0" @(Model.Trimestre == 0 ? "selected" : "")>Todos</option>
+                @for (int t = 1; t <= 3; t++) { <option value="@t" @(Model.Trimestre == t ? "selected" : "")>@t</option> }
+            </select></div>
+            <div class="col-md-4"><label class="form-label">Grupo</label><select class="form-select" name="grupo">
+                <option value="0" @(Model.IdGrupo == 0 ? "selected" : "")>Todos los grupos autorizados</option>
+                @foreach (var g in Model.Grupos) { <option value="@g.IdGrupo" @(Model.IdGrupo == g.IdGrupo ? "selected" : "")>@g.Nombre</option> }
+            </select></div>
+            <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Aplicar filtros</button></div>
+        </div>
+    </form>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Promedio general</div><h2 class="mb-0">@(Model.PromedioGeneral.HasValue ? Model.PromedioGeneral.Value.ToString("0.00") : "Sin datos")</h2></div></div>
+        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Estudiantes evaluados</div><h2 class="mb-0">@Model.TotalEvaluados</h2></div></div>
+        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Mejor grupo</div><h4 class="mb-0">@(Model.RankingGrupos.Count > 0 ? Model.RankingGrupos[0].Grupo : "Sin datos")</h4></div></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-6"><div class="card shadow-sm h-100"><div class="card-header fw-bold">Mejores promedios</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Estudiante</th><th>Grupo</th><th>Promedio</th></tr></thead><tbody>
+            @foreach (var x in Model.Mejores) { <tr><td>@x.Nombre</td><td>@x.Grupo</td><td><strong>@x.Promedio.ToString("0.00")</strong></td></tr> }
+            @if (!Model.Mejores.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin calificaciones para estos filtros.</td></tr> }
+        </tbody></table></div></div></div>
+        <div class="col-lg-6"><div class="card shadow-sm h-100"><div class="card-header fw-bold">Menores promedios · Revisión prioritaria</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Estudiante</th><th>Grupo</th><th>Promedio</th></tr></thead><tbody>
+            @foreach (var x in Model.Menores) { <tr><td>@x.Nombre</td><td>@x.Grupo</td><td><strong>@x.Promedio.ToString("0.00")</strong></td></tr> }
+            @if (!Model.Menores.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin calificaciones para estos filtros.</td></tr> }
+        </tbody></table></div></div></div>
+        <div class="col-12"><div class="card shadow-sm"><div class="card-header fw-bold">Ranking de grupos</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Grupo</th><th>Estudiantes evaluados</th><th>Promedio</th></tr></thead><tbody>
+            @foreach (var x in Model.RankingGrupos) { <tr><td>@x.Grupo</td><td>@x.Estudiantes</td><td>@x.Promedio.ToString("0.00")</td></tr> }
+            @if (!Model.RankingGrupos.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin grupos con calificaciones.</td></tr> }
+        </tbody></table></div></div></div>
+    </div>
+    <p class="small text-muted mt-3">Los promedios reflejan las materias y trimestres con calificaciones disponibles. No representan necesariamente notas finales oficiales.</p>
+</div>
