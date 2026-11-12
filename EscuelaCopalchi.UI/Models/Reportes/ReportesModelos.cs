@@ -37,12 +37,14 @@ namespace EscuelaCopalchi.UI.Models.Reportes
         public List<EscuelaCopalchi.UI.Models.GestionNotas.GrupoNotasItem> Grupos { get; set; }
         public List<EstudianteRendimiento> Estudiantes { get; set; }
         public List<AsignaturaPromedio> Asignaturas { get; set; }
+        public List<EstudianteRendimiento> ComparacionGrupos { get; set; }
 
         public ReportesViewModel()
         {
             Grupos = new List<EscuelaCopalchi.UI.Models.GestionNotas.GrupoNotasItem>();
             Estudiantes = new List<EstudianteRendimiento>();
             Asignaturas = new List<AsignaturaPromedio>();
+            ComparacionGrupos = new List<EstudianteRendimiento>();
         }
 
         public decimal? PromedioGeneral

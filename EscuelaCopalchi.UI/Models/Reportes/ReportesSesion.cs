@@ -1,8 +1,8 @@
-﻿using System;
+﻿using global::EscuelaCopalchi.UI.Models.GestionNotas;
+using System;
 using System.Globalization;
 using System.Text;
 using System.Web;
-using global::EscuelaCopalchi.UI.Models.GestionNotas;
 
 namespace EscuelaCopalchi.UI.Models.Reportes
 {

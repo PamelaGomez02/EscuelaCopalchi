@@ -1,34 +1,97 @@
-﻿@model EscuelaCopalchi.UI.Models.Reportes.TrasladoViewModel
+﻿@model EscuelaCopalchi.UI.Models.Traslados.TrasladoViewModel
 @{
-    ViewBag.Title = "Cartas de traslado";
-    var ses = ViewBag.ReportesSesion as EscuelaCopalchi.UI.Models.Reportes.ReportesSesion;
+    ViewBag.Title = "Gestión de Traslados";
 }
 @section styles {
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
-}
-<main>
-    @if (ses != null)
-    {
-        <div class="gn-bar">
-            <span><i class="bi bi-person-circle me-1"></i> <strong>@ses.Nombre</strong> <span class="badge gn-badge gn-badge-ext ms-1">@ses.Rol</span></span>
-        </div>
-    }
+    <style>
+        .traslado-planes {
+            background: #f4f7fa;
+            padding: 0 16px 35px;
+        }
 
-    <div class="gn-header">
-        <div>
-            <h2 class="gn-title">Cartas de traslado</h2>
-            <p class="gn-sub">Genere la carta oficial con el historial académico o cargue una carta ya elaborada.</p>
+            .traslado-planes > :not(.planes-header) {
+                max-width: 1296px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .traslado-planes .planes-header {
+                padding: 16px 0 24px;
+            }
+
+                .traslado-planes .planes-header .container {
+                    max-width: 1320px;
+                }
+
+            .traslado-planes .planes-header-layout {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .traslado-planes .planes-title {
+                font-size: 1.55rem;
+                line-height: 1.3;
+                font-weight: 700;
+                color: #133c55;
+                margin: 0 0 5px;
+            }
+
+                .traslado-planes .planes-title i {
+                    color: #386fa4;
+                }
+
+            .traslado-planes .planes-subtitle {
+                color: #64748b;
+                font-size: .9rem;
+                margin: 0;
+            }
+
+            .traslado-planes .cop-back-btn {
+                background: #fff;
+                border: 1px solid #cbd5e1;
+                color: #475569;
+                font-weight: 600;
+                border-radius: 7px;
+                padding: .55rem 1rem;
+            }
+
+                .traslado-planes .cop-back-btn:hover {
+                    background: #edf3f8;
+                    border-color: #386fa4;
+                    color: #133c55;
+                }
+    </style>
+
+}
+<main class="traslado-planes">
+
+    <section class="planes-header">
+        <div class="container">
+            <div class="planes-header-layout">
+                <div>
+                    <h1 class="planes-title"><i class="bi bi-envelope-paper me-2"></i>Gestión de Traslados</h1>
+                    <p class="planes-subtitle">Genera cartas oficiales con el historial académico o consulta documentos registrados.</p>
+                </div>
+                <div class="planes-header-actions"><a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <div class="row g-3 mb-3">
         <div class="col-md-4"><div class="p-3 bg-white border rounded-3"><small class="text-muted">Estudiantes disponibles</small><h3 class="mb-0" style="color:#133C55">@Model.Estudiantes.Count</h3></div></div>
         <div class="col-md-4"><div class="p-3 bg-white border rounded-3"><small class="text-muted">Cartas registradas</small><h3 class="mb-0" style="color:#133C55">@Model.Cartas.Count</h3></div></div>
         <div class="col-md-4"><div class="p-3 bg-white border rounded-3"><small class="text-muted">Cartas generadas</small><h3 class="mb-0" style="color:#133C55">@Model.Cartas.Count(c => c.Tipo == "Generada")</h3></div></div>
     </div>
-    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
-    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
-    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+    @if (TempData["Success"] != null)
+    {<div class="alert alert-success">@TempData["Success"]</div>}
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
+    @if (ViewBag.Error != null)
+    {<div class="alert alert-danger">@ViewBag.Error</div>}
 
     <form method="get" class="gn-filters">
         <div class="row g-3 align-items-end">
@@ -104,14 +167,14 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4"><small id="rpCartasRango" class="text-muted"></small><div id="rpCartasPaginas" class="d-flex gap-1"></div></div>
     <div class="d-flex justify-content-end mb-5">
-        <a href="@Url.Action("Index")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver a reportes</a>
+        <a href="@Url.Action("Index")" class="btn gn-btn-out"><i class="bi bi-arrow-left me-1"></i> Volver a traslados</a>
     </div>
 </main>
 
 <!-- Generar carta -->
 <div class="modal fade" id="mdGenerar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        @using (Html.BeginForm("GenerarCarta", "Reportes", FormMethod.Post, new { @class = "modal-content", id = "fGenerar" }))
+        @using (Html.BeginForm("GenerarCarta", "Traslados", FormMethod.Post, new { @class = "modal-content", id = "fGenerar" }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" name="idEstudiante" id="gId" />
@@ -133,7 +196,7 @@
                     <label class="form-label fw-semibold">Lugar de emisión</label>
                     <input type="text" name="lugar" class="form-control" value="Cartago" maxlength="60" />
                 </div>
-                <div class="form-text">La carta se descarga en Word, incluye el historial académico y firma a nombre de @Model.Director. Queda guardada en "Cartas registradas".</div>
+                <div class="form-text">La carta se descarga en Word e incluye el historial académico. Queda guardada en "Cartas registradas".</div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn gn-btn-out" data-bs-dismiss="modal">Cancelar</button>
@@ -146,7 +209,7 @@
 <!-- Cargar carta -->
 <div class="modal fade" id="mdCargar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        @using (Html.BeginForm("CargarCarta", "Reportes", FormMethod.Post, new { @class = "modal-content", enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("CargarCarta", "Traslados", FormMethod.Post, new { @class = "modal-content", enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             <input type="hidden" name="idEstudiante" id="cId" />
@@ -176,41 +239,41 @@
 
 @section scripts {
     <script>
-        (function () {
-            function enlazar(idModal, idCampo, idNombre) {
-                document.getElementById(idModal).addEventListener('show.bs.modal', function (ev) {
-                    var b = ev.relatedTarget;
-                    document.getElementById(idCampo).value = b.getAttribute('data-id');
-                    document.getElementById(idNombre).textContent = b.getAttribute('data-nombre');
-                });
-            }
-            function paginar(tablaId, rangoId, navId, porPagina) {
-                var tabla = document.getElementById(tablaId);
-                if (!tabla) return;
-                var filas = Array.prototype.slice.call(tabla.querySelectorAll('tbody tr')).filter(function(tr) { return tr.querySelectorAll('td').length > 1 && !tr.querySelector('td[colspan]'); });
-                var pagina = 1;
-                function pintar() {
-                    var total = Math.max(1, Math.ceil(filas.length / porPagina));
-                    pagina = Math.min(pagina, total);
-                    filas.forEach(function(tr,i) { tr.style.display = (i >= (pagina-1)*porPagina && i < pagina*porPagina) ? '' : 'none'; });
-                    document.getElementById(rangoId).textContent = filas.length ? ('Mostrando ' + ((pagina-1)*porPagina+1) + '–' + Math.min(pagina*porPagina,filas.length) + ' de ' + filas.length) : 'Sin registros';
-                    var nav=document.getElementById(navId);nav.innerHTML='';
-                    function boton(texto,n,disabled,activo) { var b=document.createElement('button'); b.type='button';b.className='btn btn-sm '+(activo?'btn-primary':'btn-outline-secondary');b.textContent=texto;b.disabled=disabled;b.addEventListener('click',function(){pagina=n;pintar();});nav.appendChild(b); }
-                    boton('Anterior',pagina-1,pagina===1,false);
-                    for(var n=Math.max(1,pagina-2);n<=Math.min(total,pagina+2);n++) boton(String(n),n,false,n===pagina);
-                    boton('Siguiente',pagina+1,pagina===total,false);
-                }
-                pintar();
-            }
-            paginar('rpEstudiantesTraslado','rpTrasladoRango','rpTrasladoPaginas',10);
-            paginar('rpCartasTraslado','rpCartasRango','rpCartasPaginas',10);
-            enlazar('mdGenerar', 'gId', 'gNombre');
-            enlazar('mdCargar', 'cId', 'cNombre');
+                (function () {
+                    function enlazar(idModal, idCampo, idNombre) {
+                        document.getElementById(idModal).addEventListener('show.bs.modal', function (ev) {
+                            var b = ev.relatedTarget;
+                            document.getElementById(idCampo).value = b.getAttribute('data-id');
+                            document.getElementById(idNombre).textContent = b.getAttribute('data-nombre');
+                        });
+                    }
+                    function paginar(tablaId, rangoId, navId, porPagina) {
+                        var tabla = document.getElementById(tablaId);
+                        if (!tabla) return;
+                        var filas = Array.prototype.slice.call(tabla.querySelectorAll('tbody tr')).filter(function(tr) { return tr.querySelectorAll('td').length > 1 && !tr.querySelector('td[colspan]'); });
+                        var pagina = 1;
+                        function pintar() {
+                            var total = Math.max(1, Math.ceil(filas.length / porPagina));
+                            pagina = Math.min(pagina, total);
+                            filas.forEach(function(tr,i) { tr.style.display = (i >= (pagina-1)*porPagina && i < pagina*porPagina) ? '' : 'none'; });
+                            document.getElementById(rangoId).textContent = filas.length ? ('Mostrando ' + ((pagina-1)*porPagina+1) + '–' + Math.min(pagina*porPagina,filas.length) + ' de ' + filas.length) : 'Sin registros';
+                            var nav=document.getElementById(navId);nav.innerHTML='';
+                            function boton(texto,n,disabled,activo) { var b=document.createElement('button'); b.type='button';b.className='btn btn-sm '+(activo?'btn-primary':'btn-outline-secondary');b.textContent=texto;b.disabled=disabled;b.addEventListener('click',function(){pagina=n;pintar();});nav.appendChild(b); }
+                            boton('Anterior',pagina-1,pagina===1,false);
+                            for(var n=Math.max(1,pagina-2);n<=Math.min(total,pagina+2);n++) boton(String(n),n,false,n===pagina);
+                            boton('Siguiente',pagina+1,pagina===total,false);
+                        }
+                        pintar();
+                    }
+                    paginar('rpEstudiantesTraslado','rpTrasladoRango','rpTrasladoPaginas',10);
+                    paginar('rpCartasTraslado','rpCartasRango','rpCartasPaginas',10);
+                    enlazar('mdGenerar', 'gId', 'gNombre');
+                    enlazar('mdCargar', 'cId', 'cNombre');
 
-            // la carta generada se descarga; luego se recarga la página para ver el registro
-            document.getElementById('fGenerar').addEventListener('submit', function () {
-                setTimeout(function () { window.location.reload(); }, 2500);
-            });
-        })();
+                    // la carta generada se descarga; luego se recarga la página para ver el registro
+                    document.getElementById('fGenerar').addEventListener('submit', function () {
+                        setTimeout(function () { window.location.reload(); }, 2500);
+                    });
+                })();
     </script>
 }

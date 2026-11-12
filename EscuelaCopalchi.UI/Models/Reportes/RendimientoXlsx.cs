@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using global::EscuelaCopalchi.UI.Models.GestionNotas;
+using System.Collections.Generic;
 using System.Linq;
-using global::EscuelaCopalchi.UI.Models.GestionNotas;
 
 namespace EscuelaCopalchi.UI.Models.Reportes
 {

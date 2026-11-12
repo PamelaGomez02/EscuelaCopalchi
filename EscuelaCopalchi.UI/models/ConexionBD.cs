@@ -7,9 +7,9 @@ namespace EscuelaCopalchi.UI.Models
     public class ConexionBD
     {
         private string connString;
-       // private string connString_Adrian = @"Server=localhost\SQLEXPRESSADRIAN;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
+        // private string connString_Adrian = @"Server=localhost\SQLEXPRESSADRIAN;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
         private string connString_Pame;
-        private string connString_Ema    = @"Server=localhost;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
+        private string connString_Ema = @"Server=localhost;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
         //private string connString_Fran   = @"Server=localhost;Database=AulaVirtualCopalchi;Integrated Security=True;TrustServerCertificate=True;";
         private DataSet DataSet;
 

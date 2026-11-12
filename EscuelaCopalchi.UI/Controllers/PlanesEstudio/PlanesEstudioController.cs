@@ -88,12 +88,16 @@ namespace EscuelaCopalchi.UI.Controllers
         private void Listas()
         {
             var docentes = repository.ObtenerDocentes();
-            ViewBag.Docentes = docentes.AsEnumerable().Select(r => new SelectListItem {
-                Value = Convert.ToString(r["id_docente"]), Text = Convert.ToString(r["nombre_docente"])
+            ViewBag.Docentes = docentes.AsEnumerable().Select(r => new SelectListItem
+            {
+                Value = Convert.ToString(r["id_docente"]),
+                Text = Convert.ToString(r["nombre_docente"])
             }).ToList();
             var grupos = repository.ObtenerGrupos();
-            ViewBag.Grupos = grupos.AsEnumerable().Select(r => new SelectListItem {
-                Value = Convert.ToString(r["id_grupo"]), Text = Convert.ToString(r["nombre_grupo"])
+            ViewBag.Grupos = grupos.AsEnumerable().Select(r => new SelectListItem
+            {
+                Value = Convert.ToString(r["id_grupo"]),
+                Text = Convert.ToString(r["nombre_grupo"])
             }).ToList();
         }
         private void PrepararCrear(PlanEstudio p)

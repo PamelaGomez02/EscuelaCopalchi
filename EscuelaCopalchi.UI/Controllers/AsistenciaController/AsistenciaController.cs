@@ -1,7 +1,7 @@
 ﻿
-using EscuelaCopalchi.UI.Models.GestionAsistencia;
-using EscuelaCopalchi.UI.Models.GestionAcademica;
 using EscuelaCopalchi.UI.Logica.GestionAcademica;
+using EscuelaCopalchi.UI.Models.GestionAcademica;
+using EscuelaCopalchi.UI.Models.GestionAsistencia;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
