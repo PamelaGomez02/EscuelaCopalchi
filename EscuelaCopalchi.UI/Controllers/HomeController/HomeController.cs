@@ -44,7 +44,25 @@ namespace EscuelaCopalchi.UI.Controllers
                     cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
                     using (var dr = cmd.ExecuteReader()) while (dr.Read()) vm.Permisos.Add(dr.GetString(0));
                 }
-                vm.Modulos = CrearModulos().Where(x => x.Permisos.Any(vm.Permisos.Contains)).ToList();
+                // Mostrar el módulo cuando exista al menos un permiso activo asignado a ese módulo.
+                // La autorización de cada acción sigue correspondiendo a su controlador.
+                var modulosAutorizados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                using (var cmd = new SqlCommand(@"SELECT DISTINCT p.modulo FROM dbo.USUARIO u
+                    JOIN dbo.ROL r ON r.id_rol = u.id_rol
+                    JOIN dbo.ROL_PERMISO rp ON rp.id_rol = r.id_rol
+                    JOIN dbo.PERMISO p ON p.id_permiso = rp.id_permiso
+                    WHERE u.id_usuario = @id AND u.estado = 1 AND r.estado = 1
+                      AND p.estado = 1 AND p.modulo IS NOT NULL", cn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    using (var dr = cmd.ExecuteReader())
+                        while (dr.Read()) modulosAutorizados.Add(NormalizarModulo(dr.GetString(0)));
+                }
+                vm.Modulos = CrearModulos()
+                    .Where(x => modulosAutorizados.Contains(NormalizarModulo(x.Titulo))
+                        || AliasModulo(x.Titulo).Any(modulosAutorizados.Contains)
+                        || x.Permisos.Any(vm.Permisos.Contains))
+                    .ToList();
                 int? docente = null;
                 using (var cmd = new SqlCommand("SELECT TOP (1) id_docente FROM dbo.DOCENTE WHERE id_usuario=@id AND estado=1", cn))
                 {
@@ -168,6 +186,33 @@ namespace EscuelaCopalchi.UI.Controllers
             }
             return list;
         }
+        private static string NormalizarModulo(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre)) return string.Empty;
+            var normalizado = nombre.Trim().ToUpperInvariant().Normalize(System.Text.NormalizationForm.FormD);
+            var resultado = new System.Text.StringBuilder();
+            foreach (char c in normalizado)
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark
+                    && char.IsLetterOrDigit(c)) resultado.Append(c);
+            return resultado.ToString();
+        }
+
+        private static IEnumerable<string> AliasModulo(string titulo)
+        {
+            switch (NormalizarModulo(titulo))
+            {
+                case "GESTIONDENOTAS": return new[] { "GESTIONNOTAS", "NOTAS" };
+                case "GESTIONACADEMICA": return new[] { "ACADEMICA" };
+                case "MATERIALDIDACTICO": return new[] { "GESTIONDEMATERIAL", "GESTIONMATERIAL", "REPOSITORIODEMATERIALES", "REPOSITORIOMATERIAL" };
+                case "PLANESDEESTUDIO": return new[] { "PLANES", "GESTIONDEPLANES" };
+                case "ROLESYPERMISOS": return new[] { "ROLES", "GESTIONDEROLES" };
+                case "GESTIONDETRASLADOS": return new[] { "TRASLADOS" };
+                case "MONITOREOACADEMICO": return new[] { "MONITOREO" };
+                case "REPORTESACADEMICOS": return new[] { "REPORTES" };
+                default: return Enumerable.Empty<string>();
+            }
+        }
+
         private static List<ModuloHome> CrearModulos() => new List<ModuloHome>
         {
             new ModuloHome { Titulo="Usuarios", Descripcion="Administración de cuentas", Icono="bi-people", Controlador="Usuarios", Permisos=new[]{"GESTIONAR_USUARIOS"}},
