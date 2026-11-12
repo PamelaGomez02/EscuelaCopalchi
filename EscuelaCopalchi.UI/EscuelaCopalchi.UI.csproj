@@ -224,6 +224,7 @@
     <Compile Include="Models\Gestion Material\RepositorioMaterialViewModel.cs" />
     <Compile Include="Models\Monitoreo\MonitoreoDashboardRepository.cs" />
     <Compile Include="Models\Monitoreo\MonitoreoDashboardVM.cs" />
+    <Compile Include="Models\Monitoreo\MonitoreoExportador.cs" />
     <Compile Include="Models\Notificaciones\EstudianteRiesgo.cs" />
     <Compile Include="Models\Notificaciones\Notificacion.cs" />
     <Compile Include="Models\Notificaciones\NotificacionRepository.cs" />
@@ -369,6 +370,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Reportes\Index.cshtml" />
     <Content Include="Views\Traslados\Index.cshtml" />
+    <Content Include="Views\MonitoreoDashboard\Detalle.cshtml" />
+    <Content Include="Views\MonitoreoDashboard\Seguimiento.cshtml" />
     <Content Include="Views\MonitoreoDashboard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

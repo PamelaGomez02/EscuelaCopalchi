@@ -1,44 +1,286 @@
 @model EscuelaCopalchi.UI.Models.MonitoreoNuevo.MonitoreoDashboardVM
-@{ ViewBag.Title = "Monitoreo Académico"; }
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div><h2 class="fw-bold mb-1">Monitoreo Académico</h2><p class="text-muted mb-0">Rendimiento, excelencia y seguimiento académico</p></div>
-        <span class="badge bg-primary">Datos de SQL Server</span>
-    </div>
-    <form method="get" action="@Url.Action("Index", "MonitoreoDashboard")" class="card card-body shadow-sm mb-4">
-        <div class="row g-3 align-items-end">
-            <div class="col-md-3"><label class="form-label">Año lectivo</label><select class="form-select" name="anio">
-                @foreach (var a in Model.Anios) { <option value="@a" @(Model.Anio == a ? "selected" : "")>@a</option> }
-            </select></div>
-            <div class="col-md-3"><label class="form-label">Trimestre</label><select class="form-select" name="trimestre">
-                <option value="0" @(Model.Trimestre == 0 ? "selected" : "")>Todos</option>
-                @for (int t = 1; t <= 3; t++) { <option value="@t" @(Model.Trimestre == t ? "selected" : "")>@t</option> }
-            </select></div>
-            <div class="col-md-4"><label class="form-label">Grupo</label><select class="form-select" name="grupo">
-                <option value="0" @(Model.IdGrupo == 0 ? "selected" : "")>Todos los grupos autorizados</option>
-                @foreach (var g in Model.Grupos) { <option value="@g.IdGrupo" @(Model.IdGrupo == g.IdGrupo ? "selected" : "")>@g.Nombre</option> }
-            </select></div>
-            <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Aplicar filtros</button></div>
+@using System.Linq
+@using System.Globalization
+@{
+    ViewBag.Title = "Monitoreo Académico";
+    var lider = Model.Mejores.FirstOrDefault();
+    var grupoLider = Model.RankingGrupos.FirstOrDefault();
+    var menor = Model.Menores.FirstOrDefault();
+    var trimestreActual = Model.Trimestre == 0 ? "Vista anual" : "Trimestre " + Model.Trimestre;
+    var indicador = (Request.QueryString["indicador"] ?? "").ToLowerInvariant();
+    var paginaIndicador = 1;
+    int.TryParse(Request.QueryString["paginaIndicador"], out paginaIndicador);
+    paginaIndicador = Math.Max(1, paginaIndicador);
+    var resultadosIndicador = Model.Estudiantes.AsEnumerable();
+    if (indicador == "bajo") { resultadosIndicador = resultadosIndicador.Where(x => x.Promedio < 65); }
+    if (indicador == "critico") { resultadosIndicador = resultadosIndicador.Where(x => x.Promedio < 50); }
+    if (indicador == "promedio" || indicador == "evaluados") { resultadosIndicador = resultadosIndicador.OrderByDescending(x => x.Promedio); }
+    if (indicador == "bajo" || indicador == "critico") { resultadosIndicador = resultadosIndicador.OrderBy(x => x.Promedio); }
+    var totalIndicador = resultadosIndicador.Count();
+    var paginasIndicador = Math.Max(1, (int)Math.Ceiling(totalIndicador / 10.0));
+    paginaIndicador = Math.Min(paginaIndicador, paginasIndicador);
+    var filasIndicador = resultadosIndicador.Skip((paginaIndicador - 1) * 10).Take(10).ToList();
+    var tituloIndicador = indicador == "bajo" ? "Estudiantes con rendimiento bajo" : indicador == "critico" ? "Estudiantes con rendimiento crítico" : indicador == "evaluados" ? "Estudiantes evaluados" : "Rendimiento académico individual";
+}
+@section styles {
+<style type="text/css">
+    .ma{max-width:1260px;margin:25px auto 75px;color:#173a55;font-size:13px}
+    .ma *{box-sizing:border-box}.ma a{text-decoration:none}.ma-hero{background:linear-gradient(118deg,#103a57,#145d89 75%,#247da9);color:white;border-radius:15px;padding:28px 30px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:0 9px 24px rgba(20,68,100,.15)}
+    .ma-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.13em;opacity:.82;font-weight:700}.ma-hero h1{font-size:27px;margin:7px 0 5px;font-weight:750;color:white}.ma-hero p{margin:0;color:#dcecf6;font-size:13px}.ma-actions{display:flex;gap:8px;flex-wrap:wrap}.ma-btn{border:1px solid #cadbe9;background:white;color:#17527d;border-radius:8px;padding:10px 13px;font-weight:650;display:inline-flex;gap:7px;align-items:center;justify-content:center;cursor:pointer;font-size:12px}.ma-btn:hover{background:#edf5fb;color:#0e466d}.ma-btn-primary{background:#176fa8;color:white;border-color:#176fa8}.ma-btn-primary:hover{background:#0f5b8d;color:white}.ma-btn-hero{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.42);color:white}.ma-btn-hero:hover{background:rgba(255,255,255,.23);color:white}
+    .ma-card{background:white;border:1px solid #dbe7f0;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(18,58,85,.035)}.ma-filters{display:grid;grid-template-columns:1fr 1fr 1.2fr auto;gap:14px;align-items:end;margin-bottom:20px}.ma label{display:block;font-weight:700;font-size:11px;color:#557187;margin-bottom:7px}.ma select,.ma input{height:39px;width:100%;border:1px solid #cedeea;border-radius:7px;background:#fff;padding:8px 11px;color:#23465f;outline-color:#4c9ac7}.ma-note{font-size:11px;color:#688195}.ma-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:16px}.ma-kpi{position:relative;min-height:112px;padding:18px 18px 16px;border-left:3px solid #2585ba}.ma-kpi .ma-icon{position:absolute;right:16px;top:15px;width:32px;height:32px;background:#edf5fb;border-radius:9px;display:grid;place-items:center;color:#1971a3;font-size:16px}.ma-kpi small{display:block;color:#6d8495;font-size:11px;margin-bottom:8px}.ma-kpi strong{font-size:27px;line-height:1.1;font-weight:800;color:#123f60;display:block;max-width:85%;overflow-wrap:anywhere}.ma-kpi .ma-note{display:block;margin-top:8px}.ma-kpi-alert{border-left-color:#db8d37}.ma-kpi-alert .ma-icon{background:#fff3e5;color:#bc792c}.ma-kpi-risk{border-left-color:#d35a5d}.ma-kpi-risk .ma-icon{background:#fff0f0;color:#b64549}
+    .ma-section{display:flex;justify-content:space-between;align-items:center;margin:26px 0 12px;gap:10px}.ma-section h2{font-size:17px;font-weight:800;color:#154b70;margin:0}.ma-section h2 i{margin-right:8px;color:#2c86b7}.ma-section p{margin:3px 0 0;color:#7790a2;font-size:11px}.ma-split{display:grid;grid-template-columns:1fr 1fr;gap:15px}.ma-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.ma-card-title h3{font-size:14px;font-weight:800;color:#164a70;margin:0}.ma-card-title span{font-size:11px;color:#758b9d}.ma-scroll{overflow-x:auto}.ma table{border-collapse:collapse;width:100%;font-size:12px}.ma th{text-align:left;background:#f2f7fb;color:#58738b;font-size:10px;letter-spacing:.035em;text-transform:uppercase;padding:11px 10px;border-bottom:1px solid #dce8f0;white-space:nowrap}.ma td{padding:12px 10px;border-bottom:1px solid #e8eff5;vertical-align:middle}.ma tbody tr:hover{background:#f8fbfe}.ma tbody tr:last-child td{border-bottom:0}.ma .num{text-align:right;font-weight:800;color:#174e72;white-space:nowrap}.ma .link{color:#166ca1;font-weight:650}.ma .link:hover{text-decoration:underline}.ma-rank{display:inline-grid;place-items:center;width:25px;height:25px;border-radius:7px;background:#edf4f9;color:#37617d;font-weight:800}.ma-rank.first{background:#fff2d3;color:#956711}.ma-tag{display:inline-block;font-size:10px;font-weight:750;padding:5px 9px;border-radius:20px;white-space:nowrap}.ma-tag.danger{background:#fdebec;color:#b33440}.ma-tag.warn{background:#fff1dd;color:#94610b}.ma-tag.ok{background:#e7f7ef;color:#16774c}.ma-empty{padding:27px;text-align:center;color:#8196a5}.ma-bar{height:8px;background:#eaf1f6;border-radius:12px;overflow:hidden;margin-top:7px}.ma-bar span{height:100%;display:block;background:linear-gradient(90deg,#2488b9,#55b2d5);border-radius:12px}.ma-bar.red span{background:linear-gradient(90deg,#cf686b,#ed9a87)}.ma-chart{height:250px;position:relative}.ma-chart canvas{width:100%!important;height:100%!important}.ma-fallback{display:none}.ma-fallback div{margin:9px 0}.ma-fallback .ma-note{display:flex;justify-content:space-between}.ma-highlight{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:14px}.ma-highlight .ma-card{display:flex;gap:14px;align-items:center;background:#f9fcff}.ma-highlight-icon{width:43px;height:43px;border-radius:12px;display:grid;place-items:center;background:#eaf5fc;color:#1a77ab;font-size:21px;flex-shrink:0}.ma-highlight h3{font-size:12px;margin:0 0 5px;color:#638096}.ma-highlight strong{font-size:17px;color:#143e5d}.ma-highlight p{margin:5px 0 0;font-size:11px;color:#7690a0}.ma-search{display:grid;grid-template-columns:1fr 180px auto;gap:10px;margin-bottom:15px}.ma-pages{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:15px}.ma-pages span{color:#678298;font-size:11px}.ma-footer{font-size:11px;color:#7990a1;margin-top:19px;line-height:1.6}.ma-shortcut{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px 20px;background:#f2f8fc;border:1px solid #d6e8f3;border-radius:11px;margin-top:16px}.ma-shortcut strong{color:#154b70}.ma-shortcut p{margin:4px 0 0;color:#668398;font-size:11px}
+    /* Encabezado unificado con Planes de Estudio (archivo de referencia) */
+    body{background:#f4f7fa}
+    .ma{max-width:1180px;margin:16px auto 75px}
+    .ma .ma-hero{background:transparent;border:0;border-radius:0;box-shadow:none;color:#133c55;padding:0 12px;margin:0 0 24px;display:block}
+    .ma .ma-header-layout{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .ma .ma-title{font-size:1.55rem;line-height:1.3;font-weight:700;color:#133c55;margin:0 0 5px}
+    .ma .ma-title i{color:#386fa4}
+    .ma .ma-subtitle{font-size:.9rem;line-height:1.55;color:#64748b;margin:0}
+    .ma .ma-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .ma .ma-btn-back{background:#fff;border:1px solid #cbd5e1;color:#475569;font-weight:600;border-radius:7px;padding:.55rem 1rem}
+    .ma .ma-btn-back:hover{background:#edf3f8;border-color:#386fa4;color:#133c55}
+    .ma .ma-btn-excel{background:#fff;border:1px solid #b9d6c7;color:#167348;border-radius:7px;padding:.55rem 1rem}
+    .ma .ma-btn-excel:hover{background:#e9f6ee;color:#125a39}
+    .ma .ma-btn-pdf{background:#fff;border:1px solid #e3c6c6;color:#a54040;border-radius:7px;padding:.55rem 1rem}
+    .ma .ma-btn-pdf:hover{background:#fff0f0;color:#893131}
+    @@media(max-width:575px){.ma .ma-title{font-size:1.32rem}.ma .ma-hero{padding:0 12px}.ma .ma-actions{width:auto}}
+    @@media(max-width:950px){.ma-kpis{grid-template-columns:repeat(2,1fr)}.ma-filters{grid-template-columns:repeat(2,1fr)}.ma-hero{align-items:flex-start;flex-direction:column}}
+    @@media(max-width:650px){.ma{padding:0 10px}.ma-hero{padding:21px}.ma-hero h1{font-size:23px}.ma-split,.ma-highlight,.ma-filters,.ma-search{grid-template-columns:1fr}.ma-kpis{gap:9px}.ma-kpi{padding:14px;min-height:108px}.ma-kpi strong{font-size:22px}.ma-section h2{font-size:15px}.ma-card{padding:14px}.ma-actions{width:100%}.ma-btn-hero{flex:1}}
+
+/* Ajustes de legibilidad y escala — no modifica las consultas ni los gráficos */
+.ma{max-width:1380px;width:calc(100% - 44px);font-size:15px;margin:26px auto 80px}
+.ma .ma-title{font-size:29px}.ma .ma-subtitle{font-size:15px}
+.ma .ma-hero{padding:0 3px;margin-bottom:26px}
+.ma .ma-btn{font-size:14px;min-height:43px;padding:10px 17px}
+.ma .ma-card{padding:24px;border-radius:12px}
+.ma .ma-filters{gap:22px;padding:24px;margin-bottom:22px}
+.ma label{font-size:14px;margin-bottom:9px}
+.ma select,.ma input{font-size:15px;min-height:45px;padding:10px 13px}
+.ma .ma-kpis{gap:17px;margin-bottom:18px}
+.ma .ma-kpi{min-height:148px;padding:22px 21px}
+.ma .ma-kpi small{font-size:14px;line-height:1.4;margin-bottom:12px;max-width:82%}
+.ma .ma-kpi strong{font-size:32px;line-height:1.2}
+.ma .ma-kpi .ma-icon{width:42px;height:42px;font-size:20px}
+.ma .ma-note,.ma .ma-kpi .ma-note{font-size:13px;line-height:1.5}
+.ma .ma-section{margin:35px 0 17px}.ma .ma-section h2{font-size:21px}
+.ma .ma-section p{font-size:14px;margin-top:6px}
+.ma .ma-highlight{gap:19px;margin-bottom:19px}
+.ma .ma-highlight .ma-card{padding:25px;min-height:115px}
+.ma .ma-highlight-icon{width:54px;height:54px;font-size:25px}
+.ma .ma-highlight h3{font-size:14px}.ma .ma-highlight strong{font-size:20px}.ma .ma-highlight p{font-size:13px}
+.ma .ma-split{gap:19px}.ma .ma-card-title{margin-bottom:18px}
+.ma .ma-card-title h3{font-size:17px}.ma .ma-card-title span{font-size:13px}
+.ma table{font-size:14px}.ma th{font-size:12px;padding:15px 13px}
+.ma td{padding:16px 13px;line-height:1.45}.ma .ma-tag{font-size:12px;padding:7px 11px}
+.ma .ma-rank{width:30px;height:30px}.ma .ma-chart{height:330px}
+.ma .ma-shortcut{padding:23px 25px;margin-top:21px}.ma .ma-shortcut strong{font-size:17px}.ma .ma-shortcut p{font-size:14px}
+.ma .ma-search{grid-template-columns:minmax(0,1fr) 240px auto;gap:15px}
+.ma .ma-pages span,.ma .ma-footer{font-size:13px}
+@@media(max-width:1050px){.ma .ma-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ma .ma-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@@media(max-width:720px){.ma{width:calc(100% - 24px)}.ma .ma-split,.ma .ma-highlight,.ma .ma-search,.ma .ma-filters{grid-template-columns:1fr}.ma .ma-card{padding:17px}.ma .ma-kpi{padding:17px;min-height:135px}.ma .ma-kpi strong{font-size:27px}.ma .ma-title{font-size:24px}.ma .ma-section h2{font-size:19px}.ma .ma-chart{height:280px}}
+@@media(max-width:440px){.ma .ma-kpis{grid-template-columns:1fr}}
+/* Indicadores accionables */
+.ma .ma-kpi-link{display:block;color:inherit;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;cursor:pointer}
+.ma .ma-kpi-link:hover,.ma .ma-kpi-link:focus-visible{transform:translateY(-3px);box-shadow:0 10px 25px rgba(24,77,115,.13);border-color:#7cb5d6;outline:2px solid transparent}
+.ma .ma-kpi-link .ma-note{color:#176a9c;font-weight:650}
+.ma .ma-drilldown{border:2px solid #90c5e2;background:#fbfdff;margin:20px 0 28px;scroll-margin-top:24px}
+.ma .ma-drilldown .ma-card-title{align-items:center;flex-wrap:wrap}
+.ma .ma-indicator-notes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.ma .ma-indicator-note{scroll-margin-top:24px;padding:18px 22px;background:#f8fbfe}
+.ma .ma-indicator-note h3{font-size:15px;color:#184b6d;margin:0 0 8px}
+.ma .ma-indicator-note p{font-size:13px;line-height:1.6;margin:0;color:#516d81}
+@@media(max-width:750px){.ma .ma-indicator-notes{grid-template-columns:1fr}}
+</style>
+}
+<div class="ma">
+    <header class="ma-hero">
+        <div class="ma-header-layout">
+            <div class="ma-header-copy">
+                <h1 class="ma-title"><i class="bi bi-graph-up-arrow me-2"></i>Monitoreo Académico</h1>
+                <p class="ma-subtitle">Indicadores, excelencia, evolución y acompañamiento estudiantil.</p>
+            </div>
+            <div class="ma-actions">
+                <a class="ma-btn ma-btn-back" href="@Url.Action("Index", "Home")"><i class="bi bi-arrow-left me-1"></i> Atrás</a>
+                <a class="ma-btn ma-btn-excel" href="@Url.Action("ExportarExcel", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo })"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+                <a class="ma-btn ma-btn-pdf" href="@Url.Action("ExportarPdf", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo })"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+            </div>
         </div>
+    </header>
+    <form class="ma-card ma-filters" method="get" action="@Url.Action("Index")">
+        <div><label for="ma-anio">Año lectivo</label><select id="ma-anio" name="anio">
+            @foreach (var a in Model.Anios)
+            {
+                if (a == Model.Anio)
+                { <option value="@a" selected="selected">@a</option> }
+                else
+                { <option value="@a">@a</option> }
+            }
+        </select></div>
+        <div><label for="ma-trim">Periodo de análisis</label><select id="ma-trim" name="trimestre">
+            @if (Model.Trimestre == 0)
+            { <option value="0" selected="selected">Año completo</option> }
+            else
+            { <option value="0">Año completo</option> }
+            @for (int t = 1; t <= 3; t++)
+            {
+                if (t == Model.Trimestre)
+                { <option value="@t" selected="selected">Trimestre @t</option> }
+                else
+                { <option value="@t">Trimestre @t</option> }
+            }
+        </select></div>
+        <div><label for="ma-grupo">Grupo académico</label><select id="ma-grupo" name="grupo">
+            @if (Model.IdGrupo == 0)
+            { <option value="0" selected="selected">Todos los grupos</option> }
+            else
+            { <option value="0">Todos los grupos</option> }
+            @foreach (var g in Model.Grupos)
+            {
+                if (g.IdGrupo == Model.IdGrupo)
+                { <option value="@g.IdGrupo" selected="selected">@g.Nombre</option> }
+                else
+                { <option value="@g.IdGrupo">@g.Nombre</option> }
+            }
+        </select></div>
+        <button type="submit" class="ma-btn ma-btn-primary"><i class="bi bi-funnel"></i> Aplicar filtros</button>
     </form>
-    <div class="row g-3 mb-4">
-        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Promedio general</div><h2 class="mb-0">@(Model.PromedioGeneral.HasValue ? Model.PromedioGeneral.Value.ToString("0.00") : "Sin datos")</h2></div></div>
-        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Estudiantes evaluados</div><h2 class="mb-0">@Model.TotalEvaluados</h2></div></div>
-        <div class="col-md-4"><div class="card card-body shadow-sm h-100"><div class="text-muted">Mejor grupo</div><h4 class="mb-0">@(Model.RankingGrupos.Count > 0 ? Model.RankingGrupos[0].Grupo : "Sin datos")</h4></div></div>
+    <div class="ma-kpis" aria-label="Indicadores académicos interactivos">
+        <a class="ma-card ma-kpi ma-kpi-link" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = "promedio" })#ma-desglose"><div class="ma-icon"><i class="bi bi-mortarboard"></i></div><small>Promedio académico</small><strong>@(Model.PromedioGeneral.HasValue ? Model.PromedioGeneral.Value.ToString("N2") : "—")</strong><span class="ma-note">Ver estudiantes y sus promedios <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-link" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = "evaluados" })#ma-desglose"><div class="ma-icon"><i class="bi bi-people"></i></div><small>Estudiantes evaluados</small><strong>@Model.TotalEvaluados</strong><span class="ma-note">Ver listado de evaluados <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-risk ma-kpi-link" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = "bajo" })#ma-desglose"><div class="ma-icon"><i class="bi bi-exclamation-triangle"></i></div><small>Rendimiento bajo</small><strong>@Model.EnRiesgo</strong><span class="ma-note">Ver estudiantes con promedio inferior a 65 <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-alert ma-kpi-link" href="@Url.Action("Seguimiento", new { anio = Model.Anio, grupo = Model.IdGrupo })"><div class="ma-icon"><i class="bi bi-clipboard2-pulse"></i></div><small>Casos en seguimiento</small><strong>@Model.SeguimientosAbiertos</strong><span class="ma-note">Consultar intervenciones <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-link" href="#ma-asistencia-info"><div class="ma-icon"><i class="bi bi-calendar-check"></i></div><small>Asistencia registrada</small><strong>@(Model.Asistencia.HasValue ? Model.Asistencia.Value.ToString("N1") + "%" : "—")</strong><span class="ma-note">Ver información del indicador <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-link" href="#ma-grupos"><div class="ma-icon"><i class="bi bi-diagram-3"></i></div><small>Grupos evaluados</small><strong>@Model.RankingGrupos.Count</strong><span class="ma-note">Ver comparación entre grupos <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-alert ma-kpi-link" href="#ma-alertas-info"><div class="ma-icon"><i class="bi bi-bell"></i></div><small>Alertas pendientes</small><strong>@Model.AlertasPendientes</strong><span class="ma-note">Ver información de alertas <i class="bi bi-arrow-right"></i></span></a>
+        <a class="ma-card ma-kpi ma-kpi-risk ma-kpi-link" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = "critico" })#ma-desglose"><div class="ma-icon"><i class="bi bi-heart-pulse"></i></div><small>Rendimiento crítico</small><strong>@Model.Criticos</strong><span class="ma-note">Ver estudiantes con promedio inferior a 50 <i class="bi bi-arrow-right"></i></span></a>
     </div>
-    <div class="row g-4">
-        <div class="col-lg-6"><div class="card shadow-sm h-100"><div class="card-header fw-bold">Mejores promedios</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Estudiante</th><th>Grupo</th><th>Promedio</th></tr></thead><tbody>
-            @foreach (var x in Model.Mejores) { <tr><td>@x.Nombre</td><td>@x.Grupo</td><td><strong>@x.Promedio.ToString("0.00")</strong></td></tr> }
-            @if (!Model.Mejores.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin calificaciones para estos filtros.</td></tr> }
-        </tbody></table></div></div></div>
-        <div class="col-lg-6"><div class="card shadow-sm h-100"><div class="card-header fw-bold">Menores promedios · Revisión prioritaria</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Estudiante</th><th>Grupo</th><th>Promedio</th></tr></thead><tbody>
-            @foreach (var x in Model.Menores) { <tr><td>@x.Nombre</td><td>@x.Grupo</td><td><strong>@x.Promedio.ToString("0.00")</strong></td></tr> }
-            @if (!Model.Menores.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin calificaciones para estos filtros.</td></tr> }
-        </tbody></table></div></div></div>
-        <div class="col-12"><div class="card shadow-sm"><div class="card-header fw-bold">Ranking de grupos</div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Grupo</th><th>Estudiantes evaluados</th><th>Promedio</th></tr></thead><tbody>
-            @foreach (var x in Model.RankingGrupos) { <tr><td>@x.Grupo</td><td>@x.Estudiantes</td><td>@x.Promedio.ToString("0.00")</td></tr> }
-            @if (!Model.RankingGrupos.Any()) { <tr><td colspan="3" class="text-muted text-center">Sin grupos con calificaciones.</td></tr> }
-        </tbody></table></div></div></div>
+    @if (new[] { "bajo", "critico", "promedio", "evaluados" }.Contains(indicador))
+    {
+        <section class="ma-card ma-drilldown" id="ma-desglose" tabindex="-1">
+            <div class="ma-card-title"><div><h3><i class="bi bi-filter-circle"></i> @tituloIndicador</h3><p class="ma-note">@totalIndicador estudiantes · @trimestreActual · Año @Model.Anio · Paginación de 10 registros</p></div><a class="ma-btn" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo })"><i class="bi bi-x-lg"></i> Cerrar filtro</a></div>
+            <div class="ma-scroll"><table><thead><tr><th>Estudiante</th><th>Grupo</th><th>Materias</th><th class="num">Promedio</th><th>Situación</th><th>Acción</th></tr></thead><tbody>
+                @foreach (var e in filasIndicador)
+                {
+                    <tr><td>@e.Nombre</td><td>@e.Grupo</td><td>@e.Materias</td><td class="num">@e.Promedio.ToString("N2")</td><td><span class="ma-tag @(e.Promedio < 50 ? "danger" : e.Promedio < 65 ? "warn" : "ok")">@e.Estado</span></td><td><a class="link" href="@Url.Action("Detalle", new { id = e.IdEstudiante, grupo = e.IdGrupo, anio = Model.Anio })">Ver ficha <i class="bi bi-arrow-right"></i></a></td></tr>
+                }
+                @if (!filasIndicador.Any())
+                { <tr><td colspan="6" class="ma-empty">No hay estudiantes que cumplan esta condición en el periodo seleccionado.</td></tr> }
+            </tbody></table></div>
+            <div class="ma-pages">
+                @if (paginaIndicador > 1)
+                { <a class="ma-btn" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = indicador, paginaIndicador = paginaIndicador - 1 })#ma-desglose">Anterior</a> }
+                <span>Página @paginaIndicador de @paginasIndicador</span>
+                @if (paginaIndicador < paginasIndicador)
+                { <a class="ma-btn" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, indicador = indicador, paginaIndicador = paginaIndicador + 1 })#ma-desglose">Siguiente</a> }
+            </div>
+        </section>
+    }
+    <div class="ma-indicator-notes">
+        <section class="ma-card ma-indicator-note" id="ma-asistencia-info"><h3><i class="bi bi-calendar-check"></i> Asistencia registrada</h3><p>Porcentaje anual de asistencia del alcance seleccionado: <strong>@(Model.Asistencia.HasValue ? Model.Asistencia.Value.ToString("N1") + "%" : "Sin registros")</strong>. Este panel muestra el resumen existente; el desglose por estudiante requiere una consulta adicional de asistencia.</p></section>
+        <section class="ma-card ma-indicator-note" id="ma-alertas-info"><h3><i class="bi bi-bell"></i> Alertas académicas pendientes</h3><p>Alertas sin atender: <strong>@Model.AlertasPendientes</strong>. El indicador procede de la tabla de alertas. Para consultar cada alerta individual necesitaremos incorporar su listado al repositorio.</p></section>
     </div>
-    <p class="small text-muted mt-3">Los promedios reflejan las materias y trimestres con calificaciones disponibles. No representan necesariamente notas finales oficiales.</p>
+    <div class="ma-section"><div><h2><i class="bi bi-award"></i> Reconocimientos académicos</h2><p>Estudiantes y grupos con mejores resultados del periodo seleccionado</p></div></div>
+    <div class="ma-highlight">
+        <div class="ma-card"><div class="ma-highlight-icon"><i class="bi bi-trophy"></i></div><div><h3>Estudiante con mejor promedio</h3><strong>@(lider == null ? "Sin información" : lider.Nombre)</strong><p>@(lider == null ? "" : lider.Grupo + " · " + lider.Promedio.ToString("N2") + " puntos")</p></div></div>
+        <div class="ma-card"><div class="ma-highlight-icon"><i class="bi bi-stars"></i></div><div><h3>Grupo con mejor rendimiento</h3><strong>@(grupoLider == null ? "Sin información" : grupoLider.Grupo)</strong><p>@(grupoLider == null ? "" : grupoLider.Promedio.ToString("N2") + " puntos · " + grupoLider.Estudiantes + " estudiantes evaluados")</p></div></div>
+    </div>
+    <div class="ma-split">
+        <div class="ma-card"><div class="ma-card-title"><h3><i class="bi bi-trophy"></i> Top 10 · Mejores promedios</h3><span>Excelencia</span></div><div class="ma-scroll"><table><thead><tr><th>Posición</th><th>Estudiante</th><th>Grupo</th><th class="num">Promedio</th></tr></thead><tbody>
+            @{ int posicion = 0; }
+            @foreach (var e in Model.Mejores)
+            {
+                posicion++;
+                <tr><td><span class="ma-rank @(posicion == 1 ? "first" : "")">@posicion</span></td><td><a class="link" href="@Url.Action("Detalle", new { id = e.IdEstudiante, grupo = e.IdGrupo, anio = Model.Anio })">@e.Nombre</a></td><td>@e.Grupo</td><td class="num">@e.Promedio.ToString("N2")</td></tr>
+            }
+            @if (!Model.Mejores.Any())
+            { <tr><td colspan="4" class="ma-empty">No hay calificaciones disponibles.</td></tr> }
+        </tbody></table></div></div>
+        <div class="ma-card"><div class="ma-card-title"><h3><i class="bi bi-shield-exclamation"></i> Atención prioritaria</h3><span>Menores promedios</span></div><div class="ma-scroll"><table><thead><tr><th>Estudiante</th><th>Grupo</th><th class="num">Promedio</th><th>Situación</th></tr></thead><tbody>
+            @foreach (var e in Model.Menores)
+            {
+                <tr><td><a class="link" href="@Url.Action("Detalle", new { id = e.IdEstudiante, grupo = e.IdGrupo, anio = Model.Anio })">@e.Nombre</a></td><td>@e.Grupo</td><td class="num">@e.Promedio.ToString("N2")</td><td><span class="ma-tag @(e.Promedio < 50 ? "danger" : e.Promedio < 65 ? "warn" : "ok")">@e.Estado</span></td></tr>
+            }
+            @if (!Model.Menores.Any())
+            { <tr><td colspan="4" class="ma-empty">No hay calificaciones disponibles.</td></tr> }
+        </tbody></table></div></div>
+    </div>
+    <div class="ma-section"><div><h2><i class="bi bi-bar-chart-line"></i> Análisis del rendimiento</h2><p>Gráficos dinámicos de grupos, materias y evolución entre trimestres</p></div></div>
+    <div class="ma-split">
+        <div class="ma-card" id="ma-grupos"><div class="ma-card-title"><h3>Comparación entre grupos</h3><span>Promedio de 0 a 100</span></div><div class="ma-chart"><canvas id="ma-chart-grupos" role="img" aria-label="Promedios por grupo"></canvas><div class="ma-fallback" id="ma-fallback-grupos">
+            @foreach (var g in Model.RankingGrupos)
+            { <div><div class="ma-note"><span>@g.Grupo</span><b>@g.Promedio.ToString("N2")</b></div><div class="ma-bar"><span style="width:@(g.Promedio.ToString(CultureInfo.InvariantCulture))%"></span></div></div> }
+        </div></div></div>
+        <div class="ma-card"><div class="ma-card-title"><h3>Rendimiento por asignatura</h3><span>Promedio de 0 a 100</span></div><div class="ma-chart"><canvas id="ma-chart-materias" role="img" aria-label="Promedios por materia"></canvas><div class="ma-fallback" id="ma-fallback-materias">
+            @foreach (var m in Model.RankingMaterias)
+            { <div><div class="ma-note"><span>@m.Materia</span><b>@m.Promedio.ToString("N2")</b></div><div class="ma-bar"><span style="width:@(m.Promedio.ToString(CultureInfo.InvariantCulture))%"></span></div></div> }
+        </div></div></div>
+    </div>
+    <div class="ma-card" style="margin-top:15px"><div class="ma-card-title"><h3><i class="bi bi-activity"></i> Evolución del año lectivo</h3><span>Comparación trimestral</span></div><div class="ma-chart"><canvas id="ma-chart-evolucion" role="img" aria-label="Evolución trimestral"></canvas><div class="ma-fallback" id="ma-fallback-evolucion">
+        @foreach (var t in Model.Evolucion)
+        { <div><div class="ma-note"><span>Trimestre @t.Trimestre</span><b>@t.Promedio.ToString("N2")</b></div><div class="ma-bar"><span style="width:@(t.Promedio.ToString(CultureInfo.InvariantCulture))%"></span></div></div> }
+    </div></div></div>
+    <div class="ma-shortcut"><div><strong><i class="bi bi-clipboard2-check"></i> Seguimiento de estudiantes</strong><p>Consulta las intervenciones registradas y accede a las fichas de seguimiento individual.</p></div><a class="ma-btn ma-btn-primary" href="@Url.Action("Seguimiento", new { anio = Model.Anio, grupo = Model.IdGrupo })">Abrir seguimiento <i class="bi bi-arrow-right"></i></a></div>
+    <div class="ma-section"><div><h2><i class="bi bi-search"></i> Consulta individual</h2><p>Listado de estudiantes con calificaciones, ordenado y paginado de 10 en 10</p></div></div>
+    <div class="ma-card">
+        <form class="ma-search" method="get" action="@Url.Action("Index")">
+            <input type="hidden" name="anio" value="@Model.Anio"/><input type="hidden" name="trimestre" value="@Model.Trimestre"/><input type="hidden" name="grupo" value="@Model.IdGrupo"/>
+            <div><label for="ma-buscar">Buscar estudiante</label><input id="ma-buscar" name="buscar" value="@Model.Buscar" placeholder="Nombre del estudiante"/></div>
+            <div><label for="ma-estado">Estado académico</label><select id="ma-estado" name="estado">
+                @if (string.IsNullOrEmpty(Model.Estado))
+                { <option value="" selected="selected">Todos los estados</option> }
+                else
+                { <option value="">Todos los estados</option> }
+                @foreach (var est in new[] { "Crítico", "En riesgo", "Satisfactorio" })
+                {
+                    if (Model.Estado == est)
+                    { <option value="@est" selected="selected">@est</option> }
+                    else
+                    { <option value="@est">@est</option> }
+                }
+            </select></div>
+            <button class="ma-btn ma-btn-primary" type="submit"><i class="bi bi-search"></i> Buscar</button>
+        </form>
+        <div class="ma-scroll"><table><thead><tr><th>Estudiante</th><th>Grupo</th><th>Materias</th><th class="num">Promedio</th><th>Estado</th><th>Ficha</th></tr></thead><tbody>
+            @foreach (var e in Model.Listado)
+            {
+                <tr><td>@e.Nombre</td><td>@e.Grupo</td><td>@e.Materias</td><td class="num">@e.Promedio.ToString("N2")</td><td><span class="ma-tag @(e.Promedio < 50 ? "danger" : e.Promedio < 65 ? "warn" : "ok")">@e.Estado</span></td><td><a class="link" href="@Url.Action("Detalle", new { id = e.IdEstudiante, grupo = e.IdGrupo, anio = Model.Anio })">Ver detalle <i class="bi bi-arrow-right"></i></a></td></tr>
+            }
+            @if (!Model.Listado.Any())
+            { <tr><td colspan="6" class="ma-empty">No se encontraron estudiantes con los filtros seleccionados.</td></tr> }
+        </tbody></table></div>
+        <div class="ma-pages">
+            @if (Model.Pagina > 1)
+            { <a class="ma-btn" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, buscar = Model.Buscar, estado = Model.Estado, pagina = Model.Pagina - 1 })">Anterior</a> }
+            <span>Página @Model.Pagina de @Model.TotalPaginas</span>
+            @if (Model.Pagina < Model.TotalPaginas)
+            { <a class="ma-btn" href="@Url.Action("Index", new { anio = Model.Anio, trimestre = Model.Trimestre, grupo = Model.IdGrupo, buscar = Model.Buscar, estado = Model.Estado, pagina = Model.Pagina + 1 })">Siguiente</a> }
+        </div>
+    </div>
+    <p class="ma-footer">Los promedios se calculan con las evaluaciones activas y calificaciones disponibles. Los trimestres sin notas no se consideran como cero. Los indicadores de asistencia corresponden al año completo. Los umbrales de riesgo son orientativos y deben validarse con la normativa institucional.</p>
 </div>
+@section scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    var grupos = @Html.Raw(Json.Encode(Model.RankingGrupos.Select(x => new { nombre = x.Grupo, promedio = x.Promedio, cantidad = x.Estudiantes })));
+    var materias = @Html.Raw(Json.Encode(Model.RankingMaterias.Select(x => new { nombre = x.Materia, promedio = x.Promedio, cantidad = x.Estudiantes })));
+    var evolucion = @Html.Raw(Json.Encode(Model.Evolucion.Select(x => new { trimestre = x.Trimestre, promedio = x.Promedio, cantidad = x.Estudiantes })));
+    if (typeof Chart === 'undefined') {
+        ['grupos','materias','evolucion'].forEach(function (n) { var c = document.getElementById('ma-chart-' + n); if (c) c.style.display='none'; var f=document.getElementById('ma-fallback-'+n); if(f)f.style.display='block'; });
+        return;
+    }
+    Chart.defaults.font.family = 'Arial, sans-serif';
+    Chart.defaults.color = '#668198';
+    var base = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#173e5d', padding: 11 } }, scales: { y: { beginAtZero: true, max: 100, grid: { color: '#eaf0f5' } }, x: { grid: { display: false } } } };
+    function make(id, type, labels, data, color) {
+        var canvas = document.getElementById(id);
+        if (!canvas || !labels.length) { if(canvas)canvas.style.display='none'; return; }
+        new Chart(canvas, { type: type, data: { labels: labels, datasets: [{ label: 'Promedio', data: data, backgroundColor: color, borderColor: '#237cae', borderWidth: type === 'line' ? 3 : 0, borderRadius: type === 'bar' ? 5 : 0, fill: type === 'line', tension: .3, pointRadius: 5 }] }, options: base });
+    }
+    make('ma-chart-grupos','bar',grupos.map(function(x){return x.nombre;}),grupos.map(function(x){return x.promedio;}),'#3188b8');
+    make('ma-chart-materias','bar',materias.map(function(x){return x.nombre;}),materias.map(function(x){return x.promedio;}),'#65a9c9');
+    make('ma-chart-evolucion','line',['I trimestre','II trimestre','III trimestre'],[1,2,3].map(function(t){var x=evolucion.find(function(z){return z.trimestre===t;});return x?x.promedio:null;}),'rgba(47,142,185,.14)');
+})();
+</script>
+}
