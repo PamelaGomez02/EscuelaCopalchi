@@ -18,17 +18,36 @@
     @RenderSection("styles", required: false)
 
     <style>
-        /* ======================================
-           BARRA DE NAVEGACIÓN
-        ====================================== */
+        /* ==========================================
+           CONFIGURACIÓN GENERAL
+        ========================================== */
+
+        html, body {
+            margin: 0;
+        }
+
+        html {
+            scroll-padding-top: 70px;
+        }
+
+        body {
+            padding-top: 60px !important;
+        }
+
+        /* ==========================================
+           BARRA SUPERIOR
+        ========================================== */
 
         .cop-navbar {
-            background-color: #133C55;
+            background: #133C55;
+            min-height: 60px;
+            z-index: 1050;
+            box-shadow: 0 2px 10px rgba(0,0,0,.12);
         }
 
             .cop-navbar .navbar-brand {
-                font-weight: 700;
                 color: white;
+                font-weight: 700;
             }
 
             .cop-navbar .nav-link {
@@ -39,9 +58,15 @@
                     color: #91E5F6 !important;
                 }
 
-        /* ======================================
-           MENÚS
-        ====================================== */
+        .cop-nav-inner {
+            max-width: none !important;
+            padding-left: 22px !important;
+            padding-right: 22px !important;
+        }
+
+        /* ==========================================
+           MENÚS DESPLEGABLES
+        ========================================== */
 
         .dropdown-menu {
             border: 1px solid #e3e8ee;
@@ -55,13 +80,13 @@
         }
 
             .dropdown-item:hover {
-                background-color: #E6F1FB;
+                background: #E6F1FB;
                 color: #133C55;
             }
 
-        /* ======================================
+        /* ==========================================
            USUARIO
-        ====================================== */
+        ========================================== */
 
         .cop-user-menu {
             margin-left: auto;
@@ -82,7 +107,7 @@
 
             .cop-user-button:hover,
             .cop-user-button:focus {
-                background-color: rgba(255,255,255,.12);
+                background: rgba(255,255,255,.12);
                 color: white;
             }
 
@@ -99,9 +124,9 @@
                 margin: 0;
             }
 
-        /* ======================================
-           CAMPANA
-        ====================================== */
+        /* ==========================================
+           CAMPANA DE NOTIFICACIONES
+        ========================================== */
 
         .cop-notification-button {
             position: relative;
@@ -125,10 +150,6 @@
                 color: #91E5F6;
             }
 
-        /* ======================================
-           CONTADOR ROJO
-        ====================================== */
-
         .cop-notification-badge {
             position: absolute;
             top: 0;
@@ -141,54 +162,110 @@
             padding: 0 4px;
             font-size: 10px;
             font-weight: 700;
+            display: none;
             align-items: center;
             justify-content: center;
             border: 2px solid #133C55;
             line-height: 1;
         }
 
-        /* ======================================
+        /* ==========================================
            VENTANA DE NOTIFICACIONES
-        ====================================== */
+        ========================================== */
+
+        .cop-notification-menu {
+            position: relative;
+        }
 
         .cop-notification-dropdown {
-            width: 370px;
-            max-width: calc(100vw - 24px);
+            width: 400px;
+            height: 450px;
+            min-width: 240px;
+            min-height: 200px;
+            max-width: calc(100vw - 12px);
+            max-height: calc(100vh - 70px);
             padding: 0;
             overflow: hidden;
-            box-shadow: 0 8px 28px rgba(0,0,0,.15);
+            border-radius: 12px;
+            border: 1px solid #dce5ee;
+            box-shadow: 0 12px 35px rgba(0,0,0,.18);
+            flex-direction: column;
         }
+
+            .cop-notification-dropdown.show {
+                display: flex;
+            }
 
         .cop-notification-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
+            gap: 8px;
+            padding: 13px 15px;
             border-bottom: 1px solid #edf0f3;
+            background: white;
+            flex-shrink: 0;
         }
 
             .cop-notification-header strong {
                 color: #133C55;
+                font-size: 14px;
             }
+
+        .cop-notification-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cop-notification-reset {
+            border: none;
+            background: #f1f5f9;
+            color: #536575;
+            border-radius: 6px;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+
+            .cop-notification-reset:hover {
+                background: #dbeeff;
+                color: #133C55;
+            }
+
+        /* ==========================================
+           ACCIONES DE NOTIFICACIONES
+        ========================================== */
 
         .cop-notification-actions {
             padding: 8px 14px;
             text-align: right;
             border-bottom: 1px solid #edf0f3;
+            flex-shrink: 0;
         }
 
         .cop-notification-list {
-            max-height: 350px;
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: none;
             overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #a8bdce #f1f5f9;
         }
 
         .cop-notification-item {
             padding: 13px 16px;
             border-bottom: 1px solid #edf0f3;
+            transition: background-color .2s;
         }
+
+            .cop-notification-item:hover {
+                background: #e6f1fb;
+            }
 
             .cop-notification-item.no-leida {
                 background: #eef6ff;
+                border-left: 3px solid #386FA4;
             }
 
             .cop-notification-item strong {
@@ -214,9 +291,11 @@
             }
 
         .cop-notification-footer {
-            padding: 13px;
+            padding: 10px 14px 34px;
             text-align: center;
             background: #f8fafc;
+            border-top: 1px solid #edf0f3;
+            flex-shrink: 0;
         }
 
             .cop-notification-footer a {
@@ -230,20 +309,298 @@
                     text-decoration: underline;
                 }
 
-        /* ======================================
+        .cop-resize-hint {
+            display: block;
+            margin-top: 7px;
+            color: #8896a5;
+            font-size: 10px;
+        }
+
+        /* ==========================================
+           BARRA INFERIOR PARA REDIMENSIONAR
+        ========================================== */
+
+        .cop-notification-resizer {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 24px;
+            cursor: ns-resize;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border: none;
+            border-top: 1px solid #dce5ee;
+            border-radius: 0 0 12px 12px;
+            color: #64748b;
+            padding: 0;
+            touch-action: none;
+            transition: background-color .2s;
+        }
+
+            .cop-notification-resizer:hover {
+                background: #dbeeff;
+                color: #133C55;
+            }
+
+            .cop-notification-resizer i {
+                font-size: 18px;
+                pointer-events: none;
+            }
+
+        /* ==========================================
+           LAYOUT GENERAL
+        ========================================== */
+
+        .cop-page-layout {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* ==========================================
+           MENÚ LATERAL
+        ========================================== */
+
+        .cop-sidebar {
+            position: sticky;
+            top: 60px;
+            align-self: flex-start;
+            width: 215px;
+            flex: 0 0 215px;
+            height: calc(100vh - 60px);
+            padding: 12px 10px;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e5eaf0;
+            transition: width .18s ease, flex-basis .18s ease;
+        }
+
+        .cop-sidebar-title {
+            color: #748394;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            padding: 12px;
+            text-transform: uppercase;
+        }
+
+        .cop-sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin: 4px 0;
+            border-radius: 8px;
+            color: #334e68;
+            font-size: 13px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .cop-sidebar-link:hover {
+                background: #e6f1fb;
+                color: #133C55;
+            }
+
+            .cop-sidebar-link.active {
+                background: #dbeeff;
+                color: #123c57;
+                font-weight: 700;
+                box-shadow: inset 3px 0 #2876aa;
+            }
+
+        .cop-sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 7px 10px;
+            border-radius: 6px;
+            margin-right: 8px;
+        }
+
+            .cop-sidebar-toggle:hover {
+                background: rgba(255,255,255,.15);
+            }
+
+        .cop-sidebar.is-collapsed {
+            width: 58px;
+            flex-basis: 58px;
+        }
+
+            .cop-sidebar.is-collapsed .cop-sidebar-label,
+            .cop-sidebar.is-collapsed .cop-sidebar-title,
+            .cop-sidebar.is-collapsed .cop-sidebar-search {
+                display: none;
+            }
+
+            .cop-sidebar.is-collapsed .cop-sidebar-link {
+                justify-content: center;
+                padding: 12px 4px;
+            }
+
+        /* ==========================================
+           CONTENIDO PRINCIPAL
+        ========================================== */
+
+        .cop-main-content {
+            width: 0;
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: none !important;
+            padding: 16px 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 60px);
+        }
+
+            .cop-main-content > .container-fluid {
+                max-width: none !important;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                flex: 1 0 auto;
+            }
+
+            .cop-main-content .container,
+            .cop-main-content .container-lg,
+            .cop-main-content .container-xl,
+            .cop-main-content .container-xxl {
+                max-width: none !important;
+                width: 100%;
+            }
+
+            .cop-main-content .row {
+                max-width: none;
+            }
+
+        /* ==========================================
+           BÚSQUEDA GLOBAL
+        ========================================== */
+
+        .cop-top-search {
+            position: relative;
+            width: clamp(190px,24vw,350px);
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+            .cop-top-search input {
+                width: 100%;
+                height: 35px;
+                border: 1px solid rgba(255,255,255,.3);
+                border-radius: 7px;
+                background: white;
+                color: #173b54;
+                padding: 6px 12px 6px 35px;
+                font-size: 13px;
+                outline: none;
+            }
+
+                .cop-top-search input:focus {
+                    box-shadow: 0 0 0 2px rgba(130,190,230,.4);
+                }
+
+        .cop-search-icon {
+            position: absolute;
+            top: 8px;
+            left: 11px;
+            color: #6d8295;
+            z-index: 1;
+        }
+
+        .cop-search-results {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            max-height: 360px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #dce5ee;
+            box-shadow: 0 10px 28px rgba(0,0,0,.18);
+            border-radius: 8px;
+            z-index: 1100;
+            padding: 6px;
+        }
+
+            .cop-search-results[hidden],
+            .cop-search-results a[hidden] {
+                display: none !important;
+            }
+
+            .cop-search-results a {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                padding: 9px 10px;
+                border-radius: 6px;
+                color: #23465d;
+                text-decoration: none;
+                font-size: 13px;
+            }
+
+                .cop-search-results a:hover {
+                    background: #e6f1fb;
+                }
+
+            .cop-search-results .cop-sidebar-label {
+                display: inline !important;
+            }
+
+            .cop-search-results .cop-sidebar-link {
+                white-space: normal;
+            }
+
+        /* ==========================================
            PIE DE PÁGINA
-        ====================================== */
+        ========================================== */
 
         .cop-footer {
             color: #6c757d;
             font-size: .9rem;
+            margin-top: auto;
+            padding-top: 12px;
         }
 
-        /* ======================================
+        .cop-main-content > .container-fluid > hr {
+            margin-top: auto;
+        }
+
+        /* ==========================================
            RESPONSIVO
-        ====================================== */
+        ========================================== */
 
         @@media (max-width: 991px) {
+
+            .cop-page-layout {
+                display: block;
+            }
+
+            .cop-sidebar {
+                position: relative;
+                top: auto;
+                width: 100%;
+                height: auto;
+                padding: 10px;
+            }
+
+                .cop-sidebar.is-collapsed {
+                    display: none;
+                }
+
+            .cop-main-content {
+                width: 100%;
+                padding: 12px;
+            }
 
             .cop-user-menu {
                 margin: 12px 0;
@@ -253,26 +610,83 @@
             .cop-user-dropdown {
                 min-width: 220px;
             }
+
+            .cop-top-search {
+                width: min(100%,340px);
+                margin: 8px 0;
+            }
+        }
+
+        @@media (max-width: 575px) {
+
+            .cop-notification-dropdown {
+                width: min(400px, calc(100vw - 24px)) !important;
+                height: min(450px, calc(100dvh - 90px)) !important;
+                min-width: 0;
+            }
+
+            .cop-resize-hint,
+            .cop-notification-resizer {
+                display: none;
+            }
+
+            .cop-notification-footer {
+                padding-bottom: 12px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ======================================
+    @{
+        string controladorActual =
+            Convert.ToString(ViewContext.RouteData.Values["controller"]);
+
+        bool mostrarMenuLateral =
+            Request.IsAuthenticated &&
+            !string.Equals(
+                controladorActual,
+                "Home",
+                StringComparison.OrdinalIgnoreCase
+            ) &&
+            !string.Equals(
+                controladorActual,
+                "Account",
+                StringComparison.OrdinalIgnoreCase
+            );
+    }
+
+    <!-- ==========================================
          BARRA PRINCIPAL
-    ====================================== -->
+    ========================================== -->
 
-    <nav class="navbar navbar-expand-lg navbar-dark cop-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark cop-navbar fixed-top">
 
-        <div class="container">
+        <div class="container-fluid cop-nav-inner">
+
+            @if (mostrarMenuLateral)
+            {
+                <button type="button"
+                        class="cop-sidebar-toggle"
+                        id="copToggleSidebar"
+                        aria-label="Mostrar u ocultar menú de módulos"
+                        aria-controls="copSidebar"
+                        aria-expanded="true"
+                        title="Mostrar u ocultar menú">
+
+                    <i class="bi bi-list"></i>
+
+                </button>
+            }
 
             @Html.ActionLink(
                      "Escuela Copalchí",
                      "Index",
                      "Home",
                      new { area = "" },
-                     new { @class = "navbar-brand" })
+                     new { @class = "navbar-brand" }
+                 )
 
             <button class="navbar-toggler"
                     type="button"
@@ -294,43 +708,98 @@
                 <ul class="navbar-nav me-auto">
 
                     <li class="nav-item">
+
                         @Html.ActionLink(
                                  "Inicio",
                                  "Index",
                                  "Home",
                                  new { area = "" },
-                                 new { @class = "nav-link" })
+                                 new { @class = "nav-link" }
+                             )
+
                     </li>
 
                     <li class="nav-item">
+
                         @Html.ActionLink(
                                  "Acerca de",
                                  "About",
                                  "Home",
                                  new { area = "" },
-                                 new { @class = "nav-link" })
+                                 new { @class = "nav-link" }
+                             )
+
                     </li>
 
                     <li class="nav-item">
+
                         @Html.ActionLink(
                                  "Contacto",
                                  "Contact",
                                  "Home",
                                  new { area = "" },
-                                 new { @class = "nav-link" })
+                                 new { @class = "nav-link" }
+                             )
+
                     </li>
 
                 </ul>
 
-                <!-- ======================================
+                <!-- ==========================================
+                     BUSCADOR DE MÓDULOS
+                ========================================== -->
+
+                @if (Request.IsAuthenticated)
+                {
+                    <div class="cop-top-search"
+                         id="copTopSearch">
+
+                        <label for="copBuscarModulo"
+                               class="visually-hidden">
+                            Buscar módulo
+                        </label>
+
+                        <i class="bi bi-search cop-search-icon"></i>
+
+                        <input id="copBuscarModulo"
+                               type="search"
+                               autocomplete="off"
+                               placeholder="Buscar módulo..."
+                               aria-label="Buscar módulo"
+                               aria-controls="copResultadosBusqueda"
+                               aria-expanded="false" />
+
+                        <div id="copResultadosBusqueda"
+                             class="cop-search-results"
+                             hidden>
+
+                            <a class="cop-search-link"
+                               href="@Url.Action("Index", "Home")"
+                               data-modulo="Inicio">
+
+                                <i class="bi bi-house-door"></i>
+                                Inicio
+
+                            </a>
+
+                            @Html.Action("MenuLateral", "Home")
+
+                        </div>
+
+                    </div>
+                }
+
+                <!-- ==========================================
                      USUARIO AUTENTICADO
-                ====================================== -->
+                ========================================== -->
 
                 @if (Request.IsAuthenticated)
                 {
                     <div class="cop-user-menu">
 
-                        <!-- CAMPANA -->
+                        <!-- ==================================
+                             CAMPANA
+                        ================================== -->
 
                         <div class="dropdown cop-notification-menu">
 
@@ -346,14 +815,16 @@
                                    class="bi bi-bell"></i>
 
                                 <span id="contadorNotificaciones"
-                                      class="cop-notification-badge"
-                                      style="display:none;"></span>
+                                      class="cop-notification-badge"></span>
 
                             </button>
 
-                            <!-- VENTANA PREVIA -->
+                            <!-- ==============================
+                                 PANEL DE NOTIFICACIONES
+                            ============================== -->
 
                             <div class="dropdown-menu dropdown-menu-end cop-notification-dropdown"
+                                 id="copNotificationPanel"
                                  aria-labelledby="notificacionesDropdown">
 
                                 <!-- ENCABEZADO -->
@@ -365,8 +836,22 @@
                                         Notificaciones
                                     </strong>
 
-                                    <small id="textoPendientes"
-                                           class="text-muted"></small>
+                                    <div class="cop-notification-header-actions">
+
+                                        <small id="textoPendientes"
+                                               class="text-muted"></small>
+
+                                        <button type="button"
+                                                id="btnRestablecerNotificaciones"
+                                                class="cop-notification-reset"
+                                                title="Restablecer tamaño mediano"
+                                                aria-label="Restablecer tamaño mediano">
+
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+
+                                        </button>
+
+                                    </div>
 
                                 </div>
 
@@ -387,16 +872,18 @@
 
                                 <!-- LISTA -->
 
-                                <div id="listaNotificaciones"
+                                <div id="listaNotificacionesCampana"
                                      class="cop-notification-list">
 
                                     <div class="text-center text-muted p-4">
+
                                         Cargando notificaciones...
+
                                     </div>
 
                                 </div>
 
-                                <!-- VER TODAS -->
+                                <!-- PIE -->
 
                                 <div class="cop-notification-footer">
 
@@ -408,15 +895,33 @@
 
                                     </a>
 
+                                    <small class="cop-resize-hint">
+
+                                        Arrastra la barra inferior para cambiar el tamaño
+
+                                    </small>
+
                                 </div>
+
+                                <!-- BARRA INFERIOR DE ARRASTRE -->
+
+                                <button type="button"
+                                        id="copNotificationResizer"
+                                        class="cop-notification-resizer"
+                                        title="Arrastrar para cambiar el tamaño"
+                                        aria-label="Cambiar tamaño del cuadro de notificaciones">
+
+                                    <i class="bi bi-grip-horizontal"></i>
+
+                                </button>
 
                             </div>
 
                         </div>
 
-                        <!-- ======================================
+                        <!-- ==================================
                              MENÚ DE USUARIO
-                        ====================================== -->
+                        ================================== -->
 
                         <div class="dropdown">
 
@@ -438,7 +943,9 @@
                                 <li class="dropdown-header">
 
                                     <strong class="d-block text-dark">
+
                                         @(Session["NombreUsuario"] ?? User.Identity.Name)
+
                                     </strong>
 
                                     <span class="small text-muted">
@@ -513,43 +1020,89 @@
                 }
 
             </div>
+
         </div>
+
     </nav>
 
-    <!-- ======================================
+    <!-- ==========================================
          TOKEN DE SEGURIDAD
-    ====================================== -->
+    ========================================== -->
 
     @if (Request.IsAuthenticated)
     {
-        <div id="tokenNotificaciones" style="display:none;">
+        <div id="tokenNotificaciones"
+             style="display:none;">
+
             @Html.AntiForgeryToken()
+
         </div>
     }
 
-    <!-- ======================================
+    <!-- ==========================================
          CONTENIDO PRINCIPAL
-    ====================================== -->
+    ========================================== -->
 
-    <div class="container body-content">
+    <div class="cop-page-layout">
 
-        @RenderBody()
+        @if (mostrarMenuLateral)
+        {
+            <aside class="cop-sidebar"
+                   id="copSidebar"
+                   aria-label="Navegación de módulos">
 
-        <hr />
+                <div class="cop-sidebar-title">
 
-        <footer class="cop-footer">
+                    <i class="bi bi-grid me-2"></i>
+                    Módulos
 
-            <p>
-                &copy; @DateTime.Now.Year - Aula Virtual Copalchí
-            </p>
+                </div>
 
-        </footer>
+                <a class="cop-sidebar-link"
+                   data-modulo="Inicio"
+                   title="Inicio"
+                   href="@Url.Action("Index", "Home")">
+
+                    <i class="bi bi-house-door"></i>
+
+                    <span class="cop-sidebar-label">
+                        Inicio
+                    </span>
+
+                </a>
+
+                @Html.Action("MenuLateral", "Home")
+
+            </aside>
+        }
+
+        <main class="cop-main-content">
+
+            <div class="container-fluid">
+
+                <div class="cop-view-content">
+                    @RenderBody()
+                </div>
+
+                <hr />
+
+                <footer class="cop-footer">
+
+                    <p>
+                        &copy; @DateTime.Now.Year - Aula Virtual Copalchí
+                    </p>
+
+                </footer>
+
+            </div>
+
+        </main>
 
     </div>
 
-    <!-- ======================================
+    <!-- ==========================================
          SCRIPTS
-    ====================================== -->
+    ========================================== -->
 
     @Scripts.Render("~/bundles/jquery")
 
@@ -557,12 +1110,13 @@
 
     @RenderSection("scripts", required: false)
 
+    <!-- ==========================================
+         NOTIFICACIONES
+    ========================================== -->
+
     <script>
         (function () {
-
-            // =====================================
-            // URLS
-            // =====================================
+            "use strict";
 
             const urlResumen =
                 '@Url.Action("Resumen", "Notificaciones")';
@@ -573,9 +1127,8 @@
             const urlTodas =
                 '@Url.Action("MarcarTodasLeidas", "Notificaciones")';
 
-            // =====================================
-            // ELEMENTOS
-            // =====================================
+            const urlDetalle =
+                '@Url.Action("Detalle", "Notificaciones")';
 
             const boton =
                 document.getElementById("notificacionesDropdown");
@@ -587,7 +1140,7 @@
                 document.getElementById("iconoNotificaciones");
 
             const lista =
-                document.getElementById("listaNotificaciones");
+                document.getElementById("listaNotificacionesCampana");
 
             const texto =
                 document.getElementById("textoPendientes");
@@ -595,18 +1148,13 @@
             const btnTodas =
                 document.getElementById("btnMarcarTodas");
 
-            if (!boton || !contador || !icono ||
-                !lista || !texto) {
+            if (!boton || !contador || !icono || !lista || !texto) {
                 return;
             }
 
             const token = document.querySelector(
                 '#tokenNotificaciones input[name="__RequestVerificationToken"]'
             );
-
-            // =====================================
-            // CREAR ELEMENTOS SEGUROS
-            // =====================================
 
             function elemento(etiqueta, clase, contenido) {
 
@@ -623,16 +1171,10 @@
                 return el;
             }
 
-            // =====================================
-            // ENVIAR POST
-            // =====================================
-
             async function enviarPost(url, id) {
 
                 if (!token) {
-                    throw new Error(
-                        "No se encontró el token de seguridad."
-                    );
+                    throw new Error("No se encontró el token de seguridad.");
                 }
 
                 const datos = new URLSearchParams();
@@ -685,10 +1227,6 @@
                 return resultado;
             }
 
-            // =====================================
-            // CARGAR NOTIFICACIONES
-            // =====================================
-
             async function cargarNotificaciones() {
 
                 try {
@@ -717,37 +1255,25 @@
                             ? datos.notificaciones
                             : [];
 
-                    // CONTADOR
-
                     contador.style.display =
                         pendientes > 0 ? "flex" : "none";
 
                     contador.textContent =
-                        pendientes > 99
-                            ? "99+"
-                            : pendientes;
-
-                    // ICONO
+                        pendientes > 99 ? "99+" : pendientes;
 
                     icono.className =
                         pendientes > 0
                             ? "bi bi-bell-fill"
                             : "bi bi-bell";
 
-                    // TEXTO
-
                     texto.textContent =
                         pendientes === 1
                             ? "1 sin leer"
                             : pendientes + " sin leer";
 
-                    // BOTÓN TODAS
-
                     if (btnTodas) {
                         btnTodas.disabled = pendientes === 0;
                     }
-
-                    // LIMPIAR LISTA
 
                     lista.replaceChildren();
 
@@ -764,10 +1290,6 @@
                         return;
                     }
 
-                    // =====================================
-                    // MOSTRAR NOTIFICACIONES
-                    // =====================================
-
                     items.forEach(function (n) {
 
                         const item = elemento(
@@ -776,7 +1298,37 @@
                             (n.leida ? "" : " no-leida")
                         );
 
-                        // TÍTULO
+                        item.style.cursor = "pointer";
+                        item.setAttribute("role", "link");
+                        item.setAttribute("tabindex", "0");
+
+                        const abrirDetalle = function () {
+                            window.location.href =
+                                urlDetalle +
+                                "?id=" +
+                                encodeURIComponent(n.id);
+                        };
+
+                        item.addEventListener("click", function (evento) {
+
+                            if (evento.target.closest("button, a")) {
+                                return;
+                            }
+
+                            abrirDetalle();
+                        });
+
+                        item.addEventListener("keydown", function (evento) {
+
+                            if (evento.target !== item) {
+                                return;
+                            }
+
+                            if (evento.key === "Enter") {
+                                evento.preventDefault();
+                                abrirDetalle();
+                            }
+                        });
 
                         item.appendChild(
                             elemento(
@@ -786,8 +1338,6 @@
                             )
                         );
 
-                        // MENSAJE
-
                         item.appendChild(
                             elemento(
                                 "p",
@@ -795,8 +1345,6 @@
                                 n.mensaje || ""
                             )
                         );
-
-                        // FECHA Y ESTADO
 
                         item.appendChild(
                             elemento(
@@ -808,10 +1356,6 @@
                                     : " · Sin leer")
                             )
                         );
-
-                        // =====================================
-                        // MARCAR COMO LEÍDA
-                        // =====================================
 
                         if (!n.leida) {
 
@@ -825,23 +1369,17 @@
 
                             marcar.addEventListener(
                                 "click",
-                                async function () {
+                                async function (evento) {
 
+                                    evento.stopPropagation();
                                     marcar.disabled = true;
 
                                     try {
 
-                                        const resultado =
-                                            await enviarPost(
-                                                urlMarcar,
-                                                n.id
-                                            );
-
-                                        if (!resultado.ok) {
-                                            throw new Error(
-                                                "No se pudo actualizar."
-                                            );
-                                        }
+                                        await enviarPost(
+                                            urlMarcar,
+                                            n.id
+                                        );
 
                                         await cargarNotificaciones();
 
@@ -854,10 +1392,7 @@
                                             error.message
                                         );
 
-                                        console.error(
-                                            "Error de notificaciones:",
-                                            error
-                                        );
+                                        console.error(error);
                                     }
                                 }
                             );
@@ -885,10 +1420,6 @@
                 }
             }
 
-            // =====================================
-            // MARCAR TODAS COMO LEÍDAS
-            // =====================================
-
             if (btnTodas) {
 
                 btnTodas.addEventListener(
@@ -912,29 +1443,18 @@
                                 error.message
                             );
 
-                            console.error(
-                                "Error de notificaciones:",
-                                error
-                            );
+                            console.error(error);
                         }
                     }
                 );
             }
-
-            // =====================================
-            // EVENTOS
-            // =====================================
 
             boton.addEventListener(
                 "show.bs.dropdown",
                 cargarNotificaciones
             );
 
-            // CARGA INICIAL
-
             cargarNotificaciones();
-
-            // ACTUALIZACIÓN CADA 60 SEGUNDOS
 
             setInterval(
                 cargarNotificaciones,
@@ -942,6 +1462,412 @@
             );
 
         })();
+    </script>
+
+    <!-- ==========================================
+         REDIMENSIONAMIENTO CON BARRA INFERIOR
+    ========================================== -->
+
+    <script>
+                        (function () {
+                            "use strict";
+
+                            const panel = document.getElementById(
+                                "copNotificationPanel"
+                            );
+
+                            const resizer = document.getElementById(
+                                "copNotificationResizer"
+                            );
+
+                            const reset = document.getElementById(
+                                "btnRestablecerNotificaciones"
+                            );
+
+                            if (!panel || !resizer) return;
+
+                            const ANCHO_INICIAL = 400;
+                            const ALTO_INICIAL = 450;
+
+                            const ANCHO_MINIMO = 240;
+                            const ALTO_MINIMO = 200;
+
+                            let arrastrando = false;
+                            let cambiarAncho = false;
+
+                            let inicioX = 0;
+                            let inicioY = 0;
+
+                            let anchoInicial = 0;
+                            let altoInicial = 0;
+
+                            function esMovil() {
+                                return window.matchMedia(
+                                    "(max-width: 575px)"
+                                ).matches;
+                            }
+
+                            function ajustarTamano(ancho, alto) {
+
+                                if (esMovil()) {
+                                    panel.style.removeProperty("width");
+                                    panel.style.removeProperty("height");
+                                    return;
+                                }
+
+                                const maxAncho = Math.max(
+                                    0,
+                                    window.innerWidth - 12
+                                );
+
+                                const maxAlto = Math.max(
+                                    0,
+                                    window.innerHeight - 70
+                                );
+
+                                ancho = Math.min(
+                                    Math.max(ANCHO_MINIMO, ancho),
+                                    maxAncho
+                                );
+
+                                alto = Math.min(
+                                    Math.max(ALTO_MINIMO, alto),
+                                    maxAlto
+                                );
+
+                                panel.style.width = ancho + "px";
+                                panel.style.height = alto + "px";
+                            }
+
+                            // Tamaño inicial mediano
+                            ajustarTamano(
+                                ANCHO_INICIAL,
+                                ALTO_INICIAL
+                            );
+
+                            // Comenzar a arrastrar
+                            resizer.addEventListener(
+                                "pointerdown",
+                                function (evento) {
+
+                                    if (esMovil() || evento.button !== 0) {
+                                        return;
+                                    }
+
+                                    evento.preventDefault();
+                                    evento.stopPropagation();
+
+                                    arrastrando = true;
+
+                                    inicioX = evento.clientX;
+                                    inicioY = evento.clientY;
+
+                                    anchoInicial = panel.offsetWidth;
+                                    altoInicial = panel.offsetHeight;
+
+                                    const rect = resizer.getBoundingClientRect();
+
+                                    // Los extremos permiten cambiar ancho y alto
+                                    cambiarAncho =
+                                        evento.clientX < rect.left + 65 ||
+                                        evento.clientX > rect.right - 65;
+
+                                    resizer.setPointerCapture(
+                                        evento.pointerId
+                                    );
+
+                                    document.body.style.userSelect = "none";
+                                }
+                            );
+
+                            // Redimensionar durante el movimiento
+                            resizer.addEventListener(
+                                "pointermove",
+                                function (evento) {
+
+                                    if (!arrastrando) return;
+
+                                    evento.preventDefault();
+
+                                    const diferenciaX =
+                                        inicioX - evento.clientX;
+
+                                    const diferenciaY =
+                                        evento.clientY - inicioY;
+
+                                    const nuevoAncho = cambiarAncho
+                                        ? anchoInicial + diferenciaX
+                                        : anchoInicial;
+
+                                    const nuevoAlto =
+                                        altoInicial + diferenciaY;
+
+                                    ajustarTamano(
+                                        nuevoAncho,
+                                        nuevoAlto
+                                    );
+                                }
+                            );
+
+                            function terminarArrastre() {
+
+                                if (!arrastrando) return;
+
+                                arrastrando = false;
+                                document.body.style.userSelect = "";
+                            }
+
+                            resizer.addEventListener(
+                                "pointerup",
+                                terminarArrastre
+                            );
+
+                            resizer.addEventListener(
+                                "pointercancel",
+                                terminarArrastre
+                            );
+
+                            resizer.addEventListener(
+                                "lostpointercapture",
+                                terminarArrastre
+                            );
+
+                            // Restablecer al tamaño mediano
+                            if (reset) {
+
+                                reset.addEventListener(
+                                    "click",
+                                    function (evento) {
+
+                                        evento.stopPropagation();
+
+                                        ajustarTamano(
+                                            ANCHO_INICIAL,
+                                            ALTO_INICIAL
+                                        );
+                                    }
+                                );
+                            }
+
+                            // Mantener el cuadro dentro de la pantalla
+                            window.addEventListener(
+                                "resize",
+                                function () {
+
+                                    ajustarTamano(
+                                        panel.offsetWidth || ANCHO_INICIAL,
+                                        panel.offsetHeight || ALTO_INICIAL
+                                    );
+                                }
+                            );
+
+                        })();
+    </script>
+
+    <!-- ==========================================
+         MENÚ LATERAL PLEGABLE
+    ========================================== -->
+
+    <script>
+                        (function () {
+
+                            const sidebar =
+                                document.getElementById("copSidebar");
+
+                            const toggle =
+                                document.getElementById("copToggleSidebar");
+
+                            if (!sidebar) return;
+
+                            if (toggle) {
+
+                                toggle.addEventListener(
+                                    "click",
+                                    function () {
+
+                                        sidebar.classList.toggle(
+                                            "is-collapsed"
+                                        );
+
+                                        toggle.setAttribute(
+                                            "aria-expanded",
+                                            String(
+                                                !sidebar.classList.contains(
+                                                    "is-collapsed"
+                                                )
+                                            )
+                                        );
+                                    }
+                                );
+                            }
+
+                            const path = window.location.pathname
+                                .replace(/\/+$/, "")
+                                .toLowerCase();
+
+                            const links = Array.from(
+                                sidebar.querySelectorAll(
+                                    "a.cop-sidebar-link"
+                                )
+                            );
+
+                            const matches = links.filter(function (a) {
+
+                                let target = new URL(
+                                    a.href,
+                                    location.origin
+                                ).pathname
+                                    .replace(/\/+$/, "")
+                                    .toLowerCase();
+
+                                if (target.endsWith("/index")) {
+                                    target = target.slice(0, -6);
+                                }
+
+                                return path === target ||
+                                    (
+                                        target !== "/" &&
+                                        path.indexOf(target + "/") === 0
+                                    );
+                            });
+
+                            if (matches.length) {
+
+                                const active =
+                                    matches[matches.length - 1];
+
+                                active.classList.add("active");
+
+                                active.setAttribute(
+                                    "aria-current",
+                                    "page"
+                                );
+                            }
+
+                        })();
+    </script>
+
+    <!-- ==========================================
+         BUSCADOR DE MÓDULOS
+    ========================================== -->
+
+    <script>
+                        (function () {
+
+                            const wrapper =
+                                document.getElementById("copTopSearch");
+
+                            const input =
+                                document.getElementById("copBuscarModulo");
+
+                            const results =
+                                document.getElementById("copResultadosBusqueda");
+
+                            if (!wrapper || !input || !results) {
+                                return;
+                            }
+
+                            const links = Array.from(
+                                results.querySelectorAll(
+                                    "a[data-modulo]"
+                                )
+                            );
+
+                            function normalize(s) {
+
+                                return (s || "")
+                                    .normalize("NFD")
+                                    .replace(/[\u0300-\u036f]/g, "")
+                                    .toLowerCase();
+                            }
+
+                            function update() {
+
+                                const query = normalize(
+                                    input.value.trim()
+                                );
+
+                                links.forEach(function (link) {
+
+                                    const texto =
+                                        link.getAttribute("data-modulo") ||
+                                        link.textContent;
+
+                                    const match =
+                                        !query ||
+                                        normalize(texto).includes(query);
+
+                                    link.hidden = !match;
+                                });
+
+                                results.hidden = false;
+
+                                input.setAttribute(
+                                    "aria-expanded",
+                                    "true"
+                                );
+                            }
+
+                            input.addEventListener(
+                                "focus",
+                                update
+                            );
+
+                            input.addEventListener(
+                                "input",
+                                update
+                            );
+
+                            input.addEventListener(
+                                "keydown",
+                                function (evento) {
+
+                                    if (evento.key === "Escape") {
+
+                                        results.hidden = true;
+
+                                        input.setAttribute(
+                                            "aria-expanded",
+                                            "false"
+                                        );
+                                    }
+
+                                    if (evento.key === "Enter") {
+
+                                        const first = links.find(
+                                            function (x) {
+                                                return !x.hidden;
+                                            }
+                                        );
+
+                                        if (first) {
+
+                                            evento.preventDefault();
+
+                                            window.location.href =
+                                                first.href;
+                                        }
+                                    }
+                                }
+                            );
+
+                            document.addEventListener(
+                                "click",
+                                function (evento) {
+
+                                    if (!wrapper.contains(evento.target)) {
+
+                                        results.hidden = true;
+
+                                        input.setAttribute(
+                                            "aria-expanded",
+                                            "false"
+                                        );
+                                    }
+                                }
+                            );
+
+                        })();
     </script>
 
 </body>

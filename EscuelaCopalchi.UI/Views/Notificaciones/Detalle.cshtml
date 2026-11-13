@@ -1,0 +1,60 @@
+﻿
+@model EscuelaCopalchi.UI.Models.Notificaciones.Notificacion
+
+@{
+    ViewBag.Title = "Detalle de notificación";
+
+    string urlVerMas = ViewBag.UrlVerMas as string;
+}
+
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0">
+                <i class="bi bi-bell me-2"></i>
+                Detalle de notificación
+            </h4>
+        </div>
+
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold">
+                @Model.Titulo
+            </h5>
+
+            <p class="text-muted">
+                @Model.Fecha.ToString("dd/MM/yyyy HH:mm")
+            </p>
+
+            <hr />
+
+            <p style="white-space: pre-wrap;">
+                @Model.Mensaje
+            </p>
+
+            <div class="mt-4 d-flex gap-2">
+
+                <a href="@Url.Action("Index", "Notificaciones")"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Volver
+                </a>
+
+                @if (!string.IsNullOrWhiteSpace(urlVerMas))
+                {
+                    <a href="@urlVerMas"
+                       class="btn btn-primary">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>
+                        Ver más detalles
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -305,23 +305,89 @@
 </main>
 
 
-@section scripts {
-    <script>
-        (function () {
-            // Object(...) devuelve el mismo elemento sin tipo, así Visual Studio no marca avisos de TypeScript
-            var input = Object(document.getElementById('buscarEstudiante'));
-            if (!input.addEventListener) return;   // el docente no tiene grupos: no hay buscador
+<style>
+    .ga-pagination{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 16px;background:#fff;border:1px solid #dce5ef;border-top:0;border-radius:0 0 9px 9px}
+    .ga-pagination-summary{color:#65768a;font-size:.82rem}
+    .ga-pagination-controls{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .ga-page-btn{border:1px solid #d6e1ed;background:#fff;color:#133c55;border-radius:6px;padding:6px 11px;font-size:.82rem;min-width:34px;cursor:pointer}
+    .ga-page-btn:hover:not(:disabled){background:#eaf2fa}
+    .ga-page-btn.active{background:#133c55;color:white;border-color:#133c55}
+    .ga-page-btn:disabled{opacity:.45;cursor:not-allowed}
+    @@media (max-width:600px) {
+        .ga-pagination {
+            align-items:flex-start;
+            flex-direction:column;
+        }
+    }
+</style>
 
-            input.addEventListener('input', function () {
-                var texto = input.value.toLowerCase();
-                document.querySelectorAll('#tablaEstudiantes tbody tr').forEach(function (f) {
-                    var fila = Object(f);
-                    fila.style.display = fila.textContent.toLowerCase().indexOf(texto) >= 0 ? '' : 'none';
-                });
+<script>
+(function () {
+        'use strict';
+        function iniciarPaginacion() {
+            document.querySelectorAll('table.academic-table, table.preview-table').forEach(function (tabla) {
+                var cuerpo = tabla.tBodies.length ? tabla.tBodies[0] : null;
+                if (!cuerpo) return;
+                var filas = Array.prototype.slice.call(cuerpo.rows);
+                if (!filas.length || (filas.length === 1 && filas[0].querySelector('td[colspan]'))) return;
+                var porPagina = 10, pagina = 1;
+                var entrada = tabla.id === 'tablaAulas' ? document.getElementById('buscarAula') :
+                              tabla.id === 'tablaEstudiantes' ? document.getElementById('buscarEstudiante') : null;
+                var panel = document.createElement('div');
+                panel.className = 'ga-pagination';
+                panel.setAttribute('aria-label', 'Paginación de registros');
+                var resumen = document.createElement('span');
+                resumen.className = 'ga-pagination-summary';
+                var controles = document.createElement('nav');
+                controles.className = 'ga-pagination-controls';
+                controles.setAttribute('aria-label', 'Páginas');
+                panel.appendChild(resumen); panel.appendChild(controles);
+                var contenedor = tabla.closest('.table-responsive') || tabla;
+                contenedor.parentNode.insertBefore(panel, contenedor.nextSibling);
+                function boton(texto, destino, deshabilitado, actual, titulo) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'ga-page-btn' + (actual ? ' active' : '');
+                    b.textContent = texto; b.disabled = deshabilitado;
+                    b.title = titulo;
+                    if (actual) b.setAttribute('aria-current', 'page');
+                    b.addEventListener('click', function () { pagina = destino; pintar(); });
+                    controles.appendChild(b);
+                }
+                function pintar() {
+                    var texto = entrada ? entrada.value.toLocaleLowerCase().trim() : '';
+                    var filtradas = filas.filter(function (fila) {
+                        return !texto || fila.textContent.toLocaleLowerCase().indexOf(texto) !== -1;
+                    });
+                    var total = filtradas.length;
+                    var paginas = Math.max(1, Math.ceil(total / porPagina));
+                    pagina = Math.min(Math.max(1, pagina), paginas);
+                    filas.forEach(function (fila) { fila.style.display = 'none'; });
+                    filtradas.slice((pagina - 1) * porPagina, pagina * porPagina).forEach(function (fila) { fila.style.display = ''; });
+                    var inicio = total ? (pagina - 1) * porPagina + 1 : 0;
+                    var fin = Math.min(pagina * porPagina, total);
+                    resumen.textContent = 'Mostrando ' + inicio + '–' + fin + ' de ' + total + ' registros · Página ' + pagina + ' de ' + paginas;
+                    controles.textContent = '';
+                    panel.style.display = total <= porPagina ? 'none' : '';
+                    if (paginas <= 1) return;
+                    boton('«', 1, pagina === 1, false, 'Primera página');
+                    boton('‹', pagina - 1, pagina === 1, false, 'Página anterior');
+                    var desde = Math.max(1, pagina - 2), hasta = Math.min(paginas, desde + 4);
+                    desde = Math.max(1, hasta - 4);
+                    for (var n = desde; n <= hasta; n++) boton(String(n), n, false, n === pagina, 'Página ' + n);
+                    boton('›', pagina + 1, pagina === paginas, false, 'Página siguiente');
+                    boton('»', paginas, pagina === paginas, false, 'Última página');
+                }
+                if (entrada) entrada.addEventListener('input', function () { pagina = 1; pintar(); });
+                pintar();
             });
-        })();
-    </script>
-}
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciarPaginacion);
+        else iniciarPaginacion();
+})();
+</script>
+
+
 
 
 @section styles {

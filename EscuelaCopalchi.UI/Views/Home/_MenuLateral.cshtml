@@ -1,0 +1,9 @@
+﻿@model IEnumerable<EscuelaCopalchi.UI.Models.Home.ModuloHome>
+@foreach (var modulo in Model)
+{
+    <a class="cop-sidebar-link" data-modulo="@modulo.Titulo" title="@modulo.Titulo"
+       href="@Url.Action(modulo.Accion, modulo.Controlador)">
+        <i class="bi @modulo.Icono"></i>
+        <span class="cop-sidebar-label">@modulo.Titulo</span>
+    </a>
+}

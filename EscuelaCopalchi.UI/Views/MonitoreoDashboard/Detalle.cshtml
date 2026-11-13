@@ -2,52 +2,332 @@
 @using System.Linq
 @{ ViewBag.Title = "Ficha de seguimiento académico"; }
 @section styles {
-<style>
-body{background:#f4f7fa}
-.md{max-width:1320px;width:calc(100% - 44px);margin:28px auto 85px;color:#183d59;font-size:15px}
-.md *{box-sizing:border-box}.md a{text-decoration:none;color:#166c9e}
-.md-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap}
-.md-title{font-size:28px;font-weight:750;margin:0 0 6px;color:#143c55}.md-title i{color:#3979a7}
-.md-sub{font-size:15px;color:#647d91;margin:0}.md-back{display:inline-flex;gap:8px;align-items:center;padding:11px 18px;border:1px solid #cad9e6;background:#fff;border-radius:8px;font-size:14px;font-weight:650}
-.md-card{background:#fff;border:1px solid #d7e4ee;border-radius:12px;padding:25px;box-shadow:0 3px 12px rgba(22,62,91,.035);min-width:0}
-.md-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.md-metrics{margin-bottom:22px}
-.md-metric{border-left:4px solid #2984b5}.md-metric small{font-size:14px;color:#6d8495;display:block;margin-bottom:10px}.md-metric strong{font-size:32px;font-weight:800;color:#133e5e}
-.md-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:20px;align-items:start;margin-bottom:20px}
-.md-card h2{font-size:19px;font-weight:750;margin:0 0 8px;color:#164c70}.md-card h2 i{margin-right:8px;color:#317ca9}.md-desc{font-size:14px;color:#6b8194;margin:0 0 22px}
-.md-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.md-field{margin-bottom:16px}.md-field label{display:block;font-size:14px;font-weight:650;margin-bottom:7px}
-.md select,.md textarea{display:block;width:100%;border:1px solid #c9d9e5;border-radius:8px;padding:11px 13px;background:white;color:#23465e;font-size:15px;min-height:44px}.md textarea{min-height:110px;resize:vertical;line-height:1.5}
-.md-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#176fa8;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer}.md-btn:hover{background:#125a89}.md-btn-small{padding:10px 13px;white-space:nowrap}
-.md-scroll{overflow-x:auto}.md table{width:100%;border-collapse:collapse;font-size:14px}.md th{text-align:left;background:#eef5fa;color:#47677f;font-size:12px;text-transform:uppercase;letter-spacing:.025em;padding:14px 13px;white-space:nowrap}.md td{padding:16px 13px;border-bottom:1px solid #e6edf3;vertical-align:top;line-height:1.55}.md tbody tr:last-child td{border-bottom:0}.md-empty{text-align:center;padding:32px!important;color:#7a8fa0}
-.md-state{display:inline-block;padding:5px 10px;border-radius:20px;background:#edf5fb;color:#245c80;font-weight:700;font-size:12px}.md-obs{max-width:390px;white-space:pre-wrap;overflow-wrap:anywhere}.md-obs small{display:block;color:#6e8598;margin-top:7px;font-size:13px}
-.md-state-form{display:flex;gap:8px;align-items:center}.md-state-form select{min-width:165px}.md-muted{font-size:13px;color:#6f8496}
-@@media(max-width:1050px){.md-layout{grid-template-columns:1fr}}
-@@media(max-width:700px){.md{width:calc(100% - 24px)}.md-grid,.md-form-grid{grid-template-columns:1fr}.md-card{padding:18px}.md-title{font-size:23px}.md-state-form{flex-wrap:wrap}}
-</style>
+    <style>
+        body {
+            background: #f4f7fa
+        }
+
+        .md {
+            max-width: 1380px;
+            width: calc(100% - 44px);
+            margin: 28px auto 85px;
+            color: #183d59;
+            font-size: 15px
+        }
+
+            .md * {
+                box-sizing: border-box
+            }
+
+            .md a {
+                text-decoration: none;
+                color: #166c9e
+            }
+
+        .md-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
+
+        .md-title {
+            font-size: 28px;
+            font-weight: 750;
+            margin: 0 0 6px;
+            color: #143c55
+        }
+
+            .md-title i {
+                color: #3979a7
+            }
+
+        .md-sub {
+            font-size: 15px;
+            color: #647d91;
+            margin: 0
+        }
+
+        .md-back {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 11px 18px;
+            border: 1px solid #cad9e6;
+            background: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 650
+        }
+
+        .md-card {
+            background: #fff;
+            border: 1px solid #d7e4ee;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 3px 12px rgba(22,62,91,.035);
+            min-width: 0
+        }
+
+        .md-grid {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 20px
+        }
+
+        .md-metrics {
+            margin-bottom: 22px
+        }
+
+        .md-metric {
+            border-left: 4px solid #2984b5
+        }
+
+            .md-metric small {
+                font-size: 14px;
+                color: #6d8495;
+                display: block;
+                margin-bottom: 10px
+            }
+
+            .md-metric strong {
+                font-size: 32px;
+                font-weight: 800;
+                color: #133e5e
+            }
+
+        .md-layout {
+            display: grid;
+            grid-template-columns: minmax(0,1.15fr) minmax(360px,.85fr);
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 20px
+        }
+
+        .md-card h2 {
+            font-size: 19px;
+            font-weight: 750;
+            margin: 0 0 8px;
+            color: #164c70
+        }
+
+            .md-card h2 i {
+                margin-right: 8px;
+                color: #317ca9
+            }
+
+        .md-desc {
+            font-size: 14px;
+            color: #6b8194;
+            margin: 0 0 22px
+        }
+
+        .md-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 16px
+        }
+
+        .md-field {
+            margin-bottom: 16px
+        }
+
+            .md-field label {
+                display: block;
+                font-size: 14px;
+                font-weight: 650;
+                margin-bottom: 7px
+            }
+
+        .md select, .md textarea {
+            display: block;
+            width: 100%;
+            border: 1px solid #c9d9e5;
+            border-radius: 8px;
+            padding: 11px 13px;
+            background: white;
+            color: #23465e;
+            font-size: 15px;
+            min-height: 44px
+        }
+
+        .md textarea {
+            min-height: 110px;
+            resize: vertical;
+            line-height: 1.5
+        }
+
+        .md-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #176fa8;
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+            .md-btn:hover {
+                background: #125a89
+            }
+
+        .md-btn-small {
+            padding: 10px 13px;
+            white-space: nowrap
+        }
+
+        .md-scroll {
+            overflow-x: auto
+        }
+
+        .md table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px
+        }
+
+        .md th {
+            text-align: left;
+            background: #eef5fa;
+            color: #47677f;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .025em;
+            padding: 14px 13px;
+            white-space: nowrap
+        }
+
+        .md td {
+            padding: 16px 13px;
+            border-bottom: 1px solid #e6edf3;
+            vertical-align: top;
+            line-height: 1.55
+        }
+
+        .md tbody tr:last-child td {
+            border-bottom: 0
+        }
+
+        .md-empty {
+            text-align: center;
+            padding: 32px !important;
+            color: #7a8fa0
+        }
+
+        .md-state {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #edf5fb;
+            color: #245c80;
+            font-weight: 700;
+            font-size: 12px
+        }
+
+        .md-obs {
+            max-width: 390px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere
+        }
+
+            .md-obs small {
+                display: block;
+                color: #6e8598;
+                margin-top: 7px;
+                font-size: 13px
+            }
+
+        .md-state-form {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+            .md-state-form select {
+                min-width: 165px
+            }
+
+        .md-muted {
+            font-size: 13px;
+            color: #6f8496
+        }
+
+        @@media(max-width:1050px) {
+            .md-layout {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @@media(max-width:700px) {
+            .md {
+                width: calc(100% - 24px)
+            }
+
+            .md-grid, .md-form-grid {
+                grid-template-columns: 1fr
+            }
+
+            .md-card {
+                padding: 18px
+            }
+
+            .md-title {
+                font-size: 23px
+            }
+
+            .md-state-form {
+                flex-wrap: wrap
+            }
+        }
+    </style>
 }
 <div class="md">
     <header class="md-head">
         <div><h1 class="md-title"><i class="bi bi-person-lines-fill me-2"></i>Ficha de rendimiento y seguimiento</h1><p class="md-sub">@Model.Nombre · @Model.Grupo · Año lectivo @Model.Anio</p></div>
         <a class="md-back" href="@Url.Action("Index", new { anio = Model.Anio, grupo = Model.IdGrupo })"><i class="bi bi-arrow-left"></i> Atrás</a>
     </header>
-    @if (TempData["Ok"] != null) { <div class="alert alert-success">@TempData["Ok"]</div> }
-    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (TempData["Ok"] != null)
+    {<div class="alert alert-success">@TempData["Ok"]</div>}
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
     <section class="md-grid md-metrics" aria-label="Indicadores del estudiante">
         <div class="md-card md-metric"><small>Promedio académico</small><strong>@(Model.Promedio.HasValue ? Model.Promedio.Value.ToString("N2") : "Sin notas")</strong><div class="md-muted">Según calificaciones disponibles</div></div>
         <div class="md-card md-metric"><small>Asistencia registrada</small><strong>@(Model.Asistencia.HasValue ? Model.Asistencia.Value.ToString("N1") + "%" : "Sin registros")</strong><div class="md-muted">Registros del año lectivo</div></div>
     </section>
     <div class="md-layout">
-        <section class="md-card"><h2><i class="bi bi-journal-check"></i>Historial de calificaciones</h2><p class="md-desc">Promedios registrados por trimestre y asignatura.</p>
-            <div class="md-scroll"><table><thead><tr><th>Trimestre</th><th>Asignatura</th><th>Promedio</th></tr></thead><tbody>
-            @foreach (var n in Model.Notas) { <tr><td>Trimestre @n.Trimestre</td><td>@n.Materia</td><td><strong>@n.Promedio.ToString("N2")</strong></td></tr> }
-            @if (!Model.Notas.Any()) { <tr><td colspan="3" class="md-empty">Sin calificaciones registradas.</td></tr> }
-            </tbody></table></div>
+        <section class="md-card">
+            <h2><i class="bi bi-journal-check"></i>Historial de calificaciones</h2><p class="md-desc">Promedios registrados por trimestre y asignatura.</p>
+            <div class="md-scroll">
+                <table>
+                    <thead><tr><th>Trimestre</th><th>Asignatura</th><th>Promedio</th></tr></thead>
+                    <tbody>
+                        @foreach (var n in Model.Notas)
+                        {
+                            <tr><td>Trimestre @n.Trimestre</td><td>@n.Materia</td><td><strong>@n.Promedio.ToString("N2")</strong></td></tr>
+}
+                        @if (!Model.Notas.Any())
+                        {
+                            <tr><td colspan="3" class="md-empty">Sin calificaciones registradas.</td></tr>
+}
+                    </tbody>
+                </table>
+            </div>
         </section>
-        <section class="md-card"><h2><i class="bi bi-clipboard-plus"></i>Registrar intervención</h2><p class="md-desc">Documenta la situación y las acciones de acompañamiento académico.</p>
+        <section class="md-card">
+            <h2><i class="bi bi-clipboard-plus"></i>Registrar intervención</h2><p class="md-desc">Documenta la situación y las acciones de acompañamiento académico.</p>
             <form method="post" action="@Url.Action("RegistrarSeguimiento")">
                 @Html.AntiForgeryToken()
-                <input type="hidden" name="idEstudiante" value="@Model.IdEstudiante"/><input type="hidden" name="idGrupo" value="@Model.IdGrupo"/><input type="hidden" name="anio" value="@Model.Anio"/>
+                <input type="hidden" name="idEstudiante" value="@Model.IdEstudiante" /><input type="hidden" name="idGrupo" value="@Model.IdGrupo" /><input type="hidden" name="anio" value="@Model.Anio" />
                 <div class="md-form-grid">
-                    <div class="md-field"><label for="md-trimestre">Periodo</label><select id="md-trimestre" name="trimestre"><option value="">Seguimiento anual</option>@for (int t = 1; t <= 3; t++) { <option value="@t">Trimestre @t</option> }</select></div>
+                    <div class="md-field"><label for="md-trimestre">Periodo</label><select id="md-trimestre" name="trimestre"><option value="">Seguimiento anual</option>@for (int t = 1; t <= 3; t++)
+                    {<option value="@t">Trimestre @t</option>}</select></div>
                     <div class="md-field"><label for="md-riesgo">Nivel de riesgo</label><select id="md-riesgo" name="nivelRiesgo"><option>En evaluación</option><option>Bajo</option><option>Medio</option><option>Alto</option><option>Crítico</option></select></div>
                 </div>
                 <div class="md-field"><label for="md-estado">Estado del seguimiento</label><select id="md-estado" name="estado"><option>Pendiente</option><option>En seguimiento</option><option>Mejorando</option><option>Resuelto</option></select></div>
@@ -57,23 +337,45 @@ body{background:#f4f7fa}
             </form>
         </section>
     </div>
-    <section class="md-card"><h2><i class="bi bi-clock-history"></i>Historial de intervenciones</h2><p class="md-desc">Registro de acciones realizadas y actualización de estados.</p>
-        <div class="md-scroll"><table><thead><tr><th>Fecha</th><th>Riesgo / Estado</th><th>Observaciones y acciones</th><th>Actualizar estado</th></tr></thead><tbody>
-        @foreach (var s in Model.Seguimientos) {
-            <tr><td>@s.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td><td><strong>@s.NivelRiesgo</strong><div style="margin-top:7px"><span class="md-state">@s.Estado</span></div></td>
-            <td class="md-obs">@s.Observacion<small>@s.AccionRealizada</small></td>
-            <td><form class="md-state-form" method="post" action="@Url.Action("CambiarEstado")">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="id" value="@s.IdSeguimiento"/><input type="hidden" name="idEstudiante" value="@Model.IdEstudiante"/><input type="hidden" name="grupo" value="@Model.IdGrupo"/><input type="hidden" name="anio" value="@Model.Anio"/>
-                <select name="estado" aria-label="Estado de seguimiento">
-                    @foreach (var st in new[] { "Pendiente", "En seguimiento", "Mejorando", "Resuelto" }) {
-                        if (s.Estado == st) { <option value="@st" selected="selected">@st</option> }
-                        else { <option value="@st">@st</option> }
+    <section class="md-card">
+        <h2><i class="bi bi-clock-history"></i>Historial de intervenciones</h2><p class="md-desc">Registro de acciones realizadas y actualización de estados.</p>
+        <div class="md-scroll">
+            <table>
+                <thead><tr><th>Fecha</th><th>Riesgo / Estado</th><th>Observaciones y acciones</th><th>Actualizar estado</th></tr></thead>
+                <tbody>
+                    @foreach (var s in Model.Seguimientos)
+                    {
+                        <tr>
+                            <td>@s.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><strong>@s.NivelRiesgo</strong><div style="margin-top:7px"><span class="md-state">@s.Estado</span></div></td>
+                            <td class="md-obs">@s.Observacion<small>@s.AccionRealizada</small></td>
+                            <td>
+                                <form class="md-state-form" method="post" action="@Url.Action("CambiarEstado")">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@s.IdSeguimiento" /><input type="hidden" name="idEstudiante" value="@Model.IdEstudiante" /><input type="hidden" name="grupo" value="@Model.IdGrupo" /><input type="hidden" name="anio" value="@Model.Anio" />
+                                    <select name="estado" aria-label="Estado de seguimiento">
+                                        @foreach (var st in new[] { "Pendiente", "En seguimiento", "Mejorando", "Resuelto" })
+                                        {
+                                            if (s.Estado == st)
+                                            {
+                                                <option value="@st" selected="selected">@st</option>
+ }
+                                            else
+                                            {
+                                                <option value="@st">@st</option>
+}
+                                        }
+                                    </select><button type="submit" class="md-btn md-btn-small">Actualizar</button>
+                                </form>
+                            </td>
+                        </tr>
                     }
-                </select><button type="submit" class="md-btn md-btn-small">Actualizar</button>
-            </form></td></tr>
-        }
-        @if (!Model.Seguimientos.Any()) { <tr><td colspan="4" class="md-empty">Todavía no hay intervenciones registradas.</td></tr> }
-        </tbody></table></div>
+                    @if (!Model.Seguimientos.Any())
+                    {
+                        <tr><td colspan="4" class="md-empty">Todavía no hay intervenciones registradas.</td></tr>
+}
+                </tbody>
+            </table>
+        </div>
     </section>
 </div>

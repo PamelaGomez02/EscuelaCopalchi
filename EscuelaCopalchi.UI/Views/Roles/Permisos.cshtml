@@ -304,7 +304,7 @@
             }
 
         .permissions-card {
-            max-width: 1200px;
+            width: 100%;
             margin: auto;
         }
 
@@ -859,87 +859,87 @@
 
 @section scripts {
     <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var form = document.getElementById('formPermisos');
-                if (!form) return;
-                var checks = Array.prototype.slice.call(form.querySelectorAll('.permiso-check'));
-                var cards = Array.prototype.slice.call(form.querySelectorAll('.module-card'));
-                var count = document.getElementById('contadorPermisos');
-                var state = document.getElementById('estadoGuardado');
-                var submit = document.getElementById('guardarPermisosLateral');
-                var search = document.getElementById('buscarPermiso');
-                var searchResult = document.getElementById('resultadoBusqueda');
-                var original = checks.map(function (x) { return x.checked; });
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var form = document.getElementById('formPermisos');
+                        if (!form) return;
+                        var checks = Array.prototype.slice.call(form.querySelectorAll('.permiso-check'));
+                        var cards = Array.prototype.slice.call(form.querySelectorAll('.module-card'));
+                        var count = document.getElementById('contadorPermisos');
+                        var state = document.getElementById('estadoGuardado');
+                        var submit = document.getElementById('guardarPermisosLateral');
+                        var search = document.getElementById('buscarPermiso');
+                        var searchResult = document.getElementById('resultadoBusqueda');
+                        var original = checks.map(function (x) { return x.checked; });
 
-                function setExpanded(card, expanded) {
-                    var list = card.querySelector('.permission-list');
-                    var button = card.querySelector('.module-toggle');
-                    list.classList.toggle('is-collapsed', !expanded);
-                    button.setAttribute('aria-expanded', String(expanded));
-                    button.setAttribute('aria-label', expanded ? 'Contraer módulo' : 'Expandir módulo');
-                    button.innerHTML = expanded ? '<i class="bi bi-chevron-up"></i>' : '<i class="bi bi-chevron-down"></i>';
-                }
-                function refresh() {
-                    var selected = checks.filter(function (x) { return x.checked; }).length;
-                    count.textContent = selected + ' / ' + checks.length;
-                    var changed = checks.some(function (x, i) { return x.checked !== original[i]; });
-                    state.className = 'save-state' + (changed ? ' pending' : '');
-                    state.innerHTML = changed
-                        ? '<i class="bi bi-pencil-square"></i> Cambios sin guardar'
-                        : '<i class="bi bi-check-circle"></i> Sin cambios pendientes';
-                    cards.forEach(function (card) {
-                        var own = Array.prototype.slice.call(card.querySelectorAll('.permiso-check'));
-                        card.querySelector('.module-counter').textContent = own.filter(function (x) { return x.checked; }).length + ' / ' + own.length;
-                    });
-                }
-                function filter() {
-                    var term = search.value.trim().toLocaleLowerCase();
-                    var visible = 0;
-                    cards.forEach(function (card) {
-                        var moduleMatches = (card.getAttribute('data-module') || '').toLocaleLowerCase().indexOf(term) >= 0;
-                        var items = Array.prototype.slice.call(card.querySelectorAll('.permission-item'));
-                        var matches = 0;
-                        items.forEach(function (item) {
-                            var matchesItem = !term || moduleMatches || (item.getAttribute('data-search') || '').toLocaleLowerCase().indexOf(term) >= 0;
-                            item.hidden = !matchesItem;
-                            if (matchesItem) matches++;
+                        function setExpanded(card, expanded) {
+                            var list = card.querySelector('.permission-list');
+                            var button = card.querySelector('.module-toggle');
+                            list.classList.toggle('is-collapsed', !expanded);
+                            button.setAttribute('aria-expanded', String(expanded));
+                            button.setAttribute('aria-label', expanded ? 'Contraer módulo' : 'Expandir módulo');
+                            button.innerHTML = expanded ? '<i class="bi bi-chevron-up"></i>' : '<i class="bi bi-chevron-down"></i>';
+                        }
+                        function refresh() {
+                            var selected = checks.filter(function (x) { return x.checked; }).length;
+                            count.textContent = selected + ' / ' + checks.length;
+                            var changed = checks.some(function (x, i) { return x.checked !== original[i]; });
+                            state.className = 'save-state' + (changed ? ' pending' : '');
+                            state.innerHTML = changed
+                                ? '<i class="bi bi-pencil-square"></i> Cambios sin guardar'
+                                : '<i class="bi bi-check-circle"></i> Sin cambios pendientes';
+                            cards.forEach(function (card) {
+                                var own = Array.prototype.slice.call(card.querySelectorAll('.permiso-check'));
+                                card.querySelector('.module-counter').textContent = own.filter(function (x) { return x.checked; }).length + ' / ' + own.length;
+                            });
+                        }
+                        function filter() {
+                            var term = search.value.trim().toLocaleLowerCase();
+                            var visible = 0;
+                            cards.forEach(function (card) {
+                                var moduleMatches = (card.getAttribute('data-module') || '').toLocaleLowerCase().indexOf(term) >= 0;
+                                var items = Array.prototype.slice.call(card.querySelectorAll('.permission-item'));
+                                var matches = 0;
+                                items.forEach(function (item) {
+                                    var matchesItem = !term || moduleMatches || (item.getAttribute('data-search') || '').toLocaleLowerCase().indexOf(term) >= 0;
+                                    item.hidden = !matchesItem;
+                                    if (matchesItem) matches++;
+                                });
+                                card.hidden = matches === 0;
+                                if (matches) visible++;
+                                if (term) setExpanded(card, matches > 0);
+                                else setExpanded(card, false);
+                            });
+                            searchResult.textContent = term ? (visible ? visible + ' módulo(s) con resultados.' : 'No se encontraron coincidencias.') : 'Los módulos están contraídos para facilitar la navegación.';
+                        }
+                        cards.forEach(function (card) {
+                            card.querySelector('.module-toggle').addEventListener('click', function () {
+                                setExpanded(card, card.querySelector('.permission-list').classList.contains('is-collapsed'));
+                            });
                         });
-                        card.hidden = matches === 0;
-                        if (matches) visible++;
-                        if (term) setExpanded(card, matches > 0);
-                        else setExpanded(card, false);
+                        checks.forEach(function (x) { x.addEventListener('change', refresh); });
+                        document.getElementById('expandirTodos').addEventListener('click', function () {
+                            cards.forEach(function (card) { if (!card.hidden) setExpanded(card, true); });
+                        });
+                        document.getElementById('contraerTodos').addEventListener('click', function () {
+                            cards.forEach(function (card) { setExpanded(card, false); });
+                        });
+                        document.getElementById('seleccionarTodos').addEventListener('click', function () {
+                            checks.forEach(function (x) { x.checked = true; }); refresh();
+                        });
+                        document.getElementById('quitarTodos').addEventListener('click', function () {
+                            if (!window.confirm('¿Deseas desactivar todos los permisos de este rol? Los cambios se aplicarán al guardar.')) return;
+                            checks.forEach(function (x) { x.checked = false; }); refresh();
+                        });
+                        search.addEventListener('input', filter);
+                        document.getElementById('limpiarBusqueda').addEventListener('click', function () { search.value = ''; filter(); search.focus(); });
+                        form.addEventListener('submit', function () {
+                            state.className = 'save-state saving';
+                            state.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando en el servidor...';
+                            submit.disabled = true;
+                            submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Guardando...';
+                        });
+                        refresh();
+                        filter();
                     });
-                    searchResult.textContent = term ? (visible ? visible + ' módulo(s) con resultados.' : 'No se encontraron coincidencias.') : 'Los módulos están contraídos para facilitar la navegación.';
-                }
-                cards.forEach(function (card) {
-                    card.querySelector('.module-toggle').addEventListener('click', function () {
-                        setExpanded(card, card.querySelector('.permission-list').classList.contains('is-collapsed'));
-                    });
-                });
-                checks.forEach(function (x) { x.addEventListener('change', refresh); });
-                document.getElementById('expandirTodos').addEventListener('click', function () {
-                    cards.forEach(function (card) { if (!card.hidden) setExpanded(card, true); });
-                });
-                document.getElementById('contraerTodos').addEventListener('click', function () {
-                    cards.forEach(function (card) { setExpanded(card, false); });
-                });
-                document.getElementById('seleccionarTodos').addEventListener('click', function () {
-                    checks.forEach(function (x) { x.checked = true; }); refresh();
-                });
-                document.getElementById('quitarTodos').addEventListener('click', function () {
-                    if (!window.confirm('¿Deseas desactivar todos los permisos de este rol? Los cambios se aplicarán al guardar.')) return;
-                    checks.forEach(function (x) { x.checked = false; }); refresh();
-                });
-                search.addEventListener('input', filter);
-                document.getElementById('limpiarBusqueda').addEventListener('click', function () { search.value = ''; filter(); search.focus(); });
-                form.addEventListener('submit', function () {
-                    state.className = 'save-state saving';
-                    state.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando en el servidor...';
-                    submit.disabled = true;
-                    submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Guardando...';
-                });
-                refresh();
-                filter();
-            });
     </script>
 }

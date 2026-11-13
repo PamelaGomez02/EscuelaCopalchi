@@ -1,46 +1,106 @@
 ﻿@model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
-@if (Model.AsistenciaMensual.Any() || Model.NotasPorGrupo.Any())
-{
-  <div class="cop-heading"><h2>Estadísticas académicas</h2><span>Indicadores calculados con datos registrados</span></div>
-  <div class="row g-3 mb-4">
-    @if (Model.AsistenciaMensual.Any())
+@using System.Linq
+@using Newtonsoft.Json
+@{
+    var asistencia = Model.AsistenciaMensual.Select(x => new { etiqueta = x.Mes, valor = x.Valor }).ToList();
+    var notas = Model.NotasPorGrupo.Select(x => new { etiqueta = x.Grupo, valor = x.Valor }).ToList();
+}
+<div class="cop-widget" data-widget="charts" data-title="Gráficos académicos">
+    @if (asistencia.Any() || notas.Any())
     {
-      <div class="col-lg-6"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-graph-up-arrow"></i> Asistencia mensual</h3><small>Presente + tardanza / registros</small></div>
-      @foreach (var p in Model.AsistenciaMensual) { <div class="cop-bar-row"><span>@p.Mes</span><div class="cop-track"><div class="cop-fill" style="width:@(p.Valor.ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div><b>@p.Valor.ToString("0.#")%</b></div> }
-      </section></div>
+        <div class="cop-heading"><div><h2>Indicadores académicos</h2><p>Seguimiento de la actividad y el rendimiento institucional</p></div><span class="cop-heading-tag"><i class="bi bi-database-check"></i> Datos registrados</span></div>
+        <div class="row g-3 mb-4">
+            @if (asistencia.Any())
+            {
+                <div class="col-xl-6">
+                    <section class="cop-panel cop-chart-panel">
+                        <div class="cop-panel-head"><div><h3><i class="bi bi-calendar2-check"></i> Asistencia mensual</h3><small>Porcentaje de registros de asistencia</small></div><span class="cop-chart-icon"><i class="bi bi-graph-up"></i></span></div>
+                        <div class="cop-chart-wrap"><canvas id="copChartAsistencia" aria-label="Gráfico de asistencia mensual"></canvas></div>
+                    </section>
+                </div>
+            }
+            @if (notas.Any())
+            {
+                <div class="col-xl-6">
+                    <section class="cop-panel cop-chart-panel">
+                        <div class="cop-panel-head"><div><h3><i class="bi bi-bar-chart-line"></i> Rendimiento por grupo</h3><small>Promedio normalizado por grupo</small></div><span class="cop-chart-icon"><i class="bi bi-activity"></i></span></div>
+                        <div class="cop-chart-wrap"><canvas id="copChartNotas" aria-label="Gráfico de promedio por grupo"></canvas></div>
+                    </section>
+                </div>
+            }
+        </div>
     }
-    @if (Model.NotasPorGrupo.Any())
-    {
-      <div class="col-lg-6"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-bar-chart"></i> Promedio por grupo</h3><small>Nota / nota máxima</small></div>
-      @foreach (var p in Model.NotasPorGrupo) { <div class="cop-bar-row"><span title="@p.Grupo">@p.Grupo</span><div class="cop-track"><div class="cop-fill cop-fill-green" style="width:@(p.Valor.ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div><b>@p.Valor.ToString("0.#")%</b></div> }
-      </section></div>
-    }
-  </div>
-}
-<div class="cop-heading"><h2>@(Model.EsAdministrador ? "Módulos del sistema" : "Mis herramientas")</h2><span>Solo se muestran los accesos permitidos</span></div>
-@if (Model.Modulos.Any())
-{
-  <div class="row g-3 mb-4">
-  @foreach (var m in Model.Modulos)
-  {
-    <div class="col-sm-6 col-lg-4"><a class="cop-module" href="@Url.Action(m.Accion,m.Controlador)"><div class="cop-module-icon"><i class="bi @m.Icono"></i></div><div><strong>@m.Titulo</strong><span>@m.Descripcion</span></div><i class="bi bi-chevron-right cop-arrow"></i></a></div>
-  }
-  </div>
-}
-else
-{
-  <div class="cop-empty mb-4">Tu rol todavía no tiene módulos habilitados. Contacta al administrador.</div>
-}
-<div class="row g-3 mb-5">
-  @if (Model.Puede("VER_AUDITORIA"))
-  {
-    <div class="col-lg-7"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-clock-history"></i> Actividad reciente</h3><a href="@Url.Action("Index","AuditoriaSistema")">Ver auditoría</a></div>
-    @if (Model.Actividad.Any()) { foreach (var a in Model.Actividad) { <div class="cop-activity"><div><strong>@a.Accion</strong><span>@a.Descripcion</span></div><small>@a.Fecha.ToString("dd/MM/yyyy HH:mm")</small></div> } }
-    else { <p class="cop-muted">No hay movimientos recientes disponibles.</p> }
-    </section></div>
-  }
-  <div class="@(Model.Puede("VER_AUDITORIA") ? "col-lg-5" : "col-12")"><section class="cop-panel h-100"><div class="cop-panel-head"><h3><i class="bi bi-bell"></i> Mi centro de avisos</h3></div><div class="cop-notice"><i class="bi bi-envelope-paper"></i><div><strong>@Model.Notificaciones notificaciones sin leer</strong><span>Revisa tus avisos desde el módulo de notificaciones, si está disponible para tu cuenta.</span></div></div>
-  @if (Model.Alertas.HasValue) { <div class="cop-notice"><i class="bi bi-exclamation-triangle"></i><div><strong>@Model.Alertas alertas académicas</strong><span>Situaciones pendientes de atención.</span></div></div> }
-  @if (Model.StockBajo.HasValue) { <div class="cop-notice"><i class="bi bi-box-seam"></i><div><strong>@Model.StockBajo productos con stock bajo</strong><span>Existencias inferiores al mínimo configurado.</span></div></div> }
-  </section></div>
 </div>
+<div class="cop-widget" data-widget="modules" data-title="Accesos a módulos">
+    <div class="cop-heading"><div><h2>@(Model.EsAdministrador ? "Accesos institucionales" : "Mis herramientas")</h2><p>Funciones disponibles según los permisos de tu cuenta</p></div><span class="cop-heading-tag"><i class="bi bi-shield-check"></i> Acceso por rol</span></div>
+    @if (Model.Modulos.Any())
+    {
+        <div class="row g-3 mb-4">
+            @foreach (var m in Model.Modulos)
+            {
+                <div class="col-sm-6 col-xl-4"><a class="cop-module" href="@Url.Action(m.Accion, m.Controlador)"><div class="cop-module-icon"><i class="bi @m.Icono"></i></div><div class="cop-module-copy"><strong>@m.Titulo</strong><span>@m.Descripcion</span></div><i class="bi bi-arrow-up-right cop-arrow"></i></a></div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="cop-empty mb-4"><i class="bi bi-lock"></i> Tu rol todavía no tiene módulos habilitados. Contacta al administrador.</div>
+    }
+</div>
+<div class="cop-widget" data-widget="activity" data-title="Seguimiento y avisos">
+    <div class="cop-heading"><div><h2>Seguimiento y avisos</h2><p>Información relevante para la operación diaria</p></div></div>
+    <div class="row g-3 mb-4">
+        @if (Model.Puede("VER_AUDITORIA"))
+        {
+            <div class="col-xl-7">
+                <section class="cop-panel h-100">
+                    <div class="cop-panel-head"><div><h3><i class="bi bi-clock-history"></i> Actividad reciente</h3><small>Últimos movimientos disponibles</small></div><a class="cop-text-link" href="@Url.Action("Index","AuditoriaSistema")">Consultar <i class="bi bi-arrow-up-right"></i></a></div>
+                    @if (Model.Actividad.Any())
+                    {
+                        foreach (var a in Model.Actividad)
+                        {
+                            <div class="cop-activity"><span class="cop-activity-dot"></span><div><strong>@a.Accion</strong><span>@a.Descripcion</span></div><time>@a.Fecha.ToString("dd/MM/yyyy HH:mm")</time></div>
+                        }
+                    }
+                    else
+                    { <div class="cop-empty">No hay movimientos recientes disponibles.</div>}
+                </section>
+            </div>
+        }
+        <div class="@(Model.Puede("VER_AUDITORIA") ? "col-xl-5" : "col-12")">
+            <section class="cop-panel h-100">
+                <div class="cop-panel-head"><div><h3><i class="bi bi-bell"></i> Centro de avisos</h3><small>Elementos que requieren tu atención</small></div></div>
+                <div class="cop-notice"><i class="bi bi-envelope"></i><div><strong>@Model.Notificaciones notificaciones sin leer</strong><span>Mensajes pendientes de revisión</span></div></div>
+                @if (Model.Alertas.HasValue)
+                {<div class="cop-notice"><i class="bi bi-exclamation-triangle"></i><div><strong>@Model.Alertas alertas académicas</strong><span>Situaciones que requieren seguimiento</span></div></div>}
+                @if (Model.StockBajo.HasValue)
+                {<div class="cop-notice"><i class="bi bi-box-seam"></i><div><strong>@Model.StockBajo productos con stock bajo</strong><span>Existencias por debajo del mínimo</span></div></div>}
+            </section>
+        </div>
+    </div>
+</div>
+@if (asistencia.Any() || notas.Any())
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            var asistencia = @Html.Raw(JsonConvert.SerializeObject(asistencia));
+            var notas = @Html.Raw(JsonConvert.SerializeObject(notas));
+            function iniciar() {
+                if (!window.Chart) return;
+                Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+                Chart.defaults.color = '#64748b';
+                var comun = { responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+                    plugins:{legend:{display:false},tooltip:{backgroundColor:'#133c55',padding:12,cornerRadius:9}},
+                    scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,max:100,ticks:{callback:function(v){return v+'%';}},grid:{color:'#edf2f7'},border:{display:false}}}};
+                var a=document.getElementById('copChartAsistencia');
+                if(a && asistencia.length) new Chart(a,{type:'line',data:{labels:asistencia.map(function(x){return x.etiqueta;}),
+                    datasets:[{data:asistencia.map(function(x){return x.valor;}),borderColor:'#2478a6',backgroundColor:'rgba(36,120,166,.12)',fill:true,tension:.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#fff',pointBorderWidth:2,borderWidth:3}]},options:comun});
+                var n=document.getElementById('copChartNotas');
+                if(n && notas.length) new Chart(n,{type:'bar',data:{labels:notas.map(function(x){return x.etiqueta;}),
+                    datasets:[{data:notas.map(function(x){return x.valor;}),backgroundColor:'#4b9c9a',hoverBackgroundColor:'#277d7b',borderRadius:7,maxBarThickness:48}]},options:comun});
+            }
+            if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar); else iniciar();
+        })();
+    </script>
+}

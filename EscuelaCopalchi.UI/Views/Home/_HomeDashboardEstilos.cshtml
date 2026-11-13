@@ -285,4 +285,275 @@
             width: 76px;
         }
     }
+
+    /* Acabados institucionales y ancho fluido del área de contenido */
+    .cop-dashboard {
+        background: #f3f6fa;
+        min-height: calc(100vh - 80px);
+    }
+
+        .cop-dashboard > .container, .cop-dashboard .cop-hero > .container {
+            width: 100%;
+            max-width: none !important;
+            padding-left: clamp(16px,2vw,32px);
+            padding-right: clamp(16px,2vw,32px);
+        }
+
+        .cop-dashboard .cop-hero {
+            background: linear-gradient(115deg,#123b54 0%,#205a79 66%,#347d9d 100%);
+            padding: 31px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .cop-dashboard .cop-hero:after {
+                content: '';
+                position: absolute;
+                width: 350px;
+                height: 350px;
+                border-radius: 50%;
+                border: 60px solid rgba(255,255,255,.045);
+                right: -70px;
+                top: -200px;
+                pointer-events: none;
+            }
+
+            .cop-dashboard .cop-hero h1 {
+                font-size: clamp(1.5rem,2vw,2.1rem);
+                letter-spacing: -.035em;
+            }
+
+        .cop-dashboard .cop-hero-badge {
+            backdrop-filter: blur(6px);
+            background: rgba(255,255,255,.11);
+        }
+
+        .cop-dashboard .cop-heading {
+            align-items: center;
+            margin: 19px 0 15px;
+        }
+
+            .cop-dashboard .cop-heading h2 {
+                font-size: 1.13rem;
+                color: #123b54;
+                letter-spacing: -.02em;
+            }
+
+            .cop-dashboard .cop-heading p {
+                font-size: .81rem;
+                color: #728499;
+                margin: 5px 0 0;
+            }
+
+        .cop-dashboard .cop-heading-tag {
+            display: inline-flex;
+            gap: 7px;
+            align-items: center;
+            color: #52718a;
+            background: #e7eef5;
+            border: 1px solid #dbe5ee;
+            border-radius: 100px;
+            padding: 6px 12px;
+            font-size: .75rem;
+        }
+
+        .cop-dashboard .cop-kpi {
+            border-radius: 14px;
+            border: 1px solid #e0e8f0;
+            box-shadow: 0 5px 18px rgba(19,60,85,.035);
+            transition: transform .18s,box-shadow .18s;
+            min-height: 112px;
+        }
+
+            .cop-dashboard .cop-kpi:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 28px rgba(19,60,85,.09);
+            }
+
+            .cop-dashboard .cop-kpi > i {
+                background: #e9f3f8;
+                color: #28779d;
+            }
+
+            .cop-dashboard .cop-kpi strong {
+                font-size: 1.8rem;
+                letter-spacing: -.03em;
+            }
+
+        .cop-dashboard .cop-panel {
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(19,60,85,.035);
+        }
+
+        .cop-dashboard .cop-panel-head {
+            align-items: flex-start;
+        }
+
+            .cop-dashboard .cop-panel-head h3 {
+                font-size: .97rem;
+                color: #173b54;
+            }
+
+            .cop-dashboard .cop-panel-head small {
+                display: block;
+                margin-top: 6px;
+            }
+
+        .cop-dashboard .cop-chart-wrap {
+            height: 265px;
+            position: relative;
+        }
+
+        .cop-dashboard .cop-chart-icon {
+            color: #367b9f;
+            background: #edf5f9;
+            padding: 9px 11px;
+            border-radius: 10px;
+        }
+
+        .cop-dashboard .cop-module {
+            min-height: 106px;
+            border-radius: 13px;
+            gap: 14px;
+        }
+
+            .cop-dashboard .cop-module:hover {
+                text-decoration: none;
+            }
+
+        .cop-dashboard .cop-module-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+            .cop-dashboard .cop-module-copy strong {
+                font-size: .9rem;
+            }
+
+            .cop-dashboard .cop-module-copy span {
+                margin-top: 5px;
+                line-height: 1.5;
+            }
+
+        .cop-dashboard .cop-arrow {
+            font-size: .95rem;
+        }
+
+        .cop-dashboard .cop-activity {
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+            .cop-dashboard .cop-activity > div {
+                flex: 1;
+                min-width: 0;
+            }
+
+        .cop-dashboard .cop-activity-dot {
+            width: 9px;
+            height: 9px;
+            background: #6ba5bc;
+            border: 2px solid #dceef5;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .cop-dashboard .cop-activity time {
+            color: #7a8b9a;
+            font-size: .71rem;
+            white-space: nowrap;
+        }
+
+        .cop-dashboard .cop-text-link {
+            color: #26759b;
+            text-decoration: none;
+            font-size: .79rem;
+            font-weight: 650;
+        }
+
+        .cop-dashboard .cop-notice > i {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: #edf5fa;
+            flex-shrink: 0;
+        }
+
+    @@media (max-width:767px) {
+        .cop-dashboard .cop-chart-wrap {
+            height: 220px;
+        }
+
+        .cop-dashboard .cop-activity {
+            flex-wrap: wrap;
+        }
+
+            .cop-dashboard .cop-activity time {
+                margin-left: 20px;
+            }
+    }
+</style>
+<style>
+    /* Ajustes de integración con el menú lateral de Aula Virtual Copalchí */
+    .cop-dashboard {
+        width: 100%;
+        min-width: 0;
+        overflow-x: clip;
+    }
+
+        .cop-dashboard > .container, .cop-dashboard .cop-hero > .container {
+            width: 100%;
+            max-width: none;
+            padding-left: clamp(16px,2.2vw,34px);
+            padding-right: clamp(16px,2.2vw,34px);
+        }
+
+        .cop-dashboard .cop-hero {
+            border-radius: 0 0 18px 18px;
+        }
+
+        .cop-dashboard .cop-kpi, .cop-dashboard .cop-panel, .cop-dashboard .cop-module {
+            transition: box-shadow .2s ease, transform .2s ease;
+        }
+
+            .cop-dashboard .cop-kpi:hover, .cop-dashboard .cop-panel:hover, .cop-dashboard .cop-module:hover {
+                box-shadow: 0 12px 26px rgba(19,60,85,.09);
+            }
+
+        .cop-dashboard .cop-chart-wrap {
+            min-width: 0;
+        }
+
+            .cop-dashboard .cop-chart-wrap canvas {
+                max-width: 100%;
+            }
+
+        .cop-dashboard .cop-widget {
+            margin-bottom: 8px;
+        }
+
+    @@media (max-width:767px) {
+        .cop-dashboard .cop-hero {
+            padding: 24px 0;
+        }
+
+            .cop-dashboard .cop-hero h1 {
+                font-size: 1.5rem;
+            }
+
+        .cop-dashboard .cop-editor-bar {
+            padding: 14px;
+        }
+
+        .cop-dashboard .cop-editor-actions {
+            width: 100%;
+        }
+
+            .cop-dashboard .cop-editor-actions .btn {
+                flex: 1;
+            }
+    }
 </style>

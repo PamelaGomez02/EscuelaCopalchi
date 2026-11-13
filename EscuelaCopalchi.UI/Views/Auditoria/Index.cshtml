@@ -1,0 +1,747 @@
+
+@model EscuelaCopalchi.UI.Models.Auditoria.AuditoriaListadoVM
+
+@using System
+@using System.Linq
+@using System.Collections.Generic
+@using System.Web.Mvc
+
+@{
+    ViewBag.Title = "Auditoría del Sistema";
+
+    var f = Model.Filtro;
+    var registros = Model.Registros;
+
+    var usuarios = ViewBag.Usuarios as IEnumerable<SelectListItem>
+        ?? Enumerable.Empty<SelectListItem>();
+
+    var listaUsuarios = usuarios.ToList();
+
+    if (!listaUsuarios.Any(u => u.Value == ""))
+    {
+        listaUsuarios.Insert(0, new SelectListItem
+        {
+            Value = "",
+            Text = "Todos los usuarios"
+        });
+    }
+
+    const int tamano = 10;
+
+    int pagina = Math.Max(1, f.Pagina);
+    long totalPaginas = Math.Max(
+        1L,
+        (Model.Total + tamano - 1) / tamano
+    );
+
+    long inicio = Model.Total == 0
+        ? 0
+        : ((long)pagina - 1) * tamano + 1;
+
+    long fin = Model.Total == 0
+        ? 0
+        : Math.Min(Model.Total, (long)pagina * tamano);
+
+    long paginaInicial = Math.Max(1L, (long)pagina - 2);
+    long paginaFinal = Math.Min(totalPaginas, paginaInicial + 4);
+    paginaInicial = Math.Max(1L, paginaFinal - 4);
+
+    string usuarioSeleccionado = f.IdUsuario.HasValue
+        ? f.IdUsuario.Value.ToString()
+        : "";
+}
+
+<div class="container auditoria-page py-4">
+
+    <!-- ENCABEZADO -->
+    <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-3 mb-4">
+
+        <div>
+            <h2 class="auditoria-title mb-1">
+                <i class="bi bi-shield-check me-2"></i>
+                Auditoría del Sistema
+            </h2>
+
+            <p class="text-muted mb-0">
+                Consulta el historial de acciones y movimientos
+                realizados por los usuarios del sistema.
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <a href="@Url.Action("Index", "Home")"
+               class="btn auditoria-btn-back">
+                <i class="bi bi-arrow-left me-1"></i>
+                Atrás
+            </a>
+
+            <span class="auditoria-readonly">
+                <i class="bi bi-lock me-1"></i>
+                Solo lectura
+            </span>
+
+        </div>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="card auditoria-card mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="auditoria-section-title mb-3">
+                <i class="bi bi-funnel me-2"></i>
+                Filtros de búsqueda
+            </h5>
+
+            @using (Html.BeginForm(
+                "Index",
+                "Auditoria",
+                FormMethod.Get,
+                new { @class = "row g-3" }))
+            {
+                <input type="hidden" name="Pagina" value="1" />
+                <input type="hidden" name="TamanoPagina" value="10" />
+
+                <!-- USUARIO -->
+                <div class="col-lg-4 col-md-6">
+                    <label for="IdUsuario" class="form-label">
+                        Usuario
+                    </label>
+
+                    @Html.DropDownList(
+                             "IdUsuario",
+                             new SelectList(
+                                 listaUsuarios,
+                                 "Value",
+                                 "Text",
+                                 usuarioSeleccionado
+                             ),
+                             new
+                             {
+                                 @class = "form-select",
+                                 id = "IdUsuario"
+                             }
+                         )
+                </div>
+
+                <!-- MÓDULO -->
+                <div class="col-lg-4 col-md-6">
+                    <label for="Modulo" class="form-label">
+                        Módulo
+                    </label>
+
+                    <input type="text"
+                           id="Modulo"
+                           name="Modulo"
+                           value="@f.Modulo"
+                           maxlength="100"
+                           class="form-control"
+                           placeholder="Todos los módulos" />
+                </div>
+
+                <!-- ACCIÓN -->
+                <div class="col-lg-4 col-md-6">
+                    <label for="Accion" class="form-label">
+                        Acción
+                    </label>
+
+                    <input type="text"
+                           id="Accion"
+                           name="Accion"
+                           value="@f.Accion"
+                           maxlength="100"
+                           class="form-control"
+                           placeholder="Todas las acciones" />
+                </div>
+
+                <!-- DESDE -->
+                <div class="col-lg-4 col-md-6">
+                    <label for="Desde" class="form-label">
+                        Desde
+                    </label>
+
+                    <input type="date"
+                           id="Desde"
+                           name="Desde"
+                           value="@(f.Desde.HasValue
+                               ? f.Desde.Value.ToString("yyyy-MM-dd")
+                               : "")"
+                           class="form-control" />
+                </div>
+
+                <!-- HASTA -->
+                <div class="col-lg-4 col-md-6">
+                    <label for="Hasta" class="form-label">
+                        Hasta
+                    </label>
+
+                    <input type="date"
+                           id="Hasta"
+                           name="Hasta"
+                           value="@(f.Hasta.HasValue
+                               ? f.Hasta.Value.ToString("yyyy-MM-dd")
+                               : "")"
+                           class="form-control" />
+                </div>
+
+                <!-- BOTONES -->
+                <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+
+                    <button type="submit"
+                            class="btn auditoria-btn-primary">
+                        <i class="bi bi-search me-1"></i>
+                        Buscar
+                    </button>
+
+                    <a href="@Url.Action("Index", "Auditoria")"
+                       class="btn auditoria-btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+                        Limpiar filtros
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="card auditoria-card">
+        <div class="card-body p-4">
+
+            <div class="d-flex flex-wrap justify-content-between
+                        align-items-center gap-2 mb-3">
+
+                <h5 class="auditoria-section-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Historial de auditoría
+                </h5>
+
+                <span class="auditoria-total">
+                    @Model.Total registros
+                </span>
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover
+                              auditoria-table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Fecha y hora</th>
+                            <th>Responsable</th>
+                            <th>Rol</th>
+                            <th>Módulo</th>
+                            <th>Acción</th>
+                            <th>Resultado</th>
+                            <th class="text-center">Detalle</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in registros)
+                        {
+                            <tr>
+                                <td class="text-nowrap">
+                                    <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                    @item.Fecha.ToString("dd/MM/yyyy")
+
+                                    <div class="small text-muted ms-3">
+                                        @item.Fecha.ToString("HH:mm:ss")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="fw-semibold">
+                                        @item.Responsable
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(item.Rol))
+                                    {
+                                        <span class="text-muted">
+                                            No registrado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @item.Rol
+                                    }
+                                </td>
+
+                                <td>@item.Modulo</td>
+
+                                <td>
+                                    <span class="auditoria-action">
+                                        @item.Accion
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (string.Equals(
+                                        item.Resultado,
+                                        "EXITOSO",
+                                        StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="auditoria-status success">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Exitoso
+                                        </span>
+                                    }
+                                    else if (string.Equals(
+                                        item.Resultado,
+                                        "ERROR",
+                                        StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="auditoria-status error">
+                                            <i class="bi bi-x-circle me-1"></i>
+                                            Error
+                                        </span>
+                                    }
+                                    else if (string.Equals(
+                                        item.Resultado,
+                                        "DENEGADO",
+                                        StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="auditoria-status warning">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                            Denegado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="auditoria-status neutral">
+                                            @item.Resultado
+                                        </span>
+                                    }
+
+                                    @if (item.RegistroIncompleto)
+                                    {
+                                        <div class="mt-1">
+                                            <span class="auditoria-status warning">
+                                                Incompleto
+                                            </span>
+                                        </div>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="@Url.Action(
+                                        "Detalle",
+                                        "Auditoria",
+                                        new { id = item.IdAuditoria })"
+                                       class="btn auditoria-btn-view">
+
+                                        <i class="bi bi-eye me-1"></i>
+                                        Ver
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!registros.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+
+                                    <i class="bi bi-inbox auditoria-empty-icon"></i>
+
+                                    <h6 class="mt-3 mb-1">
+                                        No se encontraron registros
+                                    </h6>
+
+                                    <p class="text-muted mb-0">
+                                        No existen movimientos para
+                                        los filtros seleccionados.
+                                    </p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN FIJA DE 10 REGISTROS -->
+            <div class="auditoria-pagination">
+
+                <div class="auditoria-pagination-info">
+                    Mostrando
+                    <strong>@inicio–@fin</strong>
+                    de <strong>@Model.Total</strong> registros
+
+                    <span class="mx-1">·</span>
+
+                    Página <strong>@pagina</strong>
+                    de <strong>@totalPaginas</strong>
+                </div>
+
+                @if (totalPaginas > 1)
+                {
+                    <nav aria-label="Paginación de auditoría">
+                        <div class="auditoria-pages">
+
+                            @if (pagina > 1)
+                            {
+                                <a class="auditoria-page-btn"
+                                   title="Primera página"
+                                   href="@Url.Action("Index", "Auditoria",
+                                       new {
+                                           IdUsuario = f.IdUsuario,
+                                           Modulo = f.Modulo,
+                                           Accion = f.Accion,
+                                           Desde = f.Desde,
+                                           Hasta = f.Hasta,
+                                           Pagina = 1,
+                                           TamanoPagina = 10
+                                       })">
+                                    <i class="bi bi-chevron-double-left"></i>
+                                </a>
+
+                                <a class="auditoria-page-btn"
+                                   title="Página anterior"
+                                   href="@Url.Action("Index", "Auditoria",
+                                       new {
+                                           IdUsuario = f.IdUsuario,
+                                           Modulo = f.Modulo,
+                                           Accion = f.Accion,
+                                           Desde = f.Desde,
+                                           Hasta = f.Hasta,
+                                           Pagina = pagina - 1,
+                                           TamanoPagina = 10
+                                       })">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            }
+
+                            @for (long numero = paginaInicial;
+                                  numero <= paginaFinal;
+                                  numero++)
+                            {
+                                <a class="auditoria-page-btn @(numero == pagina ? "active" : "")"
+                                   aria-current="@(numero == pagina ? "page" : null)"
+                                   href="@Url.Action("Index", "Auditoria",
+                                       new {
+                                           IdUsuario = f.IdUsuario,
+                                           Modulo = f.Modulo,
+                                           Accion = f.Accion,
+                                           Desde = f.Desde,
+                                           Hasta = f.Hasta,
+                                           Pagina = numero,
+                                           TamanoPagina = 10
+                                       })">
+                                    @numero
+                                </a>
+                            }
+
+                            @if (pagina < totalPaginas)
+                            {
+                                <a class="auditoria-page-btn"
+                                   title="Página siguiente"
+                                   href="@Url.Action("Index", "Auditoria",
+                                       new {
+                                           IdUsuario = f.IdUsuario,
+                                           Modulo = f.Modulo,
+                                           Accion = f.Accion,
+                                           Desde = f.Desde,
+                                           Hasta = f.Hasta,
+                                           Pagina = pagina + 1,
+                                           TamanoPagina = 10
+                                       })">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                                <a class="auditoria-page-btn"
+                                   title="Última página"
+                                   href="@Url.Action("Index", "Auditoria",
+                                       new {
+                                           IdUsuario = f.IdUsuario,
+                                           Modulo = f.Modulo,
+                                           Accion = f.Accion,
+                                           Desde = f.Desde,
+                                           Hasta = f.Hasta,
+                                           Pagina = totalPaginas,
+                                           TamanoPagina = 10
+                                       })">
+                                    <i class="bi bi-chevron-double-right"></i>
+                                </a>
+                            }
+                        </div>
+                    </nav>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .auditoria-page {
+            margin: 0 auto;
+        }
+
+        .auditoria-title {
+            font-size: 1.75rem;
+            font-weight: 750;
+            color: #173b53;
+        }
+
+        .auditoria-card {
+            border: 1px solid #e4eaf0;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(25,55,80,.055);
+            overflow: hidden;
+        }
+
+        .auditoria-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #173b53;
+        }
+
+        .auditoria-btn-back {
+            border: 1px solid #cbd5df;
+            border-radius: 9px;
+            color: #34495e;
+            background: #fff;
+            font-weight: 600;
+            padding: 9px 16px;
+        }
+
+            .auditoria-btn-back:hover {
+                background: #f2f5f8;
+                color: #173b53;
+            }
+
+        .auditoria-readonly {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 13px;
+            background: #f1f4f7;
+            color: #607080;
+            border-radius: 9px;
+            font-size: .85rem;
+            font-weight: 600;
+        }
+
+        .auditoria-page .form-label {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #3b4e60;
+        }
+
+        .auditoria-page .form-control,
+        .auditoria-page .form-select {
+            border-radius: 9px;
+            border-color: #d6e0e8;
+            min-height: 42px;
+        }
+
+            .auditoria-page .form-control:focus,
+            .auditoria-page .form-select:focus {
+                border-color: #39779e;
+                box-shadow: 0 0 0 .2rem rgba(57,119,158,.12);
+            }
+
+        .auditoria-btn-primary {
+            background: #173b53;
+            border: 1px solid #173b53;
+            color: #fff;
+            border-radius: 9px;
+            padding: 9px 20px;
+            font-weight: 600;
+        }
+
+            .auditoria-btn-primary:hover {
+                background: #245675;
+                color: #fff;
+            }
+
+        .auditoria-btn-secondary {
+            background: #fff;
+            border: 1px solid #cbd5df;
+            color: #43576a;
+            border-radius: 9px;
+            padding: 9px 18px;
+            font-weight: 600;
+        }
+
+            .auditoria-btn-secondary:hover {
+                background: #f1f4f7;
+            }
+
+        .auditoria-total {
+            background: #edf3f7;
+            color: #365a72;
+            border-radius: 20px;
+            padding: 7px 14px;
+            font-size: .85rem;
+            font-weight: 700;
+        }
+
+        .auditoria-table {
+            margin-bottom: 0;
+            font-size: .9rem;
+        }
+
+            .auditoria-table thead th {
+                background: #f4f7fa;
+                color: #3e5365;
+                font-size: .78rem;
+                font-weight: 750;
+                text-transform: uppercase;
+                letter-spacing: .025em;
+                padding: 15px 12px;
+                border-bottom: 1px solid #e2e8ee;
+                white-space: nowrap;
+            }
+
+            .auditoria-table tbody td {
+                padding: 15px 12px;
+                border-bottom: 1px solid #edf1f5;
+                color: #34495e;
+                vertical-align: middle;
+            }
+
+        .auditoria-action {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 7px;
+            background: #eef3f7;
+            color: #365a72;
+            font-size: .8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .auditoria-status {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 7px;
+            padding: 5px 9px;
+            font-size: .77rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+            .auditoria-status.success {
+                background: #e5f5ec;
+                color: #187548;
+            }
+
+            .auditoria-status.error {
+                background: #fde9e9;
+                color: #b32632;
+            }
+
+            .auditoria-status.warning {
+                background: #fff1d6;
+                color: #986100;
+            }
+
+            .auditoria-status.neutral {
+                background: #edf0f3;
+                color: #5b6875;
+            }
+
+        .auditoria-btn-view {
+            border: 1px solid #c6d9e6;
+            background: #fff;
+            color: #245b7b;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            padding: 7px 13px;
+            white-space: nowrap;
+        }
+
+            .auditoria-btn-view:hover {
+                background: #eaf2f8;
+                color: #173b53;
+            }
+
+        .auditoria-empty-icon {
+            display: block;
+            font-size: 2.5rem;
+            color: #9aabba;
+        }
+
+        .auditoria-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 22px;
+            margin-top: 12px;
+            border-top: 1px solid #edf1f5;
+        }
+
+        .auditoria-pagination-info {
+            font-size: .87rem;
+            color: #718092;
+        }
+
+            .auditoria-pagination-info strong {
+                color: #34495e;
+            }
+
+        .auditoria-pages {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auditoria-page-btn {
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b6479;
+            text-decoration: none;
+            font-size: .86rem;
+            font-weight: 650;
+        }
+
+            .auditoria-page-btn:hover {
+                background: #edf4f9;
+                border-color: #b7d0e0;
+                color: #173b53;
+                text-decoration: none;
+            }
+
+            .auditoria-page-btn.active {
+                background: #173b53;
+                border-color: #173b53;
+                color: #fff;
+                pointer-events: none;
+            }
+
+        @@media (max-width: 768px) {
+            .auditoria-page {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .auditoria-title {
+                font-size: 1.4rem;
+            }
+
+            .auditoria-card .card-body {
+                padding: 18px !important;
+            }
+
+            .auditoria-pagination {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+}

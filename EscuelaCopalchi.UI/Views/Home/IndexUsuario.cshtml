@@ -1,18 +1,31 @@
 @model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
 @{ ViewBag.Title = "Mi espacio"; }
 <div class="cop-dashboard">
-  <section class="cop-hero cop-hero-user"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">AULA VIRTUAL COPALCHÍ</div><h1>Mi espacio de trabajo</h1><p>Bienvenido, @Model.Nombre. Tus herramientas y estadísticas autorizadas.</p></div><div class="cop-hero-badge"><i class="bi bi-person-circle"></i> @Model.Rol</div></div></div></section>
-  <div class="container py-4">
-    <div class="cop-heading"><h2>Mi resumen</h2><span>Información según tus permisos y grupos asignados</span></div>
-    <div class="row g-3 mb-4">
-      @if (Model.Estudiantes.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Mis estudiantes</span><strong>@Model.Estudiantes</strong><small>Con matrícula activa</small></div></div></div> }
-      @if (Model.Grupos.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-diagram-3"></i><div><span>Mis grupos</span><strong>@Model.Grupos</strong><small>Grupos asignados</small></div></div></div> }
-      @if (Model.Asistencia.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-calendar-check"></i><div><span>Asistencia de mis grupos</span><strong>@Model.Asistencia.Value.ToString("0.#")%</strong><small>Últimos 30 días</small></div></div></div> }
-      @if (Model.PromedioNotas.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-clipboard-data"></i><div><span>Promedio de mis grupos</span><strong>@Model.PromedioNotas.Value.ToString("0.#")%</strong><small>Evaluaciones registradas</small></div></div></div> }
-      @if (Model.PlanesPendientes.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-journal-text"></i><div><span>Mis planes pendientes</span><strong>@Model.PlanesPendientes</strong><small>En revisión</small></div></div></div> }
-      <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-bell"></i><div><span>Notificaciones</span><strong>@Model.Notificaciones</strong><small>Mensajes sin leer</small></div></div></div>
+    <section class="cop-hero cop-hero-user"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">AULA VIRTUAL COPALCHÍ</div><h1>Mi espacio de trabajo</h1><p>Bienvenido, @Model.Nombre. Tus herramientas y estadísticas autorizadas.</p></div><div class="cop-hero-badge"><i class="bi bi-person-circle"></i> @Model.Rol</div></div></div></section>
+    <div class="container py-4">
+        <div class="cop-editor-bar"><div><strong><i class="bi bi-grid-1x2"></i> Mi panel</strong><span>Organiza tus secciones según tus preferencias</span></div><div class="cop-editor-actions"><button type="button" id="copEditar" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders"></i> Personalizar panel</button><button type="button" id="copRestaurar" class="btn btn-outline-secondary btn-sm" hidden>Restablecer</button><button type="button" id="copGuardar" class="btn btn-primary btn-sm" hidden><i class="bi bi-check2"></i> Guardar distribución</button></div></div>
+        <div id="copWidgets" class="cop-widgets" data-user="@Session["IdUsuario"]" data-role="usuario">
+            <div class="cop-widget" data-widget="summary" data-title="Resumen personal">
+                <div class="cop-heading"><h2>Mi resumen</h2><span>Información actualizada</span></div>
+                <div class="row g-3 mb-4">
+                    @if (Model.Estudiantes.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Mis estudiantes</span><strong>@Model.Estudiantes</strong><small>Con matrícula activa</small></div></div></div>}
+                    @if (Model.Grupos.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-diagram-3"></i><div><span>Mis grupos</span><strong>@Model.Grupos</strong><small>Grupos asignados</small></div></div></div>}
+                    @if (Model.Asistencia.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-calendar-check"></i><div><span>Asistencia de mis grupos</span><strong>@Model.Asistencia.Value.ToString("0.#")%</strong><small>Últimos 30 días</small></div></div></div>}
+                    @if (Model.PromedioNotas.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-clipboard-data"></i><div><span>Promedio de mis grupos</span><strong>@Model.PromedioNotas.Value.ToString("0.#")%</strong><small>Evaluaciones registradas</small></div></div></div>}
+                    @if (Model.PlanesPendientes.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-journal-text"></i><div><span>Mis planes pendientes</span><strong>@Model.PlanesPendientes</strong><small>En revisión</small></div></div></div>}
+                    <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-bell"></i><div><span>Notificaciones</span><strong>@Model.Notificaciones</strong><small>Mensajes sin leer</small></div></div></div>
+                </div>
+            </div>
+
+
+            @Html.Partial("_HomeDashboardContenido", Model)
+        </div>
     </div>
-    @Html.Partial("_HomeDashboardContenido", Model)
-  </div>
 </div>
 @Html.Partial("_HomeDashboardEstilos")
+@Html.Partial("_HomeDashboardEditor")

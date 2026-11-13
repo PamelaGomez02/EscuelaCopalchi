@@ -160,7 +160,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController\AccountController.cs" />
-    <Compile Include="Controllers\AuditoriaSistemaController.cs" />
+    <Compile Include="Controllers\AuditoriaController\AuditoriaController.cs" />
     <Compile Include="Controllers\ErrorController\ErrorController.cs" />
     <Compile Include="Controllers\Estudiante\EstudiantesController.cs" />
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Asignaciones.cs" />
@@ -204,6 +204,8 @@
     <Compile Include="Logica\GestionAcademica\ReporteServicecs.cs" />
     <Compile Include="Logica\GestionAcademica\SesionUsuario.cs" />
     <Compile Include="Logica\GestionAcademica\UsuarioService.cs" />
+    <Compile Include="Models\Auditoria\AuditoriaModelos.cs" />
+    <Compile Include="Models\Auditoria\AuditoriaRepository.cs" />
     <Compile Include="Models\ConexionBD.cs" />
     <Compile Include="Models\Estudiantes\AdecuacionAcademica.cs" />
     <Compile Include="Models\Estudiantes\Alergia.cs" />
@@ -227,6 +229,9 @@
     <Compile Include="Models\Monitoreo\MonitoreoExportador.cs" />
     <Compile Include="Models\Notificaciones\EstudianteRiesgo.cs" />
     <Compile Include="Models\Notificaciones\Notificacion.cs" />
+    <Compile Include="Models\Notificaciones\NotificacionDestino.cs" />
+    <Compile Include="Models\Notificaciones\RecordatorioConfiguracion.cs" />
+    <Compile Include="Models\Notificaciones\PreferenciaNotificacion.cs" />
     <Compile Include="Models\Notificaciones\NotificacionRepository.cs" />
     <Compile Include="Models\PanelPrincipal\PanelPrincipalViewModel.cs" />
     <Compile Include="Models\PlanesEstudio\PlanEstudio.cs" />
@@ -306,8 +311,6 @@
     <Content Include="Views\Asistencia\Index.cshtml" />
     <Content Include="Views\Asistencia\Porcentaje.cshtml" />
     <Content Include="Views\Asistencia\Registrar.cshtml" />
-    <Content Include="Views\AuditoriaSistema\Detalle.cshtml" />
-    <Content Include="Views\AuditoriaSistema\Index.cshtml" />
     <Content Include="Views\Error\AccesoDenegado.cshtml" />
     <Content Include="Views\Estudiantes\Adecuaciones.cshtml" />
     <Content Include="Views\Estudiantes\Alergias.cshtml" />
@@ -373,6 +376,13 @@
     <Content Include="Views\MonitoreoDashboard\Detalle.cshtml" />
     <Content Include="Views\MonitoreoDashboard\Seguimiento.cshtml" />
     <Content Include="Views\MonitoreoDashboard\Index.cshtml" />
+    <Content Include="Views\Notificaciones\Detalle.cshtml" />
+    <Content Include="Views\Home\_MenuLateral.cshtml" />
+    <Content Include="Views\Notificaciones\Configuracion.cshtml" />
+    <Content Include="Views\Usuarios\EditarPerfil.cshtml" />
+    <Content Include="Views\Auditoria\Index.cshtml" />
+    <Content Include="Views\Auditoria\Detalle.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

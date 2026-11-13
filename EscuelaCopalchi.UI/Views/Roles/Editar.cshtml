@@ -311,8 +311,9 @@
 
 
         .form-card {
-            max-width: 850px;
-            margin: auto;
+            max-width: none;
+            width: 100%;
+            margin: 0;
             background: white;
             border: 1px solid #e3e8ee;
             border-radius: 10px;
@@ -359,14 +360,51 @@
             }
 
         /* Diseño institucional compartido */
-        .cop-back-btn { border-radius: 9px; padding: .55rem 1rem; font-weight: 600; background: #fff; white-space: nowrap; }
-        .cop-back-btn:hover { background: #edf3f8; color: #133C55; border-color: #386FA4; }
-        .roles-header .roles-title i { color: #386FA4; }
-        .roles-header { box-shadow: 0 2px 12px rgba(19,60,85,.035); }
-        .assign-card, .permissions-card, .roles-card, .form-card { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
-        @@media (max-width: 576px) { .cop-back-btn { width: auto; } }
+        .cop-back-btn {
+            border-radius: 9px;
+            padding: .55rem 1rem;
+            font-weight: 600;
+            background: #fff;
+            white-space: nowrap;
+        }
 
-        .cop-topline { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:12px; }
-        .cop-topline-note { color:#7b8794; font-size:.78rem; font-weight:600; letter-spacing:.04em; }
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                color: #133C55;
+                border-color: #386FA4;
+            }
+
+        .roles-header .roles-title i {
+            color: #386FA4;
+        }
+
+        .roles-header {
+            box-shadow: 0 2px 12px rgba(19,60,85,.035);
+        }
+
+        .assign-card, .permissions-card, .roles-card, .form-card {
+            box-shadow: 0 5px 20px rgba(19,60,85,.055);
+        }
+
+        @@media (max-width: 576px) {
+            .cop-back-btn {
+                width: auto;
+            }
+        }
+
+        .cop-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .cop-topline-note {
+            color: #7b8794;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+        }
     </style>
 }

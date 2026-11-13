@@ -4,10 +4,14 @@
 
 <main>
 
-    <section class="students-header"><div class="container">
-<div class="cop-student-headline"><div><h1 class="students-title"><i class="bi bi-clock-history me-2"></i>Historial de bajas</h1><p class="students-subtitle">Consulta los estudiantes retirados o trasladados de la institución.</p></div>
-<div class="cop-student-actions"><a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div></div>
-</div></section>
+    <section class="students-header">
+        <div class="container">
+            <div class="cop-student-headline">
+                <div><h1 class="students-title"><i class="bi bi-clock-history me-2"></i>Historial de bajas</h1><p class="students-subtitle">Consulta los estudiantes retirados o trasladados de la institución.</p></div>
+                <div class="cop-student-actions"><a href="@Url.Action("Index", "Estudiantes")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a></div>
+            </div>
+        </div>
+    </section>
 
 
     <section class="container pb-5">
@@ -58,7 +62,7 @@
 
                     <input type="text"
                            class="form-control"
-                           placeholder="Buscar estudiante..." />
+                           placeholder="Buscar estudiante..." id="buscarHistorial" />
 
                 </div>
 
@@ -84,7 +88,7 @@
                     </thead>
 
 
-                    <tbody>
+                    <tbody id="filasHistorial">
 
                         @foreach (EscuelaCopalchi.UI.Models.Estudiantes.Estudiante estudiante in ViewBag.HistorialBajas)
                         {
@@ -175,16 +179,12 @@
 
 
             <div class="history-footer">
-
-                <a href="@Url.Action("Index", "Estudiantes")"
-                   class="btn btn-light">
-
-                    <i class="bi bi-arrow-left me-1"></i>
-                    Atrás
-
-                </a>
-
+                <div class="auditoria-pagination">
+                    <div class="auditoria-pagination-info" id="resumenHistorial"></div>
+                    <nav aria-label="Paginación del historial de bajas"><div class="auditoria-pages" id="paginasHistorial"></div></nav>
+                </div>
             </div>
+        </div>
 
         </div>
 
@@ -282,32 +282,32 @@
 
 <script>
 
-    function cargarDetalleBaja(
-        estudiante,
-        identificacion,
-        encargado,
-        fechaBaja,
-        observacion) {
-        document.getElementById(
-            "detalleEstudiante").innerText =
-            estudiante;
+        function cargarDetalleBaja(
+            estudiante,
+            identificacion,
+            encargado,
+            fechaBaja,
+            observacion) {
+            document.getElementById(
+                "detalleEstudiante").innerText =
+                estudiante;
 
-        document.getElementById(
-            "detalleIdentificacion").innerText =
-            identificacion;
+            document.getElementById(
+                "detalleIdentificacion").innerText =
+                identificacion;
 
-        document.getElementById(
-            "detalleEncargado").innerText =
-            encargado;
+            document.getElementById(
+                "detalleEncargado").innerText =
+                encargado;
 
-        document.getElementById(
-            "detalleFechaBaja").innerText =
-            fechaBaja;
+            document.getElementById(
+                "detalleFechaBaja").innerText =
+                fechaBaja;
 
-        document.getElementById(
-            "detalleObservacion").innerText =
-            observacion;
-    }
+            document.getElementById(
+                "detalleObservacion").innerText =
+                observacion;
+        }
 
 </script>
 
@@ -324,25 +324,78 @@
             margin: 0 0 22px !important;
             box-shadow: none !important;
         }
-        .students-header > .container, .record-header > .container {
-            background: transparent !important;
-            border: 0 !important;
-            box-shadow: none !important;
-            padding: 0 12px !important;
-            max-width: 1140px;
+
+            .students-header > .container, .record-header > .container {
+                background: transparent !important;
+                border: 0 !important;
+                box-shadow: none !important;
+                padding: 0 12px !important;
+                max-width: 1140px;
+            }
+
+        .cop-student-headline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
-        .cop-student-headline { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
-        .cop-student-headline .students-title, .cop-student-headline .record-title { margin:0 0 4px !important; font-size:1.65rem; color:#133c55; font-weight:700; }
-        .cop-student-headline .students-subtitle, .cop-student-headline .record-subtitle { margin:0 !important; color:#64748b; }
-        .cop-student-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-        .cop-student-actions .btn { border-radius:7px; white-space:nowrap; }
-        .cop-student-breadcrumb { display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:.82rem; color:#64748b; flex-wrap:wrap; }
-        .cop-student-breadcrumb a { color:#386fa4; text-decoration:none; }
-        .cop-student-breadcrumb i { font-size:.65rem; }
+
+            .cop-student-headline .students-title, .cop-student-headline .record-title {
+                margin: 0 0 4px !important;
+                font-size: 1.65rem;
+                color: #133c55;
+                font-weight: 700;
+            }
+
+            .cop-student-headline .students-subtitle, .cop-student-headline .record-subtitle {
+                margin: 0 !important;
+                color: #64748b;
+            }
+
+        .cop-student-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+            .cop-student-actions .btn {
+                border-radius: 7px;
+                white-space: nowrap;
+            }
+
+        .cop-student-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: .82rem;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+            .cop-student-breadcrumb a {
+                color: #386fa4;
+                text-decoration: none;
+            }
+
+            .cop-student-breadcrumb i {
+                font-size: .65rem;
+            }
+
         @@media (max-width: 576px) {
-          .students-header > .container, .record-header > .container { padding:0 12px !important; }
-          .cop-student-headline { align-items:flex-start; }
-          .cop-student-headline .students-title, .cop-student-headline .record-title { font-size:1.35rem; }
+            .students-header > .container, .record-header > .container {
+                padding: 0 12px !important;
+            }
+
+            .cop-student-headline {
+                align-items: flex-start;
+            }
+
+                .cop-student-headline .students-title, .cop-student-headline .record-title {
+                    font-size: 1.35rem;
+                }
         }
 
 
@@ -611,14 +664,43 @@
                     max-width: none;
                 }
         }
-    
+
         /* Estilo compartido Aula Virtual Copalchí */
-        .cop-nav-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:14px; }
-        .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb { margin-bottom:0; }
-        .cop-back-btn { border-radius:9px; font-weight:600; padding:.5rem .95rem; white-space:nowrap; background:white; }
-        .cop-back-btn:hover { background:#edf3f8; border-color:#386FA4; color:#133C55; }
-        .students-header, .record-header { padding-top:22px !important; padding-bottom:22px !important; }
-        .students-card, .form-card, .history-card { box-shadow:0 5px 20px rgba(19,60,85,.045); }
+        .cop-nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+            .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb {
+                margin-bottom: 0;
+            }
+
+        .cop-back-btn {
+            border-radius: 9px;
+            font-weight: 600;
+            padding: .5rem .95rem;
+            white-space: nowrap;
+            background: white;
+        }
+
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386FA4;
+                color: #133C55;
+            }
+
+        .students-header, .record-header {
+            padding-top: 22px !important;
+            padding-bottom: 22px !important;
+        }
+
+        .students-card, .form-card, .history-card {
+            box-shadow: 0 5px 20px rgba(19,60,85,.045);
+        }
 
         /* Encabezado sin tarjeta ni ruta de navegación */
         .students-header, .record-header {
@@ -628,13 +710,122 @@
             padding: 20px 0 0 !important;
             margin: 0 0 20px !important;
         }
-        .students-header > .container, .record-header > .container {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 12px !important;
+
+            .students-header > .container, .record-header > .container {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 12px !important;
+            }
+
+        .cop-student-headline {
+            align-items: center;
         }
-        .cop-student-headline { align-items: center; }
     </style>
 
 }
+<style>
+    .auditoria-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-top: 22px;
+        margin-top: 12px;
+        border-top: 1px solid #edf1f5;
+    }
+
+    .auditoria-pagination-info {
+        font-size: .87rem;
+        color: #718092;
+    }
+
+        .auditoria-pagination-info strong {
+            color: #34495e;
+        }
+
+    .auditoria-pages {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .auditoria-page-btn {
+        min-width: 37px;
+        height: 37px;
+        padding: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dce5ed;
+        border-radius: 8px;
+        background: #fff;
+        color: #4b6479;
+        text-decoration: none;
+        font-size: .86rem;
+        font-weight: 650;
+    }
+
+        .auditoria-page-btn:hover {
+            background: #edf4f9;
+            border-color: #b7d0e0;
+            color: #173b53;
+            text-decoration: none;
+        }
+
+        .auditoria-page-btn.active {
+            background: #173b53;
+            border-color: #173b53;
+            color: #fff;
+            pointer-events: none;
+        }
+
+
+    .auditoria-page-btn {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+        const filas = Array.from(document.querySelectorAll("#filasHistorial tr"));
+        const buscador = document.getElementById("buscarHistorial");
+        const resumen = document.getElementById("resumenHistorial");
+        const paginas = document.getElementById("paginasHistorial");
+        const porPagina = 10;
+        let pagina = 1;
+        function boton(texto, destino, activo, titulo) {
+            const a = document.createElement("button");
+            a.type = "button";
+            a.className = "auditoria-page-btn" + (activo ? " active" : "");
+            a.title = titulo;
+            a.textContent = texto;
+            if (activo) a.setAttribute("aria-current", "page");
+            a.addEventListener("click", function () { pagina = destino; render(); });
+            paginas.appendChild(a);
+        }
+        function render() {
+            const filtro = (buscador.value || "").toLocaleLowerCase().trim();
+            const encontrados = filas.filter(f => f.textContent.toLocaleLowerCase().includes(filtro));
+            const total = encontrados.length;
+            const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+            pagina = Math.max(1, Math.min(pagina, totalPaginas));
+            const inicio = (pagina - 1) * porPagina;
+            filas.forEach(f => f.style.display = "none");
+            encontrados.slice(inicio, inicio + porPagina).forEach(f => f.style.display = "");
+            resumen.textContent = `Mostrando ${total ? inicio + 1 : 0}–${Math.min(inicio + porPagina, total)} de ${total} estudiantes · Página ${pagina} de ${totalPaginas}`;
+            paginas.innerHTML = "";
+            if (totalPaginas <= 1) return;
+            if (pagina > 1) { boton("«", 1, false, "Primera página"); boton("‹", pagina - 1, false, "Página anterior"); }
+            let desde = Math.max(1, pagina - 2);
+            let hasta = Math.min(totalPaginas, desde + 4);
+            desde = Math.max(1, hasta - 4);
+            for (let n = desde; n <= hasta; n++) boton(String(n), n, n === pagina, "Página " + n);
+            if (pagina < totalPaginas) { boton("›", pagina + 1, false, "Página siguiente"); boton("»", totalPaginas, false, "Última página"); }
+        }
+        buscador.addEventListener("input", function () { pagina = 1; render(); });
+        render();
+});
+</script>

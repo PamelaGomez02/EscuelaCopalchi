@@ -226,10 +226,56 @@ namespace EscuelaCopalchi.UI.Controllers
             new ModuloHome { Titulo="Monitoreo académico", Descripcion="Seguimiento y alertas académicas", Icono="bi-graph-up", Controlador="MonitoreoDashboard", Permisos=new[]{"VER_REPORTES"}},
             new ModuloHome { Titulo="Reportes académicos", Descripcion="Estadísticas, fichas y exportaciones PDF/Excel", Icono="bi-file-earmark-bar-graph", Controlador="Reportes", Permisos=new[]{"VER_REPORTES_ACADEMICOS"}},
             new ModuloHome { Titulo="Gestión de Traslados", Descripcion="Cartas oficiales e historial de traslados", Icono="bi-envelope-paper", Controlador="Traslados", Accion="Index", Permisos=new[]{"GESTIONAR_TRASLADOS"}},
-            new ModuloHome { Titulo="Auditoría", Descripcion="Historial de movimientos", Icono="bi-journal-check", Controlador="AuditoriaSistema", Permisos=new[]{"VER_AUDITORIA"}},
+           new ModuloHome
+{
+    Titulo = "Auditoría del Sistema",
+    Descripcion = "Consulta de actividades y movimientos del sistema",
+    Icono = "bi-shield-check",
+    Controlador = "Auditoria",
+    Accion = "Index",
+    Permisos = new[] { "VER_AUDITORIA" }
+},
             new ModuloHome { Titulo="Inventario de limpieza", Descripcion="Existencias y suministros", Icono="bi-bucket", Controlador="InventarioLimpieza", Permisos=new[]{"GESTIONAR_INVENTARIO"}},
             new ModuloHome { Titulo="Inventario de cocina", Descripcion="Insumos y existencias", Icono="bi-basket", Controlador="InventarioCocina", Permisos=new[]{"GESTIONAR_INVENTARIO"}}
         };
+
+        // Menú lateral: mismos permisos y rutas que el dashboard, consultados en cada petición.
+        [HttpGet]
+        [ChildActionOnly]
+        public ActionResult MenuLateral()
+        {
+            if (Session["IdUsuario"] == null)
+                return new EmptyResult();
+
+            int id = Convert.ToInt32(Session["IdUsuario"]);
+            var permisos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var modulosAutorizados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                using (var cmd = new SqlCommand(@"SELECT p.nombre, p.modulo
+                    FROM dbo.USUARIO u
+                    INNER JOIN dbo.ROL r ON r.id_rol = u.id_rol
+                    INNER JOIN dbo.ROL_PERMISO rp ON rp.id_rol = r.id_rol
+                    INNER JOIN dbo.PERMISO p ON p.id_permiso = rp.id_permiso
+                    WHERE u.id_usuario = @id AND u.estado = 1 AND r.estado = 1 AND p.estado = 1", cn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    using (var dr = cmd.ExecuteReader())
+                        while (dr.Read())
+                        {
+                            permisos.Add(dr.GetString(0));
+                            if (!dr.IsDBNull(1)) modulosAutorizados.Add(NormalizarModulo(dr.GetString(1)));
+                        }
+                }
+            }
+            var modulos = CrearModulos().Where(x =>
+                modulosAutorizados.Contains(NormalizarModulo(x.Titulo)) ||
+                AliasModulo(x.Titulo).Any(modulosAutorizados.Contains) ||
+                x.Permisos.Any(permisos.Contains)).ToList();
+            return PartialView("_MenuLateral", modulos);
+        }
+
         [AllowAnonymous] public ActionResult About() => View();
         [AllowAnonymous] public ActionResult Contact() => View();
 

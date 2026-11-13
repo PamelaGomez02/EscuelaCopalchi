@@ -2,38 +2,250 @@
 @using System.Linq
 @{ ViewBag.Title = "Seguimiento académico"; }
 @section styles {
-<style>
-body{background:#f4f7fa}.seg{max-width:1320px;width:calc(100% - 44px);margin:28px auto 85px;color:#173d58;font-size:15px}
-.seg *{box-sizing:border-box}.seg a{text-decoration:none;color:#166a9d}
-.seg-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:25px}
-.seg-title{font-size:28px;font-weight:750;color:#143c55;margin:0 0 7px}.seg-title i{color:#3979a7}.seg-sub{font-size:15px;color:#647d91;margin:0}
-.seg-back{display:inline-flex;align-items:center;gap:8px;background:white;border:1px solid #cbdbe7;border-radius:8px;padding:11px 18px;font-weight:650;font-size:14px}
-.seg-card{background:#fff;border:1px solid #d7e4ee;border-radius:12px;box-shadow:0 3px 12px rgba(22,62,91,.035);overflow:hidden}
-.seg-card-head{padding:23px 25px 18px;border-bottom:1px solid #e6eef4;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.seg-card-head h2{font-size:19px;color:#164b70;margin:0 0 6px;font-weight:750}.seg-card-head p{margin:0;color:#708698;font-size:14px}
-.seg-count{font-size:13px;font-weight:700;color:#426a87;background:#edf5fa;padding:9px 13px;border-radius:8px}
-.seg-scroll{overflow-x:auto}.seg table{border-collapse:collapse;width:100%;font-size:14px}.seg th{background:#f0f6fa;text-transform:uppercase;letter-spacing:.025em;color:#526f83;font-size:12px;text-align:left;padding:16px 17px;white-space:nowrap}
-.seg td{padding:19px 17px;border-bottom:1px solid #e7eef4;vertical-align:top;line-height:1.5}.seg tbody tr:hover{background:#fbfdff}.seg tbody tr:last-child td{border-bottom:0}
-.seg-person{font-weight:750;color:#174d71}.seg-muted{font-size:13px;color:#71899b}.seg-note{max-width:350px;white-space:pre-wrap;overflow-wrap:anywhere}.seg-pill{display:inline-block;background:#eef5fb;color:#235b80;border-radius:20px;padding:6px 11px;font-size:12px;font-weight:700}
-.seg-link{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-weight:700;font-size:14px}.seg-empty{text-align:center;padding:44px!important;color:#71889a}
-.seg-pages{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:20px 25px;border-top:1px solid #e8eef4}.seg-pages a{padding:9px 15px;border:1px solid #cfdeea;border-radius:8px;background:#fff;font-size:14px;font-weight:700}.seg-pages span{font-size:14px;color:#657d90}
-@@media(max-width:700px){.seg{width:calc(100% - 24px)}.seg-title{font-size:23px}.seg-card-head{padding:18px}.seg td{padding:14px 12px}}
-</style>
+    <style>
+        body {
+            background: #f4f7fa
+        }
+
+        .seg {
+            max-width: 1380px;
+            width: calc(100% - 44px);
+            margin: 28px auto 85px;
+            color: #173d58;
+            font-size: 15px
+        }
+
+            .seg * {
+                box-sizing: border-box
+            }
+
+            .seg a {
+                text-decoration: none;
+                color: #166a9d
+            }
+
+        .seg-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 25px
+        }
+
+        .seg-title {
+            font-size: 28px;
+            font-weight: 750;
+            color: #143c55;
+            margin: 0 0 7px
+        }
+
+            .seg-title i {
+                color: #3979a7
+            }
+
+        .seg-sub {
+            font-size: 15px;
+            color: #647d91;
+            margin: 0
+        }
+
+        .seg-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid #cbdbe7;
+            border-radius: 8px;
+            padding: 11px 18px;
+            font-weight: 650;
+            font-size: 14px
+        }
+
+        .seg-card {
+            background: #fff;
+            border: 1px solid #d7e4ee;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(22,62,91,.035);
+            overflow: hidden
+        }
+
+        .seg-card-head {
+            padding: 23px 25px 18px;
+            border-bottom: 1px solid #e6eef4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap
+        }
+
+            .seg-card-head h2 {
+                font-size: 19px;
+                color: #164b70;
+                margin: 0 0 6px;
+                font-weight: 750
+            }
+
+            .seg-card-head p {
+                margin: 0;
+                color: #708698;
+                font-size: 14px
+            }
+
+        .seg-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: #426a87;
+            background: #edf5fa;
+            padding: 9px 13px;
+            border-radius: 8px
+        }
+
+        .seg-scroll {
+            overflow-x: auto
+        }
+
+        .seg table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px
+        }
+
+        .seg th {
+            background: #f0f6fa;
+            text-transform: uppercase;
+            letter-spacing: .025em;
+            color: #526f83;
+            font-size: 12px;
+            text-align: left;
+            padding: 16px 17px;
+            white-space: nowrap
+        }
+
+        .seg td {
+            padding: 19px 17px;
+            border-bottom: 1px solid #e7eef4;
+            vertical-align: top;
+            line-height: 1.5
+        }
+
+        .seg tbody tr:hover {
+            background: #fbfdff
+        }
+
+        .seg tbody tr:last-child td {
+            border-bottom: 0
+        }
+
+        .seg-person {
+            font-weight: 750;
+            color: #174d71
+        }
+
+        .seg-muted {
+            font-size: 13px;
+            color: #71899b
+        }
+
+        .seg-note {
+            max-width: 350px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere
+        }
+
+        .seg-pill {
+            display: inline-block;
+            background: #eef5fb;
+            color: #235b80;
+            border-radius: 20px;
+            padding: 6px 11px;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .seg-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-weight: 700;
+            font-size: 14px
+        }
+
+        .seg-empty {
+            text-align: center;
+            padding: 44px !important;
+            color: #71889a
+        }
+
+        .seg-pages {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 25px;
+            border-top: 1px solid #e8eef4
+        }
+
+            .seg-pages a {
+                padding: 9px 15px;
+                border: 1px solid #cfdeea;
+                border-radius: 8px;
+                background: #fff;
+                font-size: 14px;
+                font-weight: 700
+            }
+
+            .seg-pages span {
+                font-size: 14px;
+                color: #657d90
+            }
+
+        @@media(max-width:700px) {
+            .seg {
+                width: calc(100% - 24px)
+            }
+
+            .seg-title {
+                font-size: 23px
+            }
+
+            .seg-card-head {
+                padding: 18px
+            }
+
+            .seg td {
+                padding: 14px 12px
+            }
+        }
+    </style>
 }
 <div class="seg">
     <header class="seg-head"><div><h1 class="seg-title"><i class="bi bi-clipboard2-pulse me-2"></i>Seguimiento académico</h1><p class="seg-sub">Observaciones, acciones e intervenciones · Año @Model.Dashboard.Anio</p></div><a class="seg-back" href="@Url.Action("Index", new { anio = Model.Dashboard.Anio, grupo = Model.Dashboard.IdGrupo })"><i class="bi bi-arrow-left"></i> Atrás</a></header>
     <section class="seg-card">
         <div class="seg-card-head"><div><h2><i class="bi bi-people me-2"></i>Casos registrados</h2><p>Consulta las intervenciones y abre la ficha individual para dar seguimiento.</p></div><span class="seg-count">@Model.Casos.Count() casos en esta página</span></div>
-        <div class="seg-scroll"><table><thead><tr><th>Estudiante</th><th>Grupo</th><th>Fecha</th><th>Riesgo</th><th>Estado</th><th>Observación</th><th>Acciones</th></tr></thead><tbody>
-        @foreach (var s in Model.Casos) {
-            <tr><td><span class="seg-person">@s.Estudiante</span></td><td>@s.Grupo</td><td>@s.FechaRegistro.ToString("dd/MM/yyyy")</td><td><span class="seg-pill">@s.NivelRiesgo</span></td><td>@s.Estado</td><td class="seg-note">@s.Observacion</td><td><a class="seg-link" href="@Url.Action("Detalle", new { id = s.IdEstudiante, grupo = s.IdGrupo, anio = s.Anio })">Ver ficha <i class="bi bi-arrow-right"></i></a></td></tr>
-        }
-        @if (!Model.Casos.Any()) { <tr><td colspan="7" class="seg-empty"><i class="bi bi-inbox me-2"></i>No hay intervenciones registradas para los filtros seleccionados.</td></tr> }
-        </tbody></table></div>
+        <div class="seg-scroll">
+            <table>
+                <thead><tr><th>Estudiante</th><th>Grupo</th><th>Fecha</th><th>Riesgo</th><th>Estado</th><th>Observación</th><th>Acciones</th></tr></thead>
+                <tbody>
+                    @foreach (var s in Model.Casos)
+                    {
+                        <tr><td><span class="seg-person">@s.Estudiante</span></td><td>@s.Grupo</td><td>@s.FechaRegistro.ToString("dd/MM/yyyy")</td><td><span class="seg-pill">@s.NivelRiesgo</span></td><td>@s.Estado</td><td class="seg-note">@s.Observacion</td><td><a class="seg-link" href="@Url.Action("Detalle", new { id = s.IdEstudiante, grupo = s.IdGrupo, anio = s.Anio })">Ver ficha <i class="bi bi-arrow-right"></i></a></td></tr>
+                    }
+                    @if (!Model.Casos.Any())
+                    {
+                        <tr><td colspan="7" class="seg-empty"><i class="bi bi-inbox me-2"></i>No hay intervenciones registradas para los filtros seleccionados.</td></tr>
+}
+                </tbody>
+            </table>
+        </div>
         <nav class="seg-pages" aria-label="Paginación de seguimiento">
-            @if (Model.Pagina > 1) { <a href="@Url.Action("Seguimiento", new { anio = Model.Dashboard.Anio, grupo = Model.Dashboard.IdGrupo, pagina = Model.Pagina - 1 })"><i class="bi bi-chevron-left"></i> Anterior</a> }
+            @if (Model.Pagina > 1)
+            {<a href="@Url.Action("Seguimiento", new { anio = Model.Dashboard.Anio, grupo = Model.Dashboard.IdGrupo, pagina = Model.Pagina - 1 })"><i class="bi bi-chevron-left"></i> Anterior</a>}
             <span>Página @Model.Pagina de @Model.TotalPaginas</span>
-            @if (Model.Pagina < Model.TotalPaginas) { <a href="@Url.Action("Seguimiento", new { anio = Model.Dashboard.Anio, grupo = Model.Dashboard.IdGrupo, pagina = Model.Pagina + 1 })">Siguiente <i class="bi bi-chevron-right"></i></a> }
+            @if (Model.Pagina < Model.TotalPaginas)
+            {<a href="@Url.Action("Seguimiento", new { anio = Model.Dashboard.Anio, grupo = Model.Dashboard.IdGrupo, pagina = Model.Pagina + 1 })">Siguiente <i class="bi bi-chevron-right"></i></a>}
         </nav>
     </section>
 </div>

@@ -1,6 +1,24 @@
 @model List<EscuelaCopalchi.UI.Models.Usuarios.Usuario>
+@using System
+@using System.Linq
 @{
     ViewBag.Title = "Usuarios";
+    const int tamanoPagina = 10;
+    int paginaSolicitada;
+    if (!int.TryParse(Request.QueryString["pagina"], out paginaSolicitada))
+    {
+        paginaSolicitada = 1;
+    }
+    int totalUsuarios = Model.Count;
+    int totalPaginas = Math.Max(1, (int)Math.Ceiling(totalUsuarios / (double)tamanoPagina));
+    int pagina = Math.Min(Math.Max(1, paginaSolicitada), totalPaginas);
+    int inicio = totalUsuarios == 0 ? 0 : (pagina - 1) * tamanoPagina + 1;
+    int fin = Math.Min(pagina * tamanoPagina, totalUsuarios);
+    var usuariosPagina = Model.Skip((pagina - 1) * tamanoPagina).Take(tamanoPagina).ToList();
+    int paginaInicial = Math.Max(1, pagina - 2);
+    int paginaFinal = Math.Min(totalPaginas, paginaInicial + 4);
+    paginaInicial = Math.Max(1, paginaFinal - 4);
+    string busqueda = Convert.ToString(ViewBag.Busqueda ?? Request.QueryString["busqueda"] ?? "");
 }
 
 <main>
@@ -69,7 +87,7 @@
                 {
                     <div class="search-box">
                         <i class="bi bi-search"></i>
-                        <input type="text" name="busqueda" value="@ViewBag.Busqueda" class="form-control" placeholder="Buscar usuario...">
+                        <input type="text" name="busqueda" value="@busqueda" class="form-control" placeholder="Buscar usuario...">
                     </div>
                 }
             </div>
@@ -118,7 +136,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var u in Model)
+                        @foreach (var u in usuariosPagina)
                         {
                             <tr>
                                 <td>
@@ -181,8 +199,62 @@
 
                             </tr>
                         }
+                        @if (!usuariosPagina.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No se encontraron usuarios.
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
+            </div>
+
+            <div class="usuarios-pagination">
+                <div class="usuarios-pagination-info">
+                    Mostrando <strong>@inicio–@fin</strong> de
+                    <strong>@totalUsuarios</strong> usuarios ·
+                    Página <strong>@pagina</strong> de <strong>@totalPaginas</strong>
+                </div>
+
+                @if (totalPaginas > 1)
+                {
+                    <nav class="usuarios-pages" aria-label="Paginación de usuarios">
+                        @if (pagina > 1)
+                        {
+                            <a class="usuarios-page-btn" title="Primera página"
+                               href="@Url.Action("Index", "Usuarios", new { busqueda = busqueda, pagina = 1 })">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                            <a class="usuarios-page-btn" title="Página anterior"
+                               href="@Url.Action("Index", "Usuarios", new { busqueda = busqueda, pagina = pagina - 1 })">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        }
+
+                        @for (int numero = paginaInicial; numero <= paginaFinal; numero++)
+                        {
+                            <a class="usuarios-page-btn @(numero == pagina ? "active" : "")"
+                               aria-current="@(numero == pagina ? "page" : null)"
+                               href="@Url.Action("Index", "Usuarios", new { busqueda = busqueda, pagina = numero })">
+                                @numero
+                            </a>
+                        }
+
+                        @if (pagina < totalPaginas)
+                        {
+                            <a class="usuarios-page-btn" title="Página siguiente"
+                               href="@Url.Action("Index", "Usuarios", new { busqueda = busqueda, pagina = pagina + 1 })">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a class="usuarios-page-btn" title="Última página"
+                               href="@Url.Action("Index", "Usuarios", new { busqueda = busqueda, pagina = totalPaginas })">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        }
+                    </nav>
+                }
             </div>
         </div>
     </section>
@@ -503,6 +575,71 @@
         @@media (max-width: 575px) {
             .usuarios-title {
                 font-size: 1.32rem;
+            }
+        }
+
+        /* Paginación de usuarios: misma estructura visual que Auditoría */
+        .usuarios-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 12px 24px 0;
+            padding: 20px 0;
+            border-top: 1px solid #edf1f5;
+        }
+
+        .usuarios-pagination-info {
+            font-size: .87rem;
+            color: #718092;
+        }
+
+            .usuarios-pagination-info strong {
+                color: #34495e;
+            }
+
+        .usuarios-pages {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .usuarios-page-btn {
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b6479;
+            text-decoration: none;
+            font-size: .86rem;
+            font-weight: 650;
+        }
+
+            .usuarios-page-btn:hover {
+                background: #edf4f9;
+                border-color: #b7d0e0;
+                color: #173b53;
+                text-decoration: none;
+            }
+
+            .usuarios-page-btn.active {
+                background: #173b53;
+                border-color: #173b53;
+                color: #fff;
+                pointer-events: none;
+            }
+
+        @@media (max-width: 768px) {
+            .usuarios-pagination {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>

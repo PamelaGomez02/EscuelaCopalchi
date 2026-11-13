@@ -326,22 +326,43 @@
 
             </div>
 
-            @if ((int)ViewBag.TotalPaginas > 1)
-            {
-                <nav class="student-pagination" aria-label="Páginas de estudiantes">
-                    <span>Mostrando @Model.Count de @ViewBag.TotalFiltrados estudiantes · Página @ViewBag.Pagina de @ViewBag.TotalPaginas</span>
-                    <div class="student-pages">
-                        @for (int numero = 1; numero <= (int)ViewBag.TotalPaginas; numero++)
-                        {
-                            <a class="student-page-link @(numero == (int)ViewBag.Pagina ? "active" : "")" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = numero })">@numero</a>
-                        }
-                    </div>
-                </nav>
+            @{
+                int paginaActual = ViewBag.Pagina != null ? Convert.ToInt32(ViewBag.Pagina) : 1;
+                int totalPaginas = ViewBag.TotalPaginas != null ? Convert.ToInt32(ViewBag.TotalPaginas) : 1;
+                int totalFiltrados = ViewBag.TotalFiltrados != null ? Convert.ToInt32(ViewBag.TotalFiltrados) : Model.Count;
+                int inicioRegistro = totalFiltrados == 0 ? 0 : (paginaActual - 1) * 10 + 1;
+                int finRegistro = Math.Min(totalFiltrados, (paginaActual - 1) * 10 + Model.Count);
+                int desdePagina = Math.Max(1, paginaActual - 2);
+                int hastaPagina = Math.Min(totalPaginas, desdePagina + 4);
+                desdePagina = Math.Max(1, hastaPagina - 4);
             }
-            else
-            {
-                <div class="student-page-summary">Mostrando @Model.Count de @ViewBag.TotalFiltrados estudiantes</div>
-            }
+            <div class="auditoria-pagination">
+                <div class="auditoria-pagination-info">
+                    Mostrando <strong>@inicioRegistro–@finRegistro</strong> de <strong>@totalFiltrados</strong> estudiantes
+                    <span class="mx-1">·</span> Página <strong>@paginaActual</strong> de <strong>@totalPaginas</strong>
+                </div>
+                @if (totalPaginas > 1)
+                {
+                    <nav aria-label="Paginación de estudiantes">
+                        <div class="auditoria-pages">
+                            @if (paginaActual > 1)
+                            {
+                                <a class="auditoria-page-btn" title="Primera página" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = 1 })"><i class="bi bi-chevron-double-left"></i></a>
+                                <a class="auditoria-page-btn" title="Página anterior" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = paginaActual - 1 })"><i class="bi bi-chevron-left"></i></a>
+                            }
+                            @for (int numero = desdePagina; numero <= hastaPagina; numero++)
+                            {
+                                <a class="auditoria-page-btn @(numero == paginaActual ? "active" : "")" aria-current="@(numero == paginaActual ? "page" : null)" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = numero })">@numero</a>
+                            }
+                            @if (paginaActual < totalPaginas)
+                            {
+                                <a class="auditoria-page-btn" title="Página siguiente" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = paginaActual + 1 })"><i class="bi bi-chevron-right"></i></a>
+                                <a class="auditoria-page-btn" title="Última página" href="@Url.Action("Index", "Estudiantes", new { filtroEstado = ViewBag.FiltroEstado, busqueda = ViewBag.Busqueda, pagina = totalPaginas })"><i class="bi bi-chevron-double-right"></i></a>
+                            }
+                        </div>
+                    </nav>
+                }
+            </div>
 
             <div class="history-link">
 
@@ -474,51 +495,61 @@
 }
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var modalReactivar = document.getElementById('modalReactivar');
-        if (!modalReactivar) return;
-        modalReactivar.addEventListener('show.bs.modal', function (event) {
-            var boton = event.relatedTarget;
-            if (!boton) return;
-            document.getElementById('idEstudianteReactivar').value = boton.getAttribute('data-id');
-            document.getElementById('nombreEstudianteReactivar').textContent = boton.getAttribute('data-nombre') || 'este estudiante';
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalReactivar = document.getElementById('modalReactivar');
+            if (!modalReactivar) return;
+            modalReactivar.addEventListener('show.bs.modal', function (event) {
+                var boton = event.relatedTarget;
+                if (!boton) return;
+                document.getElementById('idEstudianteReactivar').value = boton.getAttribute('data-id');
+                document.getElementById('nombreEstudianteReactivar').textContent = boton.getAttribute('data-nombre') || 'este estudiante';
+            });
+            var formulario = document.getElementById('formReactivar');
+            var confirmar = document.getElementById('btnConfirmarReactivar');
+            if (formulario && confirmar) {
+                formulario.addEventListener('submit', function (event) {
+                    if (formulario.dataset.enviado === '1') { event.preventDefault(); return; }
+                    formulario.dataset.enviado = '1';
+                    confirmar.disabled = true;
+                    confirmar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Reactivando...';
+                });
+            }
         });
-        var formulario = document.getElementById('formReactivar');
-        var confirmar = document.getElementById('btnConfirmarReactivar');
-        if (formulario && confirmar) {
-            formulario.addEventListener('submit', function (event) {
-                if (formulario.dataset.enviado === '1') { event.preventDefault(); return; }
-                formulario.dataset.enviado = '1';
-                confirmar.disabled = true;
-                confirmar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Reactivando...';
-            });
+        function seleccionarEstudiante(id) {
+            document.getElementById("idEstudianteBaja").value = id;
         }
-    });
-    function seleccionarEstudiante(id) {
-        document.getElementById("idEstudianteBaja").value = id;
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        var modal = document.getElementById('modalBaja');
-        if (!modal) return;
-        var form = modal.querySelector('form');
-        var button = document.getElementById('btnConfirmarBaja');
-        if (form && button) {
-            form.addEventListener('submit', function () {
-                if (form.dataset.enviado === '1') return;
-                form.dataset.enviado = '1';
-                button.disabled = true;
-                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Guardando...';
-            });
-        }
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('modalBaja');
+            if (!modal) return;
+            var form = modal.querySelector('form');
+            var button = document.getElementById('btnConfirmarBaja');
+            if (form && button) {
+                form.addEventListener('submit', function () {
+                    if (form.dataset.enviado === '1') return;
+                    form.dataset.enviado = '1';
+                    button.disabled = true;
+                    button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Guardando...';
+                });
+            }
+        });
 </script>
 
 
 @section styles {
 
     <style>
-        .btn-action-reactivar { color: #16734a; background: #f0faf5; border: 1px solid #9bd5b7; border-radius: 5px; padding: 6px 10px; }
-        .btn-action-reactivar:hover { background: #d8f2e5; color: #105a39; }
+        .btn-action-reactivar {
+            color: #16734a;
+            background: #f0faf5;
+            border: 1px solid #9bd5b7;
+            border-radius: 5px;
+            padding: 6px 10px;
+        }
+
+            .btn-action-reactivar:hover {
+                background: #d8f2e5;
+                color: #105a39;
+            }
 
         :root {
             --cop-primary: #133C55;
@@ -824,26 +855,178 @@
                     width: 100%;
                 }
         }
-    
-        /* Estilo compartido Aula Virtual Copalchí */
-        .cop-nav-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:14px; }
-        .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb { margin-bottom:0; }
-        .cop-back-btn { border-radius:9px; font-weight:600; padding:.5rem .95rem; white-space:nowrap; background:white; }
-        .cop-back-btn:hover { background:#edf3f8; border-color:#386FA4; color:#133C55; }
-        .students-header, .record-header { padding-top:22px !important; padding-bottom:22px !important; }
-        .students-card, .form-card, .history-card { box-shadow:0 5px 20px rgba(19,60,85,.045); }
 
+        /* Estilo compartido Aula Virtual Copalchí */
+        .cop-nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+            .cop-nav-row .students-breadcrumb, .cop-nav-row .record-breadcrumb {
+                margin-bottom: 0;
+            }
+
+        .cop-back-btn {
+            border-radius: 9px;
+            font-weight: 600;
+            padding: .5rem .95rem;
+            white-space: nowrap;
+            background: white;
+        }
+
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386FA4;
+                color: #133C55;
+            }
+
+        .students-header, .record-header {
+            padding-top: 22px !important;
+            padding-bottom: 22px !important;
+        }
+
+        .students-card, .form-card, .history-card {
+            box-shadow: 0 5px 20px rgba(19,60,85,.045);
+        }
     </style>
 
 }
 <style>
-.student-quick-filters { display:flex; flex-wrap:wrap; gap:8px; padding:16px 20px; background:#fff; border-bottom:1px solid #e5ebf1; }
-.student-filter-tab { display:inline-flex; align-items:center; padding:9px 14px; border:1px solid #dbe5ee; border-radius:9px; color:#386fa4; text-decoration:none; font-size:13px; font-weight:600; }
-.student-filter-tab:hover { background:#eef5fb; color:#133c55; }
-.student-filter-tab.active { background:#133c55; border-color:#133c55; color:white; }
-.student-pagination { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:17px 20px; border-top:1px solid #e5ebf1; color:#52677a; font-size:13px; }
-.student-pages { display:flex; flex-wrap:wrap; gap:5px; }
-.student-page-link { display:inline-flex; align-items:center; justify-content:center; min-width:35px; height:35px; padding:0 9px; border:1px solid #dbe5ee; border-radius:8px; color:#386fa4; text-decoration:none; }
-.student-page-link.active { background:#133c55; color:#fff; border-color:#133c55; }
-.student-page-summary { padding:13px 20px; font-size:13px; color:#64748b; }
+    .student-quick-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 16px 20px;
+        background: #fff;
+        border-bottom: 1px solid #e5ebf1;
+    }
+
+    .student-filter-tab {
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 14px;
+        border: 1px solid #dbe5ee;
+        border-radius: 9px;
+        color: #386fa4;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .student-filter-tab:hover {
+            background: #eef5fb;
+            color: #133c55;
+        }
+
+        .student-filter-tab.active {
+            background: #133c55;
+            border-color: #133c55;
+            color: white;
+        }
+
+    .student-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 17px 20px;
+        border-top: 1px solid #e5ebf1;
+        color: #52677a;
+        font-size: 13px;
+    }
+
+    .student-pages {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .student-page-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 35px;
+        height: 35px;
+        padding: 0 9px;
+        border: 1px solid #dbe5ee;
+        border-radius: 8px;
+        color: #386fa4;
+        text-decoration: none;
+    }
+
+        .student-page-link.active {
+            background: #133c55;
+            color: #fff;
+            border-color: #133c55;
+        }
+
+    .student-page-summary {
+        padding: 13px 20px;
+        font-size: 13px;
+        color: #64748b;
+    }
+</style>
+
+<style>
+    .auditoria-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-top: 22px;
+        margin-top: 12px;
+        border-top: 1px solid #edf1f5;
+    }
+
+    .auditoria-pagination-info {
+        font-size: .87rem;
+        color: #718092;
+    }
+
+        .auditoria-pagination-info strong {
+            color: #34495e;
+        }
+
+    .auditoria-pages {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .auditoria-page-btn {
+        min-width: 37px;
+        height: 37px;
+        padding: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dce5ed;
+        border-radius: 8px;
+        background: #fff;
+        color: #4b6479;
+        text-decoration: none;
+        font-size: .86rem;
+        font-weight: 650;
+    }
+
+        .auditoria-page-btn:hover {
+            background: #edf4f9;
+            border-color: #b7d0e0;
+            color: #173b53;
+            text-decoration: none;
+        }
+
+        .auditoria-page-btn.active {
+            background: #173b53;
+            border-color: #173b53;
+            color: #fff;
+            pointer-events: none;
+        }
 </style>

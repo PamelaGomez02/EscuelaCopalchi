@@ -8,24 +8,171 @@
     <link rel="stylesheet" href="~/Content/gestion-notas.css" />
     <style>
 
-    /* Encabezado compacto y consistente en todo Gestión de Notas */
-    body { background:#f4f7fa; }
-    .gn-header.cop-notes-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:14px 0 20px!important; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-    .cop-notes-header .gn-title { font-size:1.55rem!important; line-height:1.3; font-weight:700; color:#133c55; margin:0 0 4px; }
-    .cop-notes-header .gn-title i { color:#386fa4; }
-    .cop-notes-header .gn-sub { font-size:.9rem; color:#6c7888; line-height:1.5; margin:0; }
-    .cop-notes-header .cop-header-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
-    .cop-notes-header .cop-back-btn { background:#fff; border:1px solid #cbd5e1; border-radius:6px; color:#475569; padding:.55rem 1rem; font-weight:600; white-space:nowrap; }
-    .cop-notes-header .cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
-    .cop-notes-header .btn { border-radius:6px; }
-    @@media (max-width:575px) { .cop-notes-header .gn-title { font-size:1.32rem!important; } }
-    .gn-index-tools { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-    .gn-index-tools #gnBuscar { flex:1 1 250px; min-width:180px; }
-    .gn-index-tools .gn-history-link { flex:0 0 auto; white-space:nowrap; }
-    @@media (max-width:575px) { .gn-index-tools .gn-history-link { width:100%; } }
+        /* Encabezado compacto y consistente en todo Gestión de Notas */
+        body {
+            background: #f4f7fa;
+        }
+
+        .gn-header.cop-notes-header {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 14px 0 20px !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cop-notes-header .gn-title {
+            font-size: 1.55rem !important;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #133c55;
+            margin: 0 0 4px;
+        }
+
+            .cop-notes-header .gn-title i {
+                color: #386fa4;
+            }
+
+        .cop-notes-header .gn-sub {
+            font-size: .9rem;
+            color: #6c7888;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .cop-notes-header .cop-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cop-notes-header .cop-back-btn {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            color: #475569;
+            padding: .55rem 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+            .cop-notes-header .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386fa4;
+                color: #133c55;
+            }
+
+        .cop-notes-header .btn {
+            border-radius: 6px;
+        }
+
+        @@media (max-width:575px) {
+            .cop-notes-header .gn-title {
+                font-size: 1.32rem !important;
+            }
+        }
+
+        .gn-notes-page {
+            width: 100%;
+        }
+
+        .gn-index-tools {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+            .gn-index-tools #gnBuscar {
+                flex: 1 1 250px;
+                min-width: 180px;
+            }
+
+            .gn-index-tools .gn-history-link {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+        @@media (max-width:575px) {
+            .gn-index-tools .gn-history-link {
+                width: 100%;
+            }
+        }
+
+        .gn-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 18px;
+            padding: 10px 0;
+        }
+
+            .gn-pagination[hidden] {
+                display: none !important;
+            }
+
+        .gn-pagination-info {
+            color: #718092;
+            font-size: .86rem;
+        }
+
+        .gn-pagination-pages {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .gn-page-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b6479;
+            font-size: .86rem;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+            .gn-page-btn:hover:not(:disabled) {
+                background: #edf4f9;
+                color: #133c55;
+            }
+
+            .gn-page-btn.active {
+                background: #133c55;
+                color: #fff;
+                border-color: #133c55;
+            }
+
+            .gn-page-btn:disabled {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+
+        @@media (max-width:600px) {
+            .gn-pagination {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
     </style>
 }
-<main>
+<main class="container gn-notes-page py-4">
 
 
     <div class="gn-header cop-notes-header">
@@ -37,15 +184,18 @@
             <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>
             @if (puedeRegistrar)
             {
-          
+
                 <a href="@Url.Action("Registrar")" class="btn gn-btn"><i class="bi bi-pencil-square me-1"></i>Registrar notas</a>
             }
         </div>
     </div>
 
-    @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
-    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
-    @if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+    @if (TempData["Success"] != null)
+    {<div class="alert alert-success">@TempData["Success"]</div>}
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
+    @if (ViewBag.Error != null)
+    {<div class="alert alert-danger">@ViewBag.Error</div>}
 
     <div class="row g-3 mb-4">
         <div class="col-sm-4"><div class="gn-stat"><span class="gn-stat-label">Grupos</span><span class="gn-stat-value">@Model.Count</span></div></div>
@@ -64,9 +214,18 @@
         <table class="table align-middle gn-table" id="gnTabla">
             <thead>
                 <tr>
-                    <th>Grupo</th><th>Nivel</th><th>Año</th>
-                    @if (veTodo) { <th>Docente</th> }
-                    <th>Estudiantes</th><th>Evaluaciones</th><th>Pendientes</th><th>Estado</th><th></th>
+                    <th>Grupo</th>
+                    <th>Nivel</th>
+                    <th>Año</th>
+                    @if (veTodo)
+                    {
+                        <th>Docente</th>
+}
+                    <th>Estudiantes</th>
+                    <th>Evaluaciones</th>
+                    <th>Pendientes</th>
+                    <th>Estado</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -76,7 +235,10 @@
                         <td><strong>@g.Grupo</strong></td>
                         <td>@g.Nivel</td>
                         <td>@g.Anio</td>
-                        @if (veTodo) { <td>@g.Docente</td> }
+                        @if (veTodo)
+                        {
+                            <td>@g.Docente</td>
+}
                         <td>@g.TotalEstudiantes</td>
                         <td>@g.TotalEvaluaciones</td>
                         <td>@g.Pendientes</td>
@@ -100,15 +262,62 @@
             </tbody>
         </table>
     </div>
-    
+    <div class="gn-pagination" id="gnPaginacion" hidden>
+        <span class="gn-pagination-info" id="gnResumen"></span>
+        <nav class="gn-pagination-pages" id="gnBotones" aria-label="Paginación de grupos"></nav>
+    </div>
 </main>
 @section scripts {
     <script>
-        document.getElementById('gnBuscar').addEventListener('input', function () {
-            var q = this.value.toLowerCase();
-            document.querySelectorAll('#gnTabla tbody tr').forEach(function (tr) {
-                tr.style.display = tr.innerText.toLowerCase().indexOf(q) > -1 ? '' : 'none';
-            });
-        });
+                (function () {
+                    var buscador = document.getElementById('gnBuscar');
+                    var filas = Array.prototype.slice.call(document.querySelectorAll('#gnTabla tbody tr'));
+                    var sinDatos = filas.filter(function (tr) { return tr.querySelector('td[colspan]'); });
+                    var datos = filas.filter(function (tr) { return !tr.querySelector('td[colspan]'); });
+                    var paginacion = document.getElementById('gnPaginacion');
+                    var resumen = document.getElementById('gnResumen');
+                    var botones = document.getElementById('gnBotones');
+                    var pagina = 1;
+                    var porPagina = 10;
+
+                    function boton(texto, destino, deshabilitado, activo, titulo) {
+                        var b = document.createElement('button');
+                        b.type = 'button';
+                        b.className = 'gn-page-btn' + (activo ? ' active' : '');
+                        b.textContent = texto;
+                        b.disabled = deshabilitado;
+                        b.title = titulo;
+                        if (activo) b.setAttribute('aria-current', 'page');
+                        b.addEventListener('click', function () { pagina = destino; render(); });
+                        botones.appendChild(b);
+                    }
+
+                    function render() {
+                        var q = (buscador.value || '').toLocaleLowerCase().trim();
+                        var filtrados = datos.filter(function (tr) { return tr.textContent.toLocaleLowerCase().indexOf(q) !== -1; });
+                        var total = filtrados.length;
+                        var paginas = Math.max(1, Math.ceil(total / porPagina));
+                        pagina = Math.max(1, Math.min(pagina, paginas));
+                        var inicio = (pagina - 1) * porPagina;
+                        var visibles = filtrados.slice(inicio, inicio + porPagina);
+                        filas.forEach(function (tr) { tr.style.display = 'none'; });
+                        visibles.forEach(function (tr) { tr.style.display = ''; });
+                        if (total === 0) sinDatos.forEach(function (tr) { tr.style.display = ''; });
+                        resumen.textContent = 'Mostrando ' + (total ? inicio + 1 : 0) + '–' + Math.min(inicio + porPagina, total) + ' de ' + total + ' registros · Página ' + pagina + ' de ' + paginas;
+                        paginacion.hidden = total <= porPagina;
+                        botones.innerHTML = '';
+                        if (total <= porPagina) return;
+                        boton('«', 1, pagina === 1, false, 'Primera página');
+                        boton('‹', pagina - 1, pagina === 1, false, 'Página anterior');
+                        var desde = Math.max(1, pagina - 2);
+                        var hasta = Math.min(paginas, desde + 4);
+                        desde = Math.max(1, hasta - 4);
+                        for (var n = desde; n <= hasta; n++) boton(String(n), n, false, n === pagina, 'Página ' + n);
+                        boton('›', pagina + 1, pagina === paginas, false, 'Página siguiente');
+                        boton('»', paginas, pagina === paginas, false, 'Última página');
+                    }
+                    buscador.addEventListener('input', function () { pagina = 1; render(); });
+                    render();
+                })();
     </script>
 }

@@ -9,17 +9,32 @@
 <main class="planes-page">
 
     <!-- ENCABEZADO -->
-    <section class="planes-header"><div class="container"><div class="planes-header-layout"><div><h1 class="planes-title"><i class="bi bi-journal-text me-2"></i>
-                        Planes de estudio</h1><p class="planes-subtitle">Administra la planificación académica mensual,
-                        revisa su estado y consulta las observaciones realizadas.</p></div><div class="planes-header-actions"><a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>@if ((bool)(ViewBag.PuedeCrear ?? false)) {
-                    <a href="@Url.Action("Crear", "PlanesEstudio")"
-                       class="btn btn-cop-primary">
+    <section class="planes-header">
+        <div class="container">
+            <div class="planes-header-layout">
+                <div>
+                    <h1 class="planes-title">
+                        <i class="bi bi-journal-text me-2"></i>
+                        Planes de estudio
+                    </h1><p class="planes-subtitle">
+                        Administra la planificación académica mensual,
+                        revisa su estado y consulta las observaciones realizadas.
+                    </p>
+                </div><div class="planes-header-actions">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary cop-back-btn"><i class="bi bi-arrow-left me-1"></i>Atrás</a>@if ((bool)(ViewBag.PuedeCrear ?? false))
+                    {
+                        <a href="@Url.Action("Crear", "PlanesEstudio")"
+                           class="btn btn-cop-primary">
 
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Nuevo plan
+                            <i class="bi bi-plus-lg me-1"></i>
+                            Nuevo plan
 
-                    </a>
-                    }</div></div></div></section>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     @if (TempData["Success"] != null)
@@ -38,7 +53,8 @@
         </div>
     }
 
-    @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
     <!-- CONTENIDO -->
     <section class="container pb-5">
 
@@ -168,7 +184,13 @@
                     </select>
 
 
-                    <select id="filtroPeriodo" class="form-select"><option value="">Todos los meses</option>@for(int m=1;m<=12;m++){<option value="@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))">@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))</option>}</select>
+                    <select id="filtroPeriodo" class="form-select">
+                        <option value="">Todos los meses</option>
+                        @for (int m = 1; m <= 12; m++)
+                        {
+                            <option value="@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))">@(new DateTime(2000,m,1).ToString("MMMM",new System.Globalization.CultureInfo("es-CR")))</option>
+}
+                    </select>
 
                 </div>
             }
@@ -278,14 +300,15 @@
                                 <td class="text-end">
 
 
-                                    @if ((bool)(ViewBag.PuedeRevisar ?? false) && plan.Estado == "Pendiente") {
-                                    <a href="@Url.Action("Revisar", "PlanesEstudio", new { id = plan.IdPlan})"
-                                       class="btn btn-action"
-                                       title="Ver plan">
+                                    @if ((bool)(ViewBag.PuedeRevisar ?? false) && plan.Estado == "Pendiente")
+                                    {
+                                        <a href="@Url.Action("Revisar", "PlanesEstudio", new { id = plan.IdPlan})"
+                                           class="btn btn-action"
+                                           title="Ver plan">
 
-                                        <i class="bi bi-check-circle"></i>
+                                            <i class="bi bi-check-circle"></i>
 
-                                    </a>
+                                        </a>
                                     }
 
                                     <a href="@Url.Action("Detalle", "PlanesEstudio", new { id = plan.IdPlan})"
@@ -298,12 +321,13 @@
 
 
 
-                                    @if (plan.Estado == "Pendiente" && ((bool)(ViewBag.PuedeAdministrar ?? false) || ((bool)(ViewBag.PuedeEditar ?? false) && plan.IdDocente == (int)(ViewBag.IdDocenteActual ?? 0)))) {
-                                    <a href="@Url.Action("Editar", "PlanesEstudio", new { id = plan.IdPlan})"
-                                       class="btn btn-action"
-                                       title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
+                                    @if (plan.Estado == "Pendiente" && ((bool)(ViewBag.PuedeAdministrar ?? false) || ((bool)(ViewBag.PuedeEditar ?? false) && plan.IdDocente == (int)(ViewBag.IdDocenteActual ?? 0))))
+                                    {
+                                        <a href="@Url.Action("Editar", "PlanesEstudio", new { id = plan.IdPlan})"
+                                           class="btn btn-action"
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
                                     }
 
 
@@ -317,9 +341,9 @@
 
             </table>
             <div id="sinResultadosPlanes" class="text-center p-4 text-muted" hidden><i class="bi bi-search fs-3 d-block mb-2"></i>No se encontraron planes con los filtros seleccionados.</div>
-            <div class="planes-pagination-bar">
-                <div class="d-flex align-items-center gap-2 flex-wrap"><span class="small text-muted">10 planes por página</span><span id="infoPaginaPlanes" class="small text-muted" aria-live="polite"></span></div>
-                <nav aria-label="Paginación de planes"><ul id="paginacionPlanes" class="pagination pagination-sm mb-0"></ul></nav>
+            <div class="planes-pagination-bar" id="barraPaginacionPlanes">
+                <div id="infoPaginaPlanes" class="planes-pagination-info" aria-live="polite"></div>
+                <nav id="paginacionPlanes" class="planes-pages" aria-label="Paginación de planes"></nav>
             </div>
 
         </div>
@@ -334,49 +358,57 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var tabla=document.getElementById('tablaPlanes');
-    if(!tabla) return;
-    var filas=Array.prototype.slice.call(tabla.querySelectorAll('tbody tr'));
-    var buscar=document.getElementById('buscarPlan');
-    var estado=document.getElementById('filtroEstado');
-    var periodo=document.getElementById('filtroPeriodo');
-    var paginas=document.getElementById('paginacionPlanes');
-    var info=document.getElementById('infoPaginaPlanes');
-    var vacio=document.getElementById('sinResultadosPlanes');
-    var actual=1;
-    function normalizar(t){return (t||'').toString().toLocaleLowerCase().trim();}
-    function filtrar(){
-        var q=normalizar(buscar&&buscar.value), e=normalizar(estado&&estado.value), p=normalizar(periodo&&periodo.value);
-        return filas.filter(function(f){
-            var texto=normalizar(f.textContent);
-            var estadoFila=normalizar(f.getAttribute('data-estado'));
-            var periodoFila=normalizar(f.getAttribute('data-periodo'));
-            return (!q||texto.indexOf(q)!==-1)&&(!e||estadoFila===e)&&(!p||periodoFila.indexOf(p)!==-1);
-        });
-    }
-    function boton(etiqueta,pagina,deshabilitado,activo){
-        var li=document.createElement('li'); li.className='page-item'+(deshabilitado?' disabled':'')+(activo?' active':'');
-        var a=document.createElement('button'); a.type='button';a.className='page-link';a.textContent=etiqueta;a.disabled=deshabilitado;
-        if(activo)a.setAttribute('aria-current','page');
-        a.addEventListener('click',function(){actual=pagina;render();});li.appendChild(a);paginas.appendChild(li);
-    }
-    function render(){
-        var lista=filtrar(), porPagina=10, total=Math.max(1,Math.ceil(lista.length/porPagina));
-        actual=Math.max(1,Math.min(actual,total));
-        filas.forEach(function(f){f.style.display='none';});
-        lista.slice((actual-1)*porPagina,actual*porPagina).forEach(function(f){f.style.display='';});
-        paginas.innerHTML='';
-        if(total>1){
-            boton('Anterior',actual-1,actual===1,false);
-            var inicio=Math.max(1,actual-2),fin=Math.min(total,inicio+4);inicio=Math.max(1,fin-4);
-            for(var n=inicio;n<=fin;n++)boton(String(n),n,false,n===actual);
-            boton('Siguiente',actual+1,actual===total,false);
-        }
-        var primero=lista.length?(actual-1)*porPagina+1:0, ultimo=Math.min(actual*porPagina,lista.length);
-        info.textContent='Mostrando '+primero+'–'+ultimo+' de '+lista.length+' planes';
-        vacio.hidden=lista.length!==0;
-    }
-    [buscar,estado,periodo].forEach(function(el){if(el){el.addEventListener('input',function(){actual=1;render();});el.addEventListener('change',function(){actual=1;render();});}});
+            var tabla=document.getElementById('tablaPlanes');
+            if(!tabla) return;
+            var filas=Array.prototype.slice.call(tabla.querySelectorAll('tbody tr'));
+            var buscar=document.getElementById('buscarPlan');
+            var estado=document.getElementById('filtroEstado');
+            var periodo=document.getElementById('filtroPeriodo');
+            var paginas=document.getElementById('paginacionPlanes');
+            var info=document.getElementById('infoPaginaPlanes');
+            var vacio=document.getElementById('sinResultadosPlanes');
+            var actual=1;
+            function normalizar(t){return (t||'').toString().toLocaleLowerCase().trim();}
+            function filtrar(){
+                var q=normalizar(buscar&&buscar.value), e=normalizar(estado&&estado.value), p=normalizar(periodo&&periodo.value);
+                return filas.filter(function(f){
+                    var texto=normalizar(f.textContent);
+                    var estadoFila=normalizar(f.getAttribute('data-estado'));
+                    var periodoFila=normalizar(f.getAttribute('data-periodo'));
+                    return (!q||texto.indexOf(q)!==-1)&&(!e||estadoFila===e)&&(!p||periodoFila.indexOf(p)!==-1);
+                });
+            }
+            function boton(etiqueta,pagina,deshabilitado,activo,titulo){
+                var btn=document.createElement('button');
+                btn.type='button';
+                btn.className='planes-page-btn'+(activo?' active':'');
+                btn.textContent=etiqueta;
+                btn.disabled=deshabilitado;
+                btn.setAttribute('aria-label',titulo||('Página '+pagina));
+                if(activo)btn.setAttribute('aria-current','page');
+                btn.addEventListener('click',function(){actual=pagina;render();});
+                paginas.appendChild(btn);
+            }
+            function render(){
+                var lista=filtrar(), porPagina=10, total=Math.max(1,Math.ceil(lista.length/porPagina));
+                actual=Math.max(1,Math.min(actual,total));
+                filas.forEach(function(f){f.style.display='none';});
+                lista.slice((actual-1)*porPagina,actual*porPagina).forEach(function(f){f.style.display='';});
+                paginas.innerHTML='';
+                if(total>1){
+                    boton('«',1,actual===1,false,'Primera página');
+                    boton('‹',actual-1,actual===1,false,'Página anterior');
+                    var inicio=Math.max(1,actual-2),fin=Math.min(total,inicio+4);inicio=Math.max(1,fin-4);
+                    for(var n=inicio;n<=fin;n++)boton(String(n),n,false,n===actual,'Página '+n);
+                    boton('›',actual+1,actual===total,false,'Página siguiente');
+                    boton('»',total,actual===total,false,'Última página');
+                }
+                var primero=lista.length?(actual-1)*porPagina+1:0, ultimo=Math.min(actual*porPagina,lista.length);
+                info.textContent='Mostrando '+primero+'–'+ultimo+' de '+lista.length+' planes · Página '+actual+' de '+total;
+                vacio.hidden=lista.length!==0;
+            }
+            [buscar,estado,periodo].forEach(function(el){if(el){el.addEventListener('input',function(){actual=1;render();});el.addEventListener('change',function(){actual=1;render();});}});
+            render();
 });
 </script>
 
@@ -814,26 +846,171 @@ document.addEventListener('DOMContentLoaded', function () {
                     width: 100%;
                 }
         }
-    
-/* Diseño unificado de encabezados - Planes de Estudio */
-.planes-page, body { background:#f4f7fa; }
-.planes-header { background:transparent!important; border:0!important; box-shadow:none!important; padding:0!important; margin:16px 0 24px!important; }
-.planes-header > .container { background:transparent!important; padding-left:12px; padding-right:12px; }
-.planes-breadcrumb { display:none!important; }
-.planes-header .planes-title { font-size:1.55rem!important; line-height:1.3; font-weight:700!important; color:#133c55!important; margin:0 0 5px!important; }
-.planes-header .planes-title i { color:#386fa4; }
-.planes-header .planes-subtitle { color:#64748b!important; font-size:.9rem!important; line-height:1.55; margin:0!important; }
-.planes-header .planes-header-layout { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.planes-header .planes-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.planes-header .cop-back-btn { background:#fff; border:1px solid #cbd5e1; color:#475569; font-weight:600; border-radius:7px; padding:.55rem 1rem; text-decoration:none; white-space:nowrap; }
-.planes-header .cop-back-btn:hover { background:#edf3f8; border-color:#386fa4; color:#133c55; }
-.planes-header .btn { border-radius:7px; }
-.plans-container,.creation-card,.edit-card,.review-card,.detail-card { border-radius:12px; }
-@@media(max-width:575px) { .planes-header .planes-title { font-size:1.32rem!important; } }
-.planes-pagination-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; padding:17px 20px; border-top:1px solid #e7edf4; background:#fff; }
-.planes-pagination-bar .page-link { color:#133c55; border-color:#e2e8f0; }
-.planes-pagination-bar .page-item.active .page-link { background:#133c55; border-color:#133c55; color:#fff; }
-@@media(max-width:575px) { .planes-pagination-bar { justify-content:center; } }
-</style>
+
+        /* Contenedor principal: misma estructura y anchura que Index de Asistencia */
+        .planes-page > .planes-header > .container,
+        .planes-page > section.container.pb-5 {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .planes-page .plans-container {
+            width: 100%;
+            max-width: none;
+        }
+        /* Diseño unificado de encabezados - Planes de Estudio */
+        .planes-page, body {
+            background: #f4f7fa;
+        }
+
+        .planes-header {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 16px 0 24px !important;
+        }
+
+            .planes-header > .container {
+                background: transparent !important;
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+        .planes-breadcrumb {
+            display: none !important;
+        }
+
+        .planes-header .planes-title {
+            font-size: 1.55rem !important;
+            line-height: 1.3;
+            font-weight: 700 !important;
+            color: #133c55 !important;
+            margin: 0 0 5px !important;
+        }
+
+            .planes-header .planes-title i {
+                color: #386fa4;
+            }
+
+        .planes-header .planes-subtitle {
+            color: #64748b !important;
+            font-size: .9rem !important;
+            line-height: 1.55;
+            margin: 0 !important;
+        }
+
+        .planes-header .planes-header-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .planes-header .planes-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .planes-header .cop-back-btn {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-weight: 600;
+            border-radius: 7px;
+            padding: .55rem 1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+            .planes-header .cop-back-btn:hover {
+                background: #edf3f8;
+                border-color: #386fa4;
+                color: #133c55;
+            }
+
+        .planes-header .btn {
+            border-radius: 7px;
+        }
+
+        .plans-container, .creation-card, .edit-card, .review-card, .detail-card {
+            border-radius: 12px;
+        }
+
+        @@media(max-width:575px) {
+            .planes-header .planes-title {
+                font-size: 1.32rem !important;
+            }
+        }
+
+        /* Paginación visual igual al Index de Auditoría */
+        .planes-pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 22px 20px 17px;
+            margin-top: 12px;
+            border-top: 1px solid #edf1f5;
+            background: #fff;
+        }
+
+        .planes-pagination-info {
+            font-size: .87rem;
+            color: #718092;
+        }
+
+        .planes-pages {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .planes-page-btn {
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b6479;
+            font-size: .86rem;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+            .planes-page-btn:hover:not(:disabled) {
+                background: #edf4f9;
+                border-color: #b7d0e0;
+                color: #173b53;
+            }
+
+            .planes-page-btn.active {
+                background: #173b53;
+                border-color: #173b53;
+                color: #fff;
+            }
+
+            .planes-page-btn:disabled:not(.active) {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+
+        @@media(max-width:768px) {
+            .planes-pagination-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 
 }

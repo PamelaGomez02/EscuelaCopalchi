@@ -1,0 +1,417 @@
+﻿@model List<EscuelaCopalchi.UI.Models.Notificaciones.PreferenciaNotificacion>
+@using System
+@using System.Linq
+@using EscuelaCopalchi.UI.Models.Notificaciones
+@{
+    ViewBag.Title = "Preferencias de notificaciones";
+    var preferencias = Model ?? new List<PreferenciaNotificacion>();
+    var recordatorios = ViewBag.Recordatorios as List<RecordatorioConfiguracion> ?? new List<RecordatorioConfiguracion>();
+    var frecuencias = new[] { 1, 2, 3, 5, 7, 14, 30 };
+}
+<style>
+    .not-page {
+        max-width: 1150px;
+        margin: auto;
+        padding: 28px 18px 50px;
+        color: #243746
+    }
+
+    .not-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px
+    }
+
+        .not-header h2 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #17384d;
+            margin: 0 0 6px
+        }
+
+        .not-header p, .not-subtitle {
+            color: #71808e;
+            font-size: 14px;
+            margin: 0
+        }
+
+    .not-panel {
+        background: #fff;
+        border: 1px solid #e1e8ee;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 18px rgba(20,50,70,.05)
+    }
+
+    .not-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 14px 20px 0;
+        border-bottom: 1px solid #e6edf2;
+        background: #f9fbfc
+    }
+
+    .not-tab {
+        border: 0;
+        background: transparent;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #748391;
+        border-bottom: 3px solid transparent;
+        cursor: pointer
+    }
+
+        .not-tab.active {
+            color: #1764a0;
+            border-bottom-color: #1764a0
+        }
+
+    .not-content {
+        padding: 25px
+    }
+
+    .not-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #19394f;
+        margin: 0 0 5px
+    }
+
+    .not-subtitle {
+        margin-bottom: 20px
+    }
+
+    .not-table-wrap {
+        overflow-x: auto
+    }
+
+    .not-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 680px
+    }
+
+        .not-table th {
+            background: #f5f8fa;
+            color: #647786;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e5edf2
+        }
+
+        .not-table td {
+            padding: 14px;
+            border-bottom: 1px solid #edf1f4;
+            vertical-align: middle
+        }
+
+        .not-table tbody tr:hover {
+            background: #fafcfd
+        }
+
+    .not-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #253d50
+    }
+
+    .not-description {
+        font-size: 12px;
+        color: #8795a0;
+        margin-top: 3px
+    }
+
+    .not-center {
+        text-align: center !important
+    }
+
+    .not-check {
+        width: 18px;
+        height: 18px;
+        accent-color: #1764a0;
+        cursor: pointer
+    }
+
+        .not-check:disabled {
+            cursor: not-allowed
+        }
+
+    .not-select {
+        width: 100%;
+        min-width: 125px;
+        padding: 9px 10px;
+        border: 1px solid #dce5eb;
+        border-radius: 7px;
+        color: #354b5c;
+        background: white;
+        font-size: 13px
+    }
+
+        .not-select.inactive {
+            background: #f5f7f9;
+            color: #9aa7b1
+        }
+
+    .not-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 22px
+    }
+
+    .not-save {
+        border: 0;
+        border-radius: 8px;
+        background: #1764a0;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px 20px;
+        cursor: pointer
+    }
+
+        .not-save:hover {
+            background: #104d7c
+        }
+
+        .not-save:disabled {
+            opacity: .6;
+            cursor: wait
+        }
+
+    .not-reminder-grid {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 18px
+    }
+
+    .not-reminder {
+        border: 1px solid #e1e9ef;
+        border-radius: 12px;
+        padding: 22px;
+        background: #fff
+    }
+
+    .not-reminder-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px
+    }
+
+    .not-reminder h5 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #253e51;
+        margin: 0 0 6px
+    }
+
+    .not-reminder p {
+        color: #81909d;
+        font-size: 13px;
+        margin: 0
+    }
+
+    .not-reminder label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #435767;
+        margin-bottom: 8px
+    }
+
+    .not-note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 9px;
+        background: #f4f8fb;
+        color: #657a8b;
+        font-size: 12px;
+        line-height: 1.6
+    }
+
+    .not-required {
+        display: block;
+        font-size: 11px;
+        color: #7a8792;
+        margin-top: 5px
+    }
+
+    .not-tab-panel[hidden] {
+        display: none !important
+    }
+
+    @@media(max-width:850px) {
+        .not-reminder-grid {
+            grid-template-columns: 1fr
+        }
+
+        .not-header {
+            flex-direction: column;
+            align-items: flex-start
+        }
+
+        .not-content {
+            padding: 16px
+        }
+
+        .not-tabs {
+            padding: 12px 10px 0
+        }
+
+        .not-tab {
+            font-size: 12px;
+            padding: 10px
+        }
+    }
+</style>
+<div class="not-page">
+    <div class="not-header">
+        <div><h2>Preferencias de notificaciones</h2><p>Configura los avisos del sistema, el correo y los recordatorios académicos.</p></div>
+        <a href="@Url.Action("Index", "Notificaciones")" class="btn btn-outline-secondary btn-sm">Volver a notificaciones</a>
+    </div>
+    @if (TempData["Mensaje"] != null)
+    {<div class="alert alert-success">@TempData["Mensaje"]</div>}
+    @if (TempData["Error"] != null)
+    {<div class="alert alert-danger">@TempData["Error"]</div>}
+    <div class="not-panel">
+        <div class="not-tabs" role="tablist" aria-label="Configuración de notificaciones">
+            <button type="button" id="tab-general" class="not-tab active" role="tab" aria-selected="true" aria-controls="panel-general" onclick="mostrarPestana('general')">Notificaciones generales</button>
+            <button type="button" id="tab-recordatorios" class="not-tab" role="tab" aria-selected="false" aria-controls="panel-recordatorios" onclick="mostrarPestana('recordatorios')">Recordatorios académicos</button>
+        </div>
+        <section id="panel-general" class="not-tab-panel not-content" role="tabpanel" aria-labelledby="tab-general">
+            <h4 class="not-title">Notificaciones generales</h4>
+            <p class="not-subtitle">Selecciona las categorías que deseas recibir. Guarda todos los cambios con un solo botón.</p>
+            @using (Html.BeginForm("GuardarConfiguracionGeneral", "Notificaciones", FormMethod.Post, new { id = "form-general" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="not-table-wrap">
+                    <table class="not-table">
+                        <thead><tr><th>Categoría</th><th class="not-center">Sistema</th><th class="not-center">Correo</th><th>Frecuencia del correo</th></tr></thead>
+                        <tbody>
+                            @for (int i = 0; i < preferencias.Count; i++)
+                            {
+                                var item = preferencias[i];
+                                var correoId = "correo-" + i;
+                                var selectId = "frecuencia-" + i;
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="preferencias[@i].IdTipo" value="@item.IdTipo" />
+                                        <div class="not-name">@item.Nombre</div>
+                                        <div class="not-description">@item.Descripcion</div>
+                                        @if (!item.PermiteDesactivar)
+                                        {<span class="not-required">Obligatoria en el sistema</span>}
+                                    </td>
+                                    <td class="not-center">
+                                        @if (item.PermiteDesactivar)
+                                        {
+                                            <input type="checkbox" class="not-check" name="preferencias[@i].RecibirSistema" value="true" aria-label="Recibir @item.Nombre en el sistema" @(item.RecibirSistema ? "checked" : "") />
+                                            <input type="hidden" name="preferencias[@i].RecibirSistema" value="false" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="not-check" checked="checked" disabled="disabled" aria-label="Notificación obligatoria @item.Nombre" />
+                                            <input type="hidden" name="preferencias[@i].RecibirSistema" value="true" />
+                                        }
+                                    </td>
+                                    <td class="not-center">
+                                        <input type="checkbox" class="not-check" id="@correoId" name="preferencias[@i].RecibirCorreo" value="true" aria-label="Recibir @item.Nombre por correo" @(item.RecibirCorreo ? "checked" : "") onchange="cambiarCorreo('@correoId','@selectId')" />
+                                        <input type="hidden" name="preferencias[@i].RecibirCorreo" value="false" />
+                                    </td>
+                                    <td>
+                                        <select name="preferencias[@i].FrecuenciaCorreo" id="@selectId" class="not-select" aria-label="Frecuencia de correo para @item.Nombre">
+                                            <option value="INMEDIATO" @(item.FrecuenciaCorreo == "INMEDIATO" ? "selected" : "")>Inmediato</option>
+                                            <option value="DIARIO" @(item.FrecuenciaCorreo == "DIARIO" ? "selected" : "")>Diario</option>
+                                            <option value="SEMANAL" @(item.FrecuenciaCorreo == "SEMANAL" ? "selected" : "")>Semanal</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="not-actions"><button type="submit" class="not-save" @(preferencias.Count == 0 ? "disabled" : "")><i class="bi bi-check2-circle"></i> Guardar cambios</button></div>
+            }
+            <div class="not-note">Las notificaciones obligatorias no se pueden desactivar. Los cambios se aplicarán a futuros avisos cuando los procesos generadores consulten estas preferencias; los avisos ya recibidos permanecen en el historial. El envío de correo requiere un servicio de envío configurado.</div>
+        </section>
+        <section id="panel-recordatorios" class="not-tab-panel not-content" role="tabpanel" aria-labelledby="tab-recordatorios" hidden>
+            <h4 class="not-title">Recordatorios académicos</h4>
+            <p class="not-subtitle">Activa o desactiva los recordatorios y ajusta sus frecuencias. Guarda todo junto.</p>
+            @if (recordatorios.Any())
+            {
+                using (Html.BeginForm("GuardarRecordatoriosGeneral", "Notificaciones", FormMethod.Post, new { id = "form-recordatorios" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="not-reminder-grid">
+                        @for (int i = 0; i < recordatorios.Count; i++)
+                        {
+                            var item = recordatorios[i];
+                            var esRiesgo = item.TipoRecordatorio == "RIESGO_ACADEMICO";
+                            <div class="not-reminder">
+                                <input type="hidden" name="recordatorios[@i].TipoRecordatorio" value="@item.TipoRecordatorio" />
+                                <div class="not-reminder-head">
+                                    <div>
+                                        <h5>@(esRiesgo ? "Riesgo académico" : "Seguimiento académico")</h5>
+                                        <p>@(esRiesgo ? "Estudiantes con calificaciones por debajo del umbral." : "Estudiantes con seguimiento académico activo.")</p>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" class="not-check" name="recordatorios[@i].Activo" value="true" aria-label="Activar recordatorio @item.TipoRecordatorio" @(item.Activo ? "checked" : "") />
+                                        <input type="hidden" name="recordatorios[@i].Activo" value="false" />
+                                    </div>
+                                </div>
+                                <label for="dias-@i">Frecuencia del recordatorio</label>
+                                <select name="recordatorios[@i].FrecuenciaDias" id="dias-@i" class="not-select">
+                                    @foreach (int dias in frecuencias)
+                                    {
+                                        <option value="@dias" @(item.FrecuenciaDias == dias ? "selected" : "")>@(dias == 1 ? "Cada 24 horas" : "Cada " + dias + " días")</option>
+                                    }
+                                    @if (!frecuencias.Contains(item.FrecuenciaDias))
+                                    {
+                                        <option value="@item.FrecuenciaDias" selected="selected">Cada @item.FrecuenciaDias días</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+                    </div>
+                    <div class="not-actions"><button type="submit" class="not-save"><i class="bi bi-check2-circle"></i> Guardar recordatorios</button></div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">No hay configuraciones de recordatorios disponibles.</div>
+            }
+            <div class="not-note">Desactivar un recordatorio impide futuras generaciones únicamente si el proceso que los genera consulta el campo Activo. Los recordatorios anteriores no se eliminan.</div>
+        </section>
+    </div>
+</div>
+<script>
+function mostrarPestana(nombre) {
+            var general = nombre === 'general';
+            document.getElementById('panel-general').hidden = !general;
+            document.getElementById('panel-recordatorios').hidden = general;
+            document.getElementById('tab-general').classList.toggle('active', general);
+            document.getElementById('tab-recordatorios').classList.toggle('active', !general);
+            document.getElementById('tab-general').setAttribute('aria-selected', general ? 'true' : 'false');
+            document.getElementById('tab-recordatorios').setAttribute('aria-selected', general ? 'false' : 'true');
+            if (window.history && window.history.replaceState)
+                window.history.replaceState(null, '', window.location.pathname + window.location.search + (general ? '#general' : '#recordatorios'));
+}
+function cambiarCorreo(checkboxId, selectId) {
+            var checkbox = document.getElementById(checkboxId);
+            var select = document.getElementById(selectId);
+            if (!checkbox || !select) return;
+            select.classList.toggle('inactive', !checkbox.checked);
+            select.setAttribute('aria-disabled', checkbox.checked ? 'false' : 'true');
+}
+document.addEventListener('DOMContentLoaded', function () {
+            mostrarPestana(window.location.hash === '#recordatorios' ? 'recordatorios' : 'general');
+            document.querySelectorAll('input[id^="correo-"]').forEach(function (checkbox) {
+                cambiarCorreo(checkbox.id, 'frecuencia-' + checkbox.id.substring(7));
+            });
+});
+</script>

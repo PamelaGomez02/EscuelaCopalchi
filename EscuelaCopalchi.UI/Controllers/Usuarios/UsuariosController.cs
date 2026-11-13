@@ -51,6 +51,23 @@ namespace EscuelaCopalchi.UI.Controllers
                     StringComparison.OrdinalIgnoreCase);
         }
 
+        private int? ObtenerIdUsuarioSesion()
+        {
+            if (Session["IdUsuario"] == null)
+                return null;
+
+            int idUsuario;
+
+            if (!int.TryParse(
+                Session["IdUsuario"].ToString(),
+                out idUsuario))
+            {
+                return null;
+            }
+
+            return idUsuario > 0 ? (int?)idUsuario : null;
+        }
+
         private ActionResult MostrarEditarConError(
             Usuario usuario,
             string mensaje)
@@ -85,12 +102,192 @@ namespace EscuelaCopalchi.UI.Controllers
         // REGISTRAR - GET
         // -------------------------------------------
 
+        // ==========================================
+        // MI PERFIL - GET
+        // ==========================================
+
         [HttpGet]
         [Authorize]
         public ActionResult EditarPerfil()
         {
-            return RedirectToAction("Index", "Usuarios");
+            int? idUsuario = ObtenerIdUsuarioSesion();
+
+            if (!idUsuario.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var usuario = repository.ObtenerPorId(idUsuario.Value);
+
+            if (usuario == null)
+            {
+                return HttpNotFound(
+                    "No se encontró el perfil del usuario.");
+            }
+
+            // El perfil personal no permite cambiar el rol.
+            return View(
+                "~/Views/Usuarios/EditarPerfil.cshtml",
+                usuario);
         }
+
+
+        // ==========================================
+        // MI PERFIL - POST
+        // ==========================================
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditarPerfil(
+            string nombre,
+            string apellido1,
+            string apellido2,
+            string correo,
+            string telefono,
+            string contrasena,
+            string confirmarContrasena)
+        {
+            int? idUsuario = ObtenerIdUsuarioSesion();
+
+            if (!idUsuario.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var usuario = repository.ObtenerPorId(idUsuario.Value);
+
+            if (usuario == null)
+            {
+                return HttpNotFound(
+                    "No se encontró el perfil del usuario.");
+            }
+
+            // Validaciones de los campos editables.
+            if (string.IsNullOrWhiteSpace(nombre) ||
+                string.IsNullOrWhiteSpace(apellido1) ||
+                string.IsNullOrWhiteSpace(correo))
+            {
+                ViewBag.Error =
+                    "El nombre, primer apellido y correo son obligatorios.";
+
+                return View(
+                    "~/Views/Usuarios/EditarPerfil.cshtml",
+                    usuario);
+            }
+
+            bool cambiarPassword =
+                !string.IsNullOrEmpty(contrasena) ||
+                !string.IsNullOrEmpty(confirmarContrasena);
+
+            if (cambiarPassword)
+            {
+                if (string.IsNullOrEmpty(contrasena) ||
+                    contrasena.Length < 8)
+                {
+                    ViewBag.Error =
+                        "La contraseña debe tener al menos 8 caracteres.";
+
+                    return View(
+                        "~/Views/Usuarios/EditarPerfil.cshtml",
+                        usuario);
+                }
+
+                if (contrasena != confirmarContrasena)
+                {
+                    ViewBag.Error =
+                        "Las contraseñas no coinciden.";
+
+                    return View(
+                        "~/Views/Usuarios/EditarPerfil.cshtml",
+                        usuario);
+                }
+            }
+
+            try
+            {
+                // Se recuperó el usuario desde SQL Server.
+                // Conservamos IdUsuario, IdRol, Estado,
+                // Identificacion y los demás datos protegidos.
+
+                usuario.Nombre = nombre.Trim();
+                usuario.Apellido1 = apellido1.Trim();
+                usuario.Apellido2 =
+                    (apellido2 ?? "").Trim();
+                usuario.Correo = correo.Trim();
+                usuario.Telefono =
+                    (telefono ?? "").Trim();
+
+                // Nunca aceptar IdRol o Estado del formulario.
+                string resultado = repository.Actualizar(usuario);
+
+                if (!EsExito(resultado))
+                {
+                    ViewBag.Error = resultado;
+
+                    return View(
+                        "~/Views/Usuarios/EditarPerfil.cshtml",
+                        usuario);
+                }
+
+                if (cambiarPassword)
+                {
+                    string resultadoPass =
+                        repository.CambiarContrasena(
+                            idUsuario.Value,
+                            contrasena);
+
+                    if (!EsExito(resultadoPass))
+                    {
+                        ViewBag.Error =
+                            "Los datos personales se guardaron, " +
+                            "pero no se confirmó el cambio de contraseña: " +
+                            resultadoPass;
+
+                        return View(
+                            "~/Views/Usuarios/EditarPerfil.cshtml",
+                            usuario);
+                    }
+                }
+
+                // Actualizar el nombre de la barra superior.
+                Session["NombreUsuario"] =
+                    usuario.Nombre + " " + usuario.Apellido1;
+
+                // Mantener la sesión actual.
+                // El correo es también la identidad de FormsAuthentication.
+                // Si cambia, se debe renovar la cookie.
+                string correoAnterior =
+                    Convert.ToString(Session["CorreoUsuario"]);
+
+                if (!string.Equals(
+                    correoAnterior,
+                    usuario.Correo,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    System.Web.Security.FormsAuthentication
+                        .SetAuthCookie(usuario.Correo, false);
+                }
+
+                Session["CorreoUsuario"] = usuario.Correo;
+
+                TempData["Success"] =
+                    "Tu perfil se actualizó correctamente.";
+
+                return RedirectToAction("EditarPerfil");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error =
+                    "No se pudo actualizar el perfil: " +
+                    ex.Message;
+
+                return View(
+                    "~/Views/Usuarios/EditarPerfil.cshtml",
+                    usuario);
+            }
+        }
+
 
         [HttpGet]
         public ActionResult Registrar()

@@ -1,771 +1,934 @@
-﻿@{
+﻿
+@using System
+@using System.Linq
+@using System.Collections.Generic
+@model IEnumerable<EscuelaCopalchi.UI.Models.Notificaciones.Notificacion>
+
+@{
     ViewBag.Title = "Notificaciones";
+
+    var notificaciones = Model == null
+        ? new List<EscuelaCopalchi.UI.Models.Notificaciones.Notificacion>()
+        : Model.OrderByDescending(x => x.Fecha)
+               .ThenByDescending(x => x.IdNotificacion)
+               .ToList();
+
+    var tipos = notificaciones
+        .Select(x => x.Tipo)
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Distinct()
+        .OrderBy(x => x)
+        .ToList();
 }
 
-<main>
+<main class="not-page">
 
-    <!-- ENCABEZADO -->
-    <section class="notifications-header">
-
+    <section class="not-header">
         <div class="container">
 
-            <div class="notifications-breadcrumb">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Notificaciones</span>
-            </div>
-
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-
+            <div class="not-heading">
                 <div>
-
-                    <h1 class="notifications-title">
-                        <i class="bi bi-bell me-2"></i>
+                    <h1>
+                        <i class="bi bi-bell"></i>
                         Notificaciones
                     </h1>
-
-                    <p class="notifications-subtitle">
-                        Historial de alertas de rendimiento, asistencia y riesgo académico.
+                    <p>
+                        Consulta y administra los avisos y novedades
+                        de los diferentes módulos del sistema.
                     </p>
-
                 </div>
 
-
-                <a href="@Url.Action("Riesgo", "Notificaciones")"
-                   class="btn btn-outline-cop">
-
-                    <i class="bi bi-exclamation-triangle me-1"></i>
-                    Ver estudiantes en riesgo
-
+                <a href="@Url.Action("Configuracion", "Notificaciones")"
+                   class="btn not-config-btn">
+                    <i class="bi bi-gear me-1"></i>
+                    Configuración
                 </a>
-
             </div>
 
         </div>
-
     </section>
 
-
-    <!-- CONTENIDO -->
     <section class="container pb-5">
 
-        <!-- RESUMEN -->
-        <div class="row g-3 mb-4">
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon">
-                        <i class="bi bi-bell"></i>
-                    </div>
-
-                    <div>
-                        <span>Notificaciones</span>
-                        <h2>@ViewBag.Total</h2>
-                    </div>
-
-                </div>
-
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Mensaje"]
             </div>
+        }
 
-
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon summary-icon-danger">
-                        <i class="bi bi-exclamation-triangle"></i>
-                    </div>
-
-                    <div>
-                        <span>Prioridad alta</span>
-                        <h2 class="text-danger">
-                            @ViewBag.Alta
-                        </h2>
-
-                    </div>
-
-                </div>
-
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
             </div>
+        }
 
+        <div class="not-card">
 
-            <div class="col-md-4">
-
-                <div class="summary-card">
-
-                    <div class="summary-icon summary-icon-warning">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-
-                    <div>
-                        <span>Pendientes de revisión</span>
-                        <h2 class="warning-value">
-                            @ViewBag.Pendientes
-                        </h2>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CONTENEDOR PRINCIPAL -->
-        <div class="notifications-card">
-
-            <!-- TOOLBAR -->
-            <div class="notifications-toolbar">
-
+            <div class="not-toolbar">
                 <div>
-
-                    <h2>
-                        Historial de alertas
-                    </h2>
-
+                    <h2>Centro de notificaciones</h2>
                     <p>
-                        Consulta las notificaciones generadas por rendimiento y asistencia.
+                        Selecciona una notificación para consultar
+                        su información completa.
                     </p>
-
                 </div>
 
-
-                <div class="search-box">
-
+                <div class="not-search">
                     <i class="bi bi-search"></i>
-
-                    <input type="text"
-                           id="buscarNotificacion"
+                    <input type="search"
+                           id="notBuscar"
                            class="form-control"
-                           placeholder="Buscar estudiante..." />
-
+                           placeholder="Buscar notificaciones..."
+                           aria-label="Buscar notificaciones" />
                 </div>
-
             </div>
 
+            <div class="not-filters">
 
-            <!-- FILTROS -->
-            <div class="notifications-filters">
-
-                <div>
-
-                    <label class="filter-label">
-                        Tipo de alerta
-                    </label>
-
-                    <select id="filtroTipo"
-                            class="form-select">
-
-                        <option value="">
-                            Todos los tipos
-                        </option>
-
-                        <option value="Bajo rendimiento">
-                            Bajo rendimiento
-                        </option>
-
-                        <option value="Inasistencia">
-                            Inasistencia
-                        </option>
-
-                        <option value="Riesgo académico">
-                            Riesgo académico
-                        </option>
-
+                <div class="not-filter-group">
+                    <label for="notTipo">Tipo</label>
+                    <select id="notTipo" class="form-select">
+                        <option value="">Todos los tipos</option>
+                        @foreach (var tipo in tipos)
+                        {
+                            <option value="@tipo">@tipo.Replace("_", " ")</option>
+                        }
                     </select>
-
                 </div>
 
-
-                <div>
-
-                    <label class="filter-label">
-                        Grupo
-                    </label>
-
-                    <select id="filtroGrupo"
-                            class="form-select">
-
-                        <option value="">
-                            Todos los grupos
-                        </option>
-
-                        <option value="7-A">7-A</option>
-                        <option value="8-B">8-B</option>
-                        <option value="9-C">9-C</option>
-
+                <div class="not-filter-group">
+                    <label for="notEstado">Estado</label>
+                    <select id="notEstado" class="form-select">
+                        <option value="">Todas</option>
+                        <option value="no-leida">Sin leer</option>
+                        <option value="leida">Leídas</option>
                     </select>
-
                 </div>
 
-
-                <div>
-
-                    <label class="filter-label">
-                        Fecha
-                    </label>
-
+                <div class="not-filter-group">
+                    <label for="notFecha">Fecha</label>
                     <input type="date"
-                           id="filtroFecha"
+                           id="notFecha"
                            class="form-control" />
                 </div>
 
+                <button type="button"
+                        id="notLimpiar"
+                        class="btn not-clear-btn">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Limpiar
+                </button>
+
             </div>
 
+            <form id="notFormEliminar"
+                  method="post"
+                  action="@Url.Action("EliminarSeleccionadas", "Notificaciones")">
 
-            <!-- LISTA DE NOTIFICACIONES -->
-            <div id="listaNotificaciones"
-                 class="notifications-list">
+                @Html.AntiForgeryToken()
 
+                <input type="hidden"
+                       name="ids"
+                       id="notIdsEliminar" />
 
-                @if (ViewBag.Notificaciones != null)
+                <div class="not-actions">
+                    <label class="not-select-all">
+                        <input type="checkbox" id="notSeleccionarTodo" />
+                        Seleccionar visibles
+                    </label>
+
+                    <button type="submit"
+                            id="notEliminarSeleccionadas"
+                            class="btn not-delete-selected"
+                            disabled>
+                        <i class="bi bi-trash3 me-1"></i>
+                        Eliminar seleccionadas
+                    </button>
+                </div>
+
+            </form>
+
+            <div id="notLista" class="not-list">
+
+                @foreach (var n in notificaciones)
                 {
-                    foreach (
-                        EscuelaCopalchi.UI.Models.Notificaciones.Notificacion n
-                        in ViewBag.Notificaciones)
+                    var tipo = (n.Tipo ?? "").ToUpperInvariant();
+                    var icono = "bi-bell";
+                    var clase = "general";
+
+                    if (tipo.Contains("RIESGO") || tipo.Contains("SEGUIMIENTO"))
                     {
-                       <div class="notification-item"
-                            data-estudiante="Andrés Solís"
-                            data-tipo="Bajo rendimiento"
-                            data-grupo="8-B"
-                            data-fecha="2026-11-08">
-
-                           <div class="notification-icon notification-danger">
-
-                               <i class="bi bi-bell"></i>
-
-                           </div>
-
-                           <div class="notification-body">
-
-                               <div class="notification-top">
-
-                                   <div>
-
-                                       <h3>
-                                           @n.Titulo
-                                       </h3>
-
-                                       <p>
-                                           @n.Mensaje
-                                       </p>
-
-                                   </div>
-
-                                   <span class="priority priority-high">
-                                       @n.Tipo
-                                   </span>
-
-                               </div>
-
-                               <div class="notification-footer">
-
-                                   <span>
-                                       <i class="bi bi-clock me-1"></i>
-
-                                       @n.Fecha.ToString(
-                                           "dd/MM/yyyy HH:mm")
-                                   </span>
-
-                               </div>
-
-                           </div>
-
-                       </div>
+                        icono = "bi-mortarboard";
+                        clase = "academico";
                     }
+                    else if (tipo.Contains("PLAN"))
+                    {
+                        icono = "bi-journal-text";
+                        clase = "planes";
+                    }
+                    else if (tipo.Contains("CALIFIC") || tipo.Contains("NOTAS"))
+                    {
+                        icono = "bi-clipboard-check";
+                        clase = "academico";
+                    }
+                    else if (tipo.Contains("MATERIAL"))
+                    {
+                        icono = "bi-folder2-open";
+                        clase = "materiales";
+                    }
+                    else if (tipo.Contains("SEGURIDAD"))
+                    {
+                        icono = "bi-shield-lock";
+                        clase = "seguridad";
+                    }
+                    else if (tipo.Contains("ESTUDIANTE") || tipo.Contains("GRUPO"))
+                    {
+                        icono = "bi-people";
+                        clase = "planes";
+                    }
+
+                    var urlDetalle = Url.Action(
+                        "Detalle",
+                        "Notificaciones",
+                        new { id = n.IdNotificacion });
+
+                    <article class="not-item @(n.Leida ? "" : "unread")"
+                             data-id="@n.IdNotificacion"
+                             data-tipo="@n.Tipo"
+                             data-estado="@(n.Leida ? "leida" : "no-leida")"
+                             data-fecha="@n.Fecha.ToString("yyyy-MM-dd")"
+                             data-texto="@((n.Titulo ?? "") + " " + (n.Mensaje ?? "") + " " + (n.Tipo ?? ""))">
+
+                        <div class="not-item-check">
+                            <input type="checkbox"
+                                   class="not-check"
+                                   value="@n.IdNotificacion"
+                                   aria-label="Seleccionar notificación" />
+                        </div>
+
+                        <a class="not-item-link"
+                           href="@urlDetalle">
+
+                            <div class="not-icon @clase">
+                                <i class="bi @icono"></i>
+                            </div>
+
+                            <div class="not-content">
+
+                                <div class="not-item-heading">
+                                    <h3>@n.Titulo</h3>
+
+                                    @if (!n.Leida)
+                                    {
+                                        <span class="not-unread-label">
+                                            <span class="not-dot"></span>
+                                            Nueva
+                                        </span>
+                                    }
+                                </div>
+
+                                <p>@n.Mensaje</p>
+
+                                <div class="not-meta">
+                                    <span class="not-type">
+                                        @((n.Tipo ?? "General").Replace("_", " "))
+                                    </span>
+
+                                    <span>
+                                        <i class="bi bi-clock"></i>
+                                        @n.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <span class="not-chevron">
+                                <i class="bi bi-chevron-right"></i>
+                            </span>
+
+                        </a>
+
+                        <form method="post"
+                              class="not-single-delete"
+                              action="@Url.Action("Eliminar", "Notificaciones")">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@n.IdNotificacion" />
+
+                            <button type="submit"
+                                    class="not-trash"
+                                    title="Eliminar notificación"
+                                    aria-label="Eliminar notificación">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+
+                    </article>
                 }
 
             </div>
 
-        </div>
+            <div id="notVacio" class="not-empty" style="display:none;">
+                <i class="bi bi-inbox"></i>
+                <h3>No hay notificaciones</h3>
+                <p>
+                    No se encontraron notificaciones con los filtros seleccionados.
+                </p>
+            </div>
 
+            <div class="not-pagination">
+                <span id="notInfoPagina"></span>
+
+                <nav aria-label="Paginación de notificaciones">
+                    <ul id="notPaginas" class="pagination mb-0"></ul>
+                </nav>
+            </div>
+
+        </div>
     </section>
 
 </main>
 
-
-
 <script>
-
 document.addEventListener("DOMContentLoaded", function () {
 
-    const buscar =
-        document.getElementById(
-            "buscarNotificacion");
+        const buscar = document.getElementById("notBuscar");
+        const tipo = document.getElementById("notTipo");
+        const estado = document.getElementById("notEstado");
+        const fecha = document.getElementById("notFecha");
+        const limpiar = document.getElementById("notLimpiar");
 
-    const tipo =
-        document.getElementById(
-            "filtroTipo");
+        const items = Array.from(
+            document.querySelectorAll(".not-item")
+        );
 
-    const grupo =
-        document.getElementById(
-            "filtroGrupo");
+        const vacio = document.getElementById("notVacio");
+        const paginas = document.getElementById("notPaginas");
+        const info = document.getElementById("notInfoPagina");
 
-    const fecha =
-        document.getElementById(
-            "filtroFecha");
+        const seleccionarTodo =
+            document.getElementById("notSeleccionarTodo");
 
-    function aplicarFiltros()
-    {
-        const texto =
-            buscar.value.toLowerCase();
+        const eliminarSeleccionadas =
+            document.getElementById("notEliminarSeleccionadas");
 
-        const tipoSeleccionado =
-            tipo.value.toLowerCase();
+        const formEliminar =
+            document.getElementById("notFormEliminar");
 
-        const grupoSeleccionado =
-            grupo.value.toLowerCase();
+        const idsEliminar =
+            document.getElementById("notIdsEliminar");
 
-        const fechaSeleccionada =
-            fecha.value;
+        const porPagina = 10;
+        let paginaActual = 1;
+        let filtrados = [];
 
-        const items =
-            document.querySelectorAll(
-                "#listaNotificaciones .notification-item");
+        function normalizar(texto) {
+            return (texto || "")
+                .toLocaleLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+        }
 
-        items.forEach(function (item) {
+        function actualizarSeleccion() {
+            const checks = document.querySelectorAll(
+                ".not-check:checked"
+            );
 
-            const estudiante =
-                item.dataset.estudiante
-                    .toLowerCase();
+            eliminarSeleccionadas.disabled =
+                checks.length === 0;
 
-            const tipoItem =
-                item.dataset.tipo
-                    .toLowerCase();
+            const visibles = items.filter(
+                x => x.style.display !== "none"
+            );
 
-            const grupoItem =
-                item.dataset.grupo
-                    .toLowerCase();
+            seleccionarTodo.checked =
+                visibles.length > 0 &&
+                visibles.every(x =>
+                    x.querySelector(".not-check").checked
+                );
+        }
 
-            const fechaItem =
-                item.dataset.fecha;
+        function crearBoton(texto, destino, activo, deshabilitado) {
+            const li = document.createElement("li");
+            li.className = "page-item" +
+                (activo ? " active" : "") +
+                (deshabilitado ? " disabled" : "");
 
-            const coincideTexto =
-                estudiante.includes(texto);
+            const boton = document.createElement("button");
+            boton.type = "button";
+            boton.className = "page-link";
+            boton.textContent = texto;
+            boton.disabled = deshabilitado;
 
-            const coincideTipo =
-                tipoSeleccionado === "" ||
-                tipoItem === tipoSeleccionado;
+            boton.addEventListener("click", function () {
+                paginaActual = destino;
+                mostrarPagina();
+            });
 
-            const coincideGrupo =
-                grupoSeleccionado === "" ||
-                grupoItem === grupoSeleccionado;
+            li.appendChild(boton);
+            paginas.appendChild(li);
+        }
 
-            const coincideFecha =
-                fechaSeleccionada === "" ||
-                fechaItem === fechaSeleccionada;
+        function mostrarPagina() {
+            const total = filtrados.length;
+            const totalPaginas = Math.max(
+                1, Math.ceil(total / porPagina)
+            );
 
-            if (
-                coincideTexto &&
-                coincideTipo &&
-                coincideGrupo &&
-                coincideFecha)
-            {
-                item.style.display = "";
+            paginaActual = Math.min(
+                Math.max(1, paginaActual),
+                totalPaginas
+            );
+
+            items.forEach(x => x.style.display = "none");
+
+            const inicio = (paginaActual - 1) * porPagina;
+            const fin = Math.min(inicio + porPagina, total);
+
+            filtrados.slice(inicio, fin).forEach(x => {
+                x.style.display = "";
+            });
+
+            vacio.style.display = total === 0 ? "" : "none";
+
+            info.textContent = total === 0
+                ? "Sin resultados"
+                : "Mostrando " + (inicio + 1) +
+                  "–" + fin + " de " + total;
+
+            paginas.innerHTML = "";
+
+            if (totalPaginas > 1) {
+                crearBoton("‹", paginaActual - 1,
+                    false, paginaActual === 1);
+
+                for (let p = 1; p <= totalPaginas; p++) {
+                    crearBoton(
+                        String(p),
+                        p,
+                        p === paginaActual,
+                        false
+                    );
+                }
+
+                crearBoton("›", paginaActual + 1,
+                    false, paginaActual === totalPaginas);
             }
-            else
-            {
-                item.style.display = "none";
-            }
 
+            actualizarSeleccion();
+        }
+
+        function aplicarFiltros() {
+            const texto = normalizar(buscar.value);
+
+            filtrados = items.filter(function (item) {
+                const coincideTexto =
+                    normalizar(item.dataset.texto).includes(texto);
+
+                const coincideTipo =
+                    !tipo.value ||
+                    item.dataset.tipo === tipo.value;
+
+                const coincideEstado =
+                    !estado.value ||
+                    item.dataset.estado === estado.value;
+
+                const coincideFecha =
+                    !fecha.value ||
+                    item.dataset.fecha === fecha.value;
+
+                return coincideTexto &&
+                       coincideTipo &&
+                       coincideEstado &&
+                       coincideFecha;
+            });
+
+            paginaActual = 1;
+            mostrarPagina();
+        }
+
+        [buscar, tipo, estado, fecha].forEach(control => {
+            control.addEventListener(
+                control === buscar ? "input" : "change",
+                aplicarFiltros
+            );
         });
-    }
 
-    buscar.addEventListener(
-        "keyup",
-        aplicarFiltros);
+        limpiar.addEventListener("click", function () {
+            buscar.value = "";
+            tipo.value = "";
+            estado.value = "";
+            fecha.value = "";
+            aplicarFiltros();
+        });
 
-    tipo.addEventListener(
-        "change",
-        aplicarFiltros);
+        items.forEach(item => {
+            item.querySelector(".not-check")
+                .addEventListener("change", actualizarSeleccion);
+        });
 
-    grupo.addEventListener(
-        "change",
-        aplicarFiltros);
+        seleccionarTodo.addEventListener("change", function () {
+            items.filter(x => x.style.display !== "none")
+                .forEach(x => {
+                    x.querySelector(".not-check").checked =
+                        seleccionarTodo.checked;
+                });
 
-    fecha.addEventListener(
-        "change",
-        aplicarFiltros);
+            actualizarSeleccion();
+        });
+
+        document.querySelectorAll(".not-single-delete")
+            .forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    if (!confirm(
+                        "¿Deseas eliminar esta notificación? " +
+                        "Esta acción no se puede deshacer."
+                    )) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+        formEliminar.addEventListener("submit", function (e) {
+            const seleccionados = Array.from(
+                document.querySelectorAll(".not-check:checked")
+            ).map(x => x.value);
+
+            if (seleccionados.length === 0) {
+                e.preventDefault();
+                return;
+            }
+
+            if (!confirm(
+                "¿Eliminar " + seleccionados.length +
+                " notificación(es) seleccionada(s)?"
+            )) {
+                e.preventDefault();
+                return;
+            }
+
+            idsEliminar.value = seleccionados.join(",");
+        });
+
+        aplicarFiltros();
 });
-
 </script>
 
-
 @section styles {
-
     <style>
-
-        :root {
-            --cop-primary: #133C55;
-            --cop-secondary: #386FA4;
-            --cop-accent: #59A5D8;
-            --cop-muted: #6c757d;
-            --cop-page-bg: #f4f7fa;
-        }
-
-
         body {
-            background: var(--cop-page-bg);
+            background: #f4f7fa;
         }
 
-
-        /* ENCABEZADO */
-
-        .notifications-header {
-            background: white;
-            border-bottom: 1px solid #e3e8ee;
-            padding: 30px 0;
+        .not-header {
+            background: #fff;
+            border-bottom: 1px solid #e4eaf0;
+            padding: 28px 0;
             margin-bottom: 28px;
         }
 
-
-        .notifications-breadcrumb {
+        .not-breadcrumb {
             display: flex;
             align-items: center;
-            gap: 7px;
-            font-size: .85rem;
-            color: var(--cop-muted);
-            margin-bottom: 12px;
+            gap: 9px;
+            margin-bottom: 15px;
+            font-size: .82rem;
+            color: #64748b;
         }
 
-
-            .notifications-breadcrumb a {
-                color: var(--cop-secondary);
+            .not-breadcrumb a {
+                color: #386fa4;
                 text-decoration: none;
             }
 
-
-                .notifications-breadcrumb a:hover {
-                    text-decoration: underline;
-                }
-
-
-        .notifications-title {
-            color: var(--cop-primary);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-
-        .notifications-subtitle {
-            color: var(--cop-muted);
-            margin: 0;
-        }
-
-
-        /* BOTÓN */
-
-        .btn-outline-cop {
-            border: 1px solid var(--cop-secondary);
-            color: var(--cop-secondary);
-            background: white;
-            font-weight: 500;
-        }
-
-
-            .btn-outline-cop:hover {
-                background: #e6f1fb;
-                border-color: var(--cop-secondary);
-                color: var(--cop-primary);
-            }
-
-
-        /* RESUMEN */
-
-        .summary-card {
-            height: 100%;
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            padding: 17px;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-
-        .summary-icon {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            border-radius: 9px;
-            background: #e6f1fb;
-            color: var(--cop-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-
-        .summary-icon-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .summary-icon-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-
-        .summary-card span {
-            display: block;
-            color: var(--cop-muted);
-            font-size: .8rem;
-        }
-
-
-        .summary-card h2 {
-            color: var(--cop-primary);
-            font-size: 1.4rem;
-            margin: 0;
-            font-weight: 700;
-        }
-
-
-        .warning-value {
-            color: #b8860b !important;
-        }
-
-
-        /* CONTENEDOR */
-
-        .notifications-card {
-            background: white;
-            border: 1px solid #e3e8ee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-
-        /* TOOLBAR */
-
-        .notifications-toolbar {
+        .not-heading {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            padding: 22px;
+            gap: 16px;
         }
 
-
-            .notifications-toolbar h2 {
-                color: var(--cop-primary);
-                font-size: 1.15rem;
-                font-weight: 600;
-                margin-bottom: 4px;
+            .not-heading h1 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #133c55;
+                margin-bottom: 7px;
             }
 
+                .not-heading h1 i {
+                    color: #386fa4;
+                    margin-right: 8px;
+                }
 
-            .notifications-toolbar p {
-                color: var(--cop-muted);
-                font-size: .85rem;
+            .not-heading p {
+                color: #64748b;
+                margin: 0;
+                font-size: .9rem;
+            }
+
+        .not-config-btn {
+            border: 1px solid #cbd8e5;
+            color: #254f72;
+            background: white;
+            white-space: nowrap;
+        }
+
+            .not-config-btn:hover {
+                background: #edf4fa;
+                color: #133c55;
+            }
+
+        .not-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 14px rgba(20, 48, 75, .035);
+        }
+
+        .not-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 23px 25px;
+        }
+
+            .not-toolbar h2 {
+                color: #133c55;
+                font-size: 1.13rem;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .not-toolbar p {
+                color: #718096;
+                font-size: .83rem;
                 margin: 0;
             }
 
-
-        /* BUSCADOR */
-
-        .search-box {
+        .not-search {
             position: relative;
-            width: 260px;
+            width: 290px;
+            flex-shrink: 0;
         }
 
-
-            .search-box i {
+            .not-search i {
                 position: absolute;
-                left: 11px;
+                left: 13px;
                 top: 50%;
                 transform: translateY(-50%);
-                color: var(--cop-muted);
+                color: #8492a6;
             }
 
-
-            .search-box input {
-                padding-left: 34px;
+            .not-search input {
+                padding-left: 38px;
+                border-color: #dfe6ee;
             }
 
-
-        /* FILTROS */
-
-        .notifications-filters {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 15px 22px;
-            background: #f8fafc;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-        }
-
-
-        .filter-label {
-            display: block;
-            color: #53616d;
-            font-size: .78rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-
-        /* LISTA */
-
-        .notifications-list {
-            padding: 0 22px;
-        }
-
-
-        .notification-item {
+        .not-filters {
             display: flex;
-            align-items: flex-start;
+            align-items: end;
+            flex-wrap: wrap;
             gap: 14px;
-            padding: 18px 0;
-            border-bottom: 1px solid #edf0f3;
+            padding: 16px 25px;
+            background: #f8fafc;
+            border-top: 1px solid #edf1f5;
+            border-bottom: 1px solid #edf1f5;
         }
 
+        .not-filter-group {
+            flex: 1;
+            min-width: 160px;
+        }
 
-            .notification-item:last-child {
+            .not-filter-group label {
+                display: block;
+                font-size: .78rem;
+                font-weight: 600;
+                color: #536779;
+                margin-bottom: 6px;
+            }
+
+        .not-clear-btn {
+            border: 1px solid #d9e2ec;
+            background: #fff;
+            color: #526579;
+        }
+
+        .not-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 25px;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .not-select-all {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: .83rem;
+            color: #536779;
+            cursor: pointer;
+        }
+
+        .not-delete-selected {
+            border: 1px solid #f1d0d0;
+            color: #b42332;
+            background: #fff;
+            font-size: .82rem;
+        }
+
+            .not-delete-selected:hover:not(:disabled) {
+                background: #fff0f1;
+                color: #a51d2b;
+            }
+
+        .not-item {
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            border-bottom: 1px solid #edf1f5;
+            transition: background .15s;
+        }
+
+            .not-item:last-child {
                 border-bottom: none;
             }
 
+            .not-item:hover {
+                background: #f8fbfe;
+            }
 
-        .notification-icon {
-            width: 42px;
-            height: 42px;
-            flex-shrink: 0;
-            border-radius: 9px;
+            .not-item.unread {
+                background: #f2f7fc;
+            }
+
+                .not-item.unread:hover {
+                    background: #eaf3fb;
+                }
+
+        .not-item-check {
+            padding-right: 15px;
+        }
+
+        .not-item-link {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+            gap: 15px;
+            padding: 19px 0;
+            text-decoration: none;
+            color: inherit;
+        }
+
+            .not-item-link:hover {
+                text-decoration: none;
+            }
+
+        .not-icon {
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            background: #e8f0f8;
+            color: #386fa4;
             font-size: 1.15rem;
         }
 
-
-        .notification-danger {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-
-        .notification-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-
-        .notification-body {
-            flex: 1;
-        }
-
-
-        .notification-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
-        }
-
-
-            .notification-top h3 {
-                color: var(--cop-primary);
-                font-size: .95rem;
-                font-weight: 600;
-                margin: 0 0 4px;
+            .not-icon.academico {
+                background: #fff0e8;
+                color: #bb6631;
             }
 
+            .not-icon.planes {
+                background: #edf0fc;
+                color: #5867a8;
+            }
 
-            .notification-top p {
-                color: #495057;
-                font-size: .86rem;
+            .not-icon.materiales {
+                background: #e9f6f0;
+                color: #277d56;
+            }
+
+            .not-icon.seguridad {
+                background: #fcecec;
+                color: #b23b45;
+            }
+
+        .not-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .not-item-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+            .not-item-heading h3 {
+                color: #1d3c55;
+                font-size: .93rem;
+                font-weight: 600;
                 margin: 0;
             }
 
+        .not-item.unread h3 {
+            font-weight: 700;
+        }
 
-        /* PRIORIDAD */
+        .not-content p {
+            color: #64748b;
+            font-size: .83rem;
+            margin: 6px 0 9px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
 
-        .priority {
-            display: inline-block;
-            flex-shrink: 0;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: .75rem;
+        .not-unread-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .71rem;
             font-weight: 600;
+            color: #276a9e;
         }
 
-
-        .priority-high {
-            background: #f8d7da;
-            color: #842029;
+        .not-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #387bb2;
         }
 
-
-        .priority-medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-
-        /* PIE DE NOTIFICACIÓN */
-
-        .notification-footer {
+        .not-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 9px;
+            gap: 14px;
+            align-items: center;
+            color: #8190a0;
+            font-size: .74rem;
         }
 
-
-            .notification-footer span {
-                color: var(--cop-muted);
-                font-size: .75rem;
-            }
-
-
-        /* INPUTS */
-
-        .form-control,
-        .form-select {
-            border-color: #dfe4e8;
+        .not-type {
+            background: #eef2f6;
+            color: #516579;
+            border-radius: 5px;
+            padding: 3px 8px;
         }
 
+        .not-chevron {
+            color: #9caabb;
+            padding: 0 4px;
+        }
 
-            .form-control:focus,
-            .form-select:focus {
-                border-color: var(--cop-accent);
-                box-shadow: 0 0 0 .2rem rgba(89, 165, 216, .15);
+        .not-trash {
+            border: none;
+            background: transparent;
+            color: #9aa6b3;
+            padding: 9px;
+            border-radius: 7px;
+        }
+
+            .not-trash:hover {
+                background: #fcecee;
+                color: #c03544;
             }
 
+        .not-empty {
+            text-align: center;
+            padding: 55px 20px;
+            color: #8290a0;
+        }
 
-        /* RESPONSIVE */
+            .not-empty > i {
+                display: block;
+                font-size: 2.6rem;
+                margin-bottom: 13px;
+            }
+
+            .not-empty h3 {
+                color: #536779;
+                font-size: 1.05rem;
+            }
+
+        .not-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 17px 25px;
+            border-top: 1px solid #edf1f5;
+            font-size: .8rem;
+            color: #718096;
+        }
+
+            .not-pagination .page-link {
+                color: #386fa4;
+            }
+
+            .not-pagination .active .page-link {
+                background: #386fa4;
+                border-color: #386fa4;
+                color: #fff;
+            }
 
         @@media (max-width: 768px) {
-
-            .notifications-toolbar {
+            .not-heading, .not-toolbar {
                 flex-direction: column;
                 align-items: stretch;
             }
 
-
-            .search-box {
+            .not-search {
                 width: 100%;
             }
 
-
-            .notifications-filters {
-                grid-template-columns: 1fr;
+            .not-filters {
+                flex-direction: column;
             }
 
+            .not-filter-group {
+                width: 100%;
+            }
 
-            .notification-top {
-                flex-direction: column;
-                gap: 8px;
+            .not-item {
+                padding: 0 12px;
+            }
+
+            .not-item-link {
+                gap: 10px;
+            }
+
+            .not-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .not-chevron {
+                display: none;
+            }
+
+            .not-actions {
+                padding: 12px;
+            }
+
+            .not-pagination {
+                padding: 15px;
             }
         }
     </style>
-
 }

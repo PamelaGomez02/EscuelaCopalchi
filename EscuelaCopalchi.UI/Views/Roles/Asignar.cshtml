@@ -14,7 +14,7 @@
             StringComparison.OrdinalIgnoreCase);
 }
 
-<main>
+<main class="assign-page">
 
     <!-- ENCABEZADO -->
 
@@ -201,6 +201,11 @@
                         </div>
                     }
 
+                </div>
+
+                <div class="assign-pagination" id="paginacionUsuarios" hidden>
+                    <span class="assign-pagination-info" id="resumenPaginacion"></span>
+                    <nav class="assign-pages" id="botonesPaginacion" aria-label="Páginas de usuarios"></nav>
                 </div>
 
                 <div class="assign-help"><i class="bi bi-info-circle me-2"></i>Revisa la selección antes de guardar. Los cambios se aplicarán al confirmar la asignación.</div>
@@ -441,31 +446,253 @@
             }
 
         /* Diseño institucional compartido */
-        .cop-back-btn { border-radius: 9px; padding: .55rem 1rem; font-weight: 600; background: #fff; white-space: nowrap; }
-        .cop-back-btn:hover { background: #edf3f8; color: #133C55; border-color: #386FA4; }
-        .roles-header .roles-title i { color: #386FA4; }
-        .roles-header { box-shadow: 0 2px 12px rgba(19,60,85,.035); }
-        .assign-card, .permissions-card, .roles-card, .form-card { box-shadow: 0 5px 20px rgba(19,60,85,.055); }
-        @@media (max-width: 576px) { .cop-back-btn { width: auto; } }
+        .cop-back-btn {
+            border-radius: 9px;
+            padding: .55rem 1rem;
+            font-weight: 600;
+            background: #fff;
+            white-space: nowrap;
+        }
 
-        .assign-card { max-width: 980px; padding: 28px; }
-        .assign-section-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin:22px 0 14px; }
-        .assign-section-heading h3 { font-size:1.13rem; font-weight:700; color:#133C55; margin:0 0 4px; }
-        .assign-section-heading p { font-size:.87rem; color:#6c757d; margin:0; }
-        .assign-counter { background:#e6f1fb; color:#133C55; border-radius:30px; padding:8px 13px; font-size:.82rem; font-weight:700; }
-        .user-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; max-height:470px; overflow-y:auto; padding:4px; }
-        .user-item { border:1px solid #e2e9ef; border-radius:10px; background:#fff; padding:15px; min-width:0; transition:background .15s,border-color .15s,box-shadow .15s; }
-        .user-item:hover { background:#f7fbff; border-color:#b9d3e7; }
-        .user-item:focus-within { outline:2px solid #386FA4; outline-offset:2px; }
-        .user-item.is-selected { background:#eef6fd; border-color:#386FA4; box-shadow:0 0 0 1px rgba(56,111,164,.12); }
-        .user-item .usuario-check { width:19px; height:19px; accent-color:#133C55; }
-        .assign-help { margin-top:15px; padding:12px 14px; background:#f5f8fb; border-radius:9px; color:#526477; font-size:.83rem; }
-        .form-actions { position:sticky; bottom:0; background:#fff; z-index:2; padding-bottom:5px; }
-        @@media (max-width: 767px) { .user-list { grid-template-columns:1fr; } .assign-card { padding:18px; } .form-actions { flex-wrap:wrap; } }
+            .cop-back-btn:hover {
+                background: #edf3f8;
+                color: #133C55;
+                border-color: #386FA4;
+            }
 
-        .cop-header-nav { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:10px; }
-        .cop-header-nav .roles-breadcrumb { margin:0; flex-wrap:wrap; }
-        @@media (max-width: 576px) { .cop-header-nav { align-items:flex-start; } }
+        .roles-header .roles-title i {
+            color: #386FA4;
+        }
+
+        .roles-header {
+            box-shadow: 0 2px 12px rgba(19,60,85,.035);
+        }
+
+        .assign-card, .permissions-card, .roles-card, .form-card {
+            box-shadow: 0 5px 20px rgba(19,60,85,.055);
+        }
+
+        @@media (max-width: 576px) {
+            .cop-back-btn {
+                width: auto;
+            }
+        }
+
+        .assign-card {
+            max-width: 980px;
+            padding: 28px;
+        }
+
+        .assign-section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 22px 0 14px;
+        }
+
+            .assign-section-heading h3 {
+                font-size: 1.13rem;
+                font-weight: 700;
+                color: #133C55;
+                margin: 0 0 4px;
+            }
+
+            .assign-section-heading p {
+                font-size: .87rem;
+                color: #6c757d;
+                margin: 0;
+            }
+
+        .assign-counter {
+            background: #e6f1fb;
+            color: #133C55;
+            border-radius: 30px;
+            padding: 8px 13px;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .user-list {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 10px;
+            max-height: 470px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .user-item {
+            border: 1px solid #e2e9ef;
+            border-radius: 10px;
+            background: #fff;
+            padding: 15px;
+            min-width: 0;
+            transition: background .15s,border-color .15s,box-shadow .15s;
+        }
+
+            .user-item:hover {
+                background: #f7fbff;
+                border-color: #b9d3e7;
+            }
+
+            .user-item:focus-within {
+                outline: 2px solid #386FA4;
+                outline-offset: 2px;
+            }
+
+            .user-item.is-selected {
+                background: #eef6fd;
+                border-color: #386FA4;
+                box-shadow: 0 0 0 1px rgba(56,111,164,.12);
+            }
+
+            .user-item .usuario-check {
+                width: 19px;
+                height: 19px;
+                accent-color: #133C55;
+            }
+
+        .assign-help {
+            margin-top: 15px;
+            padding: 12px 14px;
+            background: #f5f8fb;
+            border-radius: 9px;
+            color: #526477;
+            font-size: .83rem;
+        }
+
+        .form-actions {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            z-index: 2;
+            padding-bottom: 5px;
+        }
+
+        @@media (max-width: 767px) {
+            .user-list {
+                grid-template-columns: 1fr;
+            }
+
+            .assign-card {
+                padding: 18px;
+            }
+
+            .form-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        .cop-header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+
+            .cop-header-nav .roles-breadcrumb {
+                margin: 0;
+                flex-wrap: wrap;
+            }
+
+        @@media (max-width: 576px) {
+            .cop-header-nav {
+                align-items: flex-start;
+            }
+        }
+
+        /* Contenedor único para encabezado y contenido: compatible con sidebar */
+        .assign-page {
+            width: 100%;
+            min-width: 0;
+        }
+
+            .assign-page .roles-header {
+                padding-top: 24px;
+            }
+
+            .assign-page .assign-card {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+
+            .assign-page .user-list {
+                max-height: none;
+                overflow: visible;
+                align-content: start;
+            }
+
+            .assign-page .form-actions {
+                position: static;
+            }
+
+        .assign-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 18px 0 5px;
+        }
+
+            .assign-pagination[hidden] {
+                display: none !important;
+            }
+
+        .assign-pagination-info {
+            color: #718092;
+            font-size: .86rem;
+        }
+
+        .assign-pages {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .assign-page-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: white;
+            color: #4b6479;
+            font-weight: 650;
+            font-size: .86rem;
+            cursor: pointer;
+        }
+
+            .assign-page-btn:hover:not(:disabled) {
+                background: #edf4f9;
+                color: #133c55;
+            }
+
+            .assign-page-btn.active {
+                background: #133c55;
+                color: white;
+                border-color: #133c55;
+            }
+
+            .assign-page-btn:disabled {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+
+        @@media (max-width:767px) {
+            .assign-pagination {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
     </style>
 
 }
@@ -511,32 +738,75 @@
         actualizarSeleccion();
 
         // =====================================
-        // BUSCAR USUARIOS
+        // PAGINACIÓN LOCAL: 10 USUARIOS POR PÁGINA
+        // Se conservan todos los checkboxes en el formulario
+        // aunque estén ocultos en otra página.
         // =====================================
+        const porPagina = 10;
+        let paginaActual = 1;
+        const resumen = document.getElementById("resumenPaginacion");
+        const contenedorPaginas = document.getElementById("paginacionUsuarios");
+        const botonesPaginas = document.getElementById("botonesPaginacion");
+
+        function crearBoton(texto, destino, deshabilitado, activo, titulo) {
+            const boton = document.createElement("button");
+            boton.type = "button";
+            boton.className = "assign-page-btn" + (activo ? " active" : "");
+            boton.textContent = texto;
+            boton.title = titulo || "Página " + destino;
+            boton.disabled = deshabilitado || activo;
+            if (activo) boton.setAttribute("aria-current", "page");
+            boton.addEventListener("click", function () {
+                paginaActual = destino;
+                actualizarListado();
+            });
+            botonesPaginas.appendChild(boton);
+        }
+
+        function actualizarListado() {
+            const texto = buscador ? buscador.value.toLocaleLowerCase().trim() : "";
+            const coincidentes = Array.from(usuarios).filter(function (item) {
+                return item.textContent.toLocaleLowerCase().includes(texto);
+            });
+            const total = coincidentes.length;
+            const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+            paginaActual = Math.min(Math.max(1, paginaActual), totalPaginas);
+            const primero = (paginaActual - 1) * porPagina;
+            const visibles = coincidentes.slice(primero, primero + porPagina);
+
+            usuarios.forEach(function (item) { item.style.display = "none"; });
+            visibles.forEach(function (item) { item.style.display = ""; });
+
+            if (resumen) {
+                resumen.textContent = "Mostrando " + (total ? primero + 1 : 0) +
+                    "–" + (total ? Math.min(primero + porPagina, total) : 0) +
+                    " de " + total + " usuarios · Página " + paginaActual +
+                    " de " + totalPaginas;
+            }
+            if (contenedorPaginas) contenedorPaginas.hidden = total <= porPagina;
+            if (!botonesPaginas) return;
+            botonesPaginas.innerHTML = "";
+            if (total <= porPagina) return;
+
+            crearBoton("«", 1, paginaActual === 1, false, "Primera página");
+            crearBoton("‹", paginaActual - 1, paginaActual === 1, false, "Anterior");
+            let desde = Math.max(1, paginaActual - 2);
+            let hasta = Math.min(totalPaginas, desde + 4);
+            desde = Math.max(1, hasta - 4);
+            for (let n = desde; n <= hasta; n++) {
+                crearBoton(String(n), n, false, n === paginaActual, "Página " + n);
+            }
+            crearBoton("›", paginaActual + 1, paginaActual === totalPaginas, false, "Siguiente");
+            crearBoton("»", totalPaginas, paginaActual === totalPaginas, false, "Última página");
+        }
 
         if (buscador) {
-
             buscador.addEventListener("input", function () {
-
-                const texto = this.value
-                    .toLowerCase()
-                    .trim();
-
-                usuarios.forEach(function (usuario) {
-
-                    const contenido =
-                        usuario.innerText.toLowerCase();
-
-                    usuario.style.display =
-                        contenido.includes(texto)
-                            ? ""
-                            : "none";
-
-                });
-
+                paginaActual = 1;
+                actualizarListado();
             });
-
         }
+        actualizarListado();
 
 
         // =====================================

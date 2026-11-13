@@ -7,21 +7,17 @@
     <style>
         .traslado-planes {
             background: #f4f7fa;
-            padding: 0 16px 35px;
+            min-width: 0;
+            padding-bottom: 35px;
         }
 
-            .traslado-planes > :not(.planes-header) {
-                max-width: 1296px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
             .traslado-planes .planes-header {
-                padding: 16px 0 24px;
+                padding: 0 0 24px;
             }
 
-                .traslado-planes .planes-header .container {
-                    max-width: 1320px;
+                .traslado-planes .planes-header > .container {
+                    max-width: none;
+                    padding: 0;
                 }
 
             .traslado-planes .planes-header-layout {
@@ -64,10 +60,78 @@
                     border-color: #386fa4;
                     color: #133c55;
                 }
+
+        .auditoria-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 22px;
+            margin-top: 12px;
+            border-top: 1px solid #edf1f5;
+        }
+
+        .auditoria-pagination-info {
+            font-size: .87rem;
+            color: #718092;
+        }
+
+            .auditoria-pagination-info strong {
+                color: #34495e;
+            }
+
+        .auditoria-pages {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auditoria-page-btn {
+            min-width: 37px;
+            height: 37px;
+            padding: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b6479;
+            text-decoration: none;
+            font-size: .86rem;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+            .auditoria-page-btn:hover:not(:disabled) {
+                background: #edf4f9;
+                border-color: #b7d0e0;
+                color: #173b53;
+            }
+
+            .auditoria-page-btn.active {
+                background: #173b53;
+                border-color: #173b53;
+                color: #fff;
+            }
+
+            .auditoria-page-btn:disabled {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+
+        @@media (max-width:768px) {
+            .traslado-planes {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+        }
     </style>
 
 }
-<main class="traslado-planes">
+<main class="container auditoria-page traslado-planes py-4">
 
     <section class="planes-header">
         <div class="container">
@@ -136,7 +200,7 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4"><small id="rpTrasladoRango" class="text-muted"></small><div id="rpTrasladoPaginas" class="d-flex gap-1"></div></div>
+    <div class="auditoria-pagination mb-4"><div id="rpTrasladoRango" class="auditoria-pagination-info"></div><nav id="rpTrasladoPaginas" class="auditoria-pages" aria-label="Paginación de estudiantes"></nav></div>
     <h5 class="mb-3" style="color:#133C55;font-weight:700">Cartas registradas</h5>
     <div class="table-responsive gn-table-wrap mb-4">
         <table class="table align-middle gn-table" id="rpCartasTraslado">
@@ -165,7 +229,7 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4"><small id="rpCartasRango" class="text-muted"></small><div id="rpCartasPaginas" class="d-flex gap-1"></div></div>
+    <div class="auditoria-pagination mb-4"><div id="rpCartasRango" class="auditoria-pagination-info"></div><nav id="rpCartasPaginas" class="auditoria-pages" aria-label="Paginación de cartas"></nav></div>
 </main>
 
 <!-- Generar carta -->
@@ -236,41 +300,70 @@
 
 @section scripts {
     <script>
-                (function () {
-                    function enlazar(idModal, idCampo, idNombre) {
-                        document.getElementById(idModal).addEventListener('show.bs.modal', function (ev) {
-                            var b = ev.relatedTarget;
-                            document.getElementById(idCampo).value = b.getAttribute('data-id');
-                            document.getElementById(idNombre).textContent = b.getAttribute('data-nombre');
-                        });
-                    }
-                    function paginar(tablaId, rangoId, navId, porPagina) {
-                        var tabla = document.getElementById(tablaId);
-                        if (!tabla) return;
-                        var filas = Array.prototype.slice.call(tabla.querySelectorAll('tbody tr')).filter(function(tr) { return tr.querySelectorAll('td').length > 1 && !tr.querySelector('td[colspan]'); });
-                        var pagina = 1;
-                        function pintar() {
-                            var total = Math.max(1, Math.ceil(filas.length / porPagina));
-                            pagina = Math.min(pagina, total);
-                            filas.forEach(function(tr,i) { tr.style.display = (i >= (pagina-1)*porPagina && i < pagina*porPagina) ? '' : 'none'; });
-                            document.getElementById(rangoId).textContent = filas.length ? ('Mostrando ' + ((pagina-1)*porPagina+1) + '–' + Math.min(pagina*porPagina,filas.length) + ' de ' + filas.length) : 'Sin registros';
-                            var nav=document.getElementById(navId);nav.innerHTML='';
-                            function boton(texto,n,disabled,activo) { var b=document.createElement('button'); b.type='button';b.className='btn btn-sm '+(activo?'btn-primary':'btn-outline-secondary');b.textContent=texto;b.disabled=disabled;b.addEventListener('click',function(){pagina=n;pintar();});nav.appendChild(b); }
-                            boton('Anterior',pagina-1,pagina===1,false);
-                            for(var n=Math.max(1,pagina-2);n<=Math.min(total,pagina+2);n++) boton(String(n),n,false,n===pagina);
-                            boton('Siguiente',pagina+1,pagina===total,false);
-                        }
-                        pintar();
-                    }
-                    paginar('rpEstudiantesTraslado','rpTrasladoRango','rpTrasladoPaginas',10);
-                    paginar('rpCartasTraslado','rpCartasRango','rpCartasPaginas',10);
-                    enlazar('mdGenerar', 'gId', 'gNombre');
-                    enlazar('mdCargar', 'cId', 'cNombre');
+                                (function () {
+                                    function enlazar(idModal, idCampo, idNombre) {
+                                        document.getElementById(idModal).addEventListener('show.bs.modal', function (ev) {
+                                            var b = ev.relatedTarget;
+                                            document.getElementById(idCampo).value = b.getAttribute('data-id');
+                                            document.getElementById(idNombre).textContent = b.getAttribute('data-nombre');
+                                        });
+                                    }
+                                    function paginar(tablaId, rangoId, navId, porPagina) {
+                                        var tabla = document.getElementById(tablaId);
+                                        var rango = document.getElementById(rangoId);
+                                        var nav = document.getElementById(navId);
+                                        if (!tabla || !rango || !nav) return;
+                                        var filas = Array.prototype.slice.call(tabla.querySelectorAll('tbody tr')).filter(function (tr) {
+                                            return !tr.querySelector('td[colspan]');
+                                        });
+                                        var pagina = 1;
+                                        function pintar() {
+                                            var totalRegistros = filas.length;
+                                            var totalPaginas = Math.max(1, Math.ceil(totalRegistros / porPagina));
+                                            pagina = Math.max(1, Math.min(pagina, totalPaginas));
+                                            var inicio = (pagina - 1) * porPagina;
+                                            filas.forEach(function (tr, i) {
+                                                tr.style.display = i >= inicio && i < inicio + porPagina ? '' : 'none';
+                                            });
+                                            rango.innerHTML = 'Mostrando <strong>' + (totalRegistros ? inicio + 1 : 0) +
+                                                '–' + (totalRegistros ? Math.min(inicio + porPagina, totalRegistros) : 0) +
+                                                '</strong> de <strong>' + totalRegistros + '</strong> registros · Página <strong>' +
+                                                pagina + '</strong> de <strong>' + totalPaginas + '</strong>';
+                                            nav.innerHTML = '';
+                                            if (totalPaginas <= 1) return;
+                                            function boton(texto, destino, deshabilitado, activo, etiqueta) {
+                                                var b = document.createElement('button');
+                                                b.type = 'button';
+                                                b.className = 'auditoria-page-btn' + (activo ? ' active' : '');
+                                                b.textContent = texto;
+                                                b.disabled = deshabilitado;
+                                                b.setAttribute('aria-label', etiqueta);
+                                                if (activo) b.setAttribute('aria-current', 'page');
+                                                b.addEventListener('click', function () { pagina = destino; pintar(); });
+                                                nav.appendChild(b);
+                                            }
+                                            boton('«', 1, pagina === 1, false, 'Primera página');
+                                            boton('‹', pagina - 1, pagina === 1, false, 'Página anterior');
+                                            var desde = Math.max(1, pagina - 2);
+                                            var hasta = Math.min(totalPaginas, desde + 4);
+                                            desde = Math.max(1, hasta - 4);
+                                            for (var n = desde; n <= hasta; n++) {
+                                                boton(String(n), n, false, n === pagina, 'Página ' + n);
+                                            }
+                                            boton('›', pagina + 1, pagina === totalPaginas, false, 'Página siguiente');
+                                            boton('»', totalPaginas, pagina === totalPaginas, false, 'Última página');
+                                        }
+                                        pintar();
+                                    }
+                                    paginar('rpEstudiantesTraslado','rpTrasladoRango','rpTrasladoPaginas',10);
+                                    paginar('rpCartasTraslado','rpCartasRango','rpCartasPaginas',10);
+                                    enlazar('mdGenerar', 'gId', 'gNombre');
+                                    enlazar('mdCargar', 'cId', 'cNombre');
 
-                    // la carta generada se descarga; luego se recarga la página para ver el registro
-                    document.getElementById('fGenerar').addEventListener('submit', function () {
-                        setTimeout(function () { window.location.reload(); }, 2500);
-                    });
-                })();
+                                    // la carta generada se descarga; luego se recarga la página para ver el registro
+                                    document.getElementById('fGenerar').addEventListener('submit', function () {
+                                        setTimeout(function () { window.location.reload(); }, 2500);
+                                    });
+                                })();
     </script>
 }

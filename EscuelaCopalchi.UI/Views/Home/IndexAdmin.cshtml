@@ -1,21 +1,37 @@
 @model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
 @{ ViewBag.Title = "Administración"; }
 <div class="cop-dashboard">
-  <section class="cop-hero"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">ESCUELA COPALCHÍ · ADMINISTRACIÓN</div><h1>Panel institucional</h1><p>Bienvenido, @Model.Nombre. Supervisa la actividad de la institución.</p></div><div class="cop-hero-badge"><i class="bi bi-shield-check"></i> @Model.Rol</div></div></div></section>
-  <div class="container py-4">
-    <div class="cop-heading"><h2>Resumen general</h2><span>Información actualizada</span></div>
-    <div class="row g-3 mb-4">
-      @if (Model.Estudiantes.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Estudiantes activos</span><strong>@Model.Estudiantes</strong><small>Registros institucionales</small></div></div></div> }
-      @if (Model.Usuarios.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-people"></i><div><span>Usuarios activos</span><strong>@Model.Usuarios</strong><small>Cuentas habilitadas</small></div></div></div> }
-      @if (Model.Asistencia.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-calendar-check"></i><div><span>Asistencia</span><strong>@Model.Asistencia.Value.ToString("0.#")%</strong><small>Últimos 30 días</small></div></div></div> }
-      @if (Model.Alertas.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-exclamation-circle"></i><div><span>Alertas académicas</span><strong>@Model.Alertas</strong><small>Sin atender</small></div></div></div> }
-      @if (Model.Grupos.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-diagram-3"></i><div><span>Grupos activos</span><strong>@Model.Grupos</strong><small>Grupos habilitados</small></div></div></div> }
-      @if (Model.PromedioNotas.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-clipboard-data"></i><div><span>Promedio de evaluaciones</span><strong>@Model.PromedioNotas.Value.ToString("0.#")%</strong><small>Notas registradas normalizadas</small></div></div></div> }
-      @if (Model.PlanesPendientes.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-journal-text"></i><div><span>Planes pendientes</span><strong>@Model.PlanesPendientes</strong><small>Por revisar</small></div></div></div> }
-      @if (Model.StockBajo.HasValue) { <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-box-seam"></i><div><span>Stock bajo</span><strong>@Model.StockBajo</strong><small>Productos bajo el mínimo</small></div></div></div> }
-      <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-bell"></i><div><span>Mis notificaciones</span><strong>@Model.Notificaciones</strong><small>Sin leer</small></div></div></div>
+    <section class="cop-hero"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">ESCUELA COPALCHÍ · ADMINISTRACIÓN</div><h1>Panel institucional</h1><p>Bienvenido, @Model.Nombre. Supervisa la actividad de la institución.</p></div><div class="cop-hero-badge"><i class="bi bi-shield-check"></i> @Model.Rol</div></div></div></section>
+    <div class="container py-4">
+        <div class="cop-editor-bar"><div><strong><i class="bi bi-grid-1x2"></i> Mi panel</strong><span>Organiza tus secciones según tus preferencias</span></div><div class="cop-editor-actions"><button type="button" id="copEditar" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders"></i> Personalizar panel</button><button type="button" id="copRestaurar" class="btn btn-outline-secondary btn-sm" hidden>Restablecer</button><button type="button" id="copGuardar" class="btn btn-primary btn-sm" hidden><i class="bi bi-check2"></i> Guardar distribución</button></div></div>
+        <div id="copWidgets" class="cop-widgets" data-user="@Session["IdUsuario"]" data-role="admin">
+            <div class="cop-widget" data-widget="summary" data-title="Resumen institucional">
+                <div class="cop-heading"><h2>Resumen institucional</h2><span>Información actualizada</span></div>
+                <div class="row g-3 mb-4">
+                    @if (Model.Estudiantes.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Estudiantes activos</span><strong>@Model.Estudiantes</strong><small>Registros institucionales</small></div></div></div>}
+                    @if (Model.Usuarios.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-people"></i><div><span>Usuarios activos</span><strong>@Model.Usuarios</strong><small>Cuentas habilitadas</small></div></div></div>}
+                    @if (Model.Asistencia.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-calendar-check"></i><div><span>Asistencia</span><strong>@Model.Asistencia.Value.ToString("0.#")%</strong><small>Últimos 30 días</small></div></div></div>}
+                    @if (Model.Alertas.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-exclamation-circle"></i><div><span>Alertas académicas</span><strong>@Model.Alertas</strong><small>Sin atender</small></div></div></div>}
+                    @if (Model.Grupos.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-diagram-3"></i><div><span>Grupos activos</span><strong>@Model.Grupos</strong><small>Grupos habilitados</small></div></div></div>}
+                    @if (Model.PromedioNotas.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-clipboard-data"></i><div><span>Promedio de evaluaciones</span><strong>@Model.PromedioNotas.Value.ToString("0.#")%</strong><small>Notas registradas normalizadas</small></div></div></div>}
+                    @if (Model.PlanesPendientes.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-journal-text"></i><div><span>Planes pendientes</span><strong>@Model.PlanesPendientes</strong><small>Por revisar</small></div></div></div>}
+                    @if (Model.StockBajo.HasValue)
+                    {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-box-seam"></i><div><span>Stock bajo</span><strong>@Model.StockBajo</strong><small>Productos bajo el mínimo</small></div></div></div>}
+                    <div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-bell"></i><div><span>Mis notificaciones</span><strong>@Model.Notificaciones</strong><small>Sin leer</small></div></div></div>
+                </div>
+            </div>
+
+
+            @Html.Partial("_HomeDashboardContenido", Model)
+        </div>
     </div>
-    @Html.Partial("_HomeDashboardContenido", Model)
-  </div>
 </div>
 @Html.Partial("_HomeDashboardEstilos")
+@Html.Partial("_HomeDashboardEditor")

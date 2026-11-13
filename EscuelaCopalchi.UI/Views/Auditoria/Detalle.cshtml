@@ -1,0 +1,49 @@
+@model EscuelaCopalchi.UI.Models.Auditoria.AuditoriaRegistro
+@{ ViewBag.Title = "Detalle de auditoría"; }
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+        <h2 class="mb-0">
+            <i class="bi bi-shield-lock me-2"></i>
+            Registro de auditoría #@Model.IdAuditoria
+        </h2>
+
+        <div class="d-flex align-items-center" style="gap: 12px;">
+
+            <a href="@Url.Action("Index", "Auditoria")"
+               class="btn btn-outline-secondary"
+               style="border-radius: 9px; padding: 9px 16px;">
+
+                <i class="bi bi-arrow-left me-1"></i>
+                Volver
+            </a>
+
+            <span class="badge bg-secondary"
+                  style="padding: 12px 14px; border-radius: 9px;">
+
+                <i class="bi bi-lock me-1"></i>
+                Solo lectura
+            </span>
+
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm"><div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Fecha y hora</dt><dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+            <dt class="col-sm-3">Usuario</dt><dd class="col-sm-9">@Model.Responsable (@(Model.IdUsuario.HasValue ? Model.IdUsuario.Value.ToString() : "Sin identificar"))</dd>
+            <dt class="col-sm-3">Rol</dt><dd class="col-sm-9">@(Model.Rol ?? "No registrado")</dd>
+            <dt class="col-sm-3">Acción</dt><dd class="col-sm-9">@Model.Accion</dd>
+            <dt class="col-sm-3">Módulo</dt><dd class="col-sm-9">@Model.Modulo</dd>
+            <dt class="col-sm-3">Tabla afectada</dt><dd class="col-sm-9">@(Model.TablaAfectada ?? "—")</dd>
+            <dt class="col-sm-3">Registro afectado</dt><dd class="col-sm-9">@(Model.RegistroAfectado ?? "—")</dd>
+            <dt class="col-sm-3">Resultado</dt><dd class="col-sm-9">@Model.Resultado</dd>
+            <dt class="col-sm-3">Integridad</dt><dd class="col-sm-9">@(Model.RegistroIncompleto ? "Datos incompletos" : "Completo")</dd>
+            <dt class="col-sm-3">Dirección IP</dt><dd class="col-sm-9">@(Model.DireccionIp ?? "No registrada")</dd>
+            <dt class="col-sm-3">Descripción</dt><dd class="col-sm-9" style="white-space:pre-wrap">@Model.Descripcion</dd>
+        </dl>
+       
+    </div></div>
+</div>

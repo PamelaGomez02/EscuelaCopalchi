@@ -1,0 +1,134 @@
+<style>
+    .cop-editor-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        background: #fff;
+        border: 1px solid #dce6ef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 14px rgba(19,60,85,.035)
+    }
+
+        .cop-editor-bar > div:first-child {
+            display: flex;
+            flex-direction: column;
+            gap: 3px
+        }
+
+        .cop-editor-bar strong {
+            color: #133c55;
+            font-size: 1rem
+        }
+
+        .cop-editor-bar span {
+            font-size: .82rem;
+            color: #64748b
+        }
+
+    .cop-editor-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap
+    }
+
+    .cop-widget {
+        position: relative;
+        min-width: 0
+    }
+
+        .cop-widget[hidden] {
+            display: none !important
+        }
+
+    .cop-widget-controls {
+        display: none;
+        align-items: center;
+        gap: 7px;
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        margin: 0 0 12px;
+        background: #eaf2f8;
+        border: 1px dashed #7ba9c4;
+        border-radius: 9px
+    }
+
+        .cop-widget-controls strong {
+            margin-right: auto;
+            color: #133c55;
+            font-size: .88rem
+        }
+
+        .cop-widget-controls button {
+            background: #fff;
+            border: 1px solid #b8cfdf;
+            border-radius: 6px;
+            color: #133c55;
+            padding: 5px 9px
+        }
+
+    .cop-widgets.cop-editing > .cop-widget {
+        border: 1px dashed #8db3c9;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 16px;
+        background: rgba(255,255,255,.4)
+    }
+
+    .cop-widgets.cop-editing .cop-widget-controls {
+        display: flex
+    }
+
+    .cop-widget.cop-hidden-preview {
+        opacity: .55
+    }
+
+    .cop-widgets.cop-editing .cop-widget.cop-hidden-preview {
+        display: block !important
+    }
+
+    .cop-widgets:not(.cop-editing) .cop-widget.cop-hidden-preview {
+        display: none !important
+    }
+
+    .cop-editor-status {
+        font-size: .8rem;
+        color: #64748b
+    }
+</style>
+<script>
+(function(){
+     function iniciar(){
+      var root=document.getElementById('copWidgets'),editar=document.getElementById('copEditar'),guardar=document.getElementById('copGuardar'),restaurar=document.getElementById('copRestaurar');
+      if(!root||!editar||!guardar||!restaurar)return;
+      var widgets=Array.prototype.slice.call(root.querySelectorAll(':scope > .cop-widget'));
+      var key='copalchi.home.layout.v1.'+(root.getAttribute('data-user')||'anon')+'.'+(root.getAttribute('data-role')||'usuario');
+      var defaults=widgets.map(function(w){return w.dataset.widget;});
+      var editing=false;
+      function obtener(){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(e){return null;}}
+      function aplicar(config){
+       var order=config&&Array.isArray(config.order)?config.order:defaults;
+       order.forEach(function(id){var w=widgets.find(function(x){return x.dataset.widget===id;});if(w)root.appendChild(w);});
+       widgets.forEach(function(w){var hidden=!!(config&&Array.isArray(config.hidden)&&config.hidden.indexOf(w.dataset.widget)>=0);w.classList.toggle('cop-hidden-preview',hidden);w.hidden=hidden&&!editing;});
+       // Restore configured order after ensuring any newly added widgets remain available.
+       order.forEach(function(id){var w=widgets.find(function(x){return x.dataset.widget===id;});if(w)root.appendChild(w);});
+      }
+      widgets.forEach(function(w){
+       var bar=document.createElement('div');bar.className='cop-widget-controls';
+       var title=document.createElement('strong');title.textContent=w.dataset.title||'Sección';bar.appendChild(title);
+       [['↑','Subir',-1],['↓','Bajar',1]].forEach(function(item){var b=document.createElement('button');b.type='button';b.textContent=item[0];b.title=item[1];b.setAttribute('aria-label',item[1]+' '+title.textContent);b.addEventListener('click',function(){var siblings=Array.prototype.slice.call(root.querySelectorAll(':scope > .cop-widget'));var i=siblings.indexOf(w),j=i+item[2];if(j<0||j>=siblings.length)return;if(item[2]<0)root.insertBefore(w,siblings[j]);else root.insertBefore(siblings[j],w);});bar.appendChild(b);});
+       var toggle=document.createElement('button');toggle.type='button';toggle.textContent='Ocultar';toggle.addEventListener('click',function(){var hide=!w.classList.contains('cop-hidden-preview');w.classList.toggle('cop-hidden-preview',hide);toggle.textContent=hide?'Mostrar':'Ocultar';});bar.appendChild(toggle);w.insertBefore(bar,w.firstChild);
+      });
+      function sincronizar(){widgets.forEach(function(w){var b=w.querySelector('.cop-widget-controls button:last-child');if(b)b.textContent=w.classList.contains('cop-hidden-preview')?'Mostrar':'Ocultar';});}
+      function modo(on){editing=on;root.classList.toggle('cop-editing',on);guardar.hidden=!on;restaurar.hidden=!on;editar.hidden=on;widgets.forEach(function(w){w.hidden=!on&&w.classList.contains('cop-hidden-preview');});sincronizar();}
+      aplicar(obtener());sincronizar();
+      editar.addEventListener('click',function(){modo(true);});
+      guardar.addEventListener('click',function(){var ordered=Array.prototype.slice.call(root.querySelectorAll(':scope > .cop-widget'));var data={order:ordered.map(function(w){return w.dataset.widget;}),hidden:ordered.filter(function(w){return w.classList.contains('cop-hidden-preview');}).map(function(w){return w.dataset.widget;})};try{localStorage.setItem(key,JSON.stringify(data));}catch(e){alert('No fue posible guardar en este navegador.');return;}modo(false);});
+      restaurar.addEventListener('click',function(){try{localStorage.removeItem(key);}catch(e){}aplicar(null);modo(false);});
+     }
+     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar);else iniciar();
+})();
+</script>
