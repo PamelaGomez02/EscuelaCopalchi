@@ -1,0 +1,13 @@
+@model EscuelaCopalchi.UI.Models.InventarioProductoViewModel
+@{ ViewBag.Title = "Editar producto"; }
+<div class="container py-4">
+ <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3"><div><h2 class="repo-title"><i class="bi bi-pencil-square me-2"></i>Editar producto</h2><p class="text-muted mb-0">Actualizá la información del producto seleccionado.</p></div><a href="@Url.Action("Index","InventarioLimpieza")" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Volver al inventario</a></div>
+ <div class="form-card"><h5 class="repo-section-title"><i class="bi bi-box-seam me-2"></i>Información del producto</h5><p class="text-muted">Los campos marcados con * son obligatorios.</p>
+ @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+ <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>Para modificar el stock actual, registrá una entrada o salida.</div>
+ @using (Html.BeginForm("Editar","InventarioLimpieza",FormMethod.Post)) { @Html.AntiForgeryToken() @Html.Partial("_Formulario",Model) }
+ </div>
+</div>
+<style>
+body{background:#f4f7fa}.repo-title{color:#133c55;font-weight:700}.repo-card,.form-card{background:#fff;border:1px solid #e3e8ee;border-radius:10px;overflow:hidden}.form-card{padding:28px}.repo-icon{background:#e8f0f7;color:#133c55;border-radius:10px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:23px}.repo-section-title{color:#133c55;font-weight:650}.btn-cop-primary{background:#133c55;color:#fff;border-color:#133c55}.btn-cop-primary:hover{background:#386fa4;border-color:#386fa4;color:#fff}.repo-card .table th{color:#334155;font-weight:600;font-size:14px;background:#f8fafc}.repo-card .table td{font-size:14px;vertical-align:middle}.repo-card .btn-sm{margin:2px}.repo-card .table td,.repo-card .table th{padding:13px 14px}.form-label{font-weight:500;color:#334155}.form-control:focus,.form-select:focus{border-color:#386fa4;box-shadow:0 0 0 .2rem rgba(56,111,164,.13)}.repo-page-btn{min-width:36px}.repo-page-btn.active{background:#133c55;color:#fff;border-color:#133c55}@@media(max-width:767px){.form-card{padding:18px}.repo-card .table td,.repo-card .table th{padding:10px}}
+</style>

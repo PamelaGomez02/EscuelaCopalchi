@@ -235,7 +235,20 @@ namespace EscuelaCopalchi.UI.Controllers
     Accion = "Index",
     Permisos = new[] { "VER_AUDITORIA" }
 },
-            new ModuloHome { Titulo="Inventario de limpieza", Descripcion="Existencias y suministros", Icono="bi-bucket", Controlador="InventarioLimpieza", Permisos=new[]{"GESTIONAR_INVENTARIO"}},
+
+new ModuloHome {
+    Titulo = "Inventario de limpieza",
+    Descripcion = "Productos de limpieza e higiene, movimientos y reportes",
+    Icono = "bi-bucket",
+    Controlador = "InventarioLimpieza",
+    Accion = "Index",
+    Permisos = new[] {
+        "GESTIONAR_INVENTARIO", "VER_INVENTARIO", "CREAR_PRODUCTO_INVENTARIO",
+        "EDITAR_PRODUCTO_INVENTARIO", "REGISTRAR_MOVIMIENTO_INVENTARIO",
+        "VER_MOVIMIENTOS_INVENTARIO", "VER_REPORTES_INVENTARIO"
+    }
+},
+
             new ModuloHome { Titulo="Inventario de cocina", Descripcion="Insumos y existencias", Icono="bi-basket", Controlador="InventarioCocina", Permisos=new[]{"GESTIONAR_INVENTARIO"}}
         };
 

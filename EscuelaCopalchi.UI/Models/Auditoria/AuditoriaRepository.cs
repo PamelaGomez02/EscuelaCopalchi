@@ -1,8 +1,8 @@
+using EscuelaCopalchi.UI.Models.Auditoria;
 using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using EscuelaCopalchi.UI.Models.Auditoria;
 
 namespace EscuelaCopalchi.UI.Models.Auditoria
 {
@@ -64,11 +64,16 @@ namespace EscuelaCopalchi.UI.Models.Auditoria
             {
                 IdAuditoria = Convert.ToInt64(r["id_auditoria"]),
                 IdUsuario = r["id_usuario"] == DBNull.Value ? (int?)null : Convert.ToInt32(r["id_usuario"]),
-                Responsable = S(r, "responsable"), Rol = S(r, "rol"),
-                Accion = S(r, "accion"), Modulo = S(r, "modulo"),
-                TablaAfectada = S(r, "tabla_afectada"), RegistroAfectado = S(r, "registro_afectado"),
-                Descripcion = S(r, "descripcion"), DireccionIp = S(r, "direccion_ip"),
-                Fecha = Convert.ToDateTime(r["fecha"]), Resultado = S(r, "resultado"),
+                Responsable = S(r, "responsable"),
+                Rol = S(r, "rol"),
+                Accion = S(r, "accion"),
+                Modulo = S(r, "modulo"),
+                TablaAfectada = S(r, "tabla_afectada"),
+                RegistroAfectado = S(r, "registro_afectado"),
+                Descripcion = S(r, "descripcion"),
+                DireccionIp = S(r, "direccion_ip"),
+                Fecha = Convert.ToDateTime(r["fecha"]),
+                Resultado = S(r, "resultado"),
                 RegistroIncompleto = Convert.ToBoolean(r["registro_incompleto"])
             };
         }

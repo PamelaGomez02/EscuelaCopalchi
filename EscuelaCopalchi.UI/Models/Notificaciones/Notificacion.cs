@@ -28,6 +28,6 @@ namespace EscuelaCopalchi.UI.Models.Notificaciones
 
         public string EstadoEnvio { get; set; }
 
-       
+
     }
 }

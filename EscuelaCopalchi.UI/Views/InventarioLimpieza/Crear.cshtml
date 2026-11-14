@@ -1,0 +1,251 @@
+@model EscuelaCopalchi.UI.Models.InventarioProductoViewModel
+@{
+    ViewBag.Title = "Registrar producto de limpieza";
+}
+
+<div class="container py-4 inventario-crear">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="repo-title"><i class="bi bi-plus-circle me-2"></i>Registrar producto</h2>
+            <p class="text-muted mb-0">Agregá productos de limpieza e higiene individualmente o mediante Excel.</p>
+        </div>
+        <a href="@Url.Action("Index", "InventarioLimpieza")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Volver al inventario
+        </a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" role="status">@TempData["Success"]</div>
+    }
+
+    <div class="form-card">
+        <h5 class="repo-section-title"><i class="bi bi-box-seam me-2"></i>Información del producto</h5>
+        <p class="text-muted">Los campos marcados con * son obligatorios.</p>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>Las existencias iniciales se registran mediante una entrada de inventario.</div>
+        @using (Html.BeginForm("Crear", "InventarioLimpieza", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Partial("_Formulario", Model)
+        }
+    </div>
+
+    <div class="form-card mt-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+            <div>
+                <h5 class="repo-section-title mb-1"><i class="bi bi-file-earmark-excel me-2"></i>Importar productos desde Excel</h5>
+                <p class="text-muted mb-0">Cargá varios productos de limpieza desde un archivo Excel.</p>
+            </div>
+            <a class="btn btn-outline-success" href="@Url.Action("PlantillaExcel", "InventarioLimpieza")">
+                <i class="bi bi-download me-1"></i>Descargar plantilla
+            </a>
+        </div>
+
+        @using (Html.BeginForm("ImportarExcel", "InventarioLimpieza", FormMethod.Post,
+            new { enctype = "multipart/form-data", id = "formImportarExcel" }))
+        {
+            @Html.AntiForgeryToken()
+            <label class="form-label" for="archivoExcel">Archivo Excel</label>
+            <div class="upload-box" id="zonaCargaExcel">
+                <i class="bi bi-cloud-arrow-up upload-icon" aria-hidden="true"></i>
+                <h4>Seleccioná tu archivo</h4>
+                <p class="mb-3">Formato permitido: .xlsx</p>
+                <label for="archivoExcel" class="btn btn-outline-primary upload-select">
+                    <i class="bi bi-folder2-open me-1"></i>Seleccionar archivo
+                </label>
+                <input type="file" name="archivoExcel" id="archivoExcel" accept=".xlsx" required class="upload-input" aria-describedby="archivoExcelAyuda" />
+                <div id="archivoExcelAyuda" class="text-muted small mt-2">También podés arrastrar el archivo a este recuadro.</div>
+                <div id="archivoExcelSeleccionado" class="archivo-elegido mt-3" role="status" aria-live="polite" hidden>
+                    <i class="bi bi-file-earmark-excel me-2 text-success"></i><span id="nombreExcel"></span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="quitarExcel" aria-label="Quitar archivo">Quitar</button>
+                </div>
+                <div id="archivoExcelError" class="text-danger small mt-2" role="alert" hidden>Seleccioná un archivo .xlsx válido.</div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-cop-primary" id="btnImportarExcel" disabled>
+                    <i class="bi bi-cloud-arrow-up me-1"></i>Importar Excel
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    body {
+        background: #f4f7fa;
+    }
+
+    .inventario-crear .repo-title {
+        color: #133c55;
+        font-weight: 700;
+    }
+
+    .inventario-crear .form-card {
+        background: #fff;
+        border: 1px solid #e3e8ee;
+        border-radius: 10px;
+        padding: 28px;
+    }
+
+    .inventario-crear .repo-section-title {
+        color: #133c55;
+        font-weight: 650;
+    }
+
+    .inventario-crear .form-label {
+        font-weight: 600;
+        color: #344054;
+    }
+
+    .inventario-crear .btn-cop-primary {
+        background: #133c55;
+        border: 1px solid #133c55;
+        color: #fff;
+    }
+
+        .inventario-crear .btn-cop-primary:hover:not(:disabled) {
+            background: #386fa4;
+            border-color: #386fa4;
+            color: #fff;
+        }
+
+        .inventario-crear .btn-cop-primary:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+    .inventario-crear .upload-box {
+        border: 2px dashed #cad5df;
+        border-radius: 10px;
+        padding: 32px 20px;
+        text-align: center;
+        background: #fafcfd;
+        transition: background .15s, border-color .15s;
+    }
+
+        .inventario-crear .upload-box.drag-over, .inventario-crear .upload-box:focus-within {
+            border-color: #386fa4;
+            background: #eff6fc;
+        }
+
+    .inventario-crear .upload-icon {
+        display: block;
+        font-size: 2rem;
+        color: #386fa4;
+    }
+
+    .inventario-crear .upload-box h4 {
+        font-size: 1rem;
+        font-weight: 650;
+        color: #133c55;
+        margin: 10px 0 8px;
+    }
+
+    .inventario-crear .upload-box p {
+        color: #64748b;
+        font-size: .86rem;
+    }
+
+    .inventario-crear .upload-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        overflow: hidden;
+    }
+
+    .inventario-crear .upload-select {
+        cursor: pointer;
+        border-color: #386fa4;
+        color: #133c55;
+    }
+
+        .inventario-crear .upload-select:hover {
+            background: #386fa4;
+            color: #fff;
+        }
+
+    .inventario-crear .archivo-elegido {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 14px;
+        border: 1px solid #d5e5db;
+        border-radius: 8px;
+        background: #f1f9f3;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+        .inventario-crear .archivo-elegido[hidden], .inventario-crear #archivoExcelError[hidden] {
+            display: none;
+        }
+
+    .inventario-crear .form-actions {
+        border-top: 1px solid #edf0f3;
+        padding-top: 20px;
+        margin-top: 25px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    @@media (max-width: 767px) {
+        .inventario-crear .form-card {
+            padding: 18px;
+        }
+
+        .inventario-crear .upload-box {
+            padding: 26px 12px;
+        }
+    }
+</style>
+
+<script>
+(function () {
+    'use strict';
+    var input = document.getElementById('archivoExcel');
+    var zone = document.getElementById('zonaCargaExcel');
+    var chosen = document.getElementById('archivoExcelSeleccionado');
+    var filename = document.getElementById('nombreExcel');
+    var error = document.getElementById('archivoExcelError');
+    var remove = document.getElementById('quitarExcel');
+    var submit = document.getElementById('btnImportarExcel');
+    var form = document.getElementById('formImportarExcel');
+    if (!input || !zone || !form) return;
+
+    function refresh() {
+        var file = input.files && input.files[0];
+        var valid = !!file && /\.xlsx$/i.test(file.name);
+        chosen.hidden = !valid;
+        error.hidden = !file || valid;
+        filename.textContent = valid ? file.name : '';
+        submit.disabled = !valid;
+    }
+    input.addEventListener('change', refresh);
+    remove.addEventListener('click', function () { input.value = ''; refresh(); });
+    ['dragenter', 'dragover'].forEach(function (type) {
+        zone.addEventListener(type, function (e) { e.preventDefault(); zone.classList.add('drag-over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (type) {
+        zone.addEventListener(type, function (e) { e.preventDefault(); zone.classList.remove('drag-over'); });
+    });
+    zone.addEventListener('drop', function (e) {
+        var files = e.dataTransfer && e.dataTransfer.files;
+        if (!files || !files.length) return;
+        try { input.files = files; } catch (ignore) { input.value = ''; }
+        refresh();
+    });
+    form.addEventListener('submit', function (e) {
+        refresh();
+        if (submit.disabled) { e.preventDefault(); return; }
+        submit.disabled = true;
+        submit.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Importando...';
+    });
+})();
+</script>

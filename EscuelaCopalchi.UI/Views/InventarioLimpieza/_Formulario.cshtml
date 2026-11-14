@@ -1,0 +1,16 @@
+@model EscuelaCopalchi.UI.Models.InventarioProductoViewModel
+@Html.HiddenFor(m => m.IdProducto)
+@Html.ValidationSummary(false, "", new { @class = "text-danger mb-3" })
+<div class="row g-3">
+ <div class="col-md-6"><label class="form-label">Nombre del producto <span class="text-danger">*</span></label>@Html.TextBoxFor(m => m.Nombre, new { @class="form-control", maxlength="150", required="required", placeholder="Ej. Desinfectante multiusos" })@Html.ValidationMessageFor(m => m.Nombre,"",new{@class="text-danger small"})</div>
+ <div class="col-md-6"><label class="form-label">Categoría</label>@Html.TextBoxFor(m => m.Categoria,new{@class="form-control",maxlength="100",placeholder="Ej. Desinfectantes"})</div>
+ <div class="col-md-6"><label class="form-label">Unidad de medida <span class="text-danger">*</span></label>@Html.TextBoxFor(m => m.UnidadMedida,new{@class="form-control",maxlength="50",required="required",placeholder="Ej. Botella, paquete, galón"})@Html.ValidationMessageFor(m => m.UnidadMedida,"",new{@class="text-danger small"})</div>
+ <div class="col-md-6"><label class="form-label">Stock mínimo <span class="text-danger">*</span></label>@Html.TextBoxFor(m => m.StockMinimo,new{@class="form-control",type="number",min="0",required="required"})@Html.ValidationMessageFor(m => m.StockMinimo,"",new{@class="text-danger small"})</div>
+ <div class="col-md-6"><label class="form-label">Fecha de vencimiento</label>@Html.TextBoxFor(m => m.FechaVencimiento,"{0:yyyy-MM-dd}",new{@class="form-control",type="date"})</div>
+ <div class="col-12"><label class="form-label">Descripción</label>@Html.TextAreaFor(m => m.Descripcion,3,0,new{@class="form-control",maxlength="500",placeholder="Características o indicaciones del producto"})</div>
+</div>
+<div class="d-flex justify-content-end gap-2 mt-4 flex-wrap"><a class="btn btn-outline-secondary" href="@Url.Action("Index","InventarioLimpieza")"><i class="bi bi-x-lg me-1"></i>Cancelar</a><button type="submit" class="btn btn-cop-primary"><i class="bi bi-check-circle me-1"></i>Guardar producto</button></div>
+
+<style>
+body{background:#f4f7fa}.repo-title{color:#133c55;font-weight:700}.repo-card,.form-card{background:#fff;border:1px solid #e3e8ee;border-radius:10px;overflow:hidden}.form-card{padding:28px}.repo-icon{background:#e8f0f7;color:#133c55;border-radius:10px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:23px}.repo-section-title{color:#133c55;font-weight:650}.btn-cop-primary{background:#133c55;color:#fff;border-color:#133c55}.btn-cop-primary:hover{background:#386fa4;border-color:#386fa4;color:#fff}.repo-card .table th{color:#334155;font-weight:600;font-size:14px;background:#f8fafc}.repo-card .table td{font-size:14px;vertical-align:middle}.repo-card .btn-sm{margin:2px}.repo-card .table td,.repo-card .table th{padding:13px 14px}.form-label{font-weight:500;color:#334155}.form-control:focus,.form-select:focus{border-color:#386fa4;box-shadow:0 0 0 .2rem rgba(56,111,164,.13)}.repo-page-btn{min-width:36px}.repo-page-btn.active{background:#133c55;color:#fff;border-color:#133c55}@@media(max-width:767px){.form-card{padding:18px}.repo-card .table td,.repo-card .table th{padding:10px}}
+</style>

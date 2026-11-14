@@ -1,4 +1,6 @@
-﻿using System;
+﻿using global::EscuelaCopalchi.UI.Models.GestionNotas;
+using global::EscuelaCopalchi.UI.Models.Reportes;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -6,11 +8,9 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
-using System.Web.Mvc;
-using global::EscuelaCopalchi.UI.Models.GestionNotas;
-using global::EscuelaCopalchi.UI.Models.Reportes;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
@@ -21,7 +21,7 @@ namespace EscuelaCopalchi.UI.Controllers
         private readonly ReportesRepository repo = new ReportesRepository();
         private readonly NotasRepository notas = new NotasRepository();
         private readonly FichaRepository ficha = new FichaRepository();
-   
+
         private const string TipoDocx = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
         private const int MaxCarta = 4 * 1024 * 1024; // 4 MB (límite por defecto de ASP.NET)
         private const string TipoXlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -229,7 +229,8 @@ namespace EscuelaCopalchi.UI.Controllers
             if (!string.Equals(formato, "pdf", StringComparison.OrdinalIgnoreCase)) return new HttpStatusCodeResult(400);
             var pdf = new PdfDocumento();
             double y = 0;
-            Action cabecera = () => {
+            Action cabecera = () =>
+            {
                 pdf.Rect(0, 0, PdfDocumento.Ancho, 74, 19, 60, 85);
                 pdf.Texto(40, 33, "ESCUELA COPALCHI", 17, true, 255, 255, 255);
                 pdf.Texto(40, 54, "Reporte de rendimiento y asistencia", 10, false, 235, 241, 247);

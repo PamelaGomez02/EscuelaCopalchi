@@ -2,20 +2,19 @@
 using EscuelaCopalchi.UI.Models;
 using EscuelaCopalchi.UI.Models.Notificaciones;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web.Mvc;
-
 using System;
-using System.Linq;
-using System.Web.Mvc;
+using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Configuration;
 using System.Data;
+using System.Data;
 using System.Data.SqlClient;
-using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Linq;
+using System.Web.Mvc;
+using System.Web.Mvc;
 
 namespace EscuelaCopalchi.UI.Controllers
 {
