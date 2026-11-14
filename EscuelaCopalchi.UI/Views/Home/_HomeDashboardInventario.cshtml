@@ -1,0 +1,52 @@
+﻿@using EscuelaCopalchi.UI.Controllers
+@{
+    var inventario = ViewBag.ResumenInventario as ResumenInventarioHome;
+}
+@if (inventario != null)
+{
+    <div class="cop-widget" data-widget="inventory" data-title="Control de inventarios">
+        <div class="cop-heading"><div><h2><i class="bi bi-boxes"></i> Control de inventarios</h2><p>Existencias de limpieza y cocina · Consulta en tiempo real al abrir el panel</p></div></div>
+        @if (!inventario.Disponible)
+        {
+            <div class="cop-panel p-4"><i class="bi bi-info-circle"></i> No se pudo mostrar el inventario. Comprueba la estructura de la tabla IN​​VENTARIO y el campo ambito.</div>
+        }
+        else
+        {
+            <div class="row g-3 mb-4">
+                @foreach (var area in new[] { new { Nombre="Limpieza", Datos=inventario.Limpieza, Icono="bi-droplet", Controlador="InventarioLimpieza" }, new { Nombre="Cocina", Datos=inventario.Cocina, Icono="bi-cup-hot", Controlador="InventarioCocina" } })
+                {
+                    if ((area.Nombre == "Limpieza" && ViewBag.PuedeVerLimpieza != true) || (area.Nombre == "Cocina" && ViewBag.PuedeVerCocina != true)) { continue; }
+                    <div class="col-xl-6">
+                        <section class="cop-panel cop-inventory-card h-100">
+                            <div class="cop-inventory-top"><div><div class="cop-inventory-label"><i class="bi @area.Icono"></i> Inventario de @area.Nombre</div><strong>@area.Datos.Bajos</strong><span>productos por debajo del mínimo</span></div>@if (true) { <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Index", area.Controlador)">Ver inventario <i class="bi bi-arrow-up-right"></i></a> }</div>
+                            <div class="cop-inventory-stats"><span><b>@area.Datos.Total</b> productos activos</span><span><b>@area.Datos.Agotados</b> agotados</span>
+                            @if (area.Nombre == "Cocina") { <span><b>@area.Datos.Vencidos</b> productos con lotes vencidos</span><span><b>@area.Datos.ProximosAVencer</b> por vencer en 30 días</span> }
+                            </div>
+                            @if (area.Datos.Productos.Any())
+                            {
+                                <div class="cop-inventory-list">
+                                    @foreach (var producto in area.Datos.Productos)
+                                    {
+                                        <div class="cop-inventory-product"><div><strong>@producto.Nombre</strong><small>Disponible: @producto.Actual.ToString("0.##") · Mínimo: @producto.Minimo.ToString("0.##")</small></div><span class="@(producto.Actual <= 0 ? "cop-status-danger" : "cop-status-warning")">@(producto.Actual <= 0 ? "Agotado" : "Stock bajo")</span></div>
+                                    }
+                                </div>
+                                if (area.Datos.Bajos > area.Datos.Productos.Count) { <small class="d-block mt-3">Se muestran los primeros @area.Datos.Productos.Count productos con stock bajo.</small> }
+                            }
+                            else { <div class="cop-inventory-ok"><i class="bi bi-check-circle"></i> No hay productos por debajo del mínimo.</div> }
+                            @if (area.Nombre == "Cocina" && area.Datos.Vencimientos.Any())
+                            {
+                                <h3 class="cop-expiry-title"><i class="bi bi-calendar-event"></i> Lotes con vencimiento prioritario</h3>
+                                <div class="cop-inventory-list">
+                                    @foreach (var lote in area.Datos.Vencimientos)
+                                    {
+                                        <div class="cop-inventory-product"><div><strong>@lote.Nombre</strong><small>@lote.Cantidad unidades · @lote.Fecha.ToString("dd/MM/yyyy")</small></div><span class="@(lote.Fecha < DateTime.Today ? "cop-status-danger" : "cop-status-warning")">@(lote.Fecha < DateTime.Today ? "Vencido" : "Próximo")</span></div>
+                                    }
+                                </div>
+                            }
+                        </section>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

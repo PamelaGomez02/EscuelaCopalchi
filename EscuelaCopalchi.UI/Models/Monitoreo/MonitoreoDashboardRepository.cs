@@ -18,24 +18,25 @@ namespace EscuelaCopalchi.UI.Models.MonitoreoNuevo
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
-                // El acceso al módulo requiere sesión; los datos institucionales se
-                // muestran conforme a la decisión del proyecto de no usar permisos específicos.
-                bool institucional = true;
-                int? docente = null;
-                using (var cmd = new SqlCommand("SELECT TOP (1) id_docente FROM dbo.DOCENTE WHERE id_usuario=@u AND estado=1", cn))
-                {
-                    cmd.Parameters.Add("@u", SqlDbType.Int).Value = idUsuario;
-                    var value = cmd.ExecuteScalar();
-                    if (value != null && value != DBNull.Value) docente = Convert.ToInt32(value);
-                }
+                var acceso = ObtenerAcceso(cn, idUsuario);
+                if (!acceso.PuedeConsultar) throw new UnauthorizedAccessException("No tiene permiso para consultar Monitoreo Académico.");
+                bool institucional = acceso.General;
+                int? docente = acceso.Docente;
                 if (!institucional && !docente.HasValue)
-                    throw new UnauthorizedAccessException("No tiene alcance académico asignado para consultar estudiantes.");
-
+                {
+                    vm.Error = "No tiene grupos asignados en este momento.";
+                    return vm;
+                }
                 string alcance = institucional ? "" : " AND g.id_docente=@doc";
                 using (var cmd = new SqlCommand("SELECT DISTINCT g.anio FROM dbo.GRUPO g WHERE g.estado=1" + alcance + " ORDER BY g.anio DESC", cn))
                 {
                     if (!institucional) cmd.Parameters.Add("@doc", SqlDbType.Int).Value = docente.Value;
                     using (var dr = cmd.ExecuteReader()) while (dr.Read()) vm.Anios.Add(dr.GetInt32(0));
+                }
+                if (vm.Anios.Count == 0)
+                {
+                    vm.Error = "No tiene grupos asignados en este momento.";
+                    return vm;
                 }
                 vm.Anio = anio.HasValue && vm.Anios.Contains(anio.Value) ? anio.Value : vm.Anios.FirstOrDefault();
                 if (vm.Anio == 0) return vm;
@@ -46,7 +47,10 @@ namespace EscuelaCopalchi.UI.Models.MonitoreoNuevo
                     if (!institucional) cmd.Parameters.Add("@doc", SqlDbType.Int).Value = docente.Value;
                     using (var dr = cmd.ExecuteReader()) while (dr.Read()) vm.Grupos.Add(new MonitoreoGrupoItem { IdGrupo = dr.GetInt32(0), Nombre = dr.GetString(1) });
                 }
-                vm.IdGrupo = grupo.HasValue && vm.Grupos.Any(g => g.IdGrupo == grupo.Value) ? grupo.Value : 0;
+                // Nunca convertir un ID de grupo ajeno en "Todos los grupos".
+                if (grupo.HasValue && grupo.Value != 0 && !vm.Grupos.Any(g => g.IdGrupo == grupo.Value))
+                    throw new UnauthorizedAccessException("El grupo solicitado no está autorizado.");
+                vm.IdGrupo = grupo.HasValue ? grupo.Value : 0;
 
                 // VW_MON_RENDIMIENTO contiene una fila por estudiante, materia y trimestre.
                 // Primero se promedian las materias dentro de cada trimestre; después se
@@ -118,48 +122,53 @@ ORDER BY promedio DESC, estudiante;";
                         Estudiantes = g.Select(x => x.IdEstudiante).Distinct().Count()
                     }).OrderByDescending(x => x.Promedio).ThenBy(x => x.Grupo).ToList();
                 const string materiasSql = @"SELECT asignatura,CAST(AVG(promedio) AS DECIMAL(7,2)),COUNT(DISTINCT id_estudiante)
-                  FROM dbo.VW_MON_RENDIMIENTO WHERE anio=@a AND (@g=0 OR id_grupo=@g) AND (@t=0 OR trimestre=@t)
+                  FROM dbo.VW_MON_RENDIMIENTO v WHERE anio=@a AND (@g=0 OR v.id_grupo=@g) AND (@t=0 OR trimestre=@t) AND (@inst=1 OR EXISTS (SELECT 1 FROM dbo.GRUPO gr WHERE gr.id_grupo=v.id_grupo AND gr.id_docente=@doc))
                   GROUP BY asignatura ORDER BY AVG(promedio) DESC";
                 using (var cmd = new SqlCommand(materiasSql, cn))
                 {
                     cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio;
                     cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo;
                     cmd.Parameters.Add("@t", SqlDbType.Int).Value = vm.Trimestre;
+                    AgregarAlcance(cmd, institucional, docente);
                     using (var r = cmd.ExecuteReader()) while (r.Read()) vm.RankingMaterias.Add(new MonitoreoMateriaResumen { Materia = r.GetString(0), Promedio = r.GetDecimal(1), Estudiantes = r.GetInt32(2) });
                 }
-                const string evolucionSql = @"WITH x AS (SELECT id_estudiante,id_grupo,trimestre,asignatura,AVG(promedio) p FROM dbo.VW_MON_RENDIMIENTO
-                  WHERE anio=@a AND (@g=0 OR id_grupo=@g) GROUP BY id_estudiante,id_grupo,trimestre,asignatura),
+                const string evolucionSql = @"WITH x AS (SELECT id_estudiante,id_grupo,trimestre,asignatura,AVG(promedio) p FROM dbo.VW_MON_RENDIMIENTO v
+                  WHERE anio=@a AND (@g=0 OR v.id_grupo=@g) AND (@inst=1 OR EXISTS (SELECT 1 FROM dbo.GRUPO gr WHERE gr.id_grupo=v.id_grupo AND gr.id_docente=@doc)) GROUP BY id_estudiante,id_grupo,trimestre,asignatura),
                   y AS (SELECT id_estudiante,id_grupo,trimestre,AVG(p) p FROM x GROUP BY id_estudiante,id_grupo,trimestre)
                   SELECT trimestre,CAST(AVG(p) AS DECIMAL(7,2)),COUNT(*) FROM y GROUP BY trimestre ORDER BY trimestre";
                 using (var cmd = new SqlCommand(evolucionSql, cn))
                 {
                     cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio;
                     cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo;
+                    AgregarAlcance(cmd, institucional, docente);
                     using (var r = cmd.ExecuteReader()) while (r.Read()) vm.Evolucion.Add(new MonitoreoTrimestreResumen { Trimestre = Convert.ToInt32(r.GetValue(0)), Promedio = r.GetDecimal(1), Estudiantes = r.GetInt32(2) });
                 }
-                using (var cmd = new SqlCommand(@"SELECT COUNT(*) FROM dbo.ALERTA_ACADEMICA a INNER JOIN dbo.ESTUDIANTE e ON e.id_estudiante=a.id_estudiante WHERE a.atendida=0 AND e.estado=1 AND (@g=0 OR a.id_grupo=@g) AND EXISTS (SELECT 1 FROM dbo.MATRICULA m INNER JOIN dbo.GRUPO gr ON gr.id_grupo=m.id_grupo WHERE m.id_estudiante=a.id_estudiante AND m.estado=N'Activa' AND gr.anio=@a AND (@g=0 OR gr.id_grupo=@g))", cn))
+                using (var cmd = new SqlCommand(@"SELECT COUNT(*) FROM dbo.ALERTA_ACADEMICA a INNER JOIN dbo.ESTUDIANTE e ON e.id_estudiante=a.id_estudiante WHERE a.atendida=0 AND e.estado=1 AND (@g=0 OR a.id_grupo=@g) AND EXISTS (SELECT 1 FROM dbo.MATRICULA m INNER JOIN dbo.GRUPO gr ON gr.id_grupo=m.id_grupo WHERE m.id_estudiante=a.id_estudiante AND m.estado=N'Activa' AND gr.anio=@a AND gr.id_grupo=a.id_grupo AND (@g=0 OR gr.id_grupo=@g) AND (@inst=1 OR gr.id_docente=@doc))", cn))
                 {
                     cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio; cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo;
+                    AgregarAlcance(cmd, institucional, docente);
                     vm.AlertasPendientes = Convert.ToInt32(cmd.ExecuteScalar());
                 }
-                using (var cmd = new SqlCommand(@"SELECT CAST(100.0*SUM(CASE WHEN a.estado IN (N'Presente',N'Tardanza') THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS DECIMAL(7,2)) FROM dbo.ASISTENCIA a JOIN dbo.GRUPO g ON g.id_grupo=a.id_grupo JOIN dbo.ESTUDIANTE e ON e.id_estudiante=a.id_estudiante WHERE g.anio=@a AND e.estado=1 AND (@g=0 OR a.id_grupo=@g)", cn))
+                using (var cmd = new SqlCommand(@"SELECT CAST(100.0*SUM(CASE WHEN a.estado IN (N'Presente',N'Tardanza') THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS DECIMAL(7,2)) FROM dbo.ASISTENCIA a JOIN dbo.GRUPO g ON g.id_grupo=a.id_grupo JOIN dbo.ESTUDIANTE e ON e.id_estudiante=a.id_estudiante WHERE g.anio=@a AND e.estado=1 AND (@g=0 OR a.id_grupo=@g) AND (@inst=1 OR g.id_docente=@doc)", cn))
                 {
-                    cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio; cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo; var v = cmd.ExecuteScalar(); vm.Asistencia = v == null || v == DBNull.Value ? (decimal?)null : Convert.ToDecimal(v);
+                    cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio; cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo; AgregarAlcance(cmd, institucional, docente); var v = cmd.ExecuteScalar(); vm.Asistencia = v == null || v == DBNull.Value ? (decimal?)null : Convert.ToDecimal(v);
                 }
-                using (var cmd = new SqlCommand(@"SELECT COUNT(*) FROM dbo.MONITOREO_SEGUIMIENTO s JOIN dbo.GRUPO g ON g.id_grupo=s.id_grupo WHERE s.anio=@a AND (@g=0 OR s.id_grupo=@g) AND s.estado<>N'Resuelto'", cn))
+                using (var cmd = new SqlCommand(@"SELECT COUNT(*) FROM dbo.MONITOREO_SEGUIMIENTO s JOIN dbo.GRUPO g ON g.id_grupo=s.id_grupo WHERE s.anio=@a AND (@g=0 OR s.id_grupo=@g) AND s.estado<>N'Resuelto' AND (@inst=1 OR g.id_docente=@doc)", cn))
                 {
                     cmd.Parameters.Add("@a", SqlDbType.Int).Value = vm.Anio; cmd.Parameters.Add("@g", SqlDbType.Int).Value = vm.IdGrupo;
+                    AgregarAlcance(cmd, institucional, docente);
                     vm.SeguimientosAbiertos = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             return vm;
         }
-        public MonitoreoDetalleVM Detalle(int estudiante, int grupo, int anio)
+        public MonitoreoDetalleVM Detalle(int estudiante, int grupo, int anio, int idUsuario)
         {
             var vm = new MonitoreoDetalleVM { IdEstudiante = estudiante, IdGrupo = grupo, Anio = anio };
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
+                ExigirGrupo(cn, idUsuario, grupo, false);
                 using (var cmd = new SqlCommand(@"SELECT TOP 1 v.estudiante,v.grupo FROM dbo.VW_MON_RENDIMIENTO v WHERE v.id_estudiante=@e AND v.id_grupo=@g AND v.anio=@a", cn))
                 {
                     cmd.Parameters.Add("@e", SqlDbType.Int).Value = estudiante; cmd.Parameters.Add("@g", SqlDbType.Int).Value = grupo; cmd.Parameters.Add("@a", SqlDbType.Int).Value = anio;
@@ -177,27 +186,41 @@ ORDER BY promedio DESC, estudiante;";
                     cmd.Parameters.Add("@e", SqlDbType.Int).Value = estudiante; cmd.Parameters.Add("@g", SqlDbType.Int).Value = grupo;
                     var v = cmd.ExecuteScalar(); vm.Asistencia = v == null || v == DBNull.Value ? (decimal?)null : Convert.ToDecimal(v);
                 }
-                vm.Seguimientos = ListarSeguimientos(cn, anio, grupo, estudiante);
+                vm.Seguimientos = ListarSeguimientos(cn, anio, grupo, estudiante, true, null);
             }
             return vm;
         }
-        private static List<MonitoreoSeguimientoItem> ListarSeguimientos(SqlConnection cn, int anio, int grupo, int estudiante)
+        private static List<MonitoreoSeguimientoItem> ListarSeguimientos(SqlConnection cn, int anio, int grupo, int estudiante, bool general, int? docente)
         {
             var list = new List<MonitoreoSeguimientoItem>();
-            using (var cmd = new SqlCommand(@"SELECT s.id_seguimiento,s.id_estudiante,s.id_grupo,s.anio,s.trimestre,e.nombre+N' '+e.apellido1,g.nombre,s.nivel_riesgo,s.estado,s.observacion,ISNULL(s.accion_realizada,N''),s.fecha_registro FROM dbo.MONITOREO_SEGUIMIENTO s JOIN dbo.ESTUDIANTE e ON e.id_estudiante=s.id_estudiante JOIN dbo.GRUPO g ON g.id_grupo=s.id_grupo WHERE s.anio=@a AND (@g=0 OR s.id_grupo=@g) AND (@e=0 OR s.id_estudiante=@e) ORDER BY s.fecha_registro DESC", cn))
+            using (var cmd = new SqlCommand(@"SELECT s.id_seguimiento,s.id_estudiante,s.id_grupo,s.anio,s.trimestre,e.nombre+N' '+e.apellido1,g.nombre,s.nivel_riesgo,s.estado,s.observacion,ISNULL(s.accion_realizada,N''),s.fecha_registro FROM dbo.MONITOREO_SEGUIMIENTO s JOIN dbo.ESTUDIANTE e ON e.id_estudiante=s.id_estudiante JOIN dbo.GRUPO g ON g.id_grupo=s.id_grupo WHERE s.anio=@a AND (@g=0 OR s.id_grupo=@g) AND (@e=0 OR s.id_estudiante=@e) AND g.estado=1 AND (@inst=1 OR g.id_docente=@doc) ORDER BY s.fecha_registro DESC", cn))
             {
                 cmd.Parameters.Add("@a", SqlDbType.Int).Value = anio; cmd.Parameters.Add("@g", SqlDbType.Int).Value = grupo; cmd.Parameters.Add("@e", SqlDbType.Int).Value = estudiante;
+                AgregarAlcance(cmd, general, docente);
                 using (var r = cmd.ExecuteReader()) while (r.Read()) list.Add(new MonitoreoSeguimientoItem { IdSeguimiento = r.GetInt32(0), IdEstudiante = r.GetInt32(1), IdGrupo = r.GetInt32(2), Anio = r.GetInt32(3), Trimestre = r.IsDBNull(4) ? (byte?)null : r.GetByte(4), Estudiante = r.GetString(5), Grupo = r.GetString(6), NivelRiesgo = r.GetString(7), Estado = r.GetString(8), Observacion = r.GetString(9), AccionRealizada = r.GetString(10), FechaRegistro = r.GetDateTime(11) });
             }
             return list;
         }
-        public List<MonitoreoSeguimientoItem> Seguimientos(int anio, int grupo) { using (var cn = new SqlConnection(cs)) { cn.Open(); return ListarSeguimientos(cn, anio, grupo, 0); } }
+        public List<MonitoreoSeguimientoItem> Seguimientos(int anio, int grupo, int idUsuario)
+        {
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                var acceso = ObtenerAcceso(cn, idUsuario);
+                if (!acceso.PuedeConsultar) throw new UnauthorizedAccessException();
+                if (!acceso.General && !acceso.Docente.HasValue) return new List<MonitoreoSeguimientoItem>();
+                if (grupo != 0) ExigirGrupo(cn, idUsuario, grupo, false);
+                // El alcance se filtra en SQL antes de devolver registros.
+                return ListarSeguimientos(cn, anio, grupo, 0, acceso.General, acceso.Docente);
+            }
+        }
         public void GuardarSeguimiento(int estudiante, int grupo, int anio, byte? trimestre, string riesgo, string estado, string observacion, string accion, int usuario)
         {
             if (string.IsNullOrWhiteSpace(observacion)) throw new ArgumentException("La observación es obligatoria.");
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
+                ExigirGrupo(cn, usuario, grupo, true);
                 using (var cmd = new SqlCommand(@"INSERT INTO dbo.MONITOREO_SEGUIMIENTO(id_estudiante,id_grupo,anio,trimestre,nivel_riesgo,estado,observacion,accion_realizada,id_usuario_responsable) SELECT @e,@g,@a,@t,@r,@s,@o,@ac,@u WHERE EXISTS(SELECT 1 FROM dbo.ESTUDIANTE e JOIN dbo.MATRICULA m ON m.id_estudiante=e.id_estudiante JOIN dbo.GRUPO g ON g.id_grupo=m.id_grupo WHERE e.id_estudiante=@e AND e.estado=1 AND m.estado=N'Activa' AND g.id_grupo=@g AND g.anio=@a AND g.estado=1); SELECT @@ROWCOUNT", cn))
                 {
                     cmd.Parameters.Add("@e", SqlDbType.Int).Value = estudiante; cmd.Parameters.Add("@g", SqlDbType.Int).Value = grupo; cmd.Parameters.Add("@a", SqlDbType.Int).Value = anio;
@@ -207,7 +230,77 @@ ORDER BY promedio DESC, estudiante;";
                 }
             }
         }
-        public void ActualizarEstado(int id, string estado) { using (var cn = new SqlConnection(cs)) { cn.Open(); using (var cmd = new SqlCommand("UPDATE dbo.MONITOREO_SEGUIMIENTO SET estado=@s,fecha_actualizacion=SYSDATETIME() WHERE id_seguimiento=@id", cn)) { cmd.Parameters.Add("@s", SqlDbType.NVarChar, 30).Value = estado; cmd.Parameters.Add("@id", SqlDbType.Int).Value = id; if (cmd.ExecuteNonQuery() == 0) throw new ArgumentException("Seguimiento no encontrado."); } } }
+        public void ActualizarEstado(int id, string estado, int idUsuario)
+        {
+            using (var cn = new SqlConnection(cs))
+            {
+                cn.Open();
+                var acceso = ObtenerAcceso(cn, idUsuario);
+                if (!acceso.PuedeEditar) throw new UnauthorizedAccessException();
+                using (var cmd = new SqlCommand(@"UPDATE s SET estado=@s,fecha_actualizacion=SYSDATETIME()
+                    FROM dbo.MONITOREO_SEGUIMIENTO s
+                    JOIN dbo.GRUPO g ON g.id_grupo=s.id_grupo
+                    WHERE s.id_seguimiento=@id AND g.estado=1
+                      AND (@inst=1 OR g.id_docente=@doc)", cn))
+                {
+                    cmd.Parameters.Add("@s", SqlDbType.NVarChar, 30).Value = estado;
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    AgregarAlcance(cmd, acceso.General, acceso.Docente);
+                    if (cmd.ExecuteNonQuery() == 0) throw new UnauthorizedAccessException();
+                }
+            }
+        }
 
+        private class Acceso
+        {
+            public bool General, Propio, PuedeEditar;
+            public int? Docente;
+            public bool PuedeConsultar { get { return General || Propio; } }
+        }
+        private static void AgregarAlcance(SqlCommand cmd, bool general, int? docente)
+        {
+            cmd.Parameters.Add("@inst", SqlDbType.Bit).Value = general;
+            cmd.Parameters.Add("@doc", SqlDbType.Int).Value = (object)docente ?? DBNull.Value;
+        }
+        private static Acceso ObtenerAcceso(SqlConnection cn, int usuario)
+        {
+            var a = new Acceso();
+            using (var cmd = new SqlCommand(@"SELECT p.nombre FROM dbo.USUARIO u
+                JOIN dbo.ROL r ON r.id_rol=u.id_rol AND r.estado=1
+                JOIN dbo.ROL_PERMISO rp ON rp.id_rol=r.id_rol
+                JOIN dbo.PERMISO p ON p.id_permiso=rp.id_permiso AND p.estado=1
+                WHERE u.id_usuario=@u AND u.estado=1 AND p.nombre IN
+                (N'VER_MONITOREO_GENERAL',N'VER_MI_MONITOREO',N'GESTIONAR_SEGUIMIENTO_MONITOREO')", cn))
+            {
+                cmd.Parameters.Add("@u", SqlDbType.Int).Value = usuario;
+                using (var r = cmd.ExecuteReader()) while (r.Read())
+                {
+                    var permiso = r.GetString(0);
+                    if (permiso == "VER_MONITOREO_GENERAL") a.General = true;
+                    if (permiso == "VER_MI_MONITOREO") a.Propio = true;
+                    if (permiso == "GESTIONAR_SEGUIMIENTO_MONITOREO") a.PuedeEditar = true;
+                }
+            }
+            using (var cmd = new SqlCommand("SELECT TOP 1 id_docente FROM dbo.DOCENTE WHERE id_usuario=@u AND estado=1", cn))
+            {
+                cmd.Parameters.Add("@u", SqlDbType.Int).Value = usuario;
+                var v = cmd.ExecuteScalar();
+                if (v != null && v != DBNull.Value) a.Docente = Convert.ToInt32(v);
+            }
+            return a;
+        }
+        private static void ExigirGrupo(SqlConnection cn, int usuario, int grupo, bool editar)
+        {
+            var acceso = ObtenerAcceso(cn, usuario);
+            if (editar ? (!acceso.PuedeEditar || !acceso.PuedeConsultar) : !acceso.PuedeConsultar)
+                throw new UnauthorizedAccessException();
+            using (var cmd = new SqlCommand(@"SELECT COUNT(*) FROM dbo.GRUPO g WHERE g.id_grupo=@g
+                AND g.estado=1 AND (@inst=1 OR g.id_docente=@doc)", cn))
+            {
+                cmd.Parameters.Add("@g", SqlDbType.Int).Value = grupo;
+                AgregarAlcance(cmd, acceso.General, acceso.Docente);
+                if (Convert.ToInt32(cmd.ExecuteScalar()) == 0) throw new UnauthorizedAccessException();
+            }
+        }
     }
 }

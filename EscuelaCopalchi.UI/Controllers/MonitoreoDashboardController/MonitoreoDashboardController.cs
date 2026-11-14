@@ -15,13 +15,16 @@ namespace EscuelaCopalchi.UI.Controllers
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
             try { return View(repo.Obtener(anio, trimestre, grupo, UsuarioActual, buscar, estado, pagina)); }
-            catch (Exception ex) { System.Diagnostics.Trace.TraceError(ex.ToString()); return new HttpStatusCodeResult(500, "Error al consultar monitoreo académico. Revise el registro del servidor."); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403, "Acceso denegado."); }
+            catch (Exception ex) { System.Diagnostics.Trace.TraceError(ex.ToString()); return new HttpStatusCodeResult(500, "Error al consultar monitoreo académico."); }
         }
         // Exporta todos los estudiantes del alcance filtrado, no solo la página visible.
         public ActionResult ExportarExcel(int? anio, int? trimestre, int? grupo)
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
-            var vm = repo.Obtener(anio, trimestre, grupo, UsuarioActual);
+            MonitoreoDashboardVM vm;
+            try { vm = repo.Obtener(anio, trimestre, grupo, UsuarioActual); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             return File(MonitoreoExportador.Excel(vm),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Monitoreo_Academico_" + vm.Anio + ".xlsx");
@@ -29,15 +32,19 @@ namespace EscuelaCopalchi.UI.Controllers
         public ActionResult ExportarPdf(int? anio, int? trimestre, int? grupo)
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
-            var vm = repo.Obtener(anio, trimestre, grupo, UsuarioActual);
+            MonitoreoDashboardVM vm;
+            try { vm = repo.Obtener(anio, trimestre, grupo, UsuarioActual); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             return File(MonitoreoExportador.Pdf(vm), "application/pdf",
                 "Monitoreo_Academico_" + vm.Anio + ".pdf");
         }
         public ActionResult Seguimiento(int? anio, int? grupo, int pagina = 1)
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
-            var d = repo.Obtener(anio, null, grupo, UsuarioActual);
-            var casos = repo.Seguimientos(d.Anio, d.IdGrupo);
+            MonitoreoDashboardVM d;
+            System.Collections.Generic.List<MonitoreoSeguimientoItem> casos;
+            try { d = repo.Obtener(anio, null, grupo, UsuarioActual); casos = d.Anio == 0 ? new System.Collections.Generic.List<MonitoreoSeguimientoItem>() : repo.Seguimientos(d.Anio, d.IdGrupo, UsuarioActual); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             int paginas = Math.Max(1, (int)Math.Ceiling(casos.Count / 10.0));
             pagina = Math.Max(1, Math.Min(pagina, paginas));
             return View(new MonitoreoSeguimientoVM { Dashboard = d, Casos = casos.Skip((pagina - 1) * 10).Take(10).ToList(), Pagina = pagina, TotalPaginas = paginas });
@@ -45,7 +52,9 @@ namespace EscuelaCopalchi.UI.Controllers
         public ActionResult Detalle(int id, int grupo, int anio)
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
-            var vm = repo.Detalle(id, grupo, anio);
+            MonitoreoDetalleVM vm;
+            try { vm = repo.Detalle(id, grupo, anio, UsuarioActual); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             return vm == null ? (ActionResult)HttpNotFound() : View(vm);
         }
         [HttpPost, ValidateAntiForgeryToken]
@@ -57,6 +66,7 @@ namespace EscuelaCopalchi.UI.Controllers
             if (!(new[] { "Pendiente", "En seguimiento", "Mejorando", "Resuelto" }).Contains(estado)) return new HttpStatusCodeResult(400);
             if (string.IsNullOrWhiteSpace(observacion) || observacion.Length > 2000 || (accionRealizada ?? "").Length > 2000) return new HttpStatusCodeResult(400);
             try { repo.GuardarSeguimiento(idEstudiante, idGrupo, anio, trimestre, nivelRiesgo, estado, observacion, accionRealizada, UsuarioActual); TempData["Ok"] = "Seguimiento registrado correctamente."; }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             catch (ArgumentException ex) { TempData["Error"] = ex.Message; }
             return RedirectToAction("Detalle", new { id = idEstudiante, grupo = idGrupo, anio });
         }
@@ -65,7 +75,8 @@ namespace EscuelaCopalchi.UI.Controllers
         {
             if (UsuarioActual <= 0) return LoginSiFalta();
             if (!(new[] { "Pendiente", "En seguimiento", "Mejorando", "Resuelto" }).Contains(estado)) return new HttpStatusCodeResult(400);
-            repo.ActualizarEstado(id, estado);
+            try { repo.ActualizarEstado(id, estado, UsuarioActual); }
+            catch (UnauthorizedAccessException) { return new HttpStatusCodeResult(403); }
             TempData["Ok"] = "Estado actualizado.";
             return RedirectToAction("Detalle", new { id = idEstudiante, grupo, anio });
         }

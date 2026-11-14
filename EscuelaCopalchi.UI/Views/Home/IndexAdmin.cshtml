@@ -1,4 +1,4 @@
-@model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
+﻿@model EscuelaCopalchi.UI.Models.Home.HomeDashboardViewModel
 @{ ViewBag.Title = "Administración"; }
 <div class="cop-dashboard">
     <section class="cop-hero"><div class="container"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3"><div><div class="cop-eyebrow">ESCUELA COPALCHÍ · ADMINISTRACIÓN</div><h1>Panel institucional</h1><p>Bienvenido, @Model.Nombre. Supervisa la actividad de la institución.</p></div><div class="cop-hero-badge"><i class="bi bi-shield-check"></i> @Model.Rol</div></div></div></section>
@@ -6,7 +6,7 @@
         <div class="cop-editor-bar"><div><strong><i class="bi bi-grid-1x2"></i> Mi panel</strong><span>Organiza tus secciones según tus preferencias</span></div><div class="cop-editor-actions"><button type="button" id="copEditar" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders"></i> Personalizar panel</button><button type="button" id="copRestaurar" class="btn btn-outline-secondary btn-sm" hidden>Restablecer</button><button type="button" id="copGuardar" class="btn btn-primary btn-sm" hidden><i class="bi bi-check2"></i> Guardar distribución</button></div></div>
         <div id="copWidgets" class="cop-widgets" data-user="@Session["IdUsuario"]" data-role="admin">
             <div class="cop-widget" data-widget="summary" data-title="Resumen institucional">
-                <div class="cop-heading"><h2>Resumen institucional</h2><span>Información actualizada</span></div>
+                <div class="cop-heading"><h2>Resumen institucional</h2><span>Datos de SQL Server al cargar la página</span></div>
                 <div class="row g-3 mb-4">
                     @if (Model.Estudiantes.HasValue)
                     {<div class="col-sm-6 col-xl-3"><div class="cop-kpi"><i class="bi bi-mortarboard"></i><div><span>Estudiantes activos</span><strong>@Model.Estudiantes</strong><small>Registros institucionales</small></div></div></div>}
@@ -29,6 +29,7 @@
             </div>
 
 
+            @Html.Partial("_HomeDashboardInventario")
             @Html.Partial("_HomeDashboardContenido", Model)
         </div>
     </div>

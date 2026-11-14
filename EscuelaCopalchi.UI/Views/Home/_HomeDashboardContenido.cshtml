@@ -50,11 +50,11 @@
 <div class="cop-widget" data-widget="activity" data-title="Seguimiento y avisos">
     <div class="cop-heading"><div><h2>Seguimiento y avisos</h2><p>Información relevante para la operación diaria</p></div></div>
     <div class="row g-3 mb-4">
-        @if (Model.Puede("VER_AUDITORIA"))
+        @if (Model.Puede("VER_AUDITORIA", "VER_MI_AUDITORIA"))
         {
             <div class="col-xl-7">
                 <section class="cop-panel h-100">
-                    <div class="cop-panel-head"><div><h3><i class="bi bi-clock-history"></i> Actividad reciente</h3><small>Últimos movimientos disponibles</small></div><a class="cop-text-link" href="@Url.Action("Index","AuditoriaSistema")">Consultar <i class="bi bi-arrow-up-right"></i></a></div>
+                    <div class="cop-panel-head"><div><h3><i class="bi bi-clock-history"></i> Actividad reciente</h3><small>Últimos movimientos disponibles</small></div><a class="cop-text-link" href="@Url.Action("Index","Auditoria")">Consultar <i class="bi bi-arrow-up-right"></i></a></div>
                     @if (Model.Actividad.Any())
                     {
                         foreach (var a in Model.Actividad)
@@ -67,7 +67,7 @@
                 </section>
             </div>
         }
-        <div class="@(Model.Puede("VER_AUDITORIA") ? "col-xl-5" : "col-12")">
+        <div class="@(Model.Puede("VER_AUDITORIA", "VER_MI_AUDITORIA") ? "col-xl-5" : "col-12")">
             <section class="cop-panel h-100">
                 <div class="cop-panel-head"><div><h3><i class="bi bi-bell"></i> Centro de avisos</h3><small>Elementos que requieren tu atención</small></div></div>
                 <div class="cop-notice"><i class="bi bi-envelope"></i><div><strong>@Model.Notificaciones notificaciones sin leer</strong><span>Mensajes pendientes de revisión</span></div></div>

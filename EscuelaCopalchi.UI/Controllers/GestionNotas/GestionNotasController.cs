@@ -125,8 +125,8 @@ namespace EscuelaCopalchi.UI.Controllers
             }.Contains(accion, StringComparer.OrdinalIgnoreCase);
 
             bool autorizado = escritura
-                ? Tiene("REGISTRAR_NOTAS")
-                : Tiene("REGISTRAR_NOTAS") || Tiene("VER_TODAS_NOTAS");
+                ? Tiene("REGISTRAR_NOTAS") && PuedeLeerNotas()
+                : PuedeLeerNotas();
 
             if (!autorizado)
             {
@@ -142,24 +142,36 @@ namespace EscuelaCopalchi.UI.Controllers
             }
         }
 
-        // Alcance para escribir: 0 = Administrador/Director autorizado,
-        // >0 = docente asignado; -1 = sin docente o sin permiso.
+        private bool PuedeLeerNotas()
+        {
+            return Tiene("VER_NOTAS_GENERAL") || Tiene("VER_MIS_NOTAS") ||
+                   Tiene("VER_TODAS_NOTAS");
+        }
+
+        // -1: sin docente asociado. Nunca se pasa -1 a consultas sin verificar.
+        // Solo los permisos de consulta determinan el alcance de lectura.
+        private int DocenteAsignado()
+        {
+            var s = Sesion;
+            return s != null && s.IdDocente > 0 ? s.IdDocente : -1;
+        }
+
         private int IdDocente()
         {
             if (!Tiene("REGISTRAR_NOTAS")) return -1;
-            if (EsResponsableGlobal()) return 0;
-
-            var s = Sesion;
-            if (s == null) return -1;
-            return s.IdDocente > 0 ? s.IdDocente : -1;
+            // El permiso de lectura general NO concede escritura global.
+            // La escritura global requiere permiso general y rol habilitado;
+            // los procedimientos almacenados deben volver a validarla.
+            if ((Tiene("VER_NOTAS_GENERAL") || Tiene("VER_TODAS_NOTAS")) &&
+                EsResponsableGlobal()) return 0;
+            return DocenteAsignado();
         }
 
-        // Alcance para leer: 0 = todos los grupos; >0 = docente;
-        // -1 = no tiene acceso a grupos.
         private int AlcanceLectura()
         {
-            if (Tiene("VER_TODAS_NOTAS")) return 0;
-            return IdDocente();
+            if (Tiene("VER_NOTAS_GENERAL") || Tiene("VER_TODAS_NOTAS")) return 0;
+            if (Tiene("VER_MIS_NOTAS")) return DocenteAsignado();
+            return -1;
         }
 
         private static bool TryParseNumero(string texto, out decimal valor)
@@ -192,7 +204,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 }
                 else
                 {
-                    ViewBag.Error = "Su usuario no tiene un registro de docente, por eso no hay grupos para mostrar.";
+                    ViewBag.Error = "No tiene grupos asignados en este momento.";
                 }
             }
             catch (Exception ex)
@@ -200,8 +212,8 @@ namespace EscuelaCopalchi.UI.Controllers
                 ViewBag.Error = ex.Message;
             }
 
-            ViewBag.VeTodo = Tiene("VER_TODAS_NOTAS");
-            ViewBag.PuedeRegistrar = Tiene("REGISTRAR_NOTAS");
+            ViewBag.VeTodo = Tiene("VER_NOTAS_GENERAL") || Tiene("VER_TODAS_NOTAS");
+            ViewBag.PuedeRegistrar = Tiene("REGISTRAR_NOTAS") && IdDocente() >= 0;
 
             return View(grupos);
         }
@@ -526,7 +538,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 if (alcance < 0)
                 {
-                    ViewBag.Error = "Su usuario no tiene un registro de docente, por eso no hay notas para mostrar.";
+                    ViewBag.Error = "No tiene grupos asignados en este momento.";
                     return View(vm);
                 }
 
@@ -548,7 +560,7 @@ namespace EscuelaCopalchi.UI.Controllers
 
                 vm.Items = repo.Historial(alcance, grupo, estudiante, vm.Asignatura, trimestre);
                 vm.IdDocenteActual = IdDocente();
-                vm.PuedeEditar = Tiene("REGISTRAR_NOTAS");
+                vm.PuedeEditar = Tiene("REGISTRAR_NOTAS") && IdDocente() >= 0;
             }
             catch (Exception ex)
             {
@@ -672,6 +684,7 @@ namespace EscuelaCopalchi.UI.Controllers
         {
             var vm = new ImportarViewModel { Trimestre = (trimestre < 1 || trimestre > 3) ? 1 : trimestre };
             int idDocente = IdDocente();
+            if (idDocente < 0) return vm;
             vm.Grupos = repo.ListarGrupos(idDocente);
 
             if (vm.Grupos.Count > 0)

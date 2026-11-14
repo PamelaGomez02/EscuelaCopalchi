@@ -111,9 +111,10 @@ namespace EscuelaCopalchi.UI.Controllers
 
         private void PermisosVista()
         {
-            ViewBag.PuedeConsultarAsistencia = TienePermiso(PermisosAsistencia.Consultar);
-            ViewBag.PuedeRegistrarAsistencia = TienePermiso(PermisosAsistencia.Registrar);
-            ViewBag.PuedeEditarAsistencia = TienePermiso(PermisosAsistencia.Editar);
+            ViewBag.PuedeConsultarAsistencia = PuedeLeerAsistencia();
+            ViewBag.AlcanceGeneralAsistencia = TienePermiso("VER_ASISTENCIA_GENERAL");
+            ViewBag.PuedeRegistrarAsistencia = TienePermiso(PermisosAsistencia.Registrar) && PuedeLeerAsistencia();
+            ViewBag.PuedeEditarAsistencia = TienePermiso(PermisosAsistencia.Editar) && PuedeLeerAsistencia();
             ViewBag.PuedeVerHistorialAsistencia = TienePermiso(PermisosAsistencia.Historial);
             ViewBag.PuedeVerPorcentajeAsistencia = TienePermiso(PermisosAsistencia.Porcentaje);
             ViewBag.PuedeGestionarAsistencia = TienePermiso("GESTIONAR_ASISTENCIA");
@@ -129,14 +130,26 @@ namespace EscuelaCopalchi.UI.Controllers
             }
         }
 
-        // 0 significa todos los grupos en el repositorio existente.
-        // Si la cuenta tiene docente asociado, se restringe a ese docente.
-        // El permiso de la acción sigue validándose por separado.
-        private int AlcanceLectura
+        // El permiso general prevalece sobre el propio. -1 nunca debe llegar
+        // al repositorio, pues su comportamiento para ese valor no está garantizado.
+        private bool PuedeLeerAsistencia()
         {
-            get { return ObtenerAlcanceDocente(); }
+            return TienePermiso("VER_ASISTENCIA_GENERAL") ||
+                   TienePermiso("VER_MI_ASISTENCIA");
         }
 
+        private int AlcanceLectura
+        {
+            get
+            {
+                if (TienePermiso("VER_ASISTENCIA_GENERAL")) return 0;
+                if (!TienePermiso("VER_MI_ASISTENCIA")) return -1;
+                return ObtenerAlcanceDocente();
+            }
+        }
+
+        // La consulta global NO concede escritura global. Solo un docente
+        // asociado puede registrar o editar, sujeto a sus permisos de acción.
         private int AlcanceEscritura
         {
             get { return ObtenerAlcanceDocente(); }
@@ -144,36 +157,16 @@ namespace EscuelaCopalchi.UI.Controllers
 
         private int ObtenerAlcanceDocente()
         {
-            if (IdUsuarioActual <= 0)
-                throw new UnauthorizedAccessException("La sesión no es válida.");
-
-            var servicio = new UsuarioService();
-            var usuario = servicio.Obtener(IdUsuarioActual);
-            if (usuario == null || !usuario.Estado)
-                throw new UnauthorizedAccessException("El usuario no está activo.");
-
-            return usuario.IdDocente > 0 ? usuario.IdDocente : 0;
+            if (IdUsuarioActual <= 0) return -1;
+            var usuario = new UsuarioService().Obtener(IdUsuarioActual);
+            if (usuario == null || !usuario.Estado) return -1;
+            return usuario.IdDocente > 0 ? usuario.IdDocente : -1;
         }
-
-        // Sesión general y docente asociado, sin AsistenciaSesion.
-
 
         private bool PuedeAccederAsistencia()
         {
-            string[] permisos =
-            {
-        "CONSULTAR_ASISTENCIA",
-        "REGISTRAR_ASISTENCIA",
-        "EDITAR_ASISTENCIA",
-        "VER_HISTORIAL_ASISTENCIA",
-        "VER_PORCENTAJE_ASISTENCIA",
-        "GESTIONAR_ASISTENCIA"
-    };
-
-            return permisos.Any(p => TienePermiso(p));
+            return PuedeLeerAsistencia();
         }
-
-
 
         // =============================================
         // CONSULTAR ASISTENCIA
@@ -185,13 +178,19 @@ namespace EscuelaCopalchi.UI.Controllers
             var vm = new AsistenciaIndexVM
             {
                 Fecha = DateTime.Today,
-                PuedeEditar = TienePermiso(PermisosAsistencia.Editar)
+                PuedeEditar = TienePermiso(PermisosAsistencia.Editar) && AlcanceEscritura > 0
             };
 
             try
             {
-                vm.Grupos = repo.ListarGrupos(
-                    AlcanceLectura);
+                if (AlcanceLectura < 0)
+                {
+                    ViewBag.Error = "No tiene grupos asignados en este momento.";
+                    return View(vm);
+                }
+                vm.Grupos = repo.ListarGrupos(AlcanceLectura);
+                if (vm.Grupos.Count == 0)
+                    ViewBag.Error = "No tiene grupos asignados en este momento.";
             }
             catch (Exception ex)
             {
@@ -263,7 +262,7 @@ namespace EscuelaCopalchi.UI.Controllers
             int? grupo,
             string fecha)
         {
-            if (!TienePermiso(PermisosAsistencia.Registrar)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Registrar) || AlcanceEscritura <= 0) return SinPermiso();
             return FormularioRegistrar(
                 grupo,
                 fecha,
@@ -281,7 +280,8 @@ namespace EscuelaCopalchi.UI.Controllers
             string fecha,
             List<AsistenciaGuardarItem> filas)
         {
-            if (!TienePermiso(PermisosAsistencia.Registrar)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Registrar) || AlcanceEscritura <= 0) return SinPermiso();
+            if (AlcanceEscritura <= 0) return SinPermiso();
             DateTime f;
 
             if (!grupo.HasValue ||
@@ -360,6 +360,11 @@ namespace EscuelaCopalchi.UI.Controllers
             };
 
             int docente = AlcanceEscritura;
+            if (docente <= 0)
+            {
+                ViewBag.Error = "No tiene grupos asignados en este momento.";
+                return View("Registrar", vm);
+            }
 
             try
             {
@@ -444,7 +449,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Editar(int? id)
         {
-            if (!TienePermiso(PermisosAsistencia.Editar)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Editar) || AlcanceEscritura <= 0) return SinPermiso();
             if (!id.HasValue || id.Value <= 0)
             {
                 TempData["Error"] =
@@ -489,7 +494,7 @@ namespace EscuelaCopalchi.UI.Controllers
             string hora,
             string observacion)
         {
-            if (!TienePermiso(PermisosAsistencia.Editar)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Editar) || AlcanceEscritura <= 0) return SinPermiso();
             if (!id.HasValue || id.Value <= 0)
             {
                 TempData["Error"] =
@@ -575,7 +580,7 @@ namespace EscuelaCopalchi.UI.Controllers
             string desde,
             string hasta)
         {
-            if (!TienePermiso(PermisosAsistencia.Historial)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Historial) || !PuedeLeerAsistencia()) return SinPermiso();
             var vm = new AsistenciaHistorialVM
             {
                 IdGrupo = grupo ?? 0,
@@ -583,6 +588,11 @@ namespace EscuelaCopalchi.UI.Controllers
             };
 
             int alcance = AlcanceLectura;
+            if (alcance < 0)
+            {
+                ViewBag.Error = "No tiene grupos asignados en este momento.";
+                return View(vm);
+            }
 
             try
             {
@@ -694,10 +704,15 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Porcentaje(int? grupo, int? estudiante, string desde, string hasta)
         {
-            if (!TienePermiso(PermisosAsistencia.Porcentaje)) return SinPermiso();
+            if (!TienePermiso(PermisosAsistencia.Porcentaje) || !PuedeLeerAsistencia()) return SinPermiso();
 
             var vm = new AsistenciaPorcentajeVM { IdGrupo = grupo ?? 0 };
             int alcance = AlcanceLectura;
+            if (alcance < 0)
+            {
+                ViewBag.Error = "No tiene grupos asignados en este momento.";
+                return View(vm);
+            }
 
             try
             {

@@ -402,10 +402,6 @@
     <Content Include="Views\GestionNotas\Registrar.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\IndexAdmin.cshtml" />
-    <Content Include="Views\Home\IndexUsuario.cshtml" />
-    <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
-    <Content Include="Views\Home\_HomeDashboardEstilos.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
@@ -423,7 +419,6 @@
     <Content Include="Views\Roles\Crear.cshtml" />
     <Content Include="Views\Roles\Editar.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\Roles\Permisos.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Usuarios\Crear.cshtml" />
@@ -438,12 +433,8 @@
     <Content Include="Views\MonitoreoDashboard\Seguimiento.cshtml" />
     <Content Include="Views\MonitoreoDashboard\Index.cshtml" />
     <Content Include="Views\Notificaciones\Detalle.cshtml" />
-    <Content Include="Views\Home\_MenuLateral.cshtml" />
     <Content Include="Views\Notificaciones\Configuracion.cshtml" />
     <Content Include="Views\Usuarios\EditarPerfil.cshtml" />
-    <Content Include="Views\Auditoria\Index.cshtml" />
-    <Content Include="Views\Auditoria\Detalle.cshtml" />
-    <Content Include="Views\Home\_HomeDashboardEditor.cshtml" />
     <Content Include="Views\InventarioLimpieza\Detalle.cshtml" />
     <Content Include="Views\InventarioLimpieza\Editar.cshtml" />
     <Content Include="Views\InventarioLimpieza\Index.cshtml" />
@@ -462,6 +453,16 @@
     <Content Include="Views\InventarioCocina\_Estilos.cshtml" />
     <Content Include="Views\InventarioCocina\_Formulario.cshtml" />
     <Content Include="Views\InventarioCocina\_Paginacion.cshtml" />
+    <Content Include="Views\Home\IndexAdmin.cshtml" />
+    <Content Include="Views\Home\IndexUsuario.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardEditor.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardEstilos.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardInventario.cshtml" />
+    <Content Include="Views\Home\_MenuLateral.cshtml" />
+    <Content Include="Views\Roles\Permisos.cshtml" />
+    <Content Include="Views\Auditoria\Detalle.cshtml" />
+    <Content Include="Views\Auditoria\Index.cshtml" />
+    <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

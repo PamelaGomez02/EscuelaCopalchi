@@ -66,7 +66,7 @@ namespace EscuelaCopalchi.UI.Controllers
             }
         }
 
-        private bool PuedeVer() { return TienePermiso("VER_INVENTARIO") || TienePermiso("GESTIONAR_INVENTARIO"); }
+        private bool PuedeVer() { return TienePermiso("VER_INVENTARIO_COCINA") || TienePermiso("GESTIONAR_INVENTARIO_COCINA"); }
         private ActionResult Denegado()
         {
             Response.StatusCode = 403;
@@ -75,11 +75,11 @@ namespace EscuelaCopalchi.UI.Controllers
         }
         private void PermisosVista()
         {
-            ViewBag.PuedeCrear = TienePermiso("CREAR_PRODUCTO_INVENTARIO");
-            ViewBag.PuedeEditar = TienePermiso("EDITAR_PRODUCTO_INVENTARIO");
-            ViewBag.PuedeMovimiento = TienePermiso("REGISTRAR_MOVIMIENTO_INVENTARIO");
-            ViewBag.PuedeVerMovimientos = TienePermiso("VER_MOVIMIENTOS_INVENTARIO");
-            ViewBag.PuedeReportes = TienePermiso("VER_REPORTES_INVENTARIO");
+            ViewBag.PuedeCrear = TienePermiso("CREAR_PRODUCTO_COCINA");
+            ViewBag.PuedeEditar = TienePermiso("EDITAR_PRODUCTO_COCINA");
+            ViewBag.PuedeMovimiento = TienePermiso("REGISTRAR_MOVIMIENTO_COCINA");
+            ViewBag.PuedeVerMovimientos = TienePermiso("VER_MOVIMIENTOS_COCINA");
+            ViewBag.PuedeReportes = TienePermiso("VER_REPORTES_COCINA");
         }
 
         private static InventarioCocinaProductoViewModel LeerProducto(SqlDataReader r)
@@ -212,7 +212,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            if (!TienePermiso("CREAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("CREAR_PRODUCTO_COCINA")) return Denegado();
             return View(new InventarioCocinaProductoViewModel { Estado = true });
         }
 
@@ -234,7 +234,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Crear(InventarioCocinaProductoViewModel p)
         {
-            if (!TienePermiso("CREAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("CREAR_PRODUCTO_COCINA")) return Denegado();
             if (p == null) return new HttpStatusCodeResult(400);
             ValidarProducto(ModelState, p);
             if (!ModelState.IsValid) return View(p);
@@ -263,7 +263,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Editar(int id)
         {
-            if (!TienePermiso("EDITAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("EDITAR_PRODUCTO_COCINA")) return Denegado();
             var p = Obtener(id);
             return p == null ? (ActionResult)HttpNotFound() : View(p);
         }
@@ -271,7 +271,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Editar(InventarioCocinaProductoViewModel p)
         {
-            if (!TienePermiso("EDITAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("EDITAR_PRODUCTO_COCINA")) return Denegado();
             if (p == null) return new HttpStatusCodeResult(400);
             ValidarProducto(ModelState, p);
             if (!ModelState.IsValid) return View(p);
@@ -309,7 +309,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult RegistrarMovimiento(int? id)
         {
-            if (!TienePermiso("REGISTRAR_MOVIMIENTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("REGISTRAR_MOVIMIENTO_COCINA")) return Denegado();
             CargarProductos();
             return View(new InventarioCocinaMovimientoViewModel { IdProducto = id ?? 0, Tipo = "ENTRADA" });
         }
@@ -317,7 +317,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult RegistrarMovimiento(InventarioCocinaMovimientoViewModel m)
         {
-            if (!TienePermiso("REGISTRAR_MOVIMIENTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("REGISTRAR_MOVIMIENTO_COCINA")) return Denegado();
             if (m == null) return new HttpStatusCodeResult(400);
             if (m.Tipo != "ENTRADA" && m.Tipo != "SALIDA")
                 ModelState.AddModelError("Tipo", "Seleccione ENTRADA o SALIDA.");
@@ -356,7 +356,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Movimientos()
         {
-            if (!TienePermiso("VER_MOVIMIENTOS_INVENTARIO")) return Denegado();
+            if (!TienePermiso("VER_MOVIMIENTOS_COCINA")) return Denegado();
             var lista = new List<InventarioCocinaMovimientoViewModel>();
             const string sql = @"SELECT m.*,p.nombre AS producto,
                 CONCAT(u.nombre,' ',u.apellido1,' ',u.apellido2) AS responsable
@@ -418,7 +418,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult Reportes(int? anio, int? mes)
         {
-            if (!TienePermiso("VER_REPORTES_INVENTARIO")) return Denegado();
+            if (!TienePermiso("VER_REPORTES_COCINA")) return Denegado();
             int a = anio ?? DateTime.Today.Year, m = mes ?? DateTime.Today.Month;
             if (a < 2000 || a > 9998 || m < 1 || m > 12) return new HttpStatusCodeResult(400);
             return View(GenerarReporte(a, m));
@@ -427,7 +427,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult ExportarExcel(int anio, int mes)
         {
-            if (!TienePermiso("VER_REPORTES_INVENTARIO")) return Denegado();
+            if (!TienePermiso("VER_REPORTES_COCINA")) return Denegado();
             if (anio < 2000 || anio > 9998 || mes < 1 || mes > 12) return new HttpStatusCodeResult(400);
             var vm = GenerarReporte(anio, mes);
             using (var libro = new XLWorkbook())
@@ -464,7 +464,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult ExportarCsv(int anio, int mes)
         {
-            if (!TienePermiso("VER_REPORTES_INVENTARIO")) return Denegado();
+            if (!TienePermiso("VER_REPORTES_COCINA")) return Denegado();
             if (anio < 2000 || anio > 9998 || mes < 1 || mes > 12) return new HttpStatusCodeResult(400);
             var vm = GenerarReporte(anio, mes);
             var sb = new StringBuilder("Producto;Unidad;Entradas;Salidas;Saldo final\r\n");
@@ -484,7 +484,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpGet]
         public ActionResult PlantillaExcel()
         {
-            if (!TienePermiso("CREAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("CREAR_PRODUCTO_COCINA")) return Denegado();
             using (var libro = new XLWorkbook())
             {
                 var hoja = libro.Worksheets.Add("Productos");
@@ -519,7 +519,7 @@ namespace EscuelaCopalchi.UI.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult ImportarExcel(HttpPostedFileBase archivoExcel)
         {
-            if (!TienePermiso("CREAR_PRODUCTO_INVENTARIO")) return Denegado();
+            if (!TienePermiso("CREAR_PRODUCTO_COCINA")) return Denegado();
             if (archivoExcel == null || archivoExcel.ContentLength <= 0 || archivoExcel.ContentLength > 5 * 1024 * 1024 ||
                 !string.Equals(Path.GetExtension(archivoExcel.FileName), ".xlsx", StringComparison.OrdinalIgnoreCase))
             {
@@ -574,7 +574,7 @@ namespace EscuelaCopalchi.UI.Controllers
                 if (filas.Count == 0) throw new InvalidDataException("No hay productos.");
                 var repetido = filas.GroupBy(x => x.Nombre, StringComparer.OrdinalIgnoreCase).FirstOrDefault(g => g.Count() > 1);
                 if (repetido != null) throw new InvalidDataException("Producto repetido: " + repetido.Key);
-                if (filas.Any(x => x.Inicial > 0) && !TienePermiso("REGISTRAR_MOVIMIENTO_INVENTARIO"))
+                if (filas.Any(x => x.Inicial > 0) && !TienePermiso("REGISTRAR_MOVIMIENTO_COCINA"))
                 {
                     TempData["Error"] = "No tiene permiso para importar cantidades iniciales.";
                     return RedirectToAction("Crear");

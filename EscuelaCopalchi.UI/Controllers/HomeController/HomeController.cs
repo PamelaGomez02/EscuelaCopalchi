@@ -69,58 +69,136 @@ namespace EscuelaCopalchi.UI.Controllers
                     cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
                     var result = cmd.ExecuteScalar(); if (result != null && result != DBNull.Value) docente = Convert.ToInt32(result);
                 }
-                // Solo el administrador ve totales institucionales; otros usuarios ven sus grupos
-                // cuando son docentes. Los roles no docentes sin alcance asignado no ven cifras globales.
-                bool global = vm.EsAdministrador;
-                if (global || docente.HasValue)
+                // Alcance académico definido exclusivamente por permisos del rol.
+                bool global = vm.Puede("VER_INDICADORES_GENERALES");
+                bool misGrupos = vm.Puede("VER_MIS_INDICADORES");
+                bool puedeIndicadores = global || misGrupos;
+                ViewBag.PuedeVerIndicadores = puedeIndicadores;
+                ViewBag.IndicadoresGenerales = global;
+                ViewBag.AlcanceIndicadores = global ? "Institucional" : "Mis grupos";
+
+                // Un usuario sin docente asociado y sin acceso general no recibe cifras.
+                // Un docente sin grupos recibe cero y listas vacías, nunca datos globales.
+                if (puedeIndicadores)
                 {
-                    if (global || vm.Puede("GESTIONAR_ESTUDIANTES", "VER_MI_GRUPO", "GESTIONAR_ACADEMICA"))
-                    {
-                        vm.Estudiantes = Entero(cn, global ?
-                            "SELECT COUNT(*) FROM dbo.ESTUDIANTE WHERE estado=1" :
-                            @"SELECT COUNT(DISTINCT m.id_estudiante) FROM dbo.MATRICULA m
-                              JOIN dbo.GRUPO g ON g.id_grupo=m.id_grupo
-                              JOIN dbo.ESTUDIANTE e ON e.id_estudiante=m.id_estudiante
-                              WHERE m.estado=N'Activa' AND e.estado=1 AND g.estado=1 AND g.id_docente=@doc", docente);
-                    }
-                    if (global || vm.Puede("GESTIONAR_ACADEMICA", "VER_MI_GRUPO"))
-                        vm.Grupos = Entero(cn, "SELECT COUNT(*) FROM dbo.GRUPO WHERE estado=1" + (global ? "" : " AND id_docente=@doc"), docente);
-                    if (global || vm.Puede("GESTIONAR_ASISTENCIA"))
-                    {
-                        vm.Asistencia = Decimal(cn, @"SELECT CAST(100.0 * SUM(CASE WHEN a.estado IN (N'Presente',N'Tardanza') THEN 1 ELSE 0 END)
-                            / NULLIF(COUNT(*),0) AS DECIMAL(5,1)) FROM dbo.ASISTENCIA a
-                            JOIN dbo.GRUPO g ON g.id_grupo=a.id_grupo WHERE a.fecha >= DATEADD(DAY,-30,CAST(GETDATE() AS DATE))" +
-                            (global ? "" : " AND g.id_docente=@doc"), docente);
-                        vm.AsistenciaMensual = Meses(cn, global, docente);
-                    }
-                    if (global || vm.Puede("GESTIONAR_NOTAS", "REGISTRAR_NOTAS", "VER_TODAS_NOTAS"))
-                    {
-                        vm.PromedioNotas = Decimal(cn, @"SELECT CAST(AVG(100.0*c.nota/NULLIF(ev.nota_maxima,0)) AS DECIMAL(5,1))
-                          FROM dbo.CALIFICACION c JOIN dbo.EVALUACION ev ON ev.id_evaluacion=c.id_evaluacion
-                          JOIN dbo.GRUPO g ON g.id_grupo=ev.id_grupo WHERE ev.estado=1 AND g.estado=1" +
-                          (global ? "" : " AND g.id_docente=@doc"), docente);
-                        vm.NotasPorGrupo = Notas(cn, global, docente);
-                    }
-                    if (global || vm.Puede("GESTIONAR_PLANES"))
-                        vm.PlanesPendientes = Entero(cn, @"SELECT COUNT(*) FROM dbo.PLAN_ESTUDIO p
-                            JOIN dbo.GRUPO g ON g.id_grupo=p.id_grupo WHERE p.estado=N'Pendiente'" +
-                            (global ? "" : " AND g.id_docente=@doc"), docente);
-                    if (global || vm.Puede("VER_REPORTES", "GESTIONAR_ACADEMICA"))
-                        vm.Alertas = Entero(cn, @"SELECT COUNT(*) FROM dbo.ALERTA_ACADEMICA a
-                            WHERE a.atendida=0" + (global ? "" :
-                            @" AND EXISTS (SELECT 1 FROM dbo.MATRICULA m JOIN dbo.GRUPO g ON g.id_grupo=m.id_grupo
-                                WHERE m.id_estudiante=a.id_estudiante AND m.estado=N'Activa' AND g.id_docente=@doc)"), docente);
+                    vm.Estudiantes = Entero(cn, global ?
+                        "SELECT COUNT(*) FROM dbo.ESTUDIANTE WHERE estado=1" :
+                        @"SELECT COUNT(DISTINCT m.id_estudiante) FROM dbo.MATRICULA m
+                          JOIN dbo.GRUPO g ON g.id_grupo=m.id_grupo
+                          JOIN dbo.ESTUDIANTE e ON e.id_estudiante=m.id_estudiante
+                          WHERE m.estado=N'Activa' AND e.estado=1 AND g.estado=1 AND g.id_docente=@doc", docente);
+
+                    vm.Grupos = Entero(cn, "SELECT COUNT(*) FROM dbo.GRUPO WHERE estado=1" +
+                        (global ? "" : " AND id_docente=@doc"), docente);
+
+                    vm.Asistencia = Decimal(cn, @"SELECT CAST(100.0 * SUM(CASE WHEN a.estado IN (N'Presente',N'Tardanza') THEN 1 ELSE 0 END)
+                        / NULLIF(COUNT(*),0) AS DECIMAL(5,1)) FROM dbo.ASISTENCIA a
+                        JOIN dbo.GRUPO g ON g.id_grupo=a.id_grupo WHERE a.fecha >= DATEADD(DAY,-30,CAST(GETDATE() AS DATE))" +
+                        (global ? "" : " AND g.id_docente=@doc"), docente);
+                    vm.AsistenciaMensual = Meses(cn, global, docente);
+
+                    vm.PromedioNotas = Decimal(cn, @"SELECT CAST(AVG(100.0*c.nota/NULLIF(ev.nota_maxima,0)) AS DECIMAL(5,1))
+                      FROM dbo.CALIFICACION c JOIN dbo.EVALUACION ev ON ev.id_evaluacion=c.id_evaluacion
+                      JOIN dbo.GRUPO g ON g.id_grupo=ev.id_grupo WHERE ev.estado=1 AND g.estado=1" +
+                      (global ? "" : " AND g.id_docente=@doc"), docente);
+                    vm.NotasPorGrupo = Notas(cn, global, docente);
+
+                    vm.PlanesPendientes = Entero(cn, @"SELECT COUNT(*) FROM dbo.PLAN_ESTUDIO p
+                        JOIN dbo.GRUPO g ON g.id_grupo=p.id_grupo WHERE p.estado=N'Pendiente'" +
+                        (global ? "" : " AND g.id_docente=@doc"), docente);
+                    vm.Alertas = Entero(cn, @"SELECT COUNT(*) FROM dbo.ALERTA_ACADEMICA a
+                        WHERE a.atendida=0" + (global ? "" :
+                        @" AND EXISTS (SELECT 1 FROM dbo.MATRICULA m JOIN dbo.GRUPO g ON g.id_grupo=m.id_grupo
+                            WHERE m.id_estudiante=a.id_estudiante AND m.estado=N'Activa' AND g.id_docente=@doc)"), docente);
                 }
                 if (vm.Puede("GESTIONAR_USUARIOS"))
                     vm.Usuarios = Entero(cn, "SELECT COUNT(*) FROM dbo.USUARIO WHERE estado=1", null);
-                if (vm.Puede("GESTIONAR_INVENTARIO"))
-                    vm.StockBajo = Entero(cn, "SELECT COUNT(*) FROM dbo.INVENTARIO WHERE estado=1 AND stock_actual<stock_minimo", null);
+                // El resumen solo incluye los inventarios que el rol puede consultar.
+                bool verLimpieza = vm.Puede("VER_INVENTARIO_LIMPIEZA", "GESTIONAR_INVENTARIO_LIMPIEZA", "VER_INVENTARIO", "GESTIONAR_INVENTARIO");
+                bool verCocina = vm.Puede("VER_INVENTARIO_COCINA", "GESTIONAR_INVENTARIO_COCINA", "VER_INVENTARIO", "GESTIONAR_INVENTARIO");
+                if (verLimpieza || verCocina)
+                {
+                    var inventario = ObtenerResumenInventario(cn);
+                    ViewBag.ResumenInventario = inventario;
+                    ViewBag.PuedeVerLimpieza = verLimpieza;
+                    ViewBag.PuedeVerCocina = verCocina;
+                    if (inventario.Disponible)
+                        vm.StockBajo = (verLimpieza ? inventario.Limpieza.Bajos : 0) + (verCocina ? inventario.Cocina.Bajos : 0);
+                }
                 // Las notificaciones son siempre del usuario autenticado.
                 vm.Notificaciones = Entero(cn, "SELECT COUNT(*) FROM dbo.NOTIFICACION WHERE id_usuario=@id AND leida=0", null, id);
-                if (vm.Puede("VER_AUDITORIA")) vm.Actividad = Actividades(cn, id, global);
+                if (vm.Puede("VER_AUDITORIA", "VER_MI_AUDITORIA"))
+                    vm.Actividad = Actividades(cn, id, vm.Puede("VER_AUDITORIA"));
             }
 
             return View(vm.EsAdministrador ? "IndexAdmin" : "IndexUsuario", vm);
+        }
+
+        // No se simulan datos: si falta el esquema esperado, el panel informa que no está disponible.
+        private static ResumenInventarioHome ObtenerResumenInventario(SqlConnection cn)
+        {
+            var resumen = new ResumenInventarioHome();
+            const string esquema = @"SELECT CASE WHEN OBJECT_ID(N'dbo.INVENTARIO', N'U') IS NOT NULL
+                AND COL_LENGTH('dbo.INVENTARIO','ambito') IS NOT NULL
+                AND COL_LENGTH('dbo.INVENTARIO','nombre') IS NOT NULL
+                AND COL_LENGTH('dbo.INVENTARIO','stock_actual') IS NOT NULL
+                AND COL_LENGTH('dbo.INVENTARIO','stock_minimo') IS NOT NULL
+                AND COL_LENGTH('dbo.INVENTARIO','estado') IS NOT NULL THEN 1 ELSE 0 END";
+            using (var cmd = new SqlCommand(esquema, cn))
+                if (Convert.ToInt32(cmd.ExecuteScalar()) != 1) return resumen;
+            const string sql = @"SELECT ambito, nombre, stock_actual, stock_minimo
+                FROM dbo.INVENTARIO
+                WHERE estado = 1 AND UPPER(LTRIM(RTRIM(ambito))) IN (N'LIMPIEZA',N'COCINA')
+                ORDER BY CASE WHEN stock_actual <= 0 THEN 0 WHEN stock_actual < stock_minimo THEN 1 ELSE 2 END,
+                         nombre";
+            using (var cmd = new SqlCommand(sql, cn))
+            using (var dr = cmd.ExecuteReader())
+            {
+                while (dr.Read())
+                {
+                    var area = string.Equals(Convert.ToString(dr[0]).Trim(), "LIMPIEZA", StringComparison.OrdinalIgnoreCase)
+                        ? resumen.Limpieza : resumen.Cocina;
+                    decimal actual = Convert.ToDecimal(dr[2]);
+                    decimal minimo = Convert.ToDecimal(dr[3]);
+                    area.Total++;
+                    if (actual <= 0) area.Agotados++;
+                    if (actual < minimo)
+                    {
+                        area.Bajos++;
+                        if (area.Productos.Count < 8)
+                            area.Productos.Add(new ProductoAlertaHome { Nombre = Convert.ToString(dr[1]), Actual = actual, Minimo = minimo });
+                    }
+                }
+            }
+            // Los vencimientos de cocina se calculan desde lotes disponibles, no desde
+            // INVENTARIO.fecha_vencimiento, que el controlador considera informativa.
+            const string lotesSql = @"SELECT p.id_producto, p.nombre, l.fecha_vencimiento, l.cantidad_disponible
+                FROM dbo.INVENTARIO_COCINA_LOTE l
+                INNER JOIN dbo.INVENTARIO p ON p.id_producto=l.id_producto
+                WHERE p.estado=1 AND p.ambito=N'COCINA' AND l.cantidad_disponible>0
+                  AND l.fecha_vencimiento IS NOT NULL
+                  AND l.fecha_vencimiento < DATEADD(DAY,31,CONVERT(date,GETDATE()))
+                ORDER BY l.fecha_vencimiento, p.nombre";
+            if (Convert.ToInt32(new SqlCommand("SELECT CASE WHEN OBJECT_ID(N'dbo.INVENTARIO_COCINA_LOTE',N'U') IS NULL THEN 0 ELSE 1 END", cn).ExecuteScalar()) == 1)
+            {
+                var productosVencidos = new HashSet<int>();
+                var productosProximos = new HashSet<int>();
+                using (var cmd = new SqlCommand(lotesSql, cn))
+                using (var r = cmd.ExecuteReader())
+                    while (r.Read())
+                    {
+                        int idProducto = Convert.ToInt32(r[0]);
+                        var fecha = Convert.ToDateTime(r[2]).Date;
+                        if (fecha < DateTime.Today) productosVencidos.Add(idProducto);
+                        else productosProximos.Add(idProducto);
+                        if (resumen.Cocina.Vencimientos.Count < 10)
+                            resumen.Cocina.Vencimientos.Add(new VencimientoHome { Nombre = Convert.ToString(r[1]), Fecha = fecha, Cantidad = Convert.ToInt32(r[3]) });
+                    }
+                resumen.Cocina.Vencidos = productosVencidos.Count;
+                resumen.Cocina.ProximosAVencer = productosProximos.Count;
+            }
+            resumen.Disponible = true;
+            return resumen;
         }
 
         private static int Entero(SqlConnection cn, string sql, int? docente, int? id = null)
@@ -143,6 +221,7 @@ namespace EscuelaCopalchi.UI.Controllers
         private static List<SerieMes> Meses(SqlConnection cn, bool global, int? docente)
         {
             var list = new List<SerieMes>();
+            if (!global && !docente.HasValue) return list;
             string sql = @"SELECT YEAR(a.fecha) AS anio, MONTH(a.fecha) AS mes,
                 CAST(100.0*SUM(CASE WHEN a.estado IN (N'Presente',N'Tardanza') THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS DECIMAL(5,1)) AS porcentaje
                 FROM dbo.ASISTENCIA a JOIN dbo.GRUPO g ON g.id_grupo=a.id_grupo
@@ -159,6 +238,7 @@ namespace EscuelaCopalchi.UI.Controllers
         private static List<SerieGrupo> Notas(SqlConnection cn, bool global, int? docente)
         {
             var list = new List<SerieGrupo>();
+            if (!global && !docente.HasValue) return list;
             string sql = @"SELECT TOP (8) g.nombre,
                 CAST(AVG(100.0*c.nota/NULLIF(ev.nota_maxima,0)) AS DECIMAL(5,1)) AS promedio
                 FROM dbo.CALIFICACION c JOIN dbo.EVALUACION ev ON ev.id_evaluacion=c.id_evaluacion
@@ -223,7 +303,7 @@ namespace EscuelaCopalchi.UI.Controllers
             new ModuloHome { Titulo="Gestión de notas", Descripcion="Evaluaciones y calificaciones", Icono="bi-clipboard-data", Controlador="GestionNotas", Permisos=new[]{"GESTIONAR_NOTAS","REGISTRAR_NOTAS","VER_TODAS_NOTAS"}},
             new ModuloHome { Titulo="Planes de estudio", Descripcion="Planeamiento y aprobación", Icono="bi-journal-text", Controlador="PlanesEstudio", Permisos=new[]{"GESTIONAR_PLANES"}},
             new ModuloHome { Titulo="Material didáctico", Descripcion="Repositorio educativo", Icono="bi-folder2-open", Controlador="RepositorioMaterial", Permisos=new[]{"GESTIONAR_MATERIAL","VER_MATERIAL","CARGAR_MATERIAL","DESCARGAR_MATERIAL","EDITAR_MATERIAL","ADMINISTRAR_TODO_MATERIAL","CARGAR_DOCUMENTO_INSTITUCIONAL"}},
-            new ModuloHome { Titulo="Monitoreo académico", Descripcion="Seguimiento y alertas académicas", Icono="bi-graph-up", Controlador="MonitoreoDashboard", Permisos=new[]{"VER_REPORTES"}},
+            new ModuloHome { Titulo="Monitoreo académico", Descripcion="Seguimiento y alertas académicas", Icono="bi-graph-up", Controlador="MonitoreoDashboard", Permisos=new[]{"VER_MONITOREO_GENERAL","VER_MI_MONITOREO"}},
             new ModuloHome { Titulo="Reportes académicos", Descripcion="Estadísticas, fichas y exportaciones PDF/Excel", Icono="bi-file-earmark-bar-graph", Controlador="Reportes", Permisos=new[]{"VER_REPORTES_ACADEMICOS"}},
             new ModuloHome { Titulo="Gestión de Traslados", Descripcion="Cartas oficiales e historial de traslados", Icono="bi-envelope-paper", Controlador="Traslados", Accion="Index", Permisos=new[]{"GESTIONAR_TRASLADOS"}},
            new ModuloHome
@@ -233,7 +313,7 @@ namespace EscuelaCopalchi.UI.Controllers
     Icono = "bi-shield-check",
     Controlador = "Auditoria",
     Accion = "Index",
-    Permisos = new[] { "VER_AUDITORIA" }
+    Permisos = new[] { "VER_AUDITORIA", "VER_MI_AUDITORIA" }
 },
 
 new ModuloHome {
@@ -245,11 +325,11 @@ new ModuloHome {
     Permisos = new[] {
         "GESTIONAR_INVENTARIO", "VER_INVENTARIO", "CREAR_PRODUCTO_INVENTARIO",
         "EDITAR_PRODUCTO_INVENTARIO", "REGISTRAR_MOVIMIENTO_INVENTARIO",
-        "VER_MOVIMIENTOS_INVENTARIO", "VER_REPORTES_INVENTARIO"
+        "VER_MOVIMIENTOS_INVENTARIO", "VER_REPORTES_INVENTARIO", "VER_INVENTARIO_LIMPIEZA", "GESTIONAR_INVENTARIO_LIMPIEZA"
     }
 },
 
-            new ModuloHome { Titulo="Inventario de cocina", Descripcion="Insumos y existencias", Icono="bi-basket", Controlador="InventarioCocina", Permisos=new[]{"GESTIONAR_INVENTARIO"}}
+            new ModuloHome { Titulo="Inventario de cocina", Descripcion="Insumos y existencias", Icono="bi-basket", Controlador="InventarioCocina", Permisos=new[]{"GESTIONAR_INVENTARIO", "VER_INVENTARIO", "VER_INVENTARIO_COCINA", "GESTIONAR_INVENTARIO_COCINA"}}
         };
 
         // Menú lateral: mismos permisos y rutas que el dashboard, consultados en cada petición.
@@ -301,4 +381,29 @@ new ModuloHome {
     }
 }
 
-
+namespace EscuelaCopalchi.UI.Controllers
+{
+    public class ResumenInventarioHome
+    {
+        public bool Disponible { get; set; }
+        public AreaInventarioHome Limpieza { get; set; } = new AreaInventarioHome();
+        public AreaInventarioHome Cocina { get; set; } = new AreaInventarioHome();
+    }
+    public class AreaInventarioHome
+    {
+        public int Total { get; set; }
+        public int Bajos { get; set; }
+        public int Agotados { get; set; }
+        public int Vencidos { get; set; }
+        public int ProximosAVencer { get; set; }
+        public List<VencimientoHome> Vencimientos { get; set; } = new List<VencimientoHome>();
+        public List<ProductoAlertaHome> Productos { get; set; } = new List<ProductoAlertaHome>();
+    }
+    public class VencimientoHome { public string Nombre { get; set; } public DateTime Fecha { get; set; } public int Cantidad { get; set; } }
+    public class ProductoAlertaHome
+    {
+        public string Nombre { get; set; }
+        public decimal Actual { get; set; }
+        public decimal Minimo { get; set; }
+    }
+}
