@@ -1,0 +1,12 @@
+@model EscuelaCopalchi.UI.Models.InventarioCocinaProductoViewModel
+@Html.HiddenFor(m=>m.IdProducto)
+@Html.ValidationSummary(false,"",new{@class="text-danger mb-3"})
+<div class="row g-3">
+ <div class="col-md-6"><label class="form-label">Nombre del producto *</label>@Html.TextBoxFor(m=>m.Nombre,new{@class="form-control",maxlength="150",required="required",placeholder="Ej. Arroz"})@Html.ValidationMessageFor(m=>m.Nombre,"",new{@class="text-danger small"})</div>
+ <div class="col-md-6"><label class="form-label">Categoría</label>@Html.TextBoxFor(m=>m.Categoria,new{@class="form-control",maxlength="100",placeholder="Ej. Granos, lácteos, verduras"})</div>
+ <div class="col-md-6"><label class="form-label">Unidad de medida *</label>@Html.TextBoxFor(m=>m.UnidadMedida,new{@class="form-control",maxlength="50",required="required",placeholder="Ej. kg, litros, unidades"})</div>
+ <div class="col-md-6"><label class="form-label">Stock mínimo *</label>@Html.TextBoxFor(m=>m.StockMinimo,new{@class="form-control",type="number",min="0",required="required"})</div>
+ <div class="col-12"><label class="form-label">Descripción</label>@Html.TextAreaFor(m=>m.Descripcion,3,0,new{@class="form-control",maxlength="500"})</div>
+</div>
+<div class="alert alert-info mt-3"><i class="bi bi-info-circle me-2"></i>La fecha de vencimiento se registra por lote al ingresar existencias. El stock no se edita directamente.</div>
+<div class="d-flex justify-content-end flex-wrap gap-2 mt-4"><a class="btn btn-outline-secondary" href="@Url.Action("Index","InventarioCocina")">Cancelar</a><button type="submit" class="btn btn-cop-primary"><i class="bi bi-check-circle me-1"></i>Guardar producto</button></div>

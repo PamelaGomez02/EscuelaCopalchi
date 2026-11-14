@@ -1,0 +1,4 @@
+@model EscuelaCopalchi.UI.Models.InventarioCocinaProductoViewModel
+@{ViewBag.Title="Editar producto de cocina";}
+@Html.Partial("_Estilos")
+<div class="container py-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4"><div><h2 class="repo-title"><i class="bi bi-pencil-square me-2"></i>Editar producto</h2><p class="text-muted">Actualizá la información de @Model.Nombre.</p></div><a class="btn btn-outline-secondary" href="@Url.Action("Index")">Volver al inventario</a></div><div class="form-card"><h5 class="repo-section-title">Información del producto</h5>@using(Html.BeginForm("Editar","InventarioCocina",FormMethod.Post)){@Html.AntiForgeryToken()@Html.Partial("_Formulario",Model)}</div></div>

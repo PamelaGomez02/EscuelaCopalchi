@@ -233,7 +233,7 @@
     <Compile Include="Controllers\GestionAcademica\GestionAcademicaController.Reportes.cs" />
     <Compile Include="Controllers\GestionNotas\GestionNotasController.cs" />
     <Compile Include="Controllers\HomeController\HomeController.cs" />
-    <Compile Include="Controllers\InventarioCocinaController.cs" />
+    <Compile Include="Controllers\InventarioCocinaController\InventarioCocinaController.cs" />
     <Compile Include="Controllers\InventarioLimpiezaController\InventarioLimpiezaController.cs" />
     <Compile Include="Controllers\MonitoreoDashboardController\MonitoreoDashboardController.cs" />
     <Compile Include="Controllers\Notificacion\NotificacionesController.cs" />
@@ -285,6 +285,7 @@
     <Compile Include="Models\GestionNotas\NotasSesion.cs" />
     <Compile Include="Models\GestionNotas\ReporteNotas.cs" />
     <Compile Include="Models\Home\HomeDashboardViewModel.cs" />
+    <Compile Include="Models\InventarioCocina\InventarioCocinaViewModels.cs" />
     <Compile Include="Models\InventarioLimpieza\InventarioViewModels.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Gestion Material\RepositorioMaterialViewModel.cs" />
@@ -405,8 +406,6 @@
     <Content Include="Views\Home\IndexUsuario.cshtml" />
     <Content Include="Views\Home\_HomeDashboardContenido.cshtml" />
     <Content Include="Views\Home\_HomeDashboardEstilos.cshtml" />
-    <Content Include="Views\InventarioCocina\Create.cshtml" />
-    <Content Include="Views\InventarioCocina\Index.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Notificaciones\Index.cshtml" />
     <Content Include="Views\Notificaciones\Riesgo.cshtml" />
@@ -453,6 +452,16 @@
     <Content Include="Views\InventarioLimpieza\Crear.cshtml" />
     <Content Include="Views\InventarioLimpieza\_Formulario.cshtml" />
     <Content Include="Views\InventarioLimpieza\Reportes.cshtml" />
+    <Content Include="Views\InventarioCocina\Crear.cshtml" />
+    <Content Include="Views\InventarioCocina\Detalle.cshtml" />
+    <Content Include="Views\InventarioCocina\Editar.cshtml" />
+    <Content Include="Views\InventarioCocina\Index.cshtml" />
+    <Content Include="Views\InventarioCocina\Movimientos.cshtml" />
+    <Content Include="Views\InventarioCocina\RegistrarMovimiento.cshtml" />
+    <Content Include="Views\InventarioCocina\Reportes.cshtml" />
+    <Content Include="Views\InventarioCocina\_Estilos.cshtml" />
+    <Content Include="Views\InventarioCocina\_Formulario.cshtml" />
+    <Content Include="Views\InventarioCocina\_Paginacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
