@@ -1,4 +1,6 @@
+
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,18 +8,25 @@ namespace EscuelaCopalchi.UI.Models
 {
     public class ConexionBD
     {
-        private string connString;
-        // private string connString_Adrian = @"Server=localhost\SQLEXPRESSADRIAN;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
-        private string connString_Ema = @"Server=localhost;Database=AulaVirtualCopalchi;Trusted_Connection=True;";
-        //private string connString_Fran   = @"Server=localhost;Database=AulaVirtualCopalchi;Integrated Security=True;TrustServerCertificate=True;";
-        private DataSet DataSet;
+        private readonly string connString;
+        private readonly DataSet DataSet;
 
         public ConexionBD()
         {
-            this.connString = connString_Ema;
+            var configuracion =
+                ConfigurationManager.ConnectionStrings["AulaVirtualDB"];
 
-            this.DataSet = new DataSet();
+            if (configuracion == null ||
+                string.IsNullOrWhiteSpace(configuracion.ConnectionString))
+            {
+                throw new ConfigurationErrorsException(
+                    "No se encontró la cadena de conexión AulaVirtualDB.");
+            }
+
+            connString = configuracion.ConnectionString;
+            DataSet = new DataSet();
         }
+
         public string ObtenerConexion()
         {
             return connString;
@@ -27,13 +36,10 @@ namespace EscuelaCopalchi.UI.Models
         {
             try
             {
-                using (SqlConnection conn =
-                       new SqlConnection(connString))
+                using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
-
-                    return conn.State ==
-                           ConnectionState.Open;
+                    return conn.State == ConnectionState.Open;
                 }
             }
             catch
@@ -49,79 +55,78 @@ namespace EscuelaCopalchi.UI.Models
         {
             DataSet.Tables.Clear();
 
-            using (SqlConnection conn =
-                   new SqlConnection(connString))
+            using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlCommand sqlComm = new SqlCommand(procedureName, conn))
             {
-                conn.Open();
+                sqlComm.CommandType = CommandType.StoredProcedure;
 
-                try
+                if (paramNames != null && valueNames != null)
                 {
-                    SqlCommand sqlComm =
-                        new SqlCommand(procedureName, conn);
-
-                    sqlComm.CommandType =
-                        CommandType.StoredProcedure;
-
-                    if (paramNames != null &&
-                        valueNames != null)
+                    if (paramNames.Length != valueNames.Length)
                     {
-                        for (int i = 0; i < paramNames.Length; i++)
-                        {
-                            sqlComm.Parameters.AddWithValue(
-                                paramNames[i],
-                                valueNames[i]);
-                        }
+                        throw new ArgumentException(
+                            "La cantidad de parámetros y valores no coincide.");
                     }
 
-                    SqlDataAdapter da =
-                        new SqlDataAdapter(sqlComm);
-
-                    da.Fill(DataSet);
-
-                    return DataSet.Tables[0];
+                    for (int i = 0; i < paramNames.Length; i++)
+                    {
+                        sqlComm.Parameters.AddWithValue(
+                            paramNames[i],
+                            (object)valueNames[i] ?? DBNull.Value);
+                    }
                 }
-                catch (Exception ex)
+
+                using (SqlDataAdapter da = new SqlDataAdapter(sqlComm))
                 {
-                    throw new Exception(
-                        "Error al ejecutar el procedimiento: "
-                        + ex.Message);
+                    da.Fill(DataSet);
                 }
+
+                if (DataSet.Tables.Count == 0)
+                {
+                    return new DataTable();
+                }
+
+                return DataSet.Tables[0];
             }
         }
-
 
         public string ejecutarProcedimiento_Save(
             string procedureName,
             string[] paramNames,
             string[] valueNames)
         {
-            using (SqlConnection conn = new SqlConnection(connString))
+            try
             {
-                conn.Open();
-
-                try
+                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlCommand sqlComm = new SqlCommand(procedureName, conn))
                 {
-                    SqlCommand sqlComm =
-                        new SqlCommand(procedureName, conn);
+                    sqlComm.CommandType = CommandType.StoredProcedure;
 
-                    sqlComm.CommandType =
-                        CommandType.StoredProcedure;
-
-                    for (int i = 0; i < paramNames.Length; i++)
+                    if (paramNames != null && valueNames != null)
                     {
-                        sqlComm.Parameters.AddWithValue(
-                            paramNames[i],
-                            valueNames[i]);
+                        if (paramNames.Length != valueNames.Length)
+                        {
+                            throw new ArgumentException(
+                                "La cantidad de parámetros y valores no coincide.");
+                        }
+
+                        for (int i = 0; i < paramNames.Length; i++)
+                        {
+                            sqlComm.Parameters.AddWithValue(
+                                paramNames[i],
+                                (object)valueNames[i] ?? DBNull.Value);
+                        }
                     }
 
+                    conn.Open();
                     sqlComm.ExecuteNonQuery();
 
                     return "Se ha guardado correctamente";
                 }
-                catch (Exception ex)
-                {
-                    return ex.Message;
-                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
 
@@ -130,25 +135,12 @@ namespace EscuelaCopalchi.UI.Models
             DataSet ds = new DataSet();
 
             using (SqlConnection conn = new SqlConnection(connString))
+            using (SqlDataAdapter da = new SqlDataAdapter(query, conn))
             {
-                conn.Open();
-
-                try
-                {
-                    SqlDataAdapter da =
-                        new SqlDataAdapter(query, conn);
-
-                    da.Fill(ds);
-                }
-                catch
-                {
-                    throw;
-                }
+                da.Fill(ds);
             }
 
             return ds;
         }
-
-
     }
 }
