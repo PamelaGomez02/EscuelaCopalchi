@@ -71,8 +71,6 @@
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(x => x.IdEstudiante)
 
-                @Html.HiddenFor(x => x.IdEstudiante)
-
                 <!-- DATOS PERSONALES -->
                 <h2 class="section-title">
                     <i class="bi bi-person me-2"></i>
@@ -327,22 +325,11 @@
                                     x => x.Estado,
                                     new List<SelectListItem>
                                     {
-                                        Text = "Activo",
-                                            Value = "true"
-                                        }
+                                        new SelectListItem { Text = "Activo", Value = "true" },
+                                        new SelectListItem { Text = "Inactivo", Value = "false" }
                                     },
-                                    new SelectListItem
-                                    {
-                                        Text = "Inactivo",
-                                        Value = "false"
-                                    }
-                             },
-                                         new
-                                         {
-                                             @class = "form-select",
-                                        disabled = "disabled"
-                                    })
-
+                                    new { @class = "form-select", disabled = "disabled" }
+                                )
                                 @Html.HiddenFor(x => x.Estado)
                             }
                             else
@@ -351,20 +338,11 @@
                                     x => x.Estado,
                                     new List<SelectListItem>
                                     {
-                                        Text = "Activo",
-                                            Value = "true"
-                                        }
+                                        new SelectListItem { Text = "Activo", Value = "true" },
+                                        new SelectListItem { Text = "Inactivo", Value = "false" }
                                     },
-                                    new SelectListItem
-                                    {
-                                        Text = "Inactivo",
-                                        Value = "false"
-                                    }
-                             },
-                                         new
-                                         {
-                                             @class = "form-select"
-                                    })
+                                    new { @class = "form-select" }
+                                )
                             }
 
                         </div>
@@ -439,7 +417,7 @@
 
                                 <button type="button"
                                         class="btn btn-cop-primary"
-                                        onclick="document.getElementById('formEditarEstudiante').submit();">
+                                        onclick="document.getElementById('formEditarEstudiante').requestSubmit();">
 
                                     Confirmar
 
@@ -770,14 +748,14 @@
 
     <script>
 
-                function mostrarConfirmacion() {
+                        function mostrarConfirmacion() {
 
-                    var modal = new bootstrap.Modal(
-                        document.getElementById("modalGuardar")
-                    );
+                            var modal = new bootstrap.Modal(
+                                document.getElementById("modalGuardar")
+                            );
 
-                    modal.show();
-                }
+                            modal.show();
+                        }
 
     </script>
 

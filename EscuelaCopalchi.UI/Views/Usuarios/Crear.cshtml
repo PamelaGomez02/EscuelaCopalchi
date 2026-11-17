@@ -25,6 +25,7 @@
     @using (Html.BeginForm("Registrar", "Usuarios", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
+
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Nombre</label>
